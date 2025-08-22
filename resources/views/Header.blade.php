@@ -28,15 +28,15 @@
                 <li><a href="{{ route('home') }}">Home</a></li>
                 <li><a href="{{ route('home') }}#about">About us</a></li>
                 <li><a href="{{ route('home') }}#properties">Houses</a></li>
-                <li><a href="{{ route('home') }}#contact">Contact us</a></li>       
+                <li><a href="{{ route('home') }}#contact">Contact us</a></li>   
             </ul>
             </ul>
             <!-- Authentication -->
         @guest
             <li class="mobile-signin">
-                <a href="{{ route('login') }}" class="btn">Sign In</a>
+                <a href="{{ route('login') }}" class="btn">Log in</a>
             </li>
-            <a href="{{ route('register') }}" class="btn">Sign Up</a>
+            
         @endguest
 
         @auth
@@ -57,3 +57,4 @@
         @endauth
     </div>
 </header>
+
