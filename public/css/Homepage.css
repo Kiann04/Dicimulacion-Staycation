@@ -1199,6 +1199,10 @@ transition: 0.4s all linear;
     .mobile-signin {
         display: none;
     }
+    .btn{
+        display: none;    
+    }
+
 }
 
 /* Optional: further hide on mobile (max-width 768px) */
