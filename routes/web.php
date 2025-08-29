@@ -98,3 +98,9 @@ Route::get('/admin/messages/delete/{id}', [AdminController::class, 'deleteMessag
 Route::get('/admin/reports', [AdminController::class, 'reports'])->name('admin.reports');
 Route::post('/admin/reports/generate', [AdminController::class, 'generateReport'])->name('admin.reports.generate');
 Route::get('/admin/reports/download/{id}', [AdminController::class, 'downloadReport'])->name('admin.reports.download');
+
+// Show reply form
+Route::get('/admin/messages/{id}/reply', [AdminController::class, 'replyMessageForm'])->name('admin.reply_message');
+
+// Send reply email
+Route::post('/admin/messages/{id}/reply', [AdminController::class, 'sendReplyMessage'])->name('admin.send_reply');

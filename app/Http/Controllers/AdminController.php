@@ -10,6 +10,8 @@ use App\Models\Inquiry;
 use App\Models\Report; 
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Mail\InquiryReply;
+use Illuminate\Support\Facades\Mail;
 
 
 class AdminController extends Controller
@@ -83,6 +85,13 @@ class AdminController extends Controller
     public function viewMessage($id)
     {
         $inquiry = Inquiry::findOrFail($id);
+
+        // If unread, mark as read
+        if ($inquiry->status === 'unread') {
+            $inquiry->status = 'read';
+            $inquiry->save();
+        }
+
         return view('admin.view_messages', compact('inquiry'));
     }
 
@@ -200,6 +209,25 @@ class AdminController extends Controller
 
     return redirect()->back()->with('success', 'Booking updated successfully!');
     
+        }
+        public function replyMessageForm($id)
+    {
+        $inquiry = Inquiry::findOrFail($id);
+        return view('admin.reply_message', compact('inquiry'));
+    }
+
+    public function sendReplyMessage(Request $request, $id)
+    {
+        $request->validate([
+            'message' => 'required|string',
+        ]);
+
+        $inquiry = Inquiry::findOrFail($id);
+
+        // Send email
+        Mail::to($inquiry->email)->send(new InquiryReply($request->message, $inquiry));
+
+        return redirect()->route('admin.view_messages', $id)->with('success', 'Reply sent successfully!');
     }
     
     

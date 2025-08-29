@@ -182,23 +182,6 @@
     </form>
 </section>
 
-    <!--Chatbot-->
-    <div class="CHT">
-        <button id="ChatbotBtn" class="FloatingChatbot">
-            <i class="ph-bold ph-chat-circle-text"></i>
-        </button>
-
-        <div id="ChatbotContainer" class="ChatbotContainerHidden hidden">
-            <div class="chatbot-header">
-                <span>FAQs</span>
-                <button id="CloseChatBot">&times;</button>
-            </div>
-            <div class="ChatbotContent">
-                <!-- FAQ Items here (use the same structure as before, with asset URLs if needed) -->
-            </div>
-        </div>
-    </div>
-
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
@@ -206,6 +189,7 @@
             loop: true,
             slidesPerView: 1,
             spaceBetween: 30,
+            autoHeight: true,
             autoplay: { delay: 3000, disableOnInteraction: false },
             pagination: { el: '.swiper-pagination', clickable: true },
             navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },

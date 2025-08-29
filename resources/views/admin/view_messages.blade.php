@@ -3,8 +3,9 @@
 @section('Aside')
 @include('Aside')
 @endsection
-
-<div class="content-wrapper">
+<body class="admin-dashboard">
+  <!-- Main Content -->
+  <div class="content-wrapper">
     <div class="main-content">
         <h1>View Message</h1>
         <p><strong>Email:</strong> {{ $inquiry->email }}</p>
@@ -14,3 +15,4 @@
         <a href="{{ route('admin.messages') }}">Back to Messages</a>
     </div>
 </div>
+</body>

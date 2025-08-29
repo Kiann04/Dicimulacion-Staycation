@@ -7,7 +7,7 @@
 <body>
     <header>
         @yield ('Header')
-    </header>
+</header>
     <aside>
         @yield ('Aside')
     </aside>

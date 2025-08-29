@@ -350,6 +350,7 @@ body.admin-dashboard {
   height: auto;
 }
 
+
 /* Adjust if body has login styles overriding layout */
 body.admin-dashboard .content-wrapper { /* Match sidebar width */
   padding: 30px;
@@ -362,34 +363,6 @@ body.admin-dashboard .main-content {
   padding: 30px;
   box-shadow: var(--box-shadow);
 }
-
-/* Responsive Adjustments for Cards */
-@media (max-width: 768px) {
-  .cards {
-    flex-direction: column;
-  }
-
-  .card {
-    width: 100%;
-    margin-bottom: 15px;
-  }
-
-  .content-wrapper {
-    margin-left: 0;
-    padding: 20px;
-  }
-
-  .sidebar {
-    position: relative;
-    width: 100%;
-    height: auto;
-  }
-
-  .main-content {
-    margin-left: 0;
-  }
-}
-
 /* Status badges */
 .status {
   padding: 6px 12px;
@@ -833,17 +806,6 @@ tr:hover {
     padding: 10px;
   }
 }
-
-@media (max-width: 768px) {
-  .house-grid {
-    grid-template-columns: 1fr; /* 1 house per row on smaller screens */
-  }
-
-  .view-bookings-btn {
-    width: 100%;
-  }
-}
-
 /* =========================== */
 /* System Settings Page        */
 /* =========================== */
@@ -948,16 +910,6 @@ tr:hover {
     font-size: 12px;
   }
 }
-
-@media (max-width: 768px) {
-  .setting-card {
-    width: 100%; /* 1 card per row on smaller screens */
-  }
-
-  .settings-btn {
-    width: 100%;
-  }
-}
 /* =========================== */
 /* Add Product (Staycation House) */
 /* =========================== */
@@ -1051,6 +1003,99 @@ button:disabled {
   .product-form button {
     font-size: 1rem;
     padding: 10px;
+  }
+  .sidebar {
+        position: fixed;
+        left: -250px;
+        top: 0;
+        height: 100%;
+        width: 250px;
+        background: #34495e;
+        transition: left 0.3s ease;
+        z-index: 1000;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+    header {
+    position: relative;
+    }
+
+    .burger {
+        display: block;
+        position: fixed;
+        top: 10px;
+        right: 15px;
+        font-size: 22px;
+        background: none;
+        border: none;
+        color: black;
+        cursor: pointer;
+        z-index: 1100;
+    }
+    .cards {
+    flex-direction: column;
+    }
+
+    .card {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .content-wrapper {
+      margin-left: 0;
+      padding: 20px;
+    }
+
+    .sidebar {
+      position: relative;
+      width: 100%;
+      height: auto;
+    }
+    .sidebar.active {
+          left: 0; /* slide in */
+      }
+
+    .main-content {
+      margin-left: 0;
+    }
+    .house-grid {
+    grid-template-columns: 1fr; /* 1 house per row on smaller screens */
+  }
+
+  .view-bookings-btn {
+    width: 100%;
+  }
+  .sidebar {
+        transform: translateX(-100%);
+        z-index: 1000;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .admin-header {
+        display: flex;
+        align-items: center;
+        background: #ecf0f1;
+        padding: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .admin-header h1 {
+        margin: 0;
+        font-size: 1.2rem;
+        flex: 1;
+        text-align: center;
+    }
+    .setting-card {
+    width: 100%; /* 1 card per row on smaller screens */
+  }
+
+  .settings-btn {
+    width: 100%;
   }
 }
 /* =========================== */

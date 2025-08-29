@@ -48,6 +48,9 @@
                   <a href="{{ route('admin.view_messages', $inquiry->id) }}" class="action-btn">
                     <i class="fas fa-eye"></i> View
                   </a>
+                   <a href="{{ route('admin.reply_message', $inquiry->id) }}" class="action-btn">
+                      <i class="fas fa-reply"></i> Reply
+                  </a>
                   <a href="{{ route('admin.delete_message', $inquiry->id) }}" class="action-btn" onclick="return confirm('Are you sure?')">
                     <i class="fas fa-trash-alt"></i> Delete
                   </a>

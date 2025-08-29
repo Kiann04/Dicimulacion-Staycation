@@ -4,12 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADMIN</title>
-
+    
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="{{ asset('Css/Admin.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body>
+
+<header class="admin-topbar">
+    <div class="logo"></div>
+    <button id="menu-toggle" class="burger">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+</header>
+
+
   <div class="container">
     <aside class="sidebar">
       <div class="logo">STAYCATION</div>
@@ -30,19 +38,41 @@
   </div>
 
   <!-- JS for logout -->
-  <script>
-    document.getElementById('logout-link').addEventListener('click', function(e) {
-        e.preventDefault(); // prevent default anchor behavior
-        fetch("{{ route('logout') }}", {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            },
-        }).then(() => {
-            window.location.href = "{{ route('home') }}";
+<script>
+    // Burger menu toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
         });
-    });
-  </script>
-</body>
+
+        // Optional: close sidebar when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+    }
+
+    // Logout click
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function(e) {
+            e.preventDefault(); // prevent default anchor behavior
+
+            fetch("{{ route('logout') }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                },
+            }).then(() => {
+                window.location.href = "{{ route('home') }}";
+            });
+        });
+    }
+</script>
+
 </html>

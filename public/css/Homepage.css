@@ -303,6 +303,7 @@ transition: 0.4s all linear;
 
 .swiper-slide {
   height: auto !important;      /* make slide adjust to content */
+  max-height: 350px;
   overflow: visible !important; /* no cut-offs */
   display: flex;
   justify-content: center;
