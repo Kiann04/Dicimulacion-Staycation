@@ -104,3 +104,16 @@ Route::get('/admin/messages/{id}/reply', [AdminController::class, 'replyMessageF
 
 // Send reply email
 Route::post('/admin/messages/{id}/reply', [AdminController::class, 'sendReplyMessage'])->name('admin.send_reply');
+//Calendar
+Route::get('/events/{staycation_id}', function ($staycation_id) {
+    return DB::table('bookings')
+        ->where('staycation_id', $staycation_id) // filter by staycation
+        ->select(
+            DB::raw("'Booked' as title"),
+            DB::raw("start_date as start"),
+            DB::raw("end_date as end"),
+            DB::raw("'background' as display"),
+            DB::raw("'booked-date' as className")
+        )
+        ->get();
+});

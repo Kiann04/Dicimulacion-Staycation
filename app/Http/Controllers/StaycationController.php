@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Staycation;
-
+use Carbon\Carbon;
 class StaycationController extends Controller
 {
     // Display all staycations in the admin bookings page

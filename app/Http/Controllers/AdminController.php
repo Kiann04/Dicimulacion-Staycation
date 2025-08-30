@@ -18,17 +18,24 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
+        // Automatically update status if booking end date is past today
+        Booking::whereDate('end_date', '<', Carbon::today())
+            ->where('status', '!=', 'completed') // avoid overwriting
+            ->update(['status' => 'completed']);
+
         $totalUsers     = User::count();
         $totalBookings  = Booking::count();
-        // Change 'price' to your actual column or set to 0 if you don't have it yet
-        $totalRevenue   = 0;
-        $bookings = Booking::latest()->take(10)->get();
+        $totalRevenue = Booking::sum('total_price');
+        $bookings       = Booking::latest()->take(10)->get();
 
         return view('admin.dashboard', compact(
-            'totalUsers', 'totalBookings', 'totalRevenue', 'bookings'
+            'totalUsers',
+            'totalBookings',
+            'totalRevenue',
+            'bookings'
         ));
     }
-
+    
     public function customers()
     {
         // Fetch all customers (you can filter if needed)

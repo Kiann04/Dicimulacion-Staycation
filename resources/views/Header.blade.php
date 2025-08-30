@@ -32,12 +32,13 @@
             </ul>
             </ul>
             <!-- Authentication -->
-        @guest
-            <li class="mobile-signin">
-                <a href="{{ route('login') }}" class="btn">Log in</a>
-            </li>
-            
-        @endguest
+            @guest
+                @if (!Route::is('login') && !Route::is('register'))
+                    <li class="mobile-signin">
+                        <a href="{{ route('login') }}" class="btn">Log in</a>
+                    </li>
+                @endif
+            @endguest
 
         @auth
             <li class="dropdown">

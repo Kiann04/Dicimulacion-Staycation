@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Staycation;
 use App\Models\Booking;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -54,29 +55,49 @@ class HomeController extends Controller
         $booking->save();
 
     return redirect()->back()->with('success', 'Booking successfully added!');
+        }
     }
-}
-public function createBooking($id)
-{
-    $staycation = Staycation::findOrFail($id);
-    return view('booking_form', compact('staycation'));
-}
-public function send(Request $request)
-{
-    // Validate form
-    $request->validate([
-        'email' => 'required|email',
-        'message' => 'required|string'
-    ]);
+    public function createBooking($id)
+    {
+        $staycation = Staycation::findOrFail($id);
+        return view('booking_form', compact('staycation'));
+    }
+    public function send(Request $request)
+    {
+        // Validate form
+        $request->validate([
+            'email' => 'required|email',
+            'message' => 'required|string'
+        ]);
 
-    // Store to database
-    \DB::table('inquiries')->insert([
-        'email' => $request->email,
-        'message' => $request->message,
-        'created_at' => now(),
-        'updated_at' => now()
-    ]);
+        // Store to database
+        \DB::table('inquiries')->insert([
+            'email' => $request->email,
+            'message' => $request->message,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
 
-    return back()->with('success', 'Your message has been sent!');
+        return back()->with('success', 'Your message has been sent!');
+    }
+    public function previewBooking(Request $request, $staycation_id)
+{
+    $staycation = Staycation::findOrFail($staycation_id);
+
+    // Calculate total days (including last day)
+    $days = Carbon::parse($request->startDate)->diffInDays(Carbon::parse($request->endDate)) + 1;
+
+    // Multiply by house price
+    $totalPrice = $days * $staycation->house_price;
+
+    return view('booking_preview', [
+        'staycation'    => $staycation,
+        'name'          => $request->name,
+        'phone'         => $request->phone,
+        'guest_number'  => $request->guest_number,
+        'startDate'     => $request->startDate,
+        'endDate'       => $request->endDate,
+        'totalPrice'    => $totalPrice
+    ]);
 }
 }

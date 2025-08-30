@@ -33,7 +33,11 @@
             <input type="date" name="startDate" id="startDate" placeholder="Arrival" required>
             <span>Date of departure:</span>
             <input type="date" name="endDate" id="endDate" placeholder="Departure" required>
-            <input type="submit" value="Book" class="buttom">
+            <div id="price-summary" style="display:none; margin-top: 15px; font-weight: bold; border-top: 1px solid #ccc; padding-top: 10px;">
+    <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
+    <p id="total-price" style="font-size: 18px; color: green;"></p>
+</div>
+<input type="submit" value="Reserve" class="buttom">
         </form>
     </div>
 
@@ -92,7 +96,7 @@
     </div>
 </section>
 
-
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -139,8 +143,36 @@ document.addEventListener("DOMContentLoaded", function () {
             goToSlide(currentIndex);
         });
     });
+    // ====== Airbnb-style Price Calculation ======
+        const startInput = document.getElementById("startDate");
+        const endInput = document.getElementById("endDate");
+        const priceSummary = document.getElementById("price-summary");
+        const totalPriceElem = document.getElementById("total-price");
+        const pricePerNight = parseFloat(document.getElementById("price-per-night").innerText);
+
+        function calculatePrice() {
+        if (startInput.value && endInput.value) {
+        const start = new Date(startInput.value);
+        const end = new Date(endInput.value);
+
+        if (end >= start) {
+            const days = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1; // Include last day
+            const total = days * pricePerNight;
+
+            priceSummary.style.display = "block";
+            totalPriceElem.textContent = `Total for ${days} night(s): ₱${total.toLocaleString()}`;
+        } else {
+            priceSummary.style.display = "none";
+        }
+    }
+}
+
+startInput.addEventListener("change", calculatePrice);
+endInput.addEventListener("change", calculatePrice);
 
     // ====== Calendar ======
+        const staycationId = "{{ $staycation->id }}"; // Example from Blade
+
     if (document.getElementById("calendar")) {
         const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
             initialView: "dayGridMonth",
@@ -151,15 +183,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 center: "title",
                 right: ""
             },
-            events: [
-                { title: "Booked", start: "2025-08-18", display: "background", className: "booked-date" },
-                { title: "Booked", start: "2025-08-19", display: "background", className: "booked-date" },
-                { title: "Available", start: "2025-08-20", display: "background", className: "available-date" },
-                { title: "Available", start: "2025-08-21", display: "background", className: "available-date" }
-            ]
+            events: `/events/${staycationId}` // pass staycation id to backend
         });
 
         calendar.render();
     }
-});
+    });
 </script>
