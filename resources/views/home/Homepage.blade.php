@@ -161,6 +161,7 @@
     <h2>Have a Question? <br> Contact Us</h2>
     <form action="{{ route('contact.send') }}" method="POST">
         @csrf
+    
         
         <!-- Email Input -->
         <input 
@@ -181,6 +182,26 @@
         <input type="submit" value="Send" class="btn">
     </form>
 </section>
+<!-- Floating Chatbot -->
+<div class="CHT">
+    <button id="ChatbotBtn" class="FloatingChatbot">
+        <i class="ph-bold ph-chat-circle-text"></i>
+    </button>
+
+    <div id="ChatbotContainer" class="ChatbotContainerHidden hidden">
+        <div class="chatbot-header" style="background:#007BFF; color:#fff; padding:10px; display:flex; justify-content:space-between; align-items:center;">
+            <span>Chat with Us</span>
+            <button id="CloseChatBot" style="background:none; border:none; color:#fff; font-size:18px;">&times;</button>
+        </div>
+        <div class="ChatbotContent" style="padding:10px; display:flex; flex-direction:column; height:calc(100% - 50px);">
+            <div id="messages" style="flex:1; overflow-y:auto; margin-bottom:10px;"></div>
+            <div style="display:flex;">
+                <input type="text" id="userMessage" placeholder="Type your question..." style="flex:1; padding:5px;">
+                <button id="sendBtn" style="margin-left:5px;background:#007BFF;color:#fff;">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -193,9 +214,9 @@
             autoplay: { delay: 3000, disableOnInteraction: false },
             pagination: { el: '.swiper-pagination', clickable: true },
             navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-        });
+        }); 
     </script>
-    <script src="{{ asset('Javascript/ChatBot.js') }}"></script>
+  @vite('resources/js/ChatBot.js')
 
 
 @section('Footer')

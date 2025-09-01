@@ -117,3 +117,13 @@ Route::get('/events/{staycation_id}', function ($staycation_id) {
         )
         ->get();
 });
+
+//chatbot
+use App\Http\Controllers\OfflineChatBotController;
+
+Route::post('/offline-chat', [OfflineChatBotController::class, 'chat']);
+
+Route::get('/offline-chat', function() {
+    return view('offline-chat');
+});
+

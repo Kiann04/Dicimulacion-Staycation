@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "15b1a173f4f3906c18f737dd67c214a9",
+    "content-hash": "ece52faccc0c775c7e94133339c3a58c",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1388,6 +1388,68 @@
                 }
             ],
             "time": "2025-02-03T10:55:03+00:00"
+        },
+        {
+            "name": "itpathsolutions/chatbot",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dhanikk/chatbot.git",
+                "reference": "1620ea8a2414f3a683b8cf50375c519f8a1ce9d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dhanikk/chatbot/zipball/1620ea8a2414f3a683b8cf50375c519f8a1ce9d1",
+                "reference": "1620ea8a2414f3a683b8cf50375c519f8a1ce9d1",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": ">=5.4",
+                "php": ">=5.8"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Itpathsolutions\\Chatbot\\ChatbotServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Itpathsolutions\\Chatbot\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dhanik Keraliya"
+                }
+            ],
+            "description": "Live chatting with chatbot",
+            "keywords": [
+                "Messenger",
+                "ai",
+                "assistant",
+                "automation",
+                "bot",
+                "chatbot",
+                "conversation",
+                "customer-support",
+                "laravel",
+                "machine-learning",
+                "nlp",
+                "php",
+                "support-bot"
+            ],
+            "support": {
+                "issues": "https://github.com/dhanikk/chatbot/issues",
+                "source": "https://github.com/dhanikk/chatbot/tree/v1.0.3"
+            },
+            "time": "2025-03-18T13:07:38+00:00"
         },
         {
             "name": "laravel/fortify",
