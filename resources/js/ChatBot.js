@@ -1,5 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-
+document.addEventListener('DOMContentLoaded', function () {
     const btn = document.getElementById('ChatbotBtn');
     const container = document.getElementById('ChatbotContainer');
     const closeBtn = document.getElementById('CloseChatBot');
@@ -7,26 +6,47 @@ document.addEventListener('DOMContentLoaded', function() {
     const input = document.getElementById('userMessage');
     const sendBtn = document.getElementById('sendBtn');
 
-    // Show chatbot
+    // ✅ Toggle chatbot
     btn.addEventListener('click', () => {
-        container.style.display = 'flex';
+        if (container.classList.contains('show')) {
+            container.classList.remove('show');
+            setTimeout(() => container.classList.add('hidden'), 300);
+        } else {
+            container.classList.remove('hidden');
+            setTimeout(() => container.classList.add('show'), 10);
+        }
     });
 
-    // Close chatbot
+    // ✅ Close chatbot
     closeBtn.addEventListener('click', () => {
-        container.style.display = 'none';
+        container.classList.remove('show');
+        setTimeout(() => container.classList.add('hidden'), 300);
     });
 
-    // Append messages
-    function appendMessage(sender, text) {
-        const p = document.createElement('p');
-        p.style.margin = '5px 0';
-        p.textContent = sender + ': ' + text;
-        messagesDiv.appendChild(p);
+    // ✅ Append messages
+    function appendMessage(text, sender) {
+        const msg = document.createElement('div');
+        msg.classList.add('message', sender);
+        msg.textContent = text;
+        messagesDiv.appendChild(msg);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
 
-    // Offline FAQ
+    // ✅ Typing animation
+    function appendTyping() {
+        const typingDiv = document.createElement('div');
+        typingDiv.classList.add('message', 'bot', 'typing');
+        typingDiv.innerHTML = '<span></span><span></span><span></span>';
+        typingDiv.id = 'typing';
+        messagesDiv.appendChild(typingDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    function removeTyping() {
+        const typingDiv = document.getElementById('typing');
+        if (typingDiv) typingDiv.remove();
+    }
+
+    // ✅ Offline FAQ responses
     const faq = {
         'checkin': 'Check-in time is 8:00 PM.',
         'checkout': 'Check-out time is 12:00 PM.',
@@ -36,7 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'location': 'We are located in Falcons Court, Village East Avenue, Angono, 1930 Rizal.',
         'contact': 'You can call us at 0912-345-6789.',
         'dicimulacion': 'Dicimulation Staycation is a premier retreat destination designed for those who want to unwind and enjoy a relaxing, hassle-free escape without traveling far from home. We offer a unique blend of comfort, luxury, and convenience tailored to your needs.'
-       
     };
 
     function getBotReply(message) {
@@ -44,24 +63,48 @@ document.addEventListener('DOMContentLoaded', function() {
         for (const key in faq) {
             if (message.includes(key)) return faq[key];
         }
-        return 'Sorry, I can only answer questions about Dicimulacion Staycation.';
+        return null;
     }
 
-    // Send message
-    sendBtn.addEventListener('click', () => {
+    // ✅ Send message
+    function sendMessage() {
         const message = input.value.trim();
         if (!message) return;
-        appendMessage('You', message);
 
-        const reply = getBotReply(message);
-        setTimeout(() => appendMessage('', reply), 300);
-
+        appendMessage(message, 'user');
         input.value = '';
-    });
 
-    // Press Enter to send
+        const offlineReply = getBotReply(message);
+        if (offlineReply) {
+            setTimeout(() => appendMessage(offlineReply, 'bot'), 300);
+        } else {
+            appendTyping();
+
+            fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ message: message })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    removeTyping();
+                    appendMessage(data.reply, 'bot');
+                })
+                .catch(() => {
+                    removeTyping();
+                    appendMessage("Error: Unable to connect to server.", 'bot');
+                });
+        }
+    }
+
+    // ✅ Button click
+    sendBtn.addEventListener('click', sendMessage);
+
+    // ✅ Enter key
     input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendBtn.click();
+        if (e.key === 'Enter') sendMessage();
     });
-
 });

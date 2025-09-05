@@ -182,23 +182,24 @@
         <input type="submit" value="Send" class="btn">
     </form>
 </section>
-<!-- Floating Chatbot -->
-<div class="CHT">
+<div class="chatbot-wrapper">
+    <!-- Floating Icon -->
     <button id="ChatbotBtn" class="FloatingChatbot">
         <i class="ph-bold ph-chat-circle-text"></i>
     </button>
 
-    <div id="ChatbotContainer" class="ChatbotContainerHidden hidden">
-        <div class="chatbot-header" style="background:#007BFF; color:#fff; padding:10px; display:flex; justify-content:space-between; align-items:center;">
-            <span>Chat with Us</span>
-            <button id="CloseChatBot" style="background:none; border:none; color:#fff; font-size:18px;">&times;</button>
+    <!-- Chatbot Container -->
+    <div id="ChatbotContainer" class="chatbot-container hidden">
+        <div class="chatbot-header">
+            <span>Dicimulation Staycation</span>
+            <button id="CloseChatBot">&times;</button>
         </div>
-        <div class="ChatbotContent" style="padding:10px; display:flex; flex-direction:column; height:calc(100% - 50px);">
-            <div id="messages" style="flex:1; overflow-y:auto; margin-bottom:10px;"></div>
-            <div style="display:flex;">
-                <input type="text" id="userMessage" placeholder="Type your question..." style="flex:1; padding:5px;">
-                <button id="sendBtn" style="margin-left:5px;background:#007BFF;color:#fff;">Send</button>
-            </div>
+
+        <div id="messages" class="chatbot-messages"></div>
+
+        <div class="chatbot-input">
+            <input type="text" id="userMessage" placeholder="Type a message...">
+            <button id="sendBtn">➤</button>
         </div>
     </div>
 </div>

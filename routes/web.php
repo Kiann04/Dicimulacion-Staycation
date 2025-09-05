@@ -127,3 +127,24 @@ Route::get('/offline-chat', function() {
     return view('offline-chat');
 });
 
+
+Route::view('/chatbot', 'chatbot');
+
+// API endpoint for Gemini
+Route::post('/chat', [\App\Http\Controllers\ChatBotController::class, 'ask']);
+
+use Illuminate\Support\Facades\Http;
+
+Route::get('/test-gemini', function () {
+    $apiKey = env('GEMINI_API_KEY');
+
+    $response = Http::withHeaders([
+        'Content-Type' => 'application/json',
+    ])->post("https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={$apiKey}", [
+        'contents' => [
+            ['parts' => [['text' => 'Hello Gemini']]]
+        ]
+    ]);
+
+    return $response->json();
+});
