@@ -6,7 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StaycationController;
 use App\Http\Controllers\HomeController;
-
+use App\Http\Controllers\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,13 +30,11 @@ Route::post('add_booking/{id}', [HomeController::class, 'add_booking'])->name('b
 Route::post('add_booking/{id}', [HomeController::class, 'add_booking'])->name('booking.add');
 
 // Authentication views (optional if using Laravel Jetstream)
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::get('/login', function () {return view('auth.login');})->name('login');
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
+// Register routes
+Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register'])->name('register.perform');
 
 // Handle login request
 Route::post('/login', [LoginController::class, 'login'])->name('login.perform');
