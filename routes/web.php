@@ -148,3 +148,13 @@ Route::get('/test-gemini', function () {
 });
 Route::post('/preview_booking/{staycation_id}', [HomeController::class, 'previewBooking'])
     ->middleware('auth');
+
+Route::post('/admin/bookings/{id}/approve', [AdminController::class, 'approveBooking'])->name('admin.bookings.approve');
+Route::post('/admin/bookings/{id}/decline', [AdminController::class, 'declineBooking'])->name('admin.bookings.decline');
+
+use App\Http\Controllers\AdminBookingController;
+
+Route::post('/admin/bookings/{id}/approve', [AdminBookingController::class, 'approve'])->name('admin.bookings.approve');
+
+Route::post('/admin/bookings/{id}/approve', [AdminController::class, 'approveBooking'])->name('admin.bookings.approve');
+

@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Mail\InquiryReply;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\BookingApproved;
+use App\Mail\BookingDeclined;
 
 
 class AdminController extends Controller
@@ -237,5 +239,34 @@ class AdminController extends Controller
         return redirect()->route('admin.view_messages', $id)->with('success', 'Reply sent successfully!');
     }
     
+    public function approveBooking($id)
+    {
+    $booking = Booking::with('user', 'staycation')->findOrFail($id);
+
+    // Change status
+    $booking->status = 'approved';
+    $booking->save();
+
+    // Send email to user
+    if ($booking->user && $booking->user->email) {
+        Mail::to($booking->user->email)->send(new BookingApproved($booking));
+    }
+
+    return back()->with('success', 'Booking approved and email sent.');
+    }
+    public function declineBooking($id)
+    {
+        $booking = Booking::with('user', 'staycation')->findOrFail($id);
+
+        // Send email to user before deleting
+        if ($booking->user && $booking->user->email) {
+            Mail::to($booking->user->email)->send(new BookingDeclined($booking));
+        }
+
+        // Delete the booking
+        $booking->delete();
+
+        return back()->with('success', 'Booking declined, email sent, and record deleted.');
+    }
     
 }

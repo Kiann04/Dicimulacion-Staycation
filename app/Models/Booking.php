@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
+
 class Booking extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'staycation_id',
+        'user_id', // <-- add this so it can be mass-assigned
         'name',
         'phone',
         'status',
@@ -25,6 +27,12 @@ class Booking extends Model
     {
         return $this->belongsTo(Staycation::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class); // Link to user table
+    }
+
     public static function boot()
     {
         parent::boot();

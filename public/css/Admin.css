@@ -113,53 +113,6 @@ body {
   max-width: 100%;
   height: auto;
 }
-
-@media (max-width: 1024px) {
-  .login-container {
-    flex-direction: column;
-    max-width: 600px;
-    margin: 20px;
-  }
-
-  .login-image {
-    order: -1;
-    padding: 10px;
-  }
-
-  .login-box {
-    padding: 30px 20px;
-  }
-
-  .login-box h2 {
-    font-size: 22px;
-  }
-
-  .login-box p {
-    font-size: 13px;
-    margin-bottom: 20px;
-  }
-
-  .login-box input[type="email"],
-  .login-box input[type="password"] {
-    padding: 10px;
-    font-size: 13px;
-  }
-
-  .button {
-    font-size: 15px;
-    padding: 10px;
-  }
-
-  .forgot {
-    font-size: 12px;
-  }
-
-  .login-image img {
-    width: 80%;
-    height: auto;
-  }
-}
-
 /* Sidebar Styles */
 .sidebar {
   width: 250px;
@@ -254,14 +207,6 @@ body {
 .notification-list li:hover {
   background-color: #34495e;
   cursor: pointer;
-}
-
-@media (max-width: 1024px) {
-  .notification-container {
-    top: 10px;
-    right: 10px;
-    width: 220px;
-  }
 }
 /* Main Content Section */
 .main-content {
@@ -377,7 +322,7 @@ body.admin-dashboard .main-content {
 }
 
 .status.pending {
-  background-color: #f39c12;
+  background-color: #afaca7;
 }
 
 /* ====================== */
@@ -895,21 +840,6 @@ tr:hover {
   color: #666;
 }
 
-/* Responsive Design for Mobile */
-@media (max-width: 1024px) {
-  .setting-card {
-    width: 48%; /* 2 cards per row on medium screens */
-  }
-
-  .status-card {
-    width: 100%;
-  }
-
-  .settings-btn {
-    padding: 8px 16px;
-    font-size: 12px;
-  }
-}
 /* =========================== */
 /* Add Product (Staycation House) */
 /* =========================== */
@@ -983,121 +913,6 @@ button:disabled {
 .form-group select {
   width: 100%;
 }
-
-@media (max-width: 1024px) {
-  .add-product-section {
-    padding: 20px;
-  }
-
-  .product-form button {
-    font-size: 1rem;
-    padding: 10px;
-  }
-}
-
-@media (max-width: 768px) {
-  .product-form {
-    gap: 15px;
-  }
-
-  .product-form button {
-    font-size: 1rem;
-    padding: 10px;
-  }
-  .sidebar {
-        position: fixed;
-        left: -250px;
-        top: 0;
-        height: 100%;
-        width: 250px;
-        background: #34495e;
-        transition: left 0.3s ease;
-        z-index: 1000;
-    }
-
-    .sidebar.active {
-        left: 0;
-    }
-    header {
-    position: relative;
-    }
-
-    .burger {
-        display: block;
-        position: fixed;
-        top: 10px;
-        right: 15px;
-        font-size: 22px;
-        background: none;
-        border: none;
-        color: black;
-        cursor: pointer;
-        z-index: 1100;
-    }
-    .cards {
-    flex-direction: column;
-    }
-
-    .card {
-      width: 100%;
-      margin-bottom: 15px;
-    }
-
-    .content-wrapper {
-      margin-left: 0;
-      padding: 20px;
-    }
-
-    .sidebar {
-      position: relative;
-      width: 100%;
-      height: auto;
-    }
-    .sidebar.active {
-          left: 0; /* slide in */
-      }
-
-    .main-content {
-      margin-left: 0;
-    }
-    .house-grid {
-    grid-template-columns: 1fr; /* 1 house per row on smaller screens */
-  }
-
-  .view-bookings-btn {
-    width: 100%;
-  }
-  .sidebar {
-        transform: translateX(-100%);
-        z-index: 1000;
-    }
-
-    .sidebar.active {
-        transform: translateX(0);
-    }
-
-    .admin-header {
-        display: flex;
-        align-items: center;
-        background: #ecf0f1;
-        padding: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .admin-header h1 {
-        margin: 0;
-        font-size: 1.2rem;
-        flex: 1;
-        text-align: center;
-    }
-    .setting-card {
-    width: 100%; /* 1 card per row on smaller screens */
-  }
-
-  .settings-btn {
-    width: 100%;
-  }
-}
 /* =========================== */
 .login-box h1 {
   font-size: 50px;
@@ -1122,7 +937,7 @@ button:disabled {
 /* Pending (Yellow) */
 .status.pending {
     background-color: #c2a544;
-    color: #856404;
+    color: #ffffff;
 }
 
 /* Cancelled (Red) */
@@ -1137,4 +952,10 @@ button:disabled {
     display: inline-block;
     background-color: #e2e3e5;
     color: #383d41;
+}
+.status.declined {
+  background-color: #dc3545; /* red */
+}
+.status.approved{
+  background-color: green;
 }
