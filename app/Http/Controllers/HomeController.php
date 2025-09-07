@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Staycation;
 use App\Models\Booking;
 use Carbon\Carbon;
+use App\Mail\BookingCreated;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -23,7 +26,7 @@ class HomeController extends Controller
     }
 
     // Handle the booking submission
-    public function add_booking(Request $request, $id)
+   public function add_booking(Request $request, $id)
 {
     $request->validate([
         'name' => 'required|string|max:255',
@@ -33,30 +36,41 @@ class HomeController extends Controller
         'endDate' => 'required|date|after_or_equal:startDate'
     ]);
 
+    $startDate = $request->startDate;
+    $endDate = $request->endDate;
+
+    // Check if already booked
+    $isBooked = Booking::where('staycation_id', $id)
+        ->where('start_date', '<=', $endDate)
+        ->where('end_date', '>=', $startDate)
+        ->exists();
+
+    if ($isBooked) {
+        return redirect()->back()->with('message', "Staycation house is already booked.\nPlease try different dates.");
+    }
+
+    // Save booking
     $booking = new Booking;
     $booking->staycation_id = $id;
+    $booking->user_id = auth()->id(); // store user who booked
     $booking->name = $request->name;
     $booking->phone = $request->phone;
     $booking->guest_number = $request->guest_number;
+    $booking->start_date = $startDate;
+    $booking->end_date = $endDate;
+    $booking->status = 'pending';
+    $booking->save();
 
-    $startDate = $request->startDate;
-    $endDate = $request->endDate;
-    $isBooked = Booking::where('staycation_id',$id)
-    ->where('start_date','<=',$endDate)
-    ->where('end_date','>=',$startDate)->exists();
-    if($isBooked)
-    {
-        return redirect()->back()->with('message', "Staycation house is already booked.\nPlease try different dates.");
+    // Send confirmation email
+    if (auth()->check()) {
+        Mail::to(auth()->user()->email)->send(new BookingCreated($booking));
     }
-    else
-    {
-        $booking->start_date = $request->startDate;
-        $booking->end_date = $request->endDate;
-        $booking->save();
 
-    return redirect()->back()->with('success', 'Booking successfully added!');
-        }
-    }
+    return redirect()->back()->with(
+        'success',
+        'Booking successfully added! Wait for the admin approval. A confirmation email has been sent.'
+    );
+}
     public function createBooking($id)
     {
         $staycation = Staycation::findOrFail($id);
@@ -88,7 +102,7 @@ class HomeController extends Controller
     $days = Carbon::parse($request->startDate)->diffInDays(Carbon::parse($request->endDate)) + 1;
 
     // Multiply by house price
-    $totalPrice = $days * $staycation->house_price;
+    $totalPrice = $days * $staycation->price_per_day;
 
     return view('booking_preview', [
         'staycation'    => $staycation,
@@ -100,4 +114,5 @@ class HomeController extends Controller
         'totalPrice'    => $totalPrice
     ]);
 }
+
 }

@@ -37,9 +37,17 @@
     <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
     <p id="total-price" style="font-size: 18px; color: green;"></p>
 </div>
-<input type="submit" value="Reserve" class="buttom">
-        </form>
-    </div>
+@auth
+    <input type="submit" value="Reserve" class="buttom">
+@else
+    <a href="{{ route('login') }}" class="buttom" 
+       style="display: inline-block; text-align: center; text-decoration: none;">
+       Please log in to reserve
+    </a>
+@endauth
+
+</form>
+</div>
 
     <!-- Slider Section -->
     <section class="container-pics">

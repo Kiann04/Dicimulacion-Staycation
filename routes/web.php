@@ -146,3 +146,5 @@ Route::get('/test-gemini', function () {
 
     return $response->json();
 });
+Route::post('/preview_booking/{staycation_id}', [HomeController::class, 'previewBooking'])
+    ->middleware('auth');
