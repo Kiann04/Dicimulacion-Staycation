@@ -30,6 +30,8 @@
         @csrf
         @method('PUT')
 
+        
+        <input type="hidden" name="staycation_id" value="{{ $booking->staycation_id }}">
         {{-- Customer Name --}}
         <label>Customer Name</label>
         <input type="text" name="name" value="{{ old('name', $booking->name) }}" required>
