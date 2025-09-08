@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -16,6 +17,15 @@ return new class extends Migration
                 $table->decimal('total_price', 10, 2)->default(0);
             }
         });
+
+        // Populate the columns from staycation table
+        DB::statement("
+            UPDATE bookings b
+            JOIN staycations s ON b.staycation_id = s.id
+            SET 
+                b.price_per_day = s.house_price,
+                b.total_price = s.house_price * DATEDIFF(b.check_out, b.check_in)
+        ");
     }
 
     public function down(): void
