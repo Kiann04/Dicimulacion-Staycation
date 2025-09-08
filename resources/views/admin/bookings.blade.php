@@ -3,7 +3,7 @@
 @section('Aside')
 @include('Aside')
 @endsection
-
+<body class="admin-dashboard">
 <div class="content-wrapper">
   <div class="main-content">
     <header>
@@ -33,3 +33,4 @@
     </section>
   </div>
 </div>
+</body>

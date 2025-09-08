@@ -9,15 +9,6 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('Css/Admin.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-
-<header class="admin-topbar">
-    <div class="logo"></div>
-    <button id="menu-toggle" class="burger">
-        <i class="fa-solid fa-bars"></i>
-    </button>
-</header>
-
-
   <div class="container">
     <aside class="sidebar">
       <div class="logo">STAYCATION</div>
@@ -39,23 +30,6 @@
 
   <!-- JS for logout -->
 <script>
-    // Burger menu toggle
-    const menuToggle = document.getElementById('menu-toggle');
-    const sidebar = document.querySelector('.sidebar');
-
-    if (menuToggle) {
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
-
-        // Optional: close sidebar when clicking outside
-        document.addEventListener('click', (event) => {
-            if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
-                sidebar.classList.remove('active');
-            }
-        });
-    }
-
     // Logout click
     const logoutLink = document.getElementById('logout-link');
     if (logoutLink) {

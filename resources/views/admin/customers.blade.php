@@ -23,15 +23,20 @@
 
       <section class="table-section">
         <h2>All Customers</h2>
+
+        {{-- Search form --}}
+        <form method="GET" action="{{ route('admin.customers') }}" style="margin-bottom: 15px;">
+            <input type="text" name="search" placeholder="Search by name or email"
+                   value="{{ request('search') }}" style="padding: 6px;">
+            <button type="submit" style="padding: 6px 12px;">Search</button>
+        </form>
+
         <table>
           <thead>
             <tr>
               <th>Customer ID</th>
               <th>Full Name</th>
               <th>Email</th>
-              
-              
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -40,15 +45,10 @@
                 <td>#{{ $customer->id }}</td>
                 <td>{{ $customer->name }}</td>
                 <td>{{ $customer->email }}</td>
-                
-                <td>
-                  <a href="{{ url('admin/edit_customer/' . $customer->id) }}" class="action-btn"><i class="fas fa-edit"></i> Edit</a>
-                  <a href="{{ url('admin/delete_customer/' . $customer->id) }}" class="action-btn" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt"></i> Delete</a>
-                </td>
               </tr>
             @empty
               <tr>
-                <td colspan="6">No customers found</td>
+                <td colspan="3">No customers found</td>
               </tr>
             @endforelse
           </tbody>

@@ -38,12 +38,20 @@ class AdminController extends Controller
         ));
     }
     
-    public function customers()
+    public function customers(Request $request)
     {
-        // Fetch all customers (you can filter if needed)
-        $customers = \App\Models\User::where('usertype', 'user')->get();
+        $search = $request->input('search');
 
-        return view('admin.customers', compact('customers'));
+        $customers = \App\Models\User::where('usertype', 'user')
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->get();
+
+        return view('admin.customers', compact('customers', 'search'));
     }
 
     public function analytics()
