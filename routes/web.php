@@ -158,3 +158,14 @@ Route::post('/admin/bookings/{id}/approve', [AdminBookingController::class, 'app
 
 Route::post('/admin/bookings/{id}/approve', [AdminController::class, 'approveBooking'])->name('admin.bookings.approve');
 
+Route::get('/booking-history', [HomeController::class, 'bookingHistory'])->name('BookingHistory.show');
+
+
+use App\Http\Controllers\BookingHistoryController;
+
+Route::get('/booking-history', [BookingHistoryController::class, 'index'])
+    ->name('BookingHistory.index')
+    ->middleware('auth');
+Route::delete('/booking/{id}/cancel', [BookingHistoryController::class, 'cancel'])
+    ->name('booking.cancel')
+    ->middleware('auth');

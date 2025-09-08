@@ -48,6 +48,7 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li><a href="{{ route('profile.show') }}">Profile</a></li>
+                    <li><a href="{{ route('BookingHistory.index') }}">Booking History</a></li>
                     <li>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

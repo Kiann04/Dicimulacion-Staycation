@@ -114,5 +114,11 @@ class HomeController extends Controller
         'totalPrice'    => $totalPrice
     ]);
 }
+public function bookingHistory()
+    {
+        // If you have bookings from database, you can pass them here
+        // $bookings = auth()->user()->bookings; // Example
+        return view('home.booking_history'); // Match your blade file
+    }
 
 }

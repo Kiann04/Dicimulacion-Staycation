@@ -1050,7 +1050,73 @@ transition: 0.4s all linear;
         font-size: 1rem;
         gap: 4px;
     }
+        .booking-history-container {
+    max-width: 1100px;
+    margin: 2rem 2rem;
 }
+  .booking-table thead {
+    display: none;
+  }
+
+  .booking-table,
+  .booking-table tbody,
+  .booking-table tr,
+  .booking-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .booking-table tr {
+    margin-bottom: 1.5rem;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    border-radius: 0.8rem;
+    overflow: hidden;
+    padding: 1rem 1.2rem;
+    transition: transform 0.2s ease;
+  }
+
+  .booking-table tr:hover {
+    transform: translateY(-3px);
+  }
+
+  .booking-table td {
+    padding: 8px 0;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .booking-table td:last-child {
+    border-bottom: none;
+  }
+
+  .booking-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--main-color);
+    font-size: 0.85rem;
+  }
+
+  
+  .status {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    margin-top: 4px;
+  }
+
+  
+  .action-btn.cancel {
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+  }
+}
+
+
 
 /* Small tablets / large phones */
 @media (max-width: 638px){
@@ -1230,4 +1296,84 @@ transition: 0.4s all linear;
     .mobile-signin {
         display: none;
     }
+}
+.booking-history-container {
+  max-width: 1100px;
+  margin: 12rem auto;
+}
+
+.booking-history-container h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.booking-history-container p {
+  color: #666;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+/* Table */
+.booking-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 0.6rem;
+  overflow: hidden;
+  font-size: 0.9rem;
+}
+
+.booking-table thead {
+  background: var(--main-color);
+  color: #fff;
+}
+
+.booking-table th,
+.booking-table td {
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.booking-table tbody tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+
+.status {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status.approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+
+.action-btn.cancel {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  outline: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: 0.3s;
+  background: #f44336;
+  color: #fff;
+}
+
+.action-btn.cancel:hover {
+  background: #d32f2f;
 }
