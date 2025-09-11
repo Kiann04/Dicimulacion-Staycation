@@ -37,6 +37,16 @@
     <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
     <p id="total-price" style="font-size: 18px; color: green;"></p>
 </div>
+<div style="margin-top: 15px; margin-bottom: 15px;">
+    <label>
+        <input type="checkbox" name="terms" required>
+        I agree to the 
+        <a href="{{ url('/terms') }}" target="_blank" style="color: blue; text-decoration: underline;">
+            Terms & Conditions
+        </a>
+    </label>
+</div>
+
 @auth
     <input type="submit" value="Reserve" class="buttom">
 @else

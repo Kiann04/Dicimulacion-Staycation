@@ -4,7 +4,7 @@
     @include('Aside')
 @endsection
 
-<body class="admin-dashboard">
+
 <div class="content-wrapper">
     <div class="main-content">
         <div class="reply-card">
@@ -17,4 +17,3 @@
         </div>
     </div>
 </div>
-</body>

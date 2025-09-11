@@ -37,21 +37,30 @@
               <th>Customer ID</th>
               <th>Full Name</th>
               <th>Email</th>
+              <th>Booking History</th>
             </tr>
           </thead>
-          <tbody>
-            @forelse($customers as $customer)
-              <tr>
-                <td>#{{ $customer->id }}</td>
-                <td>{{ $customer->name }}</td>
-                <td>{{ $customer->email }}</td>
-              </tr>
-            @empty
-              <tr>
-                <td colspan="3">No customers found</td>
-              </tr>
-            @endforelse
-          </tbody>
+            <tbody>
+                  @forelse($customers as $customer)
+                    <tr>
+                      <td>#{{ $customer->id }}</td>
+                      <td>{{ $customer->name }}</td>
+                      <td>{{ $customer->email }}</td>
+                      <td>
+                        <a href="{{ route('admin.customers.bookings', $customer->id) }}" 
+                          class="btn-view"
+                          style="padding:6px 12px; background:#007BFF; color:white; text-decoration:none; border-radius:5px;">
+                          View Bookings
+                        </a>
+                      </td>
+                    </tr>
+                  @empty
+                    <tr>
+                      <td colspan="4">No customers found</td>
+                    </tr>
+                  @endforelse
+            </tbody>
+
         </table>
       </section>
     </div>

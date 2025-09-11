@@ -169,3 +169,11 @@ Route::get('/booking-history', [BookingHistoryController::class, 'index'])
 Route::delete('/booking/{id}/cancel', [BookingHistoryController::class, 'cancel'])
     ->name('booking.cancel')
     ->middleware('auth');
+
+Route::view('/terms', 'home.Terms&Condition')->name('terms');
+
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/customers/{id}/bookings', [AdminController::class, 'viewBookings'])
+        ->name('admin.customers.bookings');
+});

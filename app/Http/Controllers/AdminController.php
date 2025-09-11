@@ -276,5 +276,14 @@ class AdminController extends Controller
 
         return back()->with('success', 'Booking declined, email sent, and record deleted.');
     }
-    
+
+    public function viewBookings($id)
+    {
+        $customer = User::findOrFail($id);
+        $bookings = Booking::where('user_id', $id)->get();
+
+        return view('admin.customer_bookings', compact('customer', 'bookings'));
+    }
 }
+
+
