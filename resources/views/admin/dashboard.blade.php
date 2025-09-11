@@ -69,54 +69,57 @@
       </section>
 
       <!-- Recent Bookings Table -->
-      <section class="table-section">
+      <section class="table-container">
         <h2>Recent Bookings</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Booking ID</th>
-              <th>Stacation ID</th>
-              <th>Customer</th>
-              <th>Phone</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            @forelse($bookings as $booking)
+        <div>
+          <table>
+            <thead>
               <tr>
-                <td>{{ $booking->id }}</td>
-                <td>{{ $booking->staycation_id }}</td>
-                <td>{{ $booking->name }}</td>
-                <td>{{ $booking->phone }}</td>
-                <td>{{ $booking->start_date }}</td>
-                <td>{{ $booking->end_date }}</td>
-                <td>
-                  <span class="status {{ strtolower($booking->status) }}">
-                    {{ ucfirst($booking->status) }}
-                  </span>
-                </td>
-                <td>
-    <form action="{{ route('admin.bookings.approve', $booking->id) }}" method="POST">
-        @csrf
-        <button type="submit" class="btn-approve">Approve</button>
-    </form>
+                <th>Booking ID</th>
+                <th>Staycation ID</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($bookings as $booking)
+                <tr>
+                  <td>{{ $booking->id }}</td>
+                  <td>{{ $booking->staycation_id }}</td>
+                  <td>{{ $booking->name }}</td>
+                  <td>{{ $booking->phone }}</td>
+                  <td>{{ $booking->start_date }}</td>
+                  <td>{{ $booking->end_date }}</td>
+                  <td>
+                    <span class="status {{ strtolower($booking->status) }}">
+                      {{ ucfirst($booking->status) }}
+                    </span>
+                  </td>
+                  <td>
+                    <form action="{{ route('admin.bookings.approve', $booking->id) }}" method="POST">
+                      @csrf
+                      <button type="submit" class="btn-approve">Approve</button>
+                    </form>
 
-    <form action="{{ route('admin.bookings.decline', $booking->id) }}" method="POST">
-        @csrf
-        <button type="submit" class="btn-decline">Decline</button>
-    </form>
-</td>
-              </tr>
-            @empty
-              <tr>
-                <td colspan="6">No bookings found</td>
-              </tr>
-            @endforelse
-          </tbody>
-        </table>
+                    <form action="{{ route('admin.bookings.decline', $booking->id) }}" method="POST">
+                      @csrf
+                      <button type="submit" class="btn-decline">Decline</button>
+                    </form>
+                  </td>
+                </tr>
+              @empty
+                <tr>
+                  <td colspan="8">No bookings found</td>
+                </tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+
       </section>
     </div>
   </div>

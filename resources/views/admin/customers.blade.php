@@ -21,7 +21,7 @@
         <p class="subtext">Manage all customer accounts and details</p>
       </header>
 
-      <section class="table-section">
+      <section class="table-container">
         <h2>All Customers</h2>
 
         {{-- Search form --}}

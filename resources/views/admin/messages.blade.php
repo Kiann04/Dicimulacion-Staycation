@@ -21,7 +21,7 @@
         <p class="subtext">Manage customer messages and inquiries</p>
       </header>
 
-      <section class="message-list">
+      <section class="table-container">
         <h2>All Messages</h2>
         <table>
           <thead>
@@ -33,7 +33,7 @@
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody >
             @forelse($inquiries as $inquiry)
               <tr>
                 <td>#{{ $inquiry->id }}</td>

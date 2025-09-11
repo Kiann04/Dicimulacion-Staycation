@@ -22,97 +22,6 @@ body {
   align-items: center;
   justify-content: center;
 }
-
-/* Main Container */
-.login-container {
-  display: flex;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  width: 90%;
-  max-width: 900px;
-  min-height: 400px;
-}
-
-/* Left Side (Form Box) */
-.login-box {
-  padding: 40px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.login-box h2 {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.login-box p {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 30px;
-}
-
-.login-box label {
-  margin-bottom: 5px;
-  color: #555;
-  font-size: 14px;
-  display: block;
-}
-
-.login-box input[type="email"],
-.login-box input[type="password"] {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.button {
-  width: 100%;
-  background: var(--main-color);
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.button:hover {
-  background: #0500a0;
-}
-
-.forgot {
-  display: block;
-  margin-top: 15px;
-  text-align: center;
-  color: #0f00dc;
-  text-decoration: none;
-  font-size: 13px;
-}
-
-/* Right Side (Image Section) */
-.login-image {
-  flex: 1;
-  background: #f8f8f8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.login-image img {
-  max-width: 100%;
-  height: auto;
-}
 /* Sidebar Styles */
 .sidebar {
   width: 250px;
@@ -125,7 +34,8 @@ body {
   height: 100%;
   flex-direction: column;
   justify-content: space-between;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
 }
 
 .sidebar .logo {
@@ -151,11 +61,6 @@ body {
   transition: background 0.3s ease;
 }
 
-.sidebar .menu a:hover {
-  background-color: #34495e;
-  border-radius: 4px;
-}
-
 .sidebar .menu a i {
   margin-right: 12px;
 }
@@ -164,50 +69,9 @@ body {
 .sidebar .menu a:hover {
   background-color: #2980b9;
   cursor: pointer;
+  border-radius: 4px;
 }
 
-/* Content Area */
-/* Removed duplicate definition */
-
-/* Notification Styles */
-.notification-container {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: var(--second-color);
-  color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  width: 250px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-  z-index: 10;
-}
-
-.notification-header {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.notification-list ul {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-.notification-list li {
-  font-size: 14px;
-  padding: 5px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.notification-list li:last-child {
-  border-bottom: none;
-}
-
-.notification-list li:hover {
-  background-color: #34495e;
-  cursor: pointer;
-}
 /* Main Content Section */
 .main-content {
   margin-left: 250px; /* Offset for sidebar */
@@ -215,8 +79,8 @@ body {
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   flex-grow: 1;
+  transition: margin-left 0.3s ease;
 }
-
 /* Card Section */
 .cards {
   display: flex;
@@ -247,40 +111,6 @@ body {
 .card p {
   font-size: 1.25rem;
   font-weight: bold;
-}
-
-/* Table Section */
-.table-section {
-  margin-top: 20px;
-}
-
-.table-section h2 {
-  font-size: 1.75rem;
-  margin-bottom: 20px;
-  color: var(--text-color);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-th, td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-  font-size: 1rem;
-}
-
-th {
-  background-color: var(--second-color);
-  color: white;
-  font-weight: bold;
-}
-
-tr:hover {
-  background-color: #f4f4f4;
 }
 /* ============================ */
 /* Admin Dashboard Enhancements */
@@ -385,44 +215,6 @@ body.admin-dashboard .main-content {
   color: #aaa;
   font-size: 18px;
 }
-
-/* ======================= */
-/* Customer Accounts Page */
-/* ======================= */
-
-.table-section h2 {
-  font-size: 22px;
-  margin-bottom: 15px;
-  color: var(--text-color);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-th, td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-  font-size: 1rem;
-}
-
-th {
-  background-color: var(--second-color);
-  color: white;
-  font-weight: bold;
-}
-
-td .status {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
-  color: black;
-}
-
 .status.completed {
     background-color: #d4edda;
     color: #155724 !important;
@@ -465,7 +257,11 @@ tr:hover {
   margin-bottom: 15px;
   color: var(--text-color);
 }
-
+/* table */
+.table-container {
+  width: 100%;
+  overflow-x: auto;   /* enables scroll only when needed */
+}
 table {
   width: 100%;
   border-collapse: collapse;
@@ -477,6 +273,7 @@ th, td {
   text-align: left;
   border-bottom: 1px solid #ddd;
   font-size: 1rem;
+  white-space: nowrap; /* prevents text from breaking weirdly */
 }
 
 th {
@@ -485,13 +282,19 @@ th {
   font-weight: bold;
 }
 
+tr:hover {
+  background-color: #f4f4f4;
+}
+
 td .status {
+  display: inline-block;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 14px;
   font-weight: 500;
   color: #fff;
 }
+
 
 .status.unread {
   background-color: #e74c3c;
@@ -581,30 +384,6 @@ tr:hover {
   margin-top: 40px;
   color: var(--text-color);
 }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-th, td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-  font-size: 1rem;
-}
-
-th {
-  background-color: var(--second-color);
-  color: white;
-  font-weight: bold;
-}
-
-tr:hover {
-  background-color: #f4f4f4;
-}
-
 .action-btn {
   padding: 6px 12px;
   text-decoration: none;
@@ -686,30 +465,6 @@ tr:hover {
   background-color: #0500a0;
 }
 
-/* Customer Bookings Table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-th, td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-  font-size: 1rem;
-}
-
-th {
-  background-color: var(--second-color);
-  color: white;
-  font-weight: bold;
-}
-
-tr:hover {
-  background-color: #f4f4f4;
-}
-
 /* Statuses */
 .status {
   padding: 5px 10px;
@@ -730,26 +485,6 @@ tr:hover {
 .status.cancelled {
   background-color: #dc3545;
   color: white;
-}
-
-/* Responsive Design for Mobile */
-@media (max-width: 1024px) {
-  .house-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 houses per row on medium screens */
-  }
-
-  .view-bookings-btn {
-    padding: 8px 16px;
-    font-size: 12px;
-  }
-
-  table {
-    font-size: 14px;
-  }
-
-  th, td {
-    padding: 10px;
-  }
 }
 /* =========================== */
 /* System Settings Page        */
@@ -913,12 +648,6 @@ button:disabled {
 .form-group select {
   width: 100%;
 }
-/* =========================== */
-.login-box h1 {
-  font-size: 50px;
-  color: #333;
-  margin-bottom: 75px;
-}
 /* Status styles */
 .status {
     padding: 5px 10px;
@@ -959,3 +688,139 @@ button:disabled {
 .status.approved{
   background-color: green;
 }
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  display: none; /* hidden by default */
+}
+/* Responsive Adjustments for Cards */
+@media (max-width: 768px) {
+  .cards {
+    flex-direction: column;
+  }
+
+  .card {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .content-wrapper {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%; /* make it full screen */
+    background-color: var(--second-color); /* ensure background fills */
+    transform: translateX(-100%); /* hidden by default */
+    transition: transform 0.3s ease;
+    z-index: 1000;
+  }
+
+  .sidebar.active {
+    transform: translateX(0); /* show fullscreen */
+  }
+
+  .main-content {
+    margin-left: 0; /* content always full width on mobile */
+  }
+  .house-grid {
+    grid-template-columns: 1fr; /* 1 house per row on smaller screens */
+  }
+
+  .view-bookings-btn {
+    width: 100%;
+  }
+  .setting-card {
+    width: 100%; /* 1 card per row on smaller screens */
+  }
+
+  .settings-btn {
+    width: 100%;
+  }
+  .close-btn {
+    display: block; /* show only on mobile */
+  }
+  .sidebar {
+    transform: translateX(-100%); /* hide sidebar by default */
+  }
+
+  .sidebar.active {
+    transform: translateX(0); /* show sidebar when active */
+  }
+
+  .main-content {
+    margin-left: 0; /* take full width */
+  }
+
+  /* Optional toggle button */
+  .sidebar-toggle {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background-color: var(--second-color);
+    color: #fff;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 1100;
+  }
+}
+/* Medium screens (Tablet & small laptops) */
+@media (max-width: 1024px) {
+
+  /* House grid → 2 per row */
+  .house-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Booking buttons */
+  .view-bookings-btn,
+  .settings-btn {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  /* Table adjustments */
+  table {
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 10px;
+  }
+
+  /* Cards */
+  .setting-card {
+    width: 48%; /* 2 per row */
+  }
+
+  .status-card {
+    width: 100%; /* full width */
+  }
+
+  /* General buttons */
+  .button {
+    font-size: 15px;
+    padding: 10px;
+  }
+
+  /* Notifications */
+  .notification-container {
+    top: 10px;
+    right: 10px;
+    width: 220px;
+  }
+}
+

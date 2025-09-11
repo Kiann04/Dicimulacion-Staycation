@@ -9,7 +9,7 @@
     <section class="home container" id="home">
         <div class="home-text">
             <h1>Find Your Next<br>Perfect Place To<br>Relax</h1>
-            <a href="{{ url('signup') }}" class="btn">Sign Up</a>
+            <a href="{{ url('register') }}" class="btn">Sign Up</a>
         </div>
     </section>
 
