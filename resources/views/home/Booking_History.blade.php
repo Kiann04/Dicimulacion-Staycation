@@ -18,7 +18,7 @@
                 <th>Guests</th>
                 <th>Arrival Date</th>
                 <th>Leaving Date</th>
-                <th>Action</th>
+                <th>Review</th>
             </tr>
         </thead>
 
@@ -36,17 +36,31 @@
                     <td data-label="Guests">{{ $booking->guest_number }}</td>
                     <td data-label="Arrival Date">{{ $booking->start_date }}</td>
                     <td data-label="Leaving Date">{{ $booking->end_date }}</td>
-                    <td data-label="Action">
-                        @if(strtolower($booking->status) === 'pending')
-                            <form action="{{ route('booking.cancel', $booking->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="action-btn cancel">✖ Cancel</button>
-                            </form>
+                    <td data-label="Review">
+                        @if(strtolower($booking->status) === 'completed')
+                            @if(!$booking->review)
+                                <!-- Review form -->
+                                <form action="{{ route('reviews.store', $booking->id) }}" method="POST">
+                                    @csrf
+                                    <select name="rating" required>
+                                        <option value="">Rating</option>
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            <option value="{{ $i }}">{{ $i }}⭐</option>
+                                        @endfor
+                                    </select>
+                                    <input type="text" name="comment" placeholder="Write a review" required>
+                                    <button type="submit" class="btn-submit" style="padding:3px 8px;font-size:0.8rem;">Submit</button>
+                                </form>
+                            @else
+                                <!-- Display existing review -->
+                                <p><strong>{{ $booking->review->rating }}⭐</strong></p>
+                                <p>{{ $booking->review->comment }}</p>
+                            @endif
                         @else
-                            <span style="color: gray;">No action available</span>
+                            <span style="color: gray;">No review allowed yet</span>
                         @endif
                     </td>
+
                 </tr>
             @empty
                 <tr>

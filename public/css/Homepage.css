@@ -1424,3 +1424,99 @@ transition: 0.4s all linear;
   .terms-content p {
     font-size: 0.9rem;
   }
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* change from center to top alignment */
+    padding: 50px 20px;
+}
+
+.profile-card {
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.profile-header {
+    background-color: #0d6efd; /* Primary blue */
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2rem;
+}
+
+.profile-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="file"] {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #0b5ed7;
+}
+
+.alert {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.alert-success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+ul {
+    padding-left: 20px;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .profile-container {
+        padding: 20px 10px;
+    }
+}
+.mt-header {
+    margin-top: 100px; /* adjust this value according to your header height */
+}
+.mt-footer {
+    margin-top: 100px; /* adjust this value according to your footer height */
+}

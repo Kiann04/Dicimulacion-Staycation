@@ -43,4 +43,9 @@ class Booking extends Model
             $booking->total_price = $days * $booking->price_per_day;
         });
     }
+    public function review()
+    {
+        return $this->hasOne(Review::class);
+    }
+
 }

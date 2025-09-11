@@ -181,3 +181,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/customers/{id}/bookings', [AdminController::class, 'viewBookings'])
         ->name('admin.customers.bookings');
 });
+use App\Http\Controllers\ProfileController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
+use App\Http\Controllers\ReviewController;
+
+Route::post('/bookings/{booking}/review', [ReviewController::class, 'store'])
+    ->middleware('auth')
+    ->name('reviews.store');
