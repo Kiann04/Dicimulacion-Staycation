@@ -12,6 +12,10 @@ class ChatBotController extends Controller
         $apiKey = env('GEMINI_API_KEY');
         $message = $request->input('message');
 
+        if (!$apiKey) {
+            return response()->json(['reply' => 'Missing Gemini API key'], 500);
+        }
+
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
         ])->post("https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={$apiKey}", [
@@ -19,6 +23,10 @@ class ChatBotController extends Controller
                 ['parts' => [['text' => $message]]]
             ]
         ]);
+
+        if ($response->failed()) {
+            return response()->json(['reply' => 'Error calling Gemini API'], 500);
+        }
 
         $data = $response->json();
 

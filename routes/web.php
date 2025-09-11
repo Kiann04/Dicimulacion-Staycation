@@ -125,6 +125,10 @@ Route::get('/offline-chat', function() {
     return view('offline-chat');
 });
 
+use App\Http\Controllers\ChatBotController;
+
+Route::post('/chatbot', [ChatBotController::class, 'ask'])->name('chatbot.ask');
+
 
 Route::view('/chatbot', 'chatbot');
 
