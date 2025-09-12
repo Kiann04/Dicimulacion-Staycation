@@ -82,7 +82,7 @@
 </section>
 
     <!--Testimonials-->
-    <section class="testimonials">
+    <!--<section class="testimonials">
     <div class="container">
         <div class="section-header">
             <h2 class="title">What Our Clients Say</h2>
@@ -118,7 +118,87 @@
             </div>
         </div>
     </div>
-</section>
+</section> -->
+        <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+            <h2 class="title">What Our Clients Say</h2>
+            </div>
+
+            <div class="testimonials-content">
+            <div class="swiper testimonials-slider js-testimonials-slider">
+                <div class="swiper-wrapper">
+
+                <!-- Slide 1 -->
+                <div class="swiper-slide testimonials-item">
+                    <div class="info">
+                    <img src="../Assets/Matt.png" alt="">
+                    <div class="text-box">
+                        <h3 class="name">Darwin</h3>
+                    </div>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+                    <div class="rating">
+                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="swiper-slide testimonials-item">
+                    <div class="info">
+                    <img src="../Assets/test.jpg" alt="">
+                    <div class="text-box">
+                        <h3 class="name">Sophia</h3>
+                    </div>
+                    </div>
+                    <p>Excellent service and support. Highly recommend!</p>
+                    <div class="rating">
+                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="swiper-slide testimonials-item">
+                    <div class="info">
+                    <img src="../Assets/Matt.png" alt="">
+                    <div class="text-box">
+                        <h3 class="name">Liam</h3>
+                    </div>
+                    </div>
+                    <p>They delivered more than I expected. Fantastic job!</p>
+                    <div class="rating">
+                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                    <i class='bx bxs-star-half'></i>
+                    </div>
+                </div>
+
+                <!-- Slide 4 -->
+                <div class="swiper-slide testimonials-item">
+                    <div class="info">
+                    <img src="../Assets/test.jpg" alt="">
+                    <div class="text-box">
+                        <h3 class="name">Ava</h3>
+                    </div>
+                    </div>
+                    <p>Truly professional and creative. Will work again!</p>
+                    <div class="rating">
+                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+            </div>
+        </div>
+        </section>
+
 
 
 
