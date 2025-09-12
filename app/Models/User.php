@@ -65,9 +65,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function updateProfilePhoto($photo)
+    {
+        // Store in public disk
+        $path = $photo->store('profile_photos', 'public');
+
+        // Save path in database
+        $this->update(['photo' => $path]);
+    }
+
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
+    public function getProfilePhotoUrlAttribute()
+{
+    return $this->photo && file_exists(storage_path('app/public/'.$this->photo)) 
+        ? asset('storage/'.$this->photo) 
+        : asset('Assets/default.png');
+}
 
 }

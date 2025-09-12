@@ -192,3 +192,4 @@ use App\Http\Controllers\ReviewController;
 Route::post('/bookings/{booking}/review', [ReviewController::class, 'store'])
     ->middleware('auth')
     ->name('reviews.store');
+Route::post('/reviews/{booking}', [HomeController::class, 'storeReview'])->name('reviews.store')->middleware('auth');

@@ -9,17 +9,18 @@ use Carbon\Carbon;
 use App\Mail\BookingCreated;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Review;
 
 class HomeController extends Controller
 {
     public function index()
     {
         $staycations = Staycation::where('house_availability', 'available')->get();
-        return view('home.Homepage', compact('staycations'));
+        $reviews = Review::with('user')->latest()->get(); // get all reviews with user info
+        return view('home.Homepage', compact('staycations', 'reviews'));
     }
-
     // Show the booking form
-    public function Booking($id)
+    public function Booking($id)    
     {
         $staycation = Staycation::findOrFail($id);
         return view('home.Booking', compact('staycation'));
@@ -114,11 +115,31 @@ class HomeController extends Controller
         'totalPrice'    => $totalPrice
     ]);
 }
-public function bookingHistory()
+    public function bookingHistory()
     {
         // If you have bookings from database, you can pass them here
         // $bookings = auth()->user()->bookings; // Example
         return view('home.booking_history'); // Match your blade file
     }
+    public function storeReview(Request $request, $booking_id)
+{
+    $request->validate([
+        'rating' => 'required|integer|min:1|max:5',
+        'comment' => 'required|string|max:1000',
+    ]);
 
+    $booking = Booking::findOrFail($booking_id);
+
+    // Save review
+    Review::create([
+        'user_id' => auth()->id(),
+        'booking_id' => $booking->id,
+        'rating' => $request->rating,
+        'comment' => $request->comment,
+    ]);
+
+    return back()->with('success', 'Thank you! Your review has been submitted.');
+}
+
+    
 }

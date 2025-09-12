@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -24,13 +25,19 @@ class ProfileController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $user->updateProfilePhoto($request->file('photo'));
+            // Delete old photo if exists
+            if ($user->photo && Storage::exists('public/'.$user->photo)) {
+                Storage::delete('public/'.$user->photo);
+            }
+
+            // Store new photo with unique name
+            $path = $request->file('photo')->store('profile_photos', 'public');
+            $user->photo = $path;
         }
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-        ]);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->save();
 
         return redirect()->back()->with('success', 'Profile updated successfully!');
     }
