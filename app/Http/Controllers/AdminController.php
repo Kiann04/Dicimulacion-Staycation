@@ -14,6 +14,8 @@ use App\Mail\InquiryReply;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BookingApproved;
 use App\Mail\BookingDeclined;
+use App\Models\AuditLog;
+use Illuminate\Support\Facades\Auth;
 
 
 class AdminController extends Controller
@@ -175,9 +177,20 @@ class AdminController extends Controller
     return response()->download($path);
     }
 
-    public function settings() {
-        return view('admin.settings');
+    public function settings() 
+    {
+        // Fetch latest 50 logs
+        $auditLogs = AuditLog::latest()->paginate(50);
+
+        return view('admin.settings', compact('auditLogs'));
     }
+    public function auditLogs()
+{
+    // Fetch the latest 50 logs
+    $auditLogs = AuditLog::latest()->paginate(50);
+
+    return view('admin.audit_logs', compact('auditLogs'));
+}
 
     public function addProduct() {
         return view('admin.addproduct');
@@ -249,34 +262,50 @@ class AdminController extends Controller
     
     public function approveBooking($id)
     {
-    $booking = Booking::with('user', 'staycation')->findOrFail($id);
+        $booking = Booking::with('user', 'staycation')->findOrFail($id);
 
-    // Change status
-    $booking->status = 'approved';
-    $booking->save();
+        // Change booking status
+        $booking->status = 'approved';
+        $booking->save();
 
-    // Send email to user
-    if ($booking->user && $booking->user->email) {
-        Mail::to($booking->user->email)->send(new BookingApproved($booking));
+        // Log the action
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'Booking Approved',
+            'description' => 'Booking ID: ' . $booking->id . ' approved.',
+            'ip_address' => request()->ip(),
+        ]);
+
+        // Send email to user
+        if ($booking->user && $booking->user->email) {
+            Mail::to($booking->user->email)->send(new BookingApproved($booking));
+        }
+
+        return back()->with('success', 'Booking approved, audit log created, and email sent.');
     }
 
-    return back()->with('success', 'Booking approved and email sent.');
-    }
     public function declineBooking($id)
     {
         $booking = Booking::with('user', 'staycation')->findOrFail($id);
 
-        // Send email to user before deleting
+        // Log the action before deleting
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'Booking Declined',
+            'description' => 'Booking ID: ' . $booking->id . ' declined.',
+            'ip_address' => request()->ip(),
+        ]);
+
+        // Send email to user
         if ($booking->user && $booking->user->email) {
             Mail::to($booking->user->email)->send(new BookingDeclined($booking));
         }
 
-        // Delete the booking
+        // Delete booking
         $booking->delete();
 
-        return back()->with('success', 'Booking declined, email sent, and record deleted.');
+        return back()->with('success', 'Booking declined, audit log created, email sent, and record deleted.');
     }
-
     public function viewBookings($id)
     {
         $customer = User::findOrFail($id);
@@ -284,6 +313,7 @@ class AdminController extends Controller
 
         return view('admin.customer_bookings', compact('customer', 'bookings'));
     }
+    
 }
 
 

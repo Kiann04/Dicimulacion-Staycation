@@ -8,6 +8,7 @@ use App\Http\Controllers\StaycationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\ReviewController;
 
 
 /*
@@ -200,9 +201,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.show');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
-use App\Http\Controllers\ReviewController;
-
 Route::post('/bookings/{booking}/review', [ReviewController::class, 'store'])
     ->middleware('auth')
     ->name('reviews.store');
 Route::post('/reviews/{booking}', [HomeController::class, 'storeReview'])->name('reviews.store')->middleware('auth');
+
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    // other admin routes
+    Route::get('/audit-logs', [AdminController::class, 'auditLogs'])->name('audit.logs');
+});
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::get('/reviews', [ReviewController::class, 'adminIndex'])->name('reviews');
+});

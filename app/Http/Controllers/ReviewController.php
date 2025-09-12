@@ -33,9 +33,11 @@ class ReviewController extends Controller
         return back()->with('success', 'Review submitted successfully!');
     }
 
-    public function index()
+    public function adminIndex()
     {
-        $reviews = Review::with('user')->latest()->get();
-        return view('home.testimonials', compact('reviews'));
+    // Get all reviews with user info, latest first
+    $reviews = Review::with('user')->latest()->paginate(20);
+
+    return view('admin.reviews', compact('reviews'));
     }
 }

@@ -19,35 +19,21 @@
         <h1>System Settings</h1>
         <p class="subtext">Manage system configurations, settings, and preferences.</p>
       </header>
-
       <section class="settings-sections">
         <div class="setting-card">
           <h3>General Settings</h3>
           <p>Configure site-wide settings like business name, contact information, and more.</p>
-          <a href="general_settings.php" class="settings-btn">Configure</a>
-        </div>
-
-        <div class="setting-card">
-          <h3>Payment Settings</h3>
-          <p>Manage payment gateways, transaction settings, and account details.</p>
-          <a href="payment_settings.php" class="settings-btn">Configure</a>
-        </div>
-
-        <div class="setting-card">
-          <h3>Email Notifications</h3>
-          <p>Set up email notifications for customer bookings, cancellations, etc.</p>
-          <a href="email_notifications.php" class="settings-btn">Configure</a>
-        </div>
-
-        <div class="setting-card">
-          <h3>System Logs</h3>
-          <p>View system logs for activities and errors.</p>
-          <a href="system_logs.php" class="settings-btn">View Logs</a>
+          <a href="{{ route('home') }}" class="settings-btn">Configure</a>
         </div>
         <div class="setting-card">
-          <h3>Admin Accounts</h3>
-          <p>View all the admin accounts.</p>
-          <a href="AdminAccount.php" class="settings-btn">View Accounts</a>
+            <h3>Customer Reviews</h3>
+            <p>View all reviews submitted by users.</p>
+            <a href="{{ route('admin.reviews') }}" class="settings-btn">View Reviews</a>
+        </div>
+        <div class="setting-card">
+            <h3>System Logs</h3>
+            <p>View system logs for activities and errors.</p>
+            <a href="{{ route('admin.audit.logs') }}" class="settings-btn">View Logs</a>
         </div>
     </div>
   </div>

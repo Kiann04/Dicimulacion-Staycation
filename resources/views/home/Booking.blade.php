@@ -26,7 +26,8 @@
             @if(Auth::id()) value="{{ Auth::user()->name }}"
             @endif>
             <span>Enter contact information:</span>
-            <input type="number" name="phone" id="" placeholder="Phone Number" required>
+                <input type="tel" name="phone" placeholder="9123456789" required
+                    pattern="[0-9]{10}" title="Enter a valid 10-digit Philippine phone number">
             <span>How many guests:</span>
             <input type="number" name="guest_number" id="" placeholder="Guest/s"  required>
             <span>Date of arrival:</span>
