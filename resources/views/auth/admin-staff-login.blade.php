@@ -8,10 +8,10 @@
 
     <div class="login container">
         <div class="login-container">
-            <h2>Log In to Continue</h2> 
+            <h2>Admin Login</h2> 
             <p>Log in with your data that you entered<br>during your registration</p>
 
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ route('admin.staff.login') }}">
                 @csrf
 
                 <span>Enter your email address</span>

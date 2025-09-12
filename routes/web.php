@@ -7,6 +7,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StaycationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\StaffController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -28,16 +30,15 @@ Route::post('add_booking/{id}', [HomeController::class, 'add_booking'])->name('b
 
 // Add booking (POST)
 Route::post('add_booking/{id}', [HomeController::class, 'add_booking'])->name('booking.add');
-
-// Authentication views (optional if using Laravel Jetstream)
-Route::get('/login', function () {return view('auth.login');})->name('login');
-
 // Register routes
 Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register'])->name('register.perform');
-
-// Handle login request
-Route::post('/login', [LoginController::class, 'login'])->name('login.perform');
+// USER LOGIN
+Route::get('/login', [LoginController::class, 'showUserLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'userLogin'])->name('user.login');
+// ADMIN + STAFF LOGIN
+Route::get('/admin/login', [LoginController::class, 'showAdminStaffLoginForm'])->name('admin.staff.login');
+Route::post('/admin/login', [LoginController::class, 'adminStaffLogin'])->name('admin.staff.login.perform');
 
 // Logout (for both admin and users)
 Route::post('/logout', function () {
@@ -72,6 +73,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('/staycations/store', [StaycationController::class, 'store'])->name('staycations.store');
     
 });
+Route::prefix('staff')->name('staff.')->middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [StaffController::class, 'dashboard'])->name('dashboard');
+    Route::get('/customers', [StaffController::class, 'customers'])->name('customers');
+    Route::get('/analytics', [StaffController::class, 'analytics'])->name('analytics');
+    Route::get('/messages', [StaffController::class, 'messages'])->name('messages');
+    Route::get('/bookings', [StaycationController::class, 'index'])->name('bookings');
+    Route::get('/reports', [StaffController::class, 'reports'])->name('reports');
+    Route::get('/settings', [StaffController::class, 'settings'])->name('settings');
+    Route::get('/addproduct', [StaffController::class, 'addProduct'])->name('addproduct');
+    Route::post('/staycations/store', [StaycationController::class, 'store'])->name('staycations.store');
+});
+
 
 // all bookings
 Route::get('/admin/view_bookings', [AdminController::class, 'view_bookings'])
