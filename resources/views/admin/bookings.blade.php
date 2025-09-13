@@ -21,9 +21,28 @@
             <div class="house-info">
               <h3>{{ $staycation->house_name }}</h3>
               <p class="house-availability">{{ ucfirst($staycation->house_availability) }}</p>
-              <a href="{{ route('admin.view_staycation_bookings', $staycation->id) }}">
-    View Bookings for {{ $staycation->name }}
-</a>
+              <a href="{{ route('admin.view_staycation_bookings', $staycation->id) }}" class="btn-view">
+                  View Bookings for {{ $staycation->name }}
+              </a>
+
+              <style>
+
+                .btn-view {
+                  display: inline-block;
+                  padding: 10px 18px;
+                  background: #007bff;      /* blue */
+                  color: #fff;              /* white text */
+                  text-decoration: none;    /* remove underline */
+                  border-radius: 10px;
+                  font-weight: bold;
+                  transition: background 0.3s, transform 0.2s;
+                }
+
+                .btn-view:hover {
+                  background: #0056b3;      /* darker blue on hover */
+                  transform: translateY(-2px); /* small lift effect */
+                }
+              </style>
             </div>
           </div>
         @empty
