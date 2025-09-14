@@ -407,49 +407,79 @@ transition: 0.4s all linear;
     text-transform: uppercase;
 }
 
-/*Chatbot*/
+/* Floating Chatbot Button */
 .FloatingChatbot {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #0084ff;
-    color: white;
-    border: none;
-    padding: 14px;
-    border-radius: 50%;
-    font-size: 22px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    transition: transform 0.2s ease;
-    z-index: 10000;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(145deg, #007bff, #0056b3);
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3),
+              inset 0 4px 8px rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  animation: pulse 3s infinite;
 }
-  
-  .FloatingChatbot:hover {
-    transform: scale(1.1);
-}
-
-/* Chatbot Container */
 .chatbot-container {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    width: 350px;
-    height: 500px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    animation: slideUp 0.3s ease;
-    z-index: 9999;
-}
-.chatbot-container.show {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+  position: fixed;
+  bottom: 110px; /* above button */
+  right: 20px;
+  width: 320px;
+  height: 420px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1001;
+  animation: slideUp 0.3s ease;
 }
 
+/* Hover lift effect */
+.FloatingChatbot:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.4),
+              inset 0 4px 10px rgba(255,255,255,0.3);
+}
+
+/* Face inside button */
+.chatbot-face {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+/* Eyes */
+.eye {
+  width: 25px;
+  height: 25px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Pupils */
+.pupil {
+  width: 10px;
+  height: 10px;
+  background: black;
+  border-radius: 50%;
+  position: absolute;
+  transition: transform 0.05s linear;
+}
 .hidden {
     display: none;
 }
@@ -532,6 +562,22 @@ transition: 0.4s all linear;
 }
 .chatbot-input button:hover {
     background: #006bbf;
+}
+@media (max-width: 600px) {
+  .FloatingChatbot {
+    width: 60px;
+    height: 60px;
+    bottom: 15px;
+    right: 15px;
+  }
+  .eye {
+    width: 20px;
+    height: 20px;
+  }
+  .pupil {
+    width: 8px;
+    height: 8px;
+  }
 }
 /*Footer*/
 .footer{

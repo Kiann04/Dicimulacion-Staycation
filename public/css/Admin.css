@@ -138,23 +138,6 @@ body.admin-dashboard .main-content {
   padding: 30px;
   box-shadow: var(--box-shadow);
 }
-/* Status badges */
-.status {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #fff;
-}
-
-.status.completed {
-  background-color: #2ecc71;
-}
-
-.status.pending {
-  background-color: #afaca7;
-}
-
 /* ====================== */
 /* Analytics Page Styles  */
 /* ====================== */
@@ -215,20 +198,6 @@ body.admin-dashboard .main-content {
   color: #aaa;
   font-size: 18px;
 }
-.status.completed {
-    background-color: #d4edda;
-    color: #155724 !important;
-}
-
-.status.waiting {
-  background-color: #fff3cd;
-  color: #856404;
-}
-
-.status.cancelled {
-    background-color: #f8d7da;
-    color: #721c24 !important;
-}
 .action-btn {
   padding: 6px 12px;
   text-decoration: none;
@@ -286,13 +255,17 @@ tr:hover {
   background-color: #f4f4f4;
 }
 
+/* Base style for status badges in table cells */
+/* Base style for status badges in table cells */
 td .status {
   display: inline-block;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 14px;
   font-weight: 500;
-  color: #fff;
+  text-align: center;
+  color: #000000;
+  background-color: #28a745;
 }
 
 
@@ -464,28 +437,6 @@ tr:hover {
 .view-bookings-btn:hover {
   background-color: #0500a0;
 }
-
-/* Statuses */
-.status {
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-weight: bold;
-}
-
-.status.confirmed {
-  background-color: #28a745;
-  color: white;
-}
-
-.status.pending {
-  background-color: #ffc107;
-  color: white;
-}
-
-.status.cancelled {
-  background-color: #dc3545;
-  color: white;
-}
 /* =========================== */
 /* System Settings Page        */
 /* =========================== */
@@ -648,46 +599,37 @@ button:disabled {
 .form-group select {
   width: 100%;
 }
-/* Status styles */
-.status {
-    padding: 5px 10px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    display: inline-block;
-}
-
-/* Completed (Green) */
-.status.completed {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-/* Pending (Yellow) */
-.status.pending {
-    background-color: #c2a544;
-    color: #ffffff;
-}
-
-/* Cancelled (Red) */
-.status.cancelled {
-    background-color: #f8d7da;
-    color: #721c24;
-}
+/* Base status badge */
 .status {
     padding: 5px 10px;
     border-radius: 5px;
     font-weight: bold;
+    font-size: 0.85rem;
     display: inline-block;
-    background-color: #e2e3e5;
-    color: #383d41;
+    text-align: center;
+    color: white; /* default text color */
+}
+
+/* Specific status colors */
+.status.completed {
+    background-color: #28a745; /* green */
+    color: rgb(0, 0, 0);
+}
+
+.status.approved {
+    background-color: #20c997; /* teal */
+    color: #fff;
 }
 .status.declined {
-  background-color: #dc3545; /* red */
+    background-color: #dc3545; /* red */
+    color: white;
 }
-.status.approved{
-  background-color: green;
+
+.status.pending {
+    background-color: #ffc107; /* yellow */
+    color: #212529; /* dark text for contrast */
 }
+
 .close-btn {
   position: absolute;
   top: 15px;

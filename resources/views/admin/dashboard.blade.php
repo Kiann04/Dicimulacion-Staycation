@@ -68,60 +68,88 @@
         </div>
       </section>
 
-      <!-- Recent Bookings Table -->
-      <section class="table-container">
-        <h2>Recent Bookings</h2>
-        <div>
-          <table>
-            <thead>
+          <!-- Recent Bookings Table -->
+    <section class="table-container">
+      <h2>Recent Bookings</h2>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Booking ID</th>
+              <th>Staycation ID</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Actions</th>
+              <th>Payment Status</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @forelse($bookings as $booking)
               <tr>
-                <th>Booking ID</th>
-                <th>Staycation ID</th>
-                <th>Customer</th>
-                <th>Phone</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <td>{{ $booking->id }}</td>
+                <td>{{ $booking->staycation_id }}</td>
+                <td>{{ $booking->name }}</td>
+                <td>{{ $booking->phone }}</td>
+                <td>{{ $booking->start_date }}</td>
+                <td>{{ $booking->end_date }}</td>
+
+                {{-- Actions: Approve / Decline --}}
+<td>
+    {{-- Approve Button --}}
+    <form action="{{ route('admin.bookings.approve', $booking->id) }}" method="POST" style="display:inline-block;">
+        @csrf
+        <button type="submit" class="btn-approve">
+            <i class="fa-solid fa-check"></i> Approve
+        </button>
+    </form>
+
+    {{-- Decline Button --}}
+    <form action="{{ route('admin.bookings.decline', $booking->id) }}" method="POST" style="display:inline-block; margin-left:5px;">
+        @csrf
+        <button type="submit" class="btn-decline">
+            <i class="fa-solid fa-xmark"></i> Decline
+        </button>
+    </form>
+</td>
+
+{{-- Payment Status Dropdown --}}
+<td>
+    <form action="{{ route('admin.bookings.updatePayment', $booking->id) }}" method="POST">
+        @csrf
+        <select name="payment_status" onchange="this.form.submit()">
+            <option value="pending" {{ $booking->payment_status == 'pending' ? 'selected' : '' }}>Pending</option>
+            <option value="paid" {{ $booking->payment_status == 'paid' ? 'selected' : '' }}>Paid</option>
+            <option value="failed" {{ $booking->payment_status == 'failed' ? 'selected' : '' }}>Failed</option>
+        </select>
+    </form>
+</td>
+
+{{-- Booking Status Badge --}}
+<td>
+    @if($booking->status === 'completed')
+        <span class="status completed">Completed</span>
+    @elseif($booking->status === 'approved')
+        <span class="status approved">Approved</span>
+    @elseif($booking->status === 'declined')
+        <span class="status declined">Declined</span>
+    @else
+        <span class="status pending">Pending</span>
+    @endif
+</td>
               </tr>
-            </thead>
-            <tbody>
-              @forelse($bookings as $booking)
-                <tr>
-                  <td>{{ $booking->id }}</td>
-                  <td>{{ $booking->staycation_id }}</td>
-                  <td>{{ $booking->name }}</td>
-                  <td>{{ $booking->phone }}</td>
-                  <td>{{ $booking->start_date }}</td>
-                  <td>{{ $booking->end_date }}</td>
-                  <td>
-                    <span class="status {{ strtolower($booking->status) }}">
-                      {{ ucfirst($booking->status) }}
-                    </span>
-                  </td>
-                  <td>
-                    <form action="{{ route('admin.bookings.approve', $booking->id) }}" method="POST">
-                      @csrf
-                      <button type="submit" class="btn-approve">Approve</button>
-                    </form>
-
-                    <form action="{{ route('admin.bookings.decline', $booking->id) }}" method="POST">
-                      @csrf
-                      <button type="submit" class="btn-decline">Decline</button>
-                    </form>
-                  </td>
-                </tr>
-              @empty
-                <tr>
-                  <td colspan="8">No bookings found</td>
-                </tr>
-              @endforelse
-            </tbody>
-          </table>
-        </div>
-
-      </section>
-    </div>
+            @empty
+              <tr>
+                <td colspan="9">No bookings found</td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
+    </section>
   </div>
+</div>
 </body>
 </html>

@@ -259,53 +259,7 @@ class AdminController extends Controller
 
         return redirect()->route('admin.view_messages', $id)->with('success', 'Reply sent successfully!');
     }
-    
-    public function approveBooking($id)
-    {
-        $booking = Booking::with('user', 'staycation')->findOrFail($id);
 
-        // Change booking status
-        $booking->status = 'approved';
-        $booking->save();
-
-        // Log the action
-        AuditLog::create([
-            'user_id' => Auth::id(),
-            'action' => 'Booking Approved',
-            'description' => 'Booking ID: ' . $booking->id . ' approved.',
-            'ip_address' => request()->ip(),
-        ]);
-
-        // Send email to user
-        if ($booking->user && $booking->user->email) {
-            Mail::to($booking->user->email)->send(new BookingApproved($booking));
-        }
-
-        return back()->with('success', 'Booking approved, audit log created, and email sent.');
-    }
-
-    public function declineBooking($id)
-    {
-        $booking = Booking::with('user', 'staycation')->findOrFail($id);
-
-        // Log the action before deleting
-        AuditLog::create([
-            'user_id' => Auth::id(),
-            'action' => 'Booking Declined',
-            'description' => 'Booking ID: ' . $booking->id . ' declined.',
-            'ip_address' => request()->ip(),
-        ]);
-
-        // Send email to user
-        if ($booking->user && $booking->user->email) {
-            Mail::to($booking->user->email)->send(new BookingDeclined($booking));
-        }
-
-        // Delete booking
-        $booking->delete();
-
-        return back()->with('success', 'Booking declined, audit log created, email sent, and record deleted.');
-    }
     public function viewBookings($id)
     {
         $customer = User::findOrFail($id);

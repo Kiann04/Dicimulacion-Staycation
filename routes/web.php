@@ -9,6 +9,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\AdminBookingController;
 
 
 /*
@@ -167,14 +168,14 @@ Route::get('/test-gemini', function () {
 Route::post('/preview_booking/{staycation_id}', [HomeController::class, 'previewBooking'])
     ->middleware('auth');
 
-Route::post('/admin/bookings/{id}/approve', [AdminController::class, 'approveBooking'])->name('admin.bookings.approve');
-Route::post('/admin/bookings/{id}/decline', [AdminController::class, 'declineBooking'])->name('admin.bookings.decline');
+Route::post('/admin/bookings/{id}/approve', [AdminBookingController::class, 'approveBooking'])
+    ->name('admin.bookings.approve');
 
-use App\Http\Controllers\AdminBookingController;
+Route::post('/admin/bookings/{id}/decline', [AdminBookingController::class, 'declineBooking'])
+    ->name('admin.bookings.decline');
 
-Route::post('/admin/bookings/{id}/approve', [AdminBookingController::class, 'approve'])->name('admin.bookings.approve');
-
-Route::post('/admin/bookings/{id}/approve', [AdminController::class, 'approveBooking'])->name('admin.bookings.approve');
+Route::post('/admin/bookings/{id}/update-payment', [AdminBookingController::class, 'updatePayment'])
+    ->name('admin.bookings.updatePayment');
 
 Route::get('/booking-history', [HomeController::class, 'bookingHistory'])->name('BookingHistory.show');
 
