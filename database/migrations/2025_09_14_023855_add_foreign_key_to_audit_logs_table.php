@@ -16,6 +16,14 @@ return new class extends Migration
                 $table->foreignId('user_id')->constrained()->onDelete('cascade');
             }
         });
+        DB::statement("
+            UPDATE bookings b
+            JOIN staycations s ON b.staycation_id = s.id
+            SET 
+                b.price_per_day = s.house_price,
+                b.total_price = s.house_price * DATEDIFF(b.check_out, b.check_in)
+        ");
+        
     }
 
     public function down(): void
