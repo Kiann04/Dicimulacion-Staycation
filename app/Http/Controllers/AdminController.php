@@ -202,6 +202,22 @@ class AdminController extends Controller
     }
 
     // bookings by staycation
+    public function getEvents($staycationId)
+    {
+        $bookings = Booking::where('staycation_id', $staycationId)->get();
+
+        $events = $bookings->map(function ($booking) {
+            return [
+                'title' => 'Booked',
+                'start' => $booking->start_date,
+                'end' => Carbon::parse($booking->end_date)->addDay()->toDateString(), // ✅ include last day
+                'color' => '#999', // grey background
+                'display' => 'background', // block day
+            ];
+        });
+
+        return response()->json($events);
+    }
     public function view_staycation_bookings($staycation_id)
     {
         $bookings = Booking::where('staycation_id', $staycation_id)

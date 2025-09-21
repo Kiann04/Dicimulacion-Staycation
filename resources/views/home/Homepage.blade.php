@@ -267,9 +267,7 @@
             pagination: { el: '.swiper-pagination', clickable: true },
             navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
         }); 
-    </script>
-        <script>
-document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
     const chatbotBtn = document.getElementById("ChatbotBtn");
     const chatbotContainer = document.getElementById("ChatbotContainer");
     const closeBtn = document.getElementById("CloseChatBot");

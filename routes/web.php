@@ -104,7 +104,8 @@ Route::get('/events/{staycation_id}', function ($staycation_id) {
         ->select(
             DB::raw("'Booked' as title"),
             DB::raw("start_date as start"),
-            DB::raw("end_date as end"),
+            // Add 1 day to end_date
+            DB::raw("DATE_ADD(end_date, INTERVAL 1 DAY) as end"),
             DB::raw("'background' as display"),
             DB::raw("'booked-date' as className")
         )
