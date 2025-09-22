@@ -13,13 +13,28 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            
-            $table->string('staycation_id')->nullable;
-            $table->string('name')->nullable;
-            $table->string('phone')->nullable;
-            $table->string('guest_number')->nullable;
-            $table->string('start_date')->nullable;
-            $table->string('end_date')->nullable;
+
+            // Foreign keys
+            $table->foreignId('staycation_id')->constrained('staycations')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+
+            // Guest details
+            $table->string('name');
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+
+            // Booking details
+            $table->string('status')->default('waiting');
+            $table->string('guest_number')->nullable();
+            $table->date('start_date');
+            $table->date('end_date');
+
+            // Pricing
+            $table->decimal('total_price', 10, 2)->default(0);
+
+            // Payment
+            $table->string('payment_status')->default('Pending');
+
             $table->timestamps();
         });
     }

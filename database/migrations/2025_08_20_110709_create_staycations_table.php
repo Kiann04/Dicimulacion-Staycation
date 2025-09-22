@@ -10,15 +10,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('staycations', function (Blueprint $table) {
-    $table->id();
-    $table->string('house_name');
-    $table->text('house_description');
-    $table->decimal('house_price', 10, 2);
-    $table->string('house_image')->nullable();
-    $table->string('house_location');
-    $table->enum('house_availability', ['available', 'unavailable'])->default('available');
-    $table->timestamps();
-});
+            $table->id();
+            $table->string('house_name');
+            $table->text('house_description');
+            $table->decimal('house_price', 10, 2);
+            $table->string('house_image')->nullable();
+            $table->string('house_location');
+            $table->enum('house_availability', ['available', 'unavailable'])->default('available');
+            $table->timestamps();
+    });
     }
 
     /**

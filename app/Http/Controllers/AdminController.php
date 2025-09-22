@@ -156,12 +156,11 @@ class AdminController extends Controller
 
     // Calculate monthly revenue
     $monthlyRevenue = $bookings->groupBy(function($b) {
-        return Carbon::parse($b->created_at)->format('F'); // Group by month name
+    return \Carbon\Carbon::parse($b->created_at)->format('F');
     })->map(function($monthBookings) {
-        return $monthBookings->sum(fn($b) => $b->staycation->house_price ?? 0);
+        return $monthBookings->sum('total_price');
     });
-
-    $totalRevenue = $bookings->sum(fn($b) => $b->staycation->house_price ?? 0);
+    $totalRevenue = $bookings->sum('total_price');
 
     $pdf = Pdf::loadView('admin.reports_pdf', compact('bookings', 'monthlyRevenue', 'totalRevenue', 'type', 'year'));
 

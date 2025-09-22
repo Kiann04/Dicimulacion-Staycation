@@ -3,6 +3,23 @@
 <head>
     <meta charset="utf-8">
     <title>Payment Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            margin: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
     <h2>Payment Receipt</h2>

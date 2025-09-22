@@ -67,7 +67,7 @@ class AdminBookingController extends Controller
     // ✅ Update payment status
     public function updatePayment(Request $request, $id)
     {
-        $booking = Booking::with('user')->findOrFail($id);
+        $booking = Booking::with('user', 'staycation')->findOrFail($id);
         $paymentStatus = strtolower($request->input('payment_status'));
 
         $booking->payment_status = $paymentStatus;
@@ -75,7 +75,6 @@ class AdminBookingController extends Controller
         if ($paymentStatus === 'paid') {
             $booking->status = 'completed';
 
-            // Send receipt
             $recipient = $booking->user->email ?? $booking->email;
             if (!empty($recipient)) {
                 Mail::to($recipient)->send(new PaymentReceiptMail($booking));
@@ -84,22 +83,19 @@ class AdminBookingController extends Controller
             AuditLog::create([
                 'user_id'    => Auth::id(),
                 'action'     => 'Payment Received',
-                'description'=> 'Booking ID: ' . $booking->id . ' marked as Paid.',
+                'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as Paid.",
                 'ip_address' => request()->ip(),
             ]);
-
         } elseif ($paymentStatus === 'failed') {
             $booking->status = 'declined';
 
             AuditLog::create([
                 'user_id'    => Auth::id(),
                 'action'     => 'Payment Failed',
-                'description'=> 'Booking ID: ' . $booking->id . ' payment failed.',
+                'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) payment failed.",
                 'ip_address' => request()->ip(),
             ]);
-
         } else {
-            // Keep status approved if still pending
             if ($booking->status !== 'approved') {
                 $booking->status = 'approved';
             }

@@ -51,7 +51,7 @@
                 <td>{{ $i + 1 }}</td>
                 <td>{{ $booking->id }}</td>
                 <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
-                <td>PHP {{ number_format($booking->staycation->house_price ?? 0, 2) }}</td>
+                <td>PHP {{ number_format($booking->total_price ?? 0, 2) }}</td>
                 <td>{{ $booking->created_at->format('Y-m-d') }}</td>
             </tr>
             @endforeach

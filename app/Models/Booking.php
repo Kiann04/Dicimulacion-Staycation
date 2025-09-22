@@ -12,14 +12,13 @@ class Booking extends Model
 
     protected $fillable = [
         'staycation_id',
-        'user_id', // <-- add this so it can be mass-assigned
+        'user_id',
         'name',
         'phone',
         'status',
         'guest_number',
         'start_date',
         'end_date',
-        'price_per_day',
         'total_price'
     ];
 
@@ -30,22 +29,24 @@ class Booking extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class); // Link to user table
+        return $this->belongsTo(User::class);
     }
 
-    public static function boot()
+    protected static function boot()
     {
         parent::boot();
 
         static::saving(function ($booking) {
-            $days = Carbon::parse($booking->start_date)
-                        ->diffInDays(Carbon::parse($booking->end_date)) + 1; // include last day
-            $booking->total_price = $days * $booking->price_per_day;
+            if ($booking->staycation) {
+                $days = Carbon::parse($booking->start_date)
+                            ->diffInDays(Carbon::parse($booking->end_date)) + 1; // include last day
+                $booking->total_price = $days * $booking->staycation->house_price;
+            }
         });
     }
+
     public function review()
     {
         return $this->hasOne(Review::class);
     }
-
 }
