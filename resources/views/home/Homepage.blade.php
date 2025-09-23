@@ -56,27 +56,27 @@
                     <p>Our houses are warm, quiet, and thoughtfully minimal. With clean design and all the essentials, they offer the perfect setting for restful, easygoing stays.</p>
         </div>
         <div class="properties-container container">
-                @foreach($staycations as $staycation)
+            @foreach($staycations as $staycation)
                 @if($staycation->house_availability === 'available')
-            <div class="box">
-                    <a href="{{ url('Booking', $staycation->id) }}">
-                        @csrf
-                        <img src="{{ asset('storage/' . $staycation->house_image) }}" 
-                            alt="{{ $staycation->house_name }}" class="house-image" />
-                                <h3>{{ number_format($staycation->house_price, 2) }}php</h3>
-                                <div class="content">
-                                <div class="text">
-                                <h3>{{ $staycation->house_name }}</h3>
-                                <p>{{ $staycation->house_location }}</p>
+                    <div class="box">
+                        <a href="{{ url('booking', $staycation->id) }}">
+                            @csrf
+                            <img src="{{ asset('storage/' . $staycation->house_image) }}" 
+                                alt="{{ $staycation->house_name }}" class="house-image" />
+                                    <h3>{{ number_format($staycation->house_price, 2) }}php</h3>
+                                    <div class="content">
+                                    <div class="text">
+                                    <h3>{{ $staycation->house_name }}</h3>
+                                    <p>{{ $staycation->house_location }}</p>
+                                </div>
+                                    <div class="icon">
+                                </div>
                             </div>
-                                <div class="icon">
-                            </div>
-                        </div>
-                    </a>        
-                </div>
-            @endif
-        @endforeach
-    </div>
+                        </a>        
+                    </div>
+                @endif
+            @endforeach
+        </div>
 </section>
 
     <!--Testimonials-->

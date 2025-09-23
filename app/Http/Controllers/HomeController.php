@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    // Homepage with available staycations and reviews
+    // Homepage with available staycations and latest reviews
     public function index()
     {
         $staycations = Staycation::where('house_availability', 'available')->get();
@@ -38,21 +38,26 @@ class HomeController extends Controller
             'phone' => 'required|string|max:20',
             'guest_number' => 'required|integer|min:1',
             'startDate' => 'required|date',
-            'endDate' => 'required|date|after_or_equal:startDate'
+            'endDate' => 'required|date|after_or_equal:startDate',
+            'terms' => 'required'
         ]);
 
         $startDate = $request->startDate;
         $endDate = $request->endDate;
 
-        // Check if already booked
+        // Check if dates are already booked
         $isBooked = Booking::where('staycation_id', $id)
             ->where('start_date', '<=', $endDate)
             ->where('end_date', '>=', $startDate)
             ->exists();
 
         if ($isBooked) {
-            return redirect()->back()->with('message', "Staycation house is already booked. Please try different dates.");
+            return redirect()->back()->with('message', "Staycation house is already booked for these dates.");
         }
+
+        $staycation = Staycation::findOrFail($id);
+        $days = Carbon::parse($startDate)->diffInDays(Carbon::parse($endDate)) + 1;
+        $totalPrice = $days * $staycation->house_price;
 
         // Save booking
         $booking = Booking::create([
@@ -63,6 +68,7 @@ class HomeController extends Controller
             'guest_number' => $request->guest_number,
             'start_date' => $startDate,
             'end_date' => $endDate,
+            'total_price' => $totalPrice,
             'status' => 'pending'
         ]);
 
@@ -70,7 +76,8 @@ class HomeController extends Controller
         if (Auth::check()) {
             Mail::to(Auth::user()->email)->send(new BookingCreated($booking));
         }
-        return redirect()->back()->with('success', 'Booking successfully added! Wait for admin approval. A confirmation email has been sent.');
+
+        return redirect()->back()->with('success', 'Booking successfully added! Wait for admin approval.');
     }
 
     // Preview booking before submission
@@ -79,9 +86,9 @@ class HomeController extends Controller
         $staycation = Staycation::findOrFail($staycation_id);
 
         $days = Carbon::parse($request->startDate)->diffInDays(Carbon::parse($request->endDate)) + 1;
-        $totalPrice = $days * $staycation->price_per_day;
+        $totalPrice = $days * $staycation->house_price;
 
-        return view('booking_preview', [
+        return view('home.booking_preview', [
             'staycation' => $staycation,
             'name' => $request->name,
             'phone' => $request->phone,
@@ -92,7 +99,7 @@ class HomeController extends Controller
         ]);
     }
 
-    // Show booking history
+    // Show booking history for logged-in user
     public function bookingHistory()
     {
         $bookings = Booking::where('user_id', Auth::id())->latest()->get();
@@ -110,7 +117,7 @@ class HomeController extends Controller
         $booking = Booking::findOrFail($booking_id);
 
         Review::create([
-            'user_id' => Auth::id(), // ← replaces auth()->id()
+            'user_id' => Auth::id(),
             'booking_id' => $booking->id,
             'rating' => $request->rating,
             'comment' => $request->comment,

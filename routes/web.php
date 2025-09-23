@@ -57,8 +57,9 @@ Route::post('/admin/login', [LoginController::class, 'adminStaffLogin'])->name('
 // =========================
 // Booking
 // =========================
-Route::get('Booking/{id}', [HomeController::class, 'Booking'])->name('booking.form');
-Route::post('add_booking/{id}', [HomeController::class, 'add_booking'])->name('booking.add');
+// Booking routes
+Route::get('/booking/{id}', [HomeController::class, 'bookingForm'])->name('booking.form');
+Route::post('/add_booking/{id}', [HomeController::class, 'addBooking'])->name('booking.add')->middleware('auth');
 
 Route::post('/preview_booking/{staycation_id}', [HomeController::class, 'previewBooking'])->middleware('auth');
 Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('BookingHistory.index')->middleware('auth');
