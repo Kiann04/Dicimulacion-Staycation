@@ -3,8 +3,6 @@
 @section('Header')
     @include('Header')
 @endsection
-
-
     <!--Home-->
     <section class="home container" id="home">
         <div class="home-text">
@@ -205,10 +203,9 @@
     <!--Contact Us-->
     <section class="newsletter container" id="contact">
     <h2>Have a Question? <br> Contact Us</h2>
-    <form action="{{ route('contact.send') }}" method="POST">
+    <form action="{{ route('contact.send') }}" method="POST" enctype="multipart/form-data">
         @csrf
-    
-        
+
         <!-- Email Input -->
         <input 
             type="email" 
@@ -224,10 +221,31 @@
             required
         ></textarea>
 
+        <!-- Picture Upload -->
+        <input 
+            type="file" 
+            name="attachment" 
+            accept="image/*"
+        >
+
         <!-- Submit Button -->
         <input type="submit" value="Send" class="btn">
     </form>
 </section>
+<!-- SweetAlert -->
+    @if(session('success'))
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Message Sent!',
+                text: "{{ session('success') }}",
+                confirmButtonColor: '#1e40af', // blue
+                background: '#ffffff',
+                color: '#1e3a8a' // darker blue text
+            });
+        </script>
+    @endif>
 <div class="chatbot-wrapper">
     <!-- Floating Icon with Face -->
     <button id="ChatbotBtn" class="FloatingChatbot">

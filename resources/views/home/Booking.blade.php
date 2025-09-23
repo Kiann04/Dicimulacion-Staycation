@@ -29,35 +29,35 @@
                 <input type="tel" name="phone" placeholder="9123456789" required
                     pattern="[0-9]{10}" title="Enter a valid 10-digit Philippine phone number">
             <span>How many guests:</span>
-            <input type="number" name="guest_number" id="" placeholder="Guest/s"  required>
+                <input type="number" name="guest_number" id="" placeholder="Guest/s"  required>
             <span>Date of arrival:</span>
-            <input type="date" name="startDate" id="startDate" placeholder="Arrival" required>
+                <input type="date" name="startDate" id="startDate" placeholder="Arrival" required>
             <span>Date of departure:</span>
-            <input type="date" name="endDate" id="endDate" placeholder="Departure" required>
+                <input type="date" name="endDate" id="endDate" placeholder="Departure" required>
             <div id="price-summary" style="display:none; margin-top: 15px; font-weight: bold; border-top: 1px solid #ccc; padding-top: 10px;">
-    <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
-    <p id="total-price" style="font-size: 18px; color: green;"></p>
-</div>
-<div style="margin-top: 15px; margin-bottom: 15px;">
-    <label>
-        <input type="checkbox" name="terms" required>
-        I agree to the 
-        <a href="{{ url('/terms') }}" target="_blank" style="color: blue; text-decoration: underline;">
-            Terms & Conditions
+                <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
+                <p id="total-price" style="font-size: 18px; color: green;"></p>
+    </div>
+    <div style="margin-top: 15px; margin-bottom: 15px;">
+        <label>
+            <input type="checkbox" name="terms" required>
+            I agree to the 
+            <a href="{{ url('/terms') }}" target="_blank" style="color: blue; text-decoration: underline;">
+                Terms & Conditions
+            </a>
+        </label>
+    </div>
+
+    @auth
+        <input type="submit" value="Reserve" class="buttom">
+    @else
+        <a href="{{ route('login') }}" class="buttom" 
+        style="display: inline-block; text-align: center; text-decoration: none;">
+        Please log in to reserve
         </a>
-    </label>
-</div>
+    @endauth
 
-@auth
-    <input type="submit" value="Reserve" class="buttom">
-@else
-    <a href="{{ route('login') }}" class="buttom" 
-       style="display: inline-block; text-align: center; text-decoration: none;">
-       Please log in to reserve
-    </a>
-@endauth
-
-</form>
+    </form>
 </div>
 
     <!-- Slider Section -->

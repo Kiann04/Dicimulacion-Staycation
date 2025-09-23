@@ -1,14 +1,15 @@
 @extends('layouts.default')
 
 @section('Aside')
-@include('Aside')
+    @include('staff.StaffSidebar')
 @endsection
-<body class="admin-dashboard">
+
+<body class="staff-dashboard">
 <div class="content-wrapper">
   <div class="main-content">
     <header>
-      <h1>Dicimulacion Staycation</h1>
-      <p class="subtext">View all customer bookings and staycation house details</p>
+      <h1>Dicimulacion Staycation - Staff</h1>
+      <p class="subtext">View customer bookings and staycation house details</p>
     </header>
 
     <section class="staycation-houses">
@@ -21,9 +22,10 @@
             <div class="house-info">
               <h3>{{ $staycation->house_name }}</h3>
               <p class="house-availability">{{ ucfirst($staycation->house_availability) }}</p>
-              <a href="{{ route('admin.view_staycation_bookings', $staycation->id) }}">
-    View Bookings for {{ $staycation->name }}
-</a>
+              {{-- Staff can view bookings, but not toggle availability --}}
+              <a href="{{ route('staff.view_staycation_bookings', $staycation->id) }}" class="btn-view">
+                  View Bookings
+              </a>
             </div>
           </div>
         @empty

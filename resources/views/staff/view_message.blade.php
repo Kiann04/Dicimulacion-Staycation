@@ -7,7 +7,8 @@
 @section('title', 'View Message')
 @section('body-class', 'staff-dashboard')
 
-<div class="content-wrapp">
+<body class="admin-dashboard">
+<div class="content-wrapper">
     <div class="main-content">
         <h1 class="page-title">View Message</h1>
         

@@ -28,7 +28,7 @@
 
     <p>We have received your payment for your booking:</p>
 
-    <ul>
+    <ul>    
         <li><strong>Booking ID:</strong> {{ $booking->id }}</li>
         <li><strong>Staycation:</strong> {{ $booking->staycation->name ?? '' }}</li>
         <li><strong>Amount Paid:</strong> ₱{{ number_format($booking->total_price, 2) }}</li>

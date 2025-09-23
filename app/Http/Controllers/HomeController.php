@@ -5,141 +5,145 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Staycation;
 use App\Models\Booking;
+use App\Models\Review;
 use Carbon\Carbon;
 use App\Mail\BookingCreated;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Review;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
+    // Homepage with available staycations and reviews
     public function index()
     {
         $staycations = Staycation::where('house_availability', 'available')->get();
-        $reviews = Review::with('user')->latest()->get(); // get all reviews with user info
+        $reviews = Review::with('user')->latest()->get();
+
         return view('home.Homepage', compact('staycations', 'reviews'));
     }
-    // Show the booking form
-    public function Booking($id)    
+
+    // Show booking form
+    public function bookingForm($id)
     {
         $staycation = Staycation::findOrFail($id);
         return view('home.Booking', compact('staycation'));
     }
 
-    // Handle the booking submission
-   public function add_booking(Request $request, $id)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'phone' => 'required|string|max:20',
-        'guest_number' => 'required|integer|min:1',
-        'startDate' => 'required|date',
-        'endDate' => 'required|date|after_or_equal:startDate'
-    ]);
-
-    $startDate = $request->startDate;
-    $endDate = $request->endDate;
-
-    // Check if already booked
-    $isBooked = Booking::where('staycation_id', $id)
-        ->where('start_date', '<=', $endDate)
-        ->where('end_date', '>=', $startDate)
-        ->exists();
-
-    if ($isBooked) {
-        return redirect()->back()->with('message', "Staycation house is already booked.\nPlease try different dates.");
-    }
-
-    // Save booking
-    $booking = new Booking;
-    $booking->staycation_id = $id;
-    $booking->user_id = auth()->id(); // store user who booked
-    $booking->name = $request->name;
-    $booking->phone = $request->phone;
-    $booking->guest_number = $request->guest_number;
-    $booking->start_date = $startDate;
-    $booking->end_date = $endDate;
-    $booking->status = 'pending';
-    $booking->save();
-
-    // Send confirmation email
-    if (auth()->check()) {
-        Mail::to(auth()->user()->email)->send(new BookingCreated($booking));
-    }
-
-    return redirect()->back()->with(
-        'success',
-        'Booking successfully added! Wait for the admin approval. A confirmation email has been sent.'
-    );
-}
-    public function createBooking($id)
+    // Handle booking submission
+    public function addBooking(Request $request, $id)
     {
-        $staycation = Staycation::findOrFail($id);
-        return view('booking_form', compact('staycation'));
-    }
-    public function send(Request $request)
-    {
-        // Validate form
         $request->validate([
-            'email' => 'required|email',
-            'message' => 'required|string'
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'guest_number' => 'required|integer|min:1',
+            'startDate' => 'required|date',
+            'endDate' => 'required|date|after_or_equal:startDate'
         ]);
 
-        // Store to database
-        \DB::table('inquiries')->insert([
+        $startDate = $request->startDate;
+        $endDate = $request->endDate;
+
+        // Check if already booked
+        $isBooked = Booking::where('staycation_id', $id)
+            ->where('start_date', '<=', $endDate)
+            ->where('end_date', '>=', $startDate)
+            ->exists();
+
+        if ($isBooked) {
+            return redirect()->back()->with('message', "Staycation house is already booked. Please try different dates.");
+        }
+
+        // Save booking
+        $booking = Booking::create([
+            'staycation_id' => $id,
+            'user_id' => Auth::id(),
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'guest_number' => $request->guest_number,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'status' => 'pending'
+        ]);
+
+        // Send confirmation email
+        if (Auth::check()) {
+            Mail::to(Auth::user()->email)->send(new BookingCreated($booking));
+        }
+        return redirect()->back()->with('success', 'Booking successfully added! Wait for admin approval. A confirmation email has been sent.');
+    }
+
+    // Preview booking before submission
+    public function previewBooking(Request $request, $staycation_id)
+    {
+        $staycation = Staycation::findOrFail($staycation_id);
+
+        $days = Carbon::parse($request->startDate)->diffInDays(Carbon::parse($request->endDate)) + 1;
+        $totalPrice = $days * $staycation->price_per_day;
+
+        return view('booking_preview', [
+            'staycation' => $staycation,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'guest_number' => $request->guest_number,
+            'startDate' => $request->startDate,
+            'endDate' => $request->endDate,
+            'totalPrice' => $totalPrice
+        ]);
+    }
+
+    // Show booking history
+    public function bookingHistory()
+    {
+        $bookings = Booking::where('user_id', Auth::id())->latest()->get();
+        return view('home.booking_history', compact('bookings'));
+    }
+
+    // Store review for a booking
+    public function storeReview(Request $request, $booking_id)
+    {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string|max:1000',
+        ]);
+
+        $booking = Booking::findOrFail($booking_id);
+
+        Review::create([
+            'user_id' => Auth::id(), // ← replaces auth()->id()
+            'booking_id' => $booking->id,
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+        ]);
+
+        return back()->with('success', 'Thank you! Your review has been submitted.');
+    }
+
+    // Handle contact form submission with optional attachment
+    public function sendInquiry(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'message' => 'required|string',
+            'attachment' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:5120'
+        ]);
+
+        $data = [
             'email' => $request->email,
             'message' => $request->message,
             'created_at' => now(),
-            'updated_at' => now()
-        ]);
+            'updated_at' => now(),
+        ];
+
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads'), $filename);
+            $data['attachment'] = $filename;
+        }
+
+        DB::table('inquiries')->insert($data);
 
         return back()->with('success', 'Your message has been sent!');
     }
-    public function previewBooking(Request $request, $staycation_id)
-{
-    $staycation = Staycation::findOrFail($staycation_id);
-
-    // Calculate total days (including last day)
-    $days = Carbon::parse($request->startDate)->diffInDays(Carbon::parse($request->endDate)) + 1;
-
-    // Multiply by house price
-    $totalPrice = $days * $staycation->price_per_day;
-
-    return view('booking_preview', [
-        'staycation'    => $staycation,
-        'name'          => $request->name,
-        'phone'         => $request->phone,
-        'guest_number'  => $request->guest_number,
-        'startDate'     => $request->startDate,
-        'endDate'       => $request->endDate,
-        'totalPrice'    => $totalPrice
-    ]);
-}
-    public function bookingHistory()
-    {
-        // If you have bookings from database, you can pass them here
-        // $bookings = auth()->user()->bookings; // Example
-        return view('home.booking_history'); // Match your blade file
-    }
-    public function storeReview(Request $request, $booking_id)
-{
-    $request->validate([
-        'rating' => 'required|integer|min:1|max:5',
-        'comment' => 'required|string|max:1000',
-    ]);
-
-    $booking = Booking::findOrFail($booking_id);
-
-    // Save review
-    Review::create([
-        'user_id' => auth()->id(),
-        'booking_id' => $booking->id,
-        'rating' => $request->rating,
-        'comment' => $request->comment,
-    ]);
-
-    return back()->with('success', 'Thank you! Your review has been submitted.');
-}
-
-    
 }

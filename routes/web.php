@@ -143,6 +143,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::get('/addproduct', [AdminController::class, 'addProduct'])->name('addproduct');
     Route::post('/staycations/store', [StaycationController::class, 'store'])->name('staycations.store');
+    Route::post('/staycations/{id}/toggle-availability', [AdminController::class, 'toggleAvailability'])
+         ->name('toggle_availability');
 
     // Bookings
     Route::get('/bookings', [StaycationController::class, 'index'])->name('bookings');
@@ -174,15 +176,23 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
 // =========================
 // Staff Routes
-// =========================
 Route::prefix('staff')->name('staff.')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [StaffController::class, 'dashboard'])->name('dashboard');
+
+    // Customers
     Route::get('/customers', [StaffController::class, 'customers'])->name('customers');
-    Route::get('/analytics', [StaffController::class, 'analytics'])->name('analytics');
+    Route::get('/customers/{id}/bookings', [StaffController::class, 'viewCustomerBookings'])->name('customers.bookings');
+
+    // Bookings
+    Route::get('/bookings', [StaffController::class, 'bookings'])->name('bookings');
+
+    // Messages
     Route::get('/messages', [StaffController::class, 'messages'])->name('messages');
-    Route::get('/reports', [StaffController::class, 'reports'])->name('reports');
+    Route::get('/messages/{id}', [StaffController::class, 'viewMessage'])->name('view_message');
+    Route::get('/messages/{id}/reply', [StaffController::class, 'replyMessageForm'])->name('reply_message');
+    Route::post('/messages/{id}/reply', [StaffController::class, 'sendReplyMessage'])->name('send_reply');
+    Route::delete('/messages/{id}', [StaffController::class, 'deleteMessage'])->name('delete_message');
+
+    // Settings
     Route::get('/settings', [StaffController::class, 'settings'])->name('settings');
-    Route::get('/addproduct', [StaffController::class, 'addProduct'])->name('addproduct');
-    Route::post('/staycations/store', [StaycationController::class, 'store'])->name('staycations.store');
-    Route::get('/bookings', [StaycationController::class, 'index'])->name('bookings');
 });

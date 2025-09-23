@@ -268,11 +268,15 @@ class AdminController extends Controller
         ]);
 
         $inquiry = Inquiry::findOrFail($id);
-
-        // Send email
         Mail::to($inquiry->email)->send(new InquiryReply($request->message, $inquiry));
 
-        return redirect()->route('admin.view_messages', $id)->with('success', 'Reply sent successfully!');
+        // Mark as read
+        if($inquiry->status === 'unread'){
+            $inquiry->status = 'read';
+            $inquiry->save();
+        }
+
+        return redirect()->back()->with('success', 'Your reply has been sent successfully!');
     }
 
     public function viewBookings($id)
@@ -282,7 +286,16 @@ class AdminController extends Controller
 
         return view('admin.customer_bookings', compact('customer', 'bookings'));
     }
-    
+    public function toggleAvailability($id)
+    {
+    $staycation = Staycation::findOrFail($id);
+
+    // Toggle availability
+    $staycation->house_availability = $staycation->house_availability === 'available' ? 'unavailable' : 'available';
+    $staycation->save();
+
+    return redirect()->back()->with('success', 'Staycation availability updated!');
+    }
 }
 
 

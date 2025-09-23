@@ -1472,6 +1472,11 @@ transition: 0.4s all linear;
   font-weight: 500;
   text-transform: capitalize;
 }
+.status.completed {
+    background: #d4f8e8; /* soft green background */
+    color: #0f5132;      /* dark green text */
+    padding: 3px 6px;
+}
 
 .status.approved {
   background: #d4edda;

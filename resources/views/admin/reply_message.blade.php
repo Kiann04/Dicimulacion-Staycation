@@ -79,12 +79,27 @@
     <div class="main-content">
       <div class="reply-card">
         <h2>Reply to {{ $inquiry->email }}</h2>
-        <form action="{{ route('admin.send_reply', $inquiry->id) }}" method="POST">
-          @csrf
-          <textarea name="message" rows="6" placeholder="Type your message..." required></textarea>
-          <button type="submit" class="btn-send">Send Reply</button>
+        <form action="{{ route(Route::currentRouteName(), $inquiry->id) }}" method="POST">
+                @csrf
+                <textarea name="message" rows="6" placeholder="Type your message..." required></textarea>
+                <button type="submit" class="btn-send">Send Reply</button>
+            </form>
         </form>
       </div>
     </div>
   </div>
 </body>
+<!-- SweetAlert -->
+@if(session('success'))
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Message Sent!',
+            text: "{{ session('success') }}",
+            confirmButtonColor: '#1e40af', // blue button
+            background: '#ffffff',
+            color: '#1e3a8a' // dark blue text
+        });
+    </script>
+@endif

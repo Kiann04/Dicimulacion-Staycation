@@ -1,7 +1,7 @@
 @extends('layouts.default')
 
 @section('Aside')
-    @include('Aside')
+   @include('staff.StaffSidebar')
 @endsection
 
 <body class="admin-dashboard">

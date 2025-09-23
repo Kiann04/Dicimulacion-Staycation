@@ -48,7 +48,17 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li><a href="{{ route('profile.show') }}">Profile</a></li>
-                    <li><a href="{{ route('BookingHistory.index') }}">Booking History</a></li>
+                    {{-- Show Dashboard link based on usertype --}}
+                    @if(Auth::user()->usertype === 'admin')
+                        <li><a href="{{ url('/admin/dashboard') }}">Dashboard</a></li>
+                    @elseif(Auth::user()->usertype === 'staff')
+                        <li><a href="{{ url('/staff/dashboard') }}">Dashboard</a></li>
+                    @endif
+                    {{-- Show Booking History only if user is NOT admin or staff --}}
+                    @if(!in_array(Auth::user()->usertype, ['admin', 'staff']))
+                        <li><a href="{{ route('BookingHistory.index') }}">Booking History</a></li>
+                    @endif
+
                     <li>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

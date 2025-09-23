@@ -36,8 +36,14 @@
                     <td data-label="Guests">{{ $booking->guest_number }}</td>
                     <td data-label="Arrival Date">{{ $booking->start_date }}</td>
                     <td data-label="Leaving Date">{{ $booking->end_date }}</td>
+
                     <td data-label="Review">
-                        @if(strtolower($booking->status) === 'completed')
+                        {{-- Show review form only if booking is completed AND today >= end_date --}}
+                        @if(
+                            strtolower($booking->status) === 'completed'
+                            && $booking->end_date
+                            && \Carbon\Carbon::today()->greaterThanOrEqualTo(\Carbon\Carbon::parse($booking->end_date))
+                        )
                             @if(!$booking->review)
                                 <!-- Review form -->
                                 <form action="{{ route('reviews.store', $booking->id) }}" method="POST">
@@ -56,8 +62,14 @@
                                 <p><strong>{{ $booking->review->rating }}⭐</strong></p>
                                 <p>{{ $booking->review->comment }}</p>
                             @endif
+
                         @else
-                            <span style="color: gray;">No review allowed yet</span>
+                            {{-- More specific messages --}}
+                            @if(strtolower($booking->status) !== 'completed')
+                                <span style="color: gray;">Review available after booking is completed</span>
+                            @elseif(!$booking->end_date || \Carbon\Carbon::today()->lessThan(\Carbon\Carbon::parse($booking->end_date)))
+                                <span style="color: gray;">Review available after stay ends</span>
+                            @endif
                         @endif
                     </td>
 

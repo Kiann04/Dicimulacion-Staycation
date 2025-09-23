@@ -1,12 +1,12 @@
 @extends('layouts.default')
 
 @section('Aside')
-    @include('Aside')
+    @include('staff.StaffSidebar')
 @endsection
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/update-booking.css') }}">
 @endpush
-
+<body class="admin-dashboard">
 <div class="update-booking-page">
     <h2>Update Booking</h2>
 

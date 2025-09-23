@@ -641,6 +641,36 @@ button:disabled {
   cursor: pointer;
   display: none; /* hidden by default */
 }
+
+.btn-toggle {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn-toggle.available {
+    background: #28a745; /* green */
+    color: #fff;
+}
+
+.btn-toggle.available:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}
+
+.btn-toggle.unavailable {
+    background: #dc3545; /* red */
+    color: #fff;
+}
+
+.btn-toggle.unavailable:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
 /* Responsive Adjustments for Cards */
 @media (max-width: 768px) {
   .cards {
