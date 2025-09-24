@@ -52,7 +52,11 @@ class HomeController extends Controller
             ->exists();
 
         if ($isBooked) {
-            return redirect()->back()->with('message', "Staycation house is already booked for these dates.");
+            return redirect()->back()->with(
+    'success',
+    "Booking successfully added! Wait for admin approval.\nPlease check your email for confirmation."
+);
+
         }
 
         $staycation = Staycation::findOrFail($id);
