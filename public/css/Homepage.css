@@ -1395,20 +1395,8 @@ transition: 0.4s all linear;
     display: block;
 }
 
-/* Hide on tablet and smaller screens (e.g., max-width 1024px for tablets) */
-@media (max-width: 1024px) {
-    .mobile-signin {
-        display: none;
-    }
-
-}
-
 /* Optional: further hide on mobile (max-width 768px) */
-@media (max-width: 768px) {
-    .mobile-signin {
-        display: none;
-    }
-}
+
 .booking-history-container {
   max-width: 1100px;
   margin: 12rem auto;
