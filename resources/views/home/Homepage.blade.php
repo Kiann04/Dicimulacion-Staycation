@@ -142,7 +142,7 @@
                 <!-- Slide 1 -->
                 <div class="swiper-slide testimonials-item">
                     <div class="info">
-                    <img src="../Assets/Matt.png" alt="">
+                    <img src="../assets/Matt.png" alt="">
                     <div class="text-box">
                         <h3 class="name">Darwin</h3>
                     </div>
@@ -158,7 +158,7 @@
                 <!-- Slide 2 -->
                 <div class="swiper-slide testimonials-item">
                     <div class="info">
-                    <img src="../Assets/test.jpg" alt="">
+                    <img src="../assets/test.jpg" alt="">
                     <div class="text-box">
                         <h3 class="name">Sophia</h3>
                     </div>
@@ -174,7 +174,7 @@
                 <!-- Slide 3 -->
                 <div class="swiper-slide testimonials-item">
                     <div class="info">
-                    <img src="../Assets/Matt.png" alt="">
+                    <img src="../assets/Matt.png" alt="">
                     <div class="text-box">
                         <h3 class="name">Liam</h3>
                     </div>
@@ -190,7 +190,7 @@
                 <!-- Slide 4 -->
                 <div class="swiper-slide testimonials-item">
                     <div class="info">
-                    <img src="../Assets/test.jpg" alt="">
+                    <img src="../assets/test.jpg" alt="">
                     <div class="text-box">
                         <h3 class="name">Ava</h3>
                     </div>
