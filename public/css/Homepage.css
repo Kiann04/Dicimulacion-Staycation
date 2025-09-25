@@ -114,7 +114,7 @@ header{
 /*Home*/
 .home {
     margin-top: 8rem;
-    background: url("/Assets/Matt.png"); /* start with / from public folder */
+    background: url("/assets/Matt.png"); /* start with / from public folder */
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
