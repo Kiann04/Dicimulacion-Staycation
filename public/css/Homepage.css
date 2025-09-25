@@ -114,7 +114,7 @@ header{
 /*Home*/
 .home {
         margin-top: 8rem;
-        background: url("{{ asset('assets/Matt.png') }}");
+        background: url("/assets/Matt.png");
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
