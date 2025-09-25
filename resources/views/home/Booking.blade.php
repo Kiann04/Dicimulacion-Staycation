@@ -64,11 +64,11 @@
     <section class="container-pics">
         <div class="slider-wrapper">
             <div class="slider">
-                <img id="slide-1" class="slide" src="../Assets/House1.png" alt="">
-                <img id="slide-2" class="slide" src="../Assets/House2.png" alt="">
-                <img id="slide-3" class="slide" src="../Assets/House3.png" alt="">
-                <img id="slide-4" class="slide" src="../Assets/House4.png" alt="">
-                <img id="slide-5" class="slide" src="../Assets/House5.png" alt="">
+                <img id="slide-1" class="slide" src="../assets/House1.png" alt="">
+                <img id="slide-2" class="slide" src="../assets/House2.png" alt="">
+                <img id="slide-3" class="slide" src="../assets/House3.png" alt="">
+                <img id="slide-4" class="slide" src="../assets/House4.png" alt="">
+                <img id="slide-5" class="slide" src="../assets/House5.png" alt="">
             </div>
             <div class="slider-nav">
                 <button data-slide="0" class="slider-link"></button>
