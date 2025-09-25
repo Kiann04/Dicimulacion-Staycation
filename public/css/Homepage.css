@@ -922,7 +922,7 @@ transition: 0.4s all linear;
 /* Calendar Styles */
 /* Calendar container */
 .calendar-container {
-  margin: 60px auto;
+  margin: 100px auto;
   padding: 2rem;
   background: var(--bg-color);
   border-radius: 1.2rem;
@@ -1112,7 +1112,7 @@ transition: 0.4s all linear;
     }
 
     .calendar-container{
-        margin: 2rem 1rem;
+        margin: 5rem 1rem;
         padding: 1rem;
     }
 
