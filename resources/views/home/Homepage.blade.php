@@ -14,7 +14,7 @@
     <!--About-->
     <section class="about container" id="about">
         <div class="about-img">
-            <img src="{{ asset('assets/AboutUs.jpg') }}" alt="">
+            <img src="{{ asset('Assets/AboutUs.jpg') }}" alt="">
         </div>
         <div class="about-text">
             <span>About Us</span>
