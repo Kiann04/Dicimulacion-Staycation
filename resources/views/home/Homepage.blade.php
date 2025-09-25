@@ -72,13 +72,15 @@
                             @csrf
                             <img src="{{ asset('storage/' . $staycation->house_image) }}" 
                                 alt="{{ $staycation->house_name }}" class="house-image" />
-                                    <h3>{{ number_format($staycation->house_price, 2) }}php</h3>
-                                    <div class="content">
-                                    <div class="text">
+                            <h3>{{ number_format($staycation->house_price, 2) }} PHP</h3>
+                            <div class="content">
+                                <div class="text">
                                     <h3>{{ $staycation->house_name }}</h3>
                                     <p>{{ $staycation->house_location }}</p>
+                                    <p>{{ $staycation->house_description }}</p> <!-- Added description -->
                                 </div>
-                                    <div class="icon">
+                                <div class="icon">
+                                    <!-- Optional icons here -->
                                 </div>
                             </div>
                         </a>        
@@ -86,6 +88,7 @@
                 @endif
             @endforeach
         </div>
+
 </section>
 
     <!--Testimonials-->
