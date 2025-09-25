@@ -4,7 +4,16 @@
     @include('Header')
 @endsection
     <!--Home-->
-    <section class="home container" id="home">
+    <section class="home container" id="home" 
+        style="margin-top: 8rem;
+            background: url('{{ asset('assets/Matt.png') }}');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            height: 440px;
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;">
         <div class="home-text">
             <h1>Find Your Next<br>Perfect Place To<br>Relax</h1>
             <a href="{{ url('register') }}" class="btn">Sign Up</a>
