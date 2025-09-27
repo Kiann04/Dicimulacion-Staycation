@@ -74,7 +74,8 @@ Route::post('/reviews/{booking}', [HomeController::class, 'storeReview'])->middl
 // =========================
 // Contact / Messages
 // =========================
-Route::post('/contact/send', [HomeController::class, 'send'])->name('contact.send');
+Route::post('/contact/send', [HomeController::class, 'sendInquiry'])->name('contact.send');
+
 
 // =========================
 // Chatbot
