@@ -1040,9 +1040,10 @@ transition: 0.4s all linear;
 /* Tablets */
 @media (max-width: 768px){
     .nav{
-        padding: 10px 0;
+        padding: 10px 15px;
         justify-content: space-between; /* logo left, burger right */
         position: relative;
+        box-sizing: border-box;
     }
 
     #menu-icon{
