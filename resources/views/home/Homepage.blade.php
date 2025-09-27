@@ -6,7 +6,7 @@
     <!--Home-->
     <section class="home container" id="home" 
         style="margin-top: 8rem;
-            background: url('{{ asset('assets/Matt.png') }}');
+            background: url('{{ asset('assets/sunset.jpg') }}');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
