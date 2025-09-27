@@ -300,17 +300,29 @@ transition: 0.4s all linear;
 }
 
 /* Swiper Fixes */
+/* Swiper Fix */
 .swiper {
-  overflow: visible !important; /* allow content to breathe */
+  width: 100% !important;      /* keep inside screen */
+  max-width: 100%;             /* no overflow */
+  overflow: hidden !important; /* prevent side scroll */
+  box-sizing: border-box;
+}
+
+.swiper-wrapper {
+  width: 100%;
+  display: flex;
 }
 
 .swiper-slide {
-  height: auto !important;      /* make slide adjust to content */
-  max-height: 350px;
-  overflow: visible !important; /* no cut-offs */
+  height: auto !important;     
+  max-height: 350px;           /* optional cap */
   display: flex;
   justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: hidden;            /* ✅ stop slides from overflowing */
 }
+
 
 .section-header{
     text-align: center;
