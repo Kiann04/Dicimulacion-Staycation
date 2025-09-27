@@ -1422,6 +1422,10 @@ transition: 0.4s all linear;
     .mobile-signin {
         display: none;
     }
+    html, body {
+  overflow-x: hidden;
+}
+
 }
 .booking-history-container {
   max-width: 1100px;
