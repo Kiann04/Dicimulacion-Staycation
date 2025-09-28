@@ -44,7 +44,7 @@
     </div>
 
     <div class="login-image">
-        <img src="{{ asset('assets/HomeSticker.png') }}" alt="Home Sticker">
+        <img src="{{ asset('assets/Signin.png') }}" alt="Home Sticker">
     </div>
 </div>
 

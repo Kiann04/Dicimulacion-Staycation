@@ -37,7 +37,7 @@
         </div>
 
         <div class="login-image">
-            <img src="{{ asset('Assets/HomeSticker.png') }}" alt="">
+            <img src="{{ asset('assets/HomeSticker.png') }}" alt="">
         </div>
     </div>
 </x-guest-layout>
