@@ -30,44 +30,39 @@
                 <li><a href="{{ route('home') }}#about">About us</a></li>
                 <li><a href="{{ route('home') }}#properties">Houses</a></li>
                 <li><a href="{{ route('home') }}#contact">Contact us</a></li>   
-            </ul>
-            </ul>
-            <!-- Authentication -->
-            @guest
-                @if (!Route::is('login') && !Route::is('register'))
-                    <li class="mobile-signin">
-                        <a href="{{ route('login') }}" class="btn">Log in</a>
-                    </li>
-                @endif
-            @endguest
 
-        @auth
-            <li class="dropdown">
-                <a href="#" class="btn">
-                    {{ Auth::user()->name }} <i class="bx bx-chevron-down"></i>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="{{ route('profile.show') }}">Profile</a></li>
-                    {{-- Show Dashboard link based on usertype --}}
-                    @if(Auth::user()->usertype === 'admin')
-                        <li><a href="{{ url('/admin/dashboard') }}">Dashboard</a></li>
-                    @elseif(Auth::user()->usertype === 'staff')
-                        <li><a href="{{ url('/staff/dashboard') }}">Dashboard</a></li>
+                @guest
+                    @if (!Route::is('login') && !Route::is('register'))
+                        <li>
+                            <a href="{{ route('login') }}" class="btn">Log in</a>
+                        </li>
                     @endif
-                    {{-- Show Booking History only if user is NOT admin or staff --}}
-                    @if(!in_array(Auth::user()->usertype, ['admin', 'staff']))
-                        <li><a href="{{ route('BookingHistory.index') }}">Booking History</a></li>
-                    @endif
+                @endguest
 
-                    <li>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="logout-btn">Logout</button>
-                        </form>
+                @auth
+                    <li class="dropdown">
+                        <a href="#" class="btn user-btn">
+                            {{ Auth::user()->name }} <i class="bx bx-chevron-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ route('profile.show') }}">Profile</a></li>
+                            @if(Auth::user()->usertype === 'admin')
+                                <li><a href="{{ url('/admin/dashboard') }}">Dashboard</a></li>
+                            @elseif(Auth::user()->usertype === 'staff')
+                                <li><a href="{{ url('/staff/dashboard') }}">Dashboard</a></li>
+                            @endif
+                            @if(!in_array(Auth::user()->usertype, ['admin', 'staff']))
+                                <li><a href="{{ route('BookingHistory.index') }}">Booking History</a></li>
+                            @endif
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="logout-btn">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
                     </li>
-                </ul>
-            </li>
-        @endauth
+                @endauth
     </div>
 </header>
 
