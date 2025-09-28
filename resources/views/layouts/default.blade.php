@@ -15,7 +15,6 @@
         @yield ('Footer')
     </footer>
     <head>
-    ...
     @stack('styles')
 </head>
 </body>
