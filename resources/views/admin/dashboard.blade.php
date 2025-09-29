@@ -104,18 +104,22 @@ $(document).ready(function() {
     // Approve / Decline buttons
     $('.btn-approve, .btn-decline').click(function() {
         const id = $(this).data('id');
-        const action = $(this).data('action');
+        const action = $(this).data('action'); // approve or decline
         const actionText = action.charAt(0).toUpperCase() + action.slice(1);
 
         Swal.fire({
             icon: 'warning',
             title: `Are you sure you want to ${actionText} this booking?`,
             showCancelButton: true,
-            confirmButtonText: 'Yes', cancelButtonText: 'No',
-            confirmButtonColor: '#1e40af', cancelButtonColor: '#d33'
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            confirmButtonColor: '#1e40af',
+            cancelButtonColor: '#d33'
         }).then((result) => {
             if(result.isConfirmed){
-                $.post(`{{ url('admin/bookings') }}/${id}/${action}`, {_token: '{{ csrf_token() }}'}, function(res){
+                $.post(`{{ url('admin/bookings') }}/${id}/${action}`, {
+                    _token: '{{ csrf_token() }}'
+                }, function(res){
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
@@ -123,8 +127,12 @@ $(document).ready(function() {
                         timer: 2000,
                         showConfirmButton: false
                     });
-                    // Update status badge
-                    $(`#booking-${id} .status`).text(actionText).attr('class','status '+action);
+                    // Update status badge immediately
+                    $(`#booking-${id} .status`)
+                        .text(actionText)
+                        .attr('class','status '+action);
+                }).fail(function(xhr){
+                    Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
                 });
             }
         });
@@ -139,11 +147,16 @@ $(document).ready(function() {
             icon: 'warning',
             title: `Change payment status to "${status}"?`,
             showCancelButton: true,
-            confirmButtonText: 'Yes', cancelButtonText: 'No',
-            confirmButtonColor: '#1e40af', cancelButtonColor: '#d33'
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            confirmButtonColor: '#1e40af',
+            cancelButtonColor: '#d33'
         }).then((result) => {
             if(result.isConfirmed){
-                $.post(`{{ url('admin/bookings') }}/${id}/updatePayment`, {_token:'{{ csrf_token() }}', payment_status:status}, function(res){
+                $.post(`{{ url('admin/bookings') }}/${id}/update-payment`, {
+                    _token:'{{ csrf_token() }}',
+                    payment_status:status
+                }, function(res){
                     Swal.fire({
                         icon: 'success',
                         title: 'Updated!',
@@ -151,13 +164,17 @@ $(document).ready(function() {
                         timer: 1500,
                         showConfirmButton: false
                     });
+                }).fail(function(xhr){
+                    Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
                 });
             } else {
-                location.reload(); // revert if canceled
+                // Revert to old value if canceled
+                location.reload();
             }
         });
     });
 });
 </script>
+
 </body>
 </html>
