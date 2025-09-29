@@ -29,7 +29,7 @@ class AdminController extends Controller
 
         $totalUsers     = User::count();
         $totalBookings  = Booking::count();
-        $totalRevenue = Booking::sum('total_price');
+        $totalRevenue = Booking::where('payment_status', 'paid')->sum('total_price');
         $bookings       = Booking::latest()->take(10)->get();
 
         return view('admin.dashboard', compact(
@@ -160,7 +160,8 @@ class AdminController extends Controller
     })->map(function($monthBookings) {
         return $monthBookings->sum('total_price');
     });
-    $totalRevenue = $bookings->sum('total_price');
+    $totalRevenue = Booking::where('payment_status', 'paid')->sum('total_price');
+
 
     $pdf = Pdf::loadView('admin.reports_pdf', compact('bookings', 'monthlyRevenue', 'totalRevenue', 'type', 'year'));
 
