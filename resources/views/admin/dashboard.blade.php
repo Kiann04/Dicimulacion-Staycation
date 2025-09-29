@@ -29,6 +29,12 @@
     .btn-decline { background-color: #dc3545; margin-left:5px; }
     .btn-decline:hover { background-color: #c82333; }
     table td form { display: inline-block; }
+
+    /* Status colors */
+    .status.approved { color: green; font-weight: bold; }
+    .status.declined { color: red; font-weight: bold; }
+    .status.pending { color: orange; font-weight: bold; }
+    .status.confirmed { color: blue; font-weight: bold; }
   </style>
 </head>
 <body class="admin-dashboard">
@@ -129,8 +135,8 @@ $(document).ready(function() {
                     });
                     // Update status badge immediately
                     $(`#booking-${id} .status`)
-                        .text(actionText)
-                        .attr('class','status '+action);
+                        .text(action === 'approve' ? 'Approved' : 'Declined')
+                        .attr('class','status ' + (action === 'approve' ? 'approved' : 'declined'));
                 }).fail(function(xhr){
                     Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
                 });
@@ -164,11 +170,27 @@ $(document).ready(function() {
                         timer: 1500,
                         showConfirmButton: false
                     });
+
+                    // Update status badge for consistency
+                    if(status === 'paid'){
+                        $(`#booking-${id} .status`)
+                            .text('Confirmed')
+                            .attr('class','status confirmed');
+                    } else if(status === 'failed'){
+                        $(`#booking-${id} .status`)
+                            .text('Declined')
+                            .attr('class','status declined');
+                    } else {
+                        $(`#booking-${id} .status`)
+                            .text('Approved')
+                            .attr('class','status approved');
+                    }
+
                 }).fail(function(xhr){
                     Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
                 });
             } else {
-                // Revert to old value if canceled
+                // Revert if canceled
                 location.reload();
             }
         });

@@ -73,7 +73,7 @@ class AdminBookingController extends Controller
         $booking->payment_status = $paymentStatus;
 
         if ($paymentStatus === 'paid') {
-            $booking->status = 'completed';
+            $booking->status = 'confirmed';
 
             $recipient = $booking->user->email ?? $booking->email;
             if (!empty($recipient)) {
