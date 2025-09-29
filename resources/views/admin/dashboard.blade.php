@@ -34,7 +34,7 @@
     .status.approved { color: green; font-weight: bold; }
     .status.declined { color: red; font-weight: bold; }
     .status.pending { color: orange; font-weight: bold; }
-    .status.confirmed { color: blue; font-weight: bold; }
+    .status.confirmed { color: rgb(255, 255, 255); font-weight: bold; }
   </style>
 </head>
 <body class="admin-dashboard">
