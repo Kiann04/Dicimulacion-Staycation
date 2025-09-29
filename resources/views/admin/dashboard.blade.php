@@ -58,8 +58,8 @@
                 <tbody>
                 @forelse($bookings as $booking)
                     <tr id="booking-{{ $booking->id }}">
+                        <td>{{ $booking->id }}</td>
                         <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
-                        <td>{{ $booking->staycation_id }}</td>
                         <td>{{ $booking->name }}</td>
                         <td>{{ $booking->phone }}</td>
                         <td>{{ $booking->start_date }}</td>
