@@ -19,7 +19,7 @@
 <body>
     <!-- Header -->
     <header>
-        @yield('Header')
+        @yield('header')
     </header>
 
     <!-- Sidebar (optional) -->
