@@ -6,6 +6,7 @@
     @include('Header')
 @endsection
 <!-- Hero Section -->
+<!-- Hero Section -->
 <section class="container my-5">
     <div id="heroCarousel" class="carousel slide carousel-fade rounded overflow-hidden shadow"
          data-bs-ride="carousel" data-bs-interval="4000">
@@ -21,32 +22,44 @@
         <div class="carousel-inner" style="height: 440px;">
 
             <!-- Slide 1 -->
-            <div class="carousel-item active text-white d-flex align-items-center"
-                 data-bs-interval="4000"
-                 style="background: url('{{ asset('assets/sunset.jpg') }}') center/cover no-repeat; height: 440px;">
-                <div class="p-5">
-                    <h1 class="fw-bold">Find Your Next<br>Perfect Place To<br>Relax</h1>
-                    <a href="{{ url('register') }}" class="btn btn-primary mt-3">Sign Up</a>
+            <div class="carousel-item active" data-bs-interval="4000">
+                <div class="d-flex align-items-center text-white"
+                     style="background: url('{{ asset('assets/sunset.jpg') }}') center/cover no-repeat; height: 440px; position: relative;">
+                    <!-- Overlay -->
+                    <div class="position-absolute top-0 start-0 w-100 h-100"
+                         style="background: rgba(0,0,0,0.45);"></div>
+
+                    <!-- Text -->
+                    <div class="p-5 position-relative">
+                        <h1 class="fw-bold">Find Your Next<br>Perfect Place To<br>Relax</h1>
+                        <a href="{{ url('register') }}" class="btn btn-primary mt-3">Sign Up</a>
+                    </div>
                 </div>
             </div>
 
             <!-- Slide 2 -->
-            <div class="carousel-item text-white d-flex align-items-center"
-                 data-bs-interval="4000"
-                 style="background: url('{{ asset('assets/bg.jpg') }}') center/cover no-repeat; height: 440px;">
-                <div class="p-5">
-                    <h1 class="fw-bold">Experience the<br>Best Staycation<br>With Us</h1>
-                    <a href="{{ url('register') }}" class="btn btn-primary mt-3">Get Started</a>
+            <div class="carousel-item" data-bs-interval="4000">
+                <div class="d-flex align-items-center text-white"
+                     style="background: url('{{ asset('assets/bg.jpg') }}') center/cover no-repeat; height: 440px; position: relative;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100"
+                         style="background: rgba(0,0,0,0.45);"></div>
+                    <div class="p-5 position-relative">
+                        <h1 class="fw-bold">Experience the<br>Best Staycation<br>With Us</h1>
+                        <a href="{{ url('register') }}" class="btn btn-primary mt-3">Get Started</a>
+                    </div>
                 </div>
             </div>
 
             <!-- Slide 3 -->
-            <div class="carousel-item text-white d-flex align-items-center"
-                 data-bs-interval="4000"
-                 style="background: url('{{ asset('assets/bg2.jpg') }}') center/cover no-repeat; height: 440px;">
-                <div class="p-5">
-                    <h1 class="fw-bold">Unwind in<br>Beautiful Places<br>Close to You</h1>
-                    <a href="{{ url('register') }}" class="btn btn-primary mt-3">Join Now</a>
+            <div class="carousel-item" data-bs-interval="4000">
+                <div class="d-flex align-items-center text-white"
+                     style="background: url('{{ asset('assets/bg2.jpg') }}') center/cover no-repeat; height: 440px; position: relative;">
+                    <div class="position-absolute top-0 start-0 w-100 h-100"
+                         style="background: rgba(0,0,0,0.45);"></div>
+                    <div class="p-5 position-relative">
+                        <h1 class="fw-bold">Unwind in<br>Beautiful Places<br>Close to You</h1>
+                        <a href="{{ url('register') }}" class="btn btn-primary mt-3">Join Now</a>
+                    </div>
                 </div>
             </div>
 
@@ -61,6 +74,7 @@
         </button>
     </div>
 </section>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
