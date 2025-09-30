@@ -2,9 +2,9 @@
 
 @section('content')
 
-{{-- Header --}}
-@include('header')
-
+@section('Header')
+    @include('header')
+@endsection
 <!-- Hero Section -->
 <section class="container my-5">
     <div class="p-5 rounded text-white d-flex align-items-center"
