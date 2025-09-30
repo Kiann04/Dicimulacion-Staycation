@@ -107,34 +107,67 @@
 <section class="container my-5 text-center" id="sales">
     <div class="row g-4">
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 hover-card">
                 <div class="card-body">
-                    <i class='bx bxs-map-pin fs-1 text-primary'></i>
+                    <div class="icon-circle bg-primary bg-opacity-10 text-primary mb-3 mx-auto">
+                        <i class='bx bxs-map-pin fs-1'></i>
+                    </div>
                     <h4 class="fw-bold">Stay</h4>
-                    <p>Stay in comfort, stay in style. Your perfect getaway starts right here, without going far.</p>
+                    <p class="text-muted">
+                        Stay in comfort, stay in style. Your perfect getaway starts right here, without going far.
+                    </p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 hover-card">
                 <div class="card-body">
-                    <i class='bx bx-wink-smile fs-1 text-success'></i>
+                    <div class="icon-circle bg-success bg-opacity-10 text-success mb-3 mx-auto">
+                        <i class='bx bx-wink-smile fs-1'></i>
+                    </div>
                     <h4 class="fw-bold">Enjoy</h4>
-                    <p>Enjoy cozy spaces, fresh linens, and the kind of peace that makes you want to stay just a little longer.</p>
+                    <p class="text-muted">
+                        Enjoy cozy spaces, fresh linens, and the kind of peace that makes you want to stay just a little longer.
+                    </p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 hover-card">
                 <div class="card-body">
-                    <i class='bx bxs-user-check fs-1 text-warning'></i>
+                    <div class="icon-circle bg-warning bg-opacity-10 text-warning mb-3 mx-auto">
+                        <i class='bx bxs-user-check fs-1'></i>
+                    </div>
                     <h4 class="fw-bold">Relax</h4>
-                    <p>Relax and recharge in a space designed for rest, where every detail whispers calm and comfort.</p>
+                    <p class="text-muted">
+                        Relax and recharge in a space designed for rest, where every detail whispers calm and comfort.
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<!-- Extra styling -->
+<style>
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 1rem 2rem rgba(0,0,0,0.15) !important;
+    }
+</style>
+
 
 <!-- Properties -->
 <section class="container my-5" id="properties">
