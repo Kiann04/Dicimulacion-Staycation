@@ -45,8 +45,8 @@ class Booking extends Model
         });
     }
 
-    public function review()
+    public function reviews()
     {
-        return $this->hasOne(Review::class);
+        return $this->hasMany(Review::class);
     }
 }
