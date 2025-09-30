@@ -7,7 +7,17 @@
 @endsection
 <!-- Hero Section -->
 <section class="container my-5">
-    <div id="heroCarousel" class="carousel slide rounded overflow-hidden shadow" data-bs-ride="carousel">
+    <div id="heroCarousel" class="carousel slide rounded overflow-hidden shadow"
+         data-bs-ride="carousel" data-bs-interval="4000">
+
+        <!-- Indicators (dots) -->
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+        </div>
+
+        <!-- Carousel inner -->
         <div class="carousel-inner" style="height: 440px;">
 
             <!-- Slide 1 -->
@@ -39,7 +49,7 @@
 
         </div>
 
-        <!-- Carousel controls -->
+        <!-- Controls -->
         <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon"></span>
         </button>
@@ -48,8 +58,16 @@
         </button>
     </div>
 </section>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const heroCarousel = document.querySelector('#heroCarousel');
+    const carousel = new bootstrap.Carousel(heroCarousel, {
+        interval: 4000,   // 4 seconds
+        ride: 'carousel'
+    });
+</script>
 <!-- About Us -->
 <section class="container my-5" id="about">
     <div class="row align-items-center g-4">
