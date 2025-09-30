@@ -1,7 +1,7 @@
 @extends('layouts.default')
 
 @section('Header')
-    @include('layouts.header')
+    @include('Header')
 @endsection
 
 <x-guest-layout>
@@ -60,5 +60,5 @@
 </x-guest-layout>
 
 @section('Footer')
-    @include('layouts.footer')
+    @include('Footer')
 @endsection
