@@ -4,65 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" href="{{ asset('css/Homepage.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/light/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-    <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet"/>
-    
     <title>Dicimulacion Staycation</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
 </head>
 <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
+        <div class="container">
+            <!-- Brand / Logo -->
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ route('home') }}">
+                <i class='bx bx-home-alt me-2'></i> Dicimulacion
+            </a>
 
-    <!--NavBar-->
-    <header>
-        <div class="nav container">
-            <a href="{{ route('home') }}" class="logo"><i class='bx bx-home-alt'></i> Dicimulacion</a>
+            <!-- Mobile Toggler -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" 
+                    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-            <!--Menu Icon-->
-            <input type="checkbox" name="" id="menu">
-            <label for= "menu"><i class='bx bx-menu' id="menu-icon"></i></label>
-            <!--Nav List-->
-            <ul class="navbar">
-                <li><a href="{{ route('home') }}">Home</a></li>
-                <li><a href="{{ route('home') }}#about">About us</a></li>
-                <li><a href="{{ route('home') }}#properties">Houses</a></li>
-                <li><a href="{{ route('home') }}#contact">Contact us</a></li>   
-
-                @guest
-                    @if (!Route::is('login') && !Route::is('register'))
-                        <li>
-                            <a href="{{ route('login') }}" class="btn">Log in</a>
-                        </li>
-                    @endif
-                @endguest
-
-                @auth
-                    <li class="dropdown">
-                        <a href="#" class="btn user-btn">
-                            {{ Auth::user()->name }} <i class="bx bx-chevron-down"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ route('profile.show') }}">Profile</a></li>
-                            @if(Auth::user()->usertype === 'admin')
-                                <li><a href="{{ url('/admin/dashboard') }}">Dashboard</a></li>
-                            @elseif(Auth::user()->usertype === 'staff')
-                                <li><a href="{{ url('/staff/dashboard') }}">Dashboard</a></li>
-                            @endif
-                            @if(!in_array(Auth::user()->usertype, ['admin', 'staff']))
-                                <li><a href="{{ route('BookingHistory.index') }}">Booking History</a></li>
-                            @endif
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="logout-btn">Logout</button>
-                                </form>
-                            </li>
-                        </ul>
+            <!-- Navbar Items -->
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('home') }}">Home</a>
                     </li>
-                @endauth
-    </div>
-</header>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('home') }}#about">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('home') }}#properties">Houses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('home') }}#contact">Contact Us</a>
+                    </li>
 
+                    @guest
+                        @if (!Route::is('login') && !Route::is('register'))
+                            <li class="nav-item">
+                                <a class="btn btn-primary ms-lg-3" href="{{ route('login') }}">Log in</a>
+                            </li>
+                        @endif
+                    @endguest
+
+                    @auth
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle btn btn-outline-primary ms-lg-3" href="#" id="userDropdown" 
+                               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{{ route('profile.show') }}">Profile</a></li>
+
+                                @if(Auth::user()->usertype === 'admin')
+                                    <li><a class="dropdown-item" href="{{ url('/admin/dashboard') }}">Dashboard</a></li>
+                                @elseif(Auth::user()->usertype === 'staff')
+                                    <li><a class="dropdown-item" href="{{ url('/staff/dashboard') }}">Dashboard</a></li>
+                                @endif
+
+                                @if(!in_array(Auth::user()->usertype, ['admin', 'staff']))
+                                    <li><a class="dropdown-item" href="{{ route('BookingHistory.index') }}">Booking History</a></li>
+                                @endif
+
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @endauth
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
