@@ -7,12 +7,45 @@
 @endsection
 <!-- Hero Section -->
 <section class="container my-5">
-    <div class="p-5 rounded text-white d-flex align-items-center"
-         style="background: url('{{ asset('assets/sunset.jpg') }}') center/cover no-repeat; height: 440px;">
-        <div>
-            <h1 class="fw-bold">Find Your Next<br>Perfect Place To<br>Relax</h1>
-            <a href="{{ url('register') }}" class="btn btn-primary mt-3">Sign Up</a>
+    <div id="heroCarousel" class="carousel slide rounded overflow-hidden shadow" data-bs-ride="carousel">
+        <div class="carousel-inner" style="height: 440px;">
+
+            <!-- Slide 1 -->
+            <div class="carousel-item active text-white d-flex align-items-center"
+                 style="background: url('{{ asset('assets/sunset.jpg') }}') center/cover no-repeat; height: 440px;">
+                <div class="p-5">
+                    <h1 class="fw-bold">Find Your Next<br>Perfect Place To<br>Relax</h1>
+                    <a href="{{ url('register') }}" class="btn btn-primary mt-3">Sign Up</a>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-item text-white d-flex align-items-center"
+                 style="background: url('{{ asset('assets/bg.jpg') }}') center/cover no-repeat; height: 440px;">
+                <div class="p-5">
+                    <h1 class="fw-bold">Experience the<br>Best Staycation<br>With Us</h1>
+                    <a href="{{ url('register') }}" class="btn btn-primary mt-3">Get Started</a>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="carousel-item text-white d-flex align-items-center"
+                 style="background: url('{{ asset('assets/bg2.jpg') }}') center/cover no-repeat; height: 440px;">
+                <div class="p-5">
+                    <h1 class="fw-bold">Unwind in<br>Beautiful Places<br>Close to You</h1>
+                    <a href="{{ url('register') }}" class="btn btn-primary mt-3">Join Now</a>
+                </div>
+            </div>
+
         </div>
+
+        <!-- Carousel controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
     </div>
 </section>
 
