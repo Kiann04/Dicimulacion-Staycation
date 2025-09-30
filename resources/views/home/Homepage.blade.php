@@ -32,7 +32,6 @@
                     <!-- Text -->
                     <div class="p-5 position-relative">
                         <h1 class="fw-bold">Find Your Next<br>Perfect Place To<br>Relax</h1>
-                        <a href="{{ url('register') }}" class="btn btn-primary mt-3">Sign Up</a>
                     </div>
                 </div>
             </div>
@@ -45,7 +44,6 @@
                          style="background: rgba(0,0,0,0.45);"></div>
                     <div class="p-5 position-relative">
                         <h1 class="fw-bold">Experience the<br>Best Staycation<br>With Us</h1>
-                        <a href="{{ url('register') }}" class="btn btn-primary mt-3">Get Started</a>
                     </div>
                 </div>
             </div>
@@ -58,7 +56,6 @@
                          style="background: rgba(0,0,0,0.45);"></div>
                     <div class="p-5 position-relative">
                         <h1 class="fw-bold">Unwind in<br>Beautiful Places<br>Close to You</h1>
-                        <a href="{{ url('register') }}" class="btn btn-primary mt-3">Join Now</a>
                     </div>
                 </div>
             </div>
