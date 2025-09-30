@@ -1,46 +1,63 @@
-@extends ('layouts.default');
+```blade
+@extends('layouts.default')
 
-@section ('Header')
-@include ('Header')
+@section('Header')
+    @include('Header')
 @endsection
+
 <x-guest-layout>
-    <link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
+    <!-- Bootstrap Login Section -->
+    <section class="container d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+        <div class="row w-100 shadow rounded overflow-hidden" style="max-width: 900px;">
+            
+            <!-- Left: Login Form -->
+            <div class="col-md-6 bg-white p-5">
+                <h2 class="fw-bold mb-3 text-center">Admin Login</h2>
+                <p class="text-muted text-center mb-4">Log in with your credentials</p>
 
-    <div class="login container">
-        <div class="login-container">
-            <h2>Admin Login</h2> 
-            <p>Log in with your data that you entered<br>during your registration</p>
+                <form method="POST" action="{{ route('admin.staff.login') }}">
+                    @csrf
 
-            <form method="POST" action="{{ route('admin.staff.login') }}">
-                @csrf
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold">Email Address</label>
+                        <input type="email" name="email" id="email" class="form-control" 
+                               placeholder="yourmail@gmail.com" required>
+                        @error('email')
+                            <p class="text-danger small">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                <span>Enter your email address</span>
-                <input type="email" name="email" placeholder="yourmail@gmail.com" required>
-                    @error('email')
-                        <p class="error">{{ $message }}</p>
-                    @enderror
-                <span>Enter your password</span>
-                <input type="password" name="password" placeholder="Password" required>
-                    @error('password')
-                        <p class="error">{{ $message }}</p>
-                    @enderror
-                <input type="submit" value="Log In" class="buttom">
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label fw-semibold">Password</label>
+                        <input type="password" name="password" id="password" class="form-control" 
+                               placeholder="Password" required>
+                        @error('password')
+                            <p class="text-danger small">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}">Forget Password?</a>
-                @endif
-            </form>
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary w-100">Log In</button>
 
-            @if (Route::has('register'))
-                <a href="{{ route('register') }}" class="btn">Sign up now</a>
-            @endif
+                    <!-- Forgot Password -->
+                    @if (Route::has('password.request'))
+                        <div class="text-center mt-3">
+                            <a href="{{ route('password.request') }}" class="small text-decoration-none">Forgot Password?</a>
+                        </div>
+                    @endif
+                </form>
+            </div>
+
+            <!-- Right: Image -->
+            <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-light">
+                <img src="{{ asset('assets/HomeSticker.png') }}" alt="Home Sticker" class="img-fluid p-4">
+            </div>
         </div>
-
-        <div class="login-image">
-            <img src="{{ asset('assets/HomeSticker.png') }}" alt="Home Sticker">
-        </div>
-    </div>
+    </section>
 </x-guest-layout>
-@section ('Footer')
-@include ('Footer')
+
+@section('Footer')
+    @include('Footer')
 @endsection
