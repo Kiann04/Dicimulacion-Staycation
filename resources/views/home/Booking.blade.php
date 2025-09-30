@@ -144,6 +144,35 @@
         </div>
     </div>
 </section>
+<!-- Customer Reviews Section -->
+<section class="container my-5" id="reviews">
+    <h2 class="fw-bold mb-4">What Our Guests Say</h2>
+
+    @if($staycation->reviews && $staycation->reviews->count() > 0)
+        <div class="row g-4">
+            @foreach($staycation->reviews as $review)
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="mb-0">{{ $review->user->name ?? 'Guest' }}</h5>
+                                <span class="text-warning fw-bold">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <i class="bx {{ $i <= $review->rating ? 'bxs-star' : 'bx-star' }}"></i>
+                                    @endfor
+                                </span>
+                            </div>
+                            <p class="text-muted mb-1"><small>{{ $review->created_at->format('F d, Y') }}</small></p>
+                            <p class="mb-0">{{ $review->comment }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <p class="text-muted">No reviews yet. Be the first to leave a review after your stay!</p>
+    @endif
+</section>
 
 <!-- FullCalendar -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
