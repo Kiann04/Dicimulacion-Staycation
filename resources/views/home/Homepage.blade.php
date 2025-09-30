@@ -3,7 +3,7 @@
 @section('content')
 
 @section('Header')
-    @include('header')
+    @include('Header')
 @endsection
 <!-- Hero Section -->
 <section class="container my-5">
@@ -140,6 +140,6 @@
 
 @endsection
 @section('Footer')
-    @include('footer')
+    @include('Footer')
 @endsection
 
