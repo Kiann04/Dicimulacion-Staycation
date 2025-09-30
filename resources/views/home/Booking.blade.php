@@ -88,9 +88,6 @@
                         <img src="{{ asset('assets/House3.png') }}" class="d-block w-100 rounded" alt="">
                     </div>
                     <div class="carousel-item">
-                        <img src="{{ asset('assets/House4.png') }}" class="d-block w-100 rounded" alt="">
-                    </div>
-                    <div class="carousel-item">
                         <img src="{{ asset('assets/House5.png') }}" class="d-block w-100 rounded" alt="">
                     </div>
                 </div>
