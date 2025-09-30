@@ -86,22 +86,57 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- About Us -->
-<section class="container my-5" id="about">
-    <div class="row align-items-center g-4">
-        <div class="col-md-6">
-            <img src="{{ asset('assets/AboutUs.jpg') }}" class="img-fluid rounded shadow-sm" alt="About Us">
+<section class="container my-5 py-5" id="about">
+    <div class="row align-items-center g-5">
+        <!-- Image -->
+        <div class="col-lg-6">
+            <div class="position-relative">
+                <img src="{{ asset('assets/AboutUs.jpg') }}" 
+                     class="img-fluid rounded-4 shadow-lg" 
+                     alt="About Us">
+                <div class="position-absolute top-0 start-0 bg-primary bg-opacity-25 rounded-4 w-100 h-100"></div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <h5 class="text-primary">About Us</h5>
-            <h2 class="fw-bold">We Provide The Best<br>Place For You</h2>
-            <p>We’re a family-owned staycation business with eight homes, all located with beautiful city lights or surrounded by peaceful nature.</p>
-            <p>Whether you want to enjoy the city lights or relax in the calm of nature, we’ve created spaces where you can slow down and feel right at home.</p>
-            <p>Each of our homes is carefully designed and cared for by our family to make sure your stay is comfortable and memorable.</p>
-            <p>We believe in treating guests like friends, with thoughtful details and a personal touch that make all the difference. Come stay with us—and be a part of our story.</p>
-            <a href="#" class="btn btn-outline-primary mt-3">Learn More</a>
+
+        <!-- Text -->
+        <div class="col-lg-6">
+            <h5 class="text-primary fw-semibold">About Us</h5>
+            <h2 class="fw-bold display-6 mb-4">
+                We Provide The Best <br> Place For You
+            </h2>
+            <p class="text-muted">
+                We’re a family-owned staycation business with eight homes, all located with beautiful city lights or surrounded by peaceful nature.
+            </p>
+            <p class="text-muted">
+                Whether you want to enjoy the city lights or relax in the calm of nature, we’ve created spaces where you can slow down and feel right at home.
+            </p>
+            <p class="text-muted">
+                Each of our homes is carefully designed and cared for by our family to make sure your stay is comfortable and memorable.
+            </p>
+            <p class="text-muted">
+                We believe in treating guests like friends, with thoughtful details and a personal touch that make all the difference. Come stay with us—and be a part of our story.
+            </p>
+            <a href="#" class="btn btn-primary btn-lg mt-3 rounded-pill px-4">
+                Learn More
+            </a>
         </div>
     </div>
 </section>
+
+<!-- Extra styling -->
+<style>
+    #about img {
+        object-fit: cover;
+    }
+    #about .btn {
+        transition: all 0.3s ease;
+    }
+    #about .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    }
+</style>
+
 
 <!-- Info Cards -->
 <section class="container my-5 text-center" id="sales">
