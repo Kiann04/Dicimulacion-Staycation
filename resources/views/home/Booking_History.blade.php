@@ -15,7 +15,7 @@
                 <table class="table table-bordered table-striped align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th>
+                            <th>Staycation Name</th>
                             <th>Name</th>
                             <th>Phone</th>
                             <th>Status</th>
@@ -28,7 +28,7 @@
                     <tbody>
                         @forelse($bookings as $booking)
                             <tr>
-                                <td>{{ $booking->id }}</td>
+                                <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
                                 <td>{{ $booking->name }}</td>
                                 <td>{{ $booking->phone }}</td>
                                 <td>
