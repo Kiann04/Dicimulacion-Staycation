@@ -4,45 +4,34 @@
     @include('Header')
 @endsection
 
-<div class="container my-5">
-    <div class="row g-4">
+<section class="container my-5">
+    <div class="row g-4 align-items-start">
         <!-- Booking Form -->
         <div class="col-lg-6">
-            <div class="card shadow-lg border-0">
+            <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
-                    <h2 class="fw-bold mb-3">
-                        {!! nl2br(e("Booking Form for\n" . $staycation->house_name)) !!}
-                    </h2>
-
-                    @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if(session('message'))
-                        <div class="alert alert-danger">
-                            {!! nl2br(e(session('message'))) !!}
-                        </div>
-                    @endif
-
+                    <h3 class="fw-bold">Booking Form for {{ $staycation->house_name }}</h3>
                     <p class="text-muted">Enter the required information to book</p>
 
-                    <form action="{{ url('add_booking', $staycation->id) }}" method="POST">
-                        @csrf
+                    @if(session('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+                    @if(session('message'))
+                        <div class="alert alert-danger">{!! nl2br(e(session('message'))) !!}</div>
+                    @endif
 
+                    <form action="{{ url('add_booking',$staycation->id) }}" method="POST">
+                        @csrf
                         <div class="mb-3">
                             <label class="form-label">Full Name</label>
                             <input type="text" name="name" class="form-control" placeholder="Name" required
-                                   @if(Auth::id()) value="{{ Auth::user()->name }}" @endif>
+                                @if(Auth::id()) value="{{ Auth::user()->name }}" @endif>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Contact Number</label>
-                            <input type="tel" name="phone" class="form-control"
-                                   placeholder="9123456789"
-                                   pattern="[0-9]{10}"
-                                   title="Enter a valid 10-digit Philippine phone number" required>
+                            <input type="tel" name="phone" class="form-control" placeholder="9123456789" required
+                                pattern="[0-9]{10}" title="Enter a valid 10-digit Philippine phone number">
                         </div>
 
                         <div class="mb-3">
@@ -50,7 +39,7 @@
                             <input type="number" name="guest_number" class="form-control" placeholder="Guest/s" required>
                         </div>
 
-                        <div class="row g-3">
+                        <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Date of Arrival</label>
                                 <input type="date" name="startDate" id="startDate" class="form-control" required>
@@ -61,112 +50,116 @@
                             </div>
                         </div>
 
-                        <div id="price-summary" class="alert alert-light mt-3 d-none">
-                            <p class="mb-1">₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
-                            <p id="total-price" class="fw-bold text-success mb-0"></p>
+                        <div id="price-summary" class="border-top pt-3 mb-3" style="display:none;">
+                            <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
+                            <p id="total-price" class="fw-bold text-success"></p>
                         </div>
 
-                        <div class="form-check mt-3">
-                            <input class="form-check-input" type="checkbox" name="terms" required>
-                            <label class="form-check-label">
-                                I agree to the
-                                <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a>
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to the <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a>
                             </label>
                         </div>
 
-                        <div class="mt-4">
-                            @auth
-                                <button type="submit" class="btn btn-primary w-100">Reserve</button>
-                            @else
-                                <a href="{{ route('login') }}" class="btn btn-secondary w-100">Please log in to reserve</a>
-                            @endauth
-                        </div>
+                        @auth
+                            <button type="submit" class="btn btn-primary w-100">Reserve</button>
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-secondary w-100 disabled">
+                                Please log in to reserve
+                            </a>
+                        @endauth
                     </form>
                 </div>
             </div>
         </div>
 
-        <!-- Image Slider -->
+        <!-- Image Carousel -->
         <div class="col-lg-6">
-            <div id="bookingCarousel" class="carousel slide rounded shadow overflow-hidden" data-bs-ride="carousel">
+            <div id="staycationCarousel" class="carousel slide shadow-sm rounded" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="../assets/House1.png" class="d-block w-100" alt="">
+                        <img src="{{ asset('assets/House1.png') }}" class="d-block w-100 rounded" alt="">
                     </div>
                     <div class="carousel-item">
-                        <img src="../assets/House2.png" class="d-block w-100" alt="">
+                        <img src="{{ asset('assets/House2.png') }}" class="d-block w-100 rounded" alt="">
                     </div>
                     <div class="carousel-item">
-                        <img src="../assets/House3.png" class="d-block w-100" alt="">
+                        <img src="{{ asset('assets/House3.png') }}" class="d-block w-100 rounded" alt="">
                     </div>
                     <div class="carousel-item">
-                        <img src="../assets/House4.png" class="d-block w-100" alt="">
+                        <img src="{{ asset('assets/House4.png') }}" class="d-block w-100 rounded" alt="">
                     </div>
                     <div class="carousel-item">
-                        <img src="../assets/House5.png" class="d-block w-100" alt="">
+                        <img src="{{ asset('assets/House5.png') }}" class="d-block w-100 rounded" alt="">
                     </div>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#bookingCarousel" data-bs-slide="prev">
+                <button class="carousel-control-prev" type="button" data-bs-target="#staycationCarousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon"></span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#bookingCarousel" data-bs-slide="next">
+                <button class="carousel-control-next" type="button" data-bs-target="#staycationCarousel" data-bs-slide="next">
                     <span class="carousel-control-next-icon"></span>
                 </button>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- Calendar Section -->
-    <div class="mt-5">
-        <h2 class="fw-bold mb-3">Availability</h2>
-        <div class="card shadow-sm p-3">
-            <div id="calendar"></div>
-        </div>
-    </div>
-
-    <!-- Info Section -->
-    <section class="row text-center g-4 mt-5">
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="card-body">
-                    <i class="bx bxs-home fs-1 text-primary mb-3"></i>
-                    <h5 class="fw-bold">Accommodation</h5>
-                    <p class="text-muted">Kitchen, Free Parking, Balcony, Wifi, Bathtub, Pets Allowed</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="card-body">
-                    <i class="bx bxs-check-square fs-1 text-success mb-3"></i>
-                    <h5 class="fw-bold">Reminders</h5>
-                    <p class="text-muted">Check-in after 2:00 PM <br> Checkout before 12:00 PM <br> Max 6 guests</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="card-body">
-                    <i class="bx bxs-no-entry fs-1 text-danger mb-3"></i>
-                    <h5 class="fw-bold">Cancellation Policy</h5>
-                    <p class="text-muted">No sudden cancellation <br> Rescheduling available</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- Calendar Section -->
+<div class="container my-5">
+    <h2 class="fw-bold">Availability</h2>
+    <div id="calendar"></div>
 </div>
 
+<!-- Info Section -->
+<section class="container my-5" id="info">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="p-4 border rounded shadow-sm text-center">
+                <i class='bx bxs-home fs-1 text-primary'></i>
+                <h4 class="fw-bold mt-2">Accommodation</h4>
+                <ul class="list-unstyled text-muted">
+                    <li>Kitchen</li>
+                    <li>Free parking on premises</li>
+                    <li>Private patio or balcony</li>
+                    <li>Wifi</li>
+                    <li>Bathtub</li>
+                    <li>Pets allowed</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 border rounded shadow-sm text-center">
+                <i class='bx bxs-check-square fs-1 text-success'></i>
+                <h4 class="fw-bold mt-2">Reminders</h4>
+                <p class="text-muted">Check-in after 2:00 PM</p>
+                <p class="text-muted">Checkout before 12:00 PM</p>
+                <p class="text-muted">6 guests maximum</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 border rounded shadow-sm text-center">
+                <i class='bx bxs-no-entry fs-1 text-danger'></i>
+                <h4 class="fw-bold mt-2">Cancellation Policy</h4>
+                <p class="text-muted">We don't accept sudden cancellation</p>
+                <p class="text-muted">We can offer rescheduling</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FullCalendar -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // Date Restriction
+    // ===== Date Restriction =====
     const today = new Date().toISOString().split("T")[0];
-    document.getElementById("startDate").min = today;
-    document.getElementById("endDate").min = today;
+    const startDate = document.getElementById("startDate");
+    const endDate = document.getElementById("endDate");
+    if (startDate) startDate.min = today;
+    if (endDate) endDate.min = today;
 
-    // Price Calculation
+    // ===== Price Calculation =====
     const startInput = document.getElementById("startDate");
     const endInput = document.getElementById("endDate");
     const priceSummary = document.getElementById("price-summary");
@@ -181,19 +174,17 @@ document.addEventListener("DOMContentLoaded", function () {
             if (end >= start) {
                 const days = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
                 const total = days * pricePerNight;
-
-                priceSummary.classList.remove("d-none");
+                priceSummary.style.display = "block";
                 totalPriceElem.textContent = `Total for ${days} night(s): ₱${total.toLocaleString()}`;
             } else {
-                priceSummary.classList.add("d-none");
+                priceSummary.style.display = "none";
             }
         }
     }
-
     startInput.addEventListener("change", calculatePrice);
     endInput.addEventListener("change", calculatePrice);
 
-    // Calendar
+    // ===== Calendar =====
     const staycationId = "{{ $staycation->id }}";
     if (document.getElementById("calendar")) {
         const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
