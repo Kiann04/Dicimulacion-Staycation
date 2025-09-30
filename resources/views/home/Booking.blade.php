@@ -4,194 +4,197 @@
     @include('Header')
 @endsection
 
-<div class="booking container">
-    <div class="booking-container">
-        <h2>{!! nl2br(e("Booking Form for\n" . $staycation->house_name)) !!}</h2>
-            @if(session('success'))
-                <div style="color: red; font-weight: bold; margin-bottom: 10px;">
-                {{ session('success') }}
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Booking Form -->
+        <div class="col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <h2 class="fw-bold mb-3">
+                        {!! nl2br(e("Booking Form for\n" . $staycation->house_name)) !!}
+                    </h2>
+
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if(session('message'))
+                        <div class="alert alert-danger">
+                            {!! nl2br(e(session('message'))) !!}
+                        </div>
+                    @endif
+
+                    <p class="text-muted">Enter the required information to book</p>
+
+                    <form action="{{ url('add_booking', $staycation->id) }}" method="POST">
+                        @csrf
+
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Name" required
+                                   @if(Auth::id()) value="{{ Auth::user()->name }}" @endif>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Contact Number</label>
+                            <input type="tel" name="phone" class="form-control"
+                                   placeholder="9123456789"
+                                   pattern="[0-9]{10}"
+                                   title="Enter a valid 10-digit Philippine phone number" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Guests</label>
+                            <input type="number" name="guest_number" class="form-control" placeholder="Guest/s" required>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Date of Arrival</label>
+                                <input type="date" name="startDate" id="startDate" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Date of Departure</label>
+                                <input type="date" name="endDate" id="endDate" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div id="price-summary" class="alert alert-light mt-3 d-none">
+                            <p class="mb-1">₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
+                            <p id="total-price" class="fw-bold text-success mb-0"></p>
+                        </div>
+
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" name="terms" required>
+                            <label class="form-check-label">
+                                I agree to the
+                                <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a>
+                            </label>
+                        </div>
+
+                        <div class="mt-4">
+                            @auth
+                                <button type="submit" class="btn btn-primary w-100">Reserve</button>
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-secondary w-100">Please log in to reserve</a>
+                            @endauth
+                        </div>
+                    </form>
                 </div>
-            @endif
-            @if(session('message'))
-                <div style="color: red; font-weight: bold; margin-bottom: 10px;">
-                {!! nl2br(e(session('message'))) !!}
-                </div>
-            @endif
-        <p>Enter the required information<br>to book</p>
-
-        <form action="{{url('add_booking',$staycation->id)}}" method="POST">
-            @csrf
-            <span>Enter your name:</span>
-            <input type="text" name="name"  placeholder="Name" required
-            @if(Auth::id()) value="{{ Auth::user()->name }}"
-            @endif>
-            <span>Enter contact information:</span>
-                <input type="tel" name="phone" placeholder="9123456789" required
-                    pattern="[0-9]{10}" title="Enter a valid 10-digit Philippine phone number">
-            <span>How many guests:</span>
-                <input type="number" name="guest_number" id="" placeholder="Guest/s"  required>
-            <span>Date of arrival:</span>
-                <input type="date" name="startDate" id="startDate" placeholder="Arrival" required>
-            <span>Date of departure:</span>
-                <input type="date" name="endDate" id="endDate" placeholder="Departure" required>
-            <div id="price-summary" style="display:none; margin-top: 15px; font-weight: bold; border-top: 1px solid #ccc; padding-top: 10px;">
-                <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
-                <p id="total-price" style="font-size: 18px; color: green;"></p>
-    </div>
-    <div style="margin-top: 15px; margin-bottom: 15px;">
-        <label>
-            <input type="checkbox" name="terms" required>
-            I agree to the 
-            <a href="{{ url('/terms') }}" target="_blank" style="color: blue; text-decoration: underline;">
-                Terms & Conditions
-            </a>
-        </label>
-    </div>
-
-    @auth
-        <input type="submit" value="Reserve" class="buttom">
-    @else
-        <a href="{{ route('login') }}" class="buttom" 
-        style="display: inline-block; text-align: center; text-decoration: none;">
-        Please log in to reserve
-        </a>
-    @endauth
-
-    </form>
-</div>
-
-    <!-- Slider Section -->
-    <section class="container-pics">
-        <div class="slider-wrapper">
-            <div class="slider">
-                <img id="slide-1" class="slide" src="../assets/House1.png" alt="">
-                <img id="slide-2" class="slide" src="../assets/House2.png" alt="">
-                <img id="slide-3" class="slide" src="../assets/House3.png" alt="">
-                <img id="slide-4" class="slide" src="../assets/House4.png" alt="">
-                <img id="slide-5" class="slide" src="../assets/House5.png" alt="">
             </div>
-            <div class="slider-nav">
-                <button data-slide="0" class="slider-link"></button>
-                <button data-slide="1" class="slider-link"></button>
-                <button data-slide="2" class="slider-link"></button>
-                <button data-slide="3" class="slider-link"></button>
-                <button data-slide="4" class="slider-link"></button>
+        </div>
+
+        <!-- Image Slider -->
+        <div class="col-lg-6">
+            <div id="bookingCarousel" class="carousel slide rounded shadow overflow-hidden" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="../assets/House1.png" class="d-block w-100" alt="">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="../assets/House2.png" class="d-block w-100" alt="">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="../assets/House3.png" class="d-block w-100" alt="">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="../assets/House4.png" class="d-block w-100" alt="">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="../assets/House5.png" class="d-block w-100" alt="">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#bookingCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#bookingCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calendar Section -->
+    <div class="mt-5">
+        <h2 class="fw-bold mb-3">Availability</h2>
+        <div class="card shadow-sm p-3">
+            <div id="calendar"></div>
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <section class="row text-center g-4 mt-5">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <i class="bx bxs-home fs-1 text-primary mb-3"></i>
+                    <h5 class="fw-bold">Accommodation</h5>
+                    <p class="text-muted">Kitchen, Free Parking, Balcony, Wifi, Bathtub, Pets Allowed</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <i class="bx bxs-check-square fs-1 text-success mb-3"></i>
+                    <h5 class="fw-bold">Reminders</h5>
+                    <p class="text-muted">Check-in after 2:00 PM <br> Checkout before 12:00 PM <br> Max 6 guests</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <i class="bx bxs-no-entry fs-1 text-danger mb-3"></i>
+                    <h5 class="fw-bold">Cancellation Policy</h5>
+                    <p class="text-muted">No sudden cancellation <br> Rescheduling available</p>
+                </div>
             </div>
         </div>
     </section>
 </div>
 
-<!-- Calendar Section -->
-<div class="calendar-container container">
-    <h2>Availability</h2>
-    <div id="calendar"></div>
-</div>
-
-<section class="info container" id="info">
-    <div class="box">
-        <i class='bx bxs-home'></i>
-        <h3>Accomodation</h3>
-        <p>Kitchen</p>
-        <p>Free parking on premises</p>
-        <p>Private patio or balcony</p>
-        <p>Wifi</p>
-        <p>Bathtub</p>
-        <p>Pets allowed</p>
-    </div>
-
-    <div class="box">
-        <i class='bx bxs-check-square'></i>
-        <h3>Reminders</h3>
-        <p>Check-in after 2:00 PM</p>
-        <p>Checkout before 12:00 PM</p>
-        <p>6 guests maximum.</p>
-    </div>
-
-    <div class="box">
-        <i class='bx bxs-no-entry'></i>
-        <h3>Cancellation policy</h3>
-        <p>We don't accept sudden cancellation</p>
-        <p>We can offer rescheduling</p>
-    </div>
-</section>
-
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // ====== Date Picker Restriction ======
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    const minDate = `${year}-${month}-${day}`;
+    // Date Restriction
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("startDate").min = today;
+    document.getElementById("endDate").min = today;
 
-    const startDate = document.getElementById("startDate");
-    const endDate = document.getElementById("endDate");
+    // Price Calculation
+    const startInput = document.getElementById("startDate");
+    const endInput = document.getElementById("endDate");
+    const priceSummary = document.getElementById("price-summary");
+    const totalPriceElem = document.getElementById("total-price");
+    const pricePerNight = parseFloat(document.getElementById("price-per-night").innerText);
 
-    if (startDate) startDate.min = minDate;
-    if (endDate) endDate.min = minDate;
-
-    // ====== Image Slider ======
-    const slides = document.querySelectorAll(".slide");
-    const slider = document.querySelector(".slider");
-    const buttons = document.querySelectorAll(".slider-link");
-
-    let currentIndex = 0;
-    const totalSlides = slides.length;
-
-    function goToSlide(index) {
-        const slideWidth = slides[0].clientWidth;
-        slider.scrollTo({
-            left: slideWidth * index,
-            behavior: "smooth"
-        });
-    }
-
-    // Auto-slide every 4 seconds
-    setInterval(() => {
-        currentIndex = (currentIndex + 1) % totalSlides;
-        goToSlide(currentIndex);
-    }, 4000);
-
-    // Button navigation
-    buttons.forEach((button) => {
-        button.addEventListener("click", (e) => {
-            e.preventDefault();
-            currentIndex = parseInt(button.getAttribute("data-slide"), 10);
-            goToSlide(currentIndex);
-        });
-    });
-    // ====== Airbnb-style Price Calculation ======
-        const startInput = document.getElementById("startDate");
-        const endInput = document.getElementById("endDate");
-        const priceSummary = document.getElementById("price-summary");
-        const totalPriceElem = document.getElementById("total-price");
-        const pricePerNight = parseFloat(document.getElementById("price-per-night").innerText);
-
-        function calculatePrice() {
+    function calculatePrice() {
         if (startInput.value && endInput.value) {
-        const start = new Date(startInput.value);
-        const end = new Date(endInput.value);
+            const start = new Date(startInput.value);
+            const end = new Date(endInput.value);
 
-        if (end >= start) {
-            const days = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1; // Include last day
-            const total = days * pricePerNight;
+            if (end >= start) {
+                const days = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                const total = days * pricePerNight;
 
-            priceSummary.style.display = "block";
-            totalPriceElem.textContent = `Total for ${days} night(s): ₱${total.toLocaleString()}`;
-        } else {
-            priceSummary.style.display = "none";
+                priceSummary.classList.remove("d-none");
+                totalPriceElem.textContent = `Total for ${days} night(s): ₱${total.toLocaleString()}`;
+            } else {
+                priceSummary.classList.add("d-none");
+            }
         }
     }
-}
 
-startInput.addEventListener("change", calculatePrice);
-endInput.addEventListener("change", calculatePrice);
+    startInput.addEventListener("change", calculatePrice);
+    endInput.addEventListener("change", calculatePrice);
 
-    // ====== Calendar ======
-        const staycationId = "{{ $staycation->id }}"; // Example from Blade
-
+    // Calendar
+    const staycationId = "{{ $staycation->id }}";
     if (document.getElementById("calendar")) {
         const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
             initialView: "dayGridMonth",
@@ -202,10 +205,9 @@ endInput.addEventListener("change", calculatePrice);
                 center: "title",
                 right: ""
             },
-            events: `/events/${staycationId}` // pass staycation id to backend
+            events: `/events/${staycationId}`
         });
-
         calendar.render();
     }
-    });
+});
 </script>
