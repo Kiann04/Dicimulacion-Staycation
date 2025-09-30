@@ -7,21 +7,22 @@
 @endsection
 <!-- Hero Section -->
 <section class="container my-5">
-    <div id="heroCarousel" class="carousel slide rounded overflow-hidden shadow"
+    <div id="heroCarousel" class="carousel slide carousel-fade rounded overflow-hidden shadow"
          data-bs-ride="carousel" data-bs-interval="4000">
 
-        <!-- Indicators (dots) -->
+        <!-- Indicators -->
         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
             <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
             <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
         </div>
 
-        <!-- Carousel inner -->
+        <!-- Slides -->
         <div class="carousel-inner" style="height: 440px;">
 
             <!-- Slide 1 -->
             <div class="carousel-item active text-white d-flex align-items-center"
+                 data-bs-interval="4000"
                  style="background: url('{{ asset('assets/sunset.jpg') }}') center/cover no-repeat; height: 440px;">
                 <div class="p-5">
                     <h1 class="fw-bold">Find Your Next<br>Perfect Place To<br>Relax</h1>
@@ -31,6 +32,7 @@
 
             <!-- Slide 2 -->
             <div class="carousel-item text-white d-flex align-items-center"
+                 data-bs-interval="4000"
                  style="background: url('{{ asset('assets/bg.jpg') }}') center/cover no-repeat; height: 440px;">
                 <div class="p-5">
                     <h1 class="fw-bold">Experience the<br>Best Staycation<br>With Us</h1>
@@ -40,6 +42,7 @@
 
             <!-- Slide 3 -->
             <div class="carousel-item text-white d-flex align-items-center"
+                 data-bs-interval="4000"
                  style="background: url('{{ asset('assets/bg2.jpg') }}') center/cover no-repeat; height: 440px;">
                 <div class="p-5">
                     <h1 class="fw-bold">Unwind in<br>Beautiful Places<br>Close to You</h1>
@@ -59,15 +62,8 @@
     </div>
 </section>
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    const heroCarousel = document.querySelector('#heroCarousel');
-    const carousel = new bootstrap.Carousel(heroCarousel, {
-        interval: 4000,   // 4 seconds
-        ride: 'carousel'
-    });
-</script>
+
 <!-- About Us -->
 <section class="container my-5" id="about">
     <div class="row align-items-center g-4">
