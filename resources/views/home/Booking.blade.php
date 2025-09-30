@@ -178,7 +178,7 @@
 <section class="container my-5" id="reviews">
     <h2 class="fw-bold mb-4">What Our Guests Say</h2>
 
-    @if($allReviews->count() > 0)
+    @if(isset($allReviews) && $allReviews->count() > 0)
         <div class="row g-4">
             @foreach($allReviews as $review)
                 <div class="col-md-6">
@@ -193,7 +193,7 @@
                                 </span>
                             </div>
                             <p class="text-muted mb-1">
-                                <small>{{ $review->created_at->format('F d, Y') }}</small> 
+                                <small>{{ $review->created_at->format('F d, Y') }}</small>
                                 @if($review->booking && $review->booking->staycation)
                                     – <em>{{ $review->booking->staycation->house_name }}</em>
                                 @endif
@@ -208,6 +208,7 @@
         <p class="text-muted">No reviews have been submitted yet across all staycations.</p>
     @endif
 </section>
+
 
 
 <!-- FullCalendar -->

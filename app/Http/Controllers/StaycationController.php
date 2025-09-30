@@ -44,14 +44,15 @@ class StaycationController extends Controller
     // ✅ Show booking page with ALL reviews (not per staycation)
     public function bookingPage($id)
     {
-        // Get selected staycation (without its own reviews)
+        // load staycation
         $staycation = Staycation::findOrFail($id);
 
-        // Fetch all reviews across all staycations
+        // fetch all reviews with user + booking->staycation
         $allReviews = Review::with(['user', 'booking.staycation'])
                             ->latest()
                             ->get();
 
+        // pass both variables to the view
         return view('home.Booking', compact('staycation', 'allReviews'));
     }
 }
