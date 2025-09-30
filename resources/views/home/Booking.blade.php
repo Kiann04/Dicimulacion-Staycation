@@ -202,3 +202,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 </script>
+
+@section('Footer')
+    @include('Footer')
+@endsection
+
