@@ -1,8 +1,9 @@
-@extends ('layouts.default');
+@extends('layouts.default')
 
-@section ('Header')
-@include ('Header')
+@section('Header')
+    @include('layouts.header')
 @endsection
+
 <x-guest-layout>
     <link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
 
@@ -16,15 +17,17 @@
 
                 <span>Enter your email address</span>
                 <input type="email" name="email" placeholder="yourmail@gmail.com" required>
-                    @error('email')
-                        <p class="error">{{ $message }}</p>
-                    @enderror
+                @error('email')
+                    <p class="error">{{ $message }}</p>
+                @enderror
+
                 <span>Enter your password</span>
                 <input type="password" name="password" placeholder="Password" required>
-                    @error('password')
-                        <p class="error">{{ $message }}</p>
-                    @enderror
-                <input type="submit" value="Log In" class="buttom">
+                @error('password')
+                    <p class="error">{{ $message }}</p>
+                @enderror
+
+                <input type="submit" value="Log In" class="button">
 
                 @if (Route::has('password.request'))
                     <a href="{{ route('password.request') }}">Forget Password?</a>
@@ -41,6 +44,7 @@
         </div>
     </div>
 </x-guest-layout>
-@section ('Footer')
-@include ('Footer')
+
+@section('Footer')
+    @include('layouts.footer')
 @endsection
