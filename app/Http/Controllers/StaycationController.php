@@ -1,9 +1,12 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Staycation;
+use App\Models\Review; // ✅ Import Review model
 use Carbon\Carbon;
+
 class StaycationController extends Controller
 {
     // Display all staycations in the admin bookings page
@@ -37,4 +40,19 @@ class StaycationController extends Controller
 
         return redirect()->back()->with('success', 'Staycation house added successfully!');
     }
+
+    // ✅ Show single staycation + ALL reviews
+    public function bookingPage($id)
+    {
+        // Single staycation with its own reviews
+        $staycation = Staycation::with('reviews.user')->findOrFail($id);
+
+        // General reviews (all reviews across all staycations)
+        $allReviews = Review::with(['user', 'booking.staycation'])
+                            ->latest()
+                            ->get();
+
+        return view('home.Booking', compact('staycation', 'allReviews'));
+    }
+
 }

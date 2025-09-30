@@ -150,6 +150,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     // Bookings
     Route::get('/bookings', [StaycationController::class, 'index'])->name('bookings');
+    Route::get('/booking/{id}', [StaycationController::class, 'bookingPage'])->name('booking.page');
     Route::get('/view_bookings', [AdminController::class, 'view_bookings'])->name('view_bookings');
     Route::get('/view_bookings/{staycation_id}', [AdminController::class, 'view_staycation_bookings'])->name('view_staycation_bookings');
     Route::get('/update_booking/{id}', [AdminController::class, 'editBooking']);
