@@ -94,31 +94,6 @@
             </div>
         </div>
 
-        <!-- Two-Factor Authentication -->
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0">Two-Factor Authentication</h5>
-                </div>
-                <div class="card-body">
-                    <p class="mb-3">Enhance your account security by enabling two-factor authentication (2FA).</p>
-
-                    @if(auth()->user()->two_factor_secret)
-                        <form method="POST" action="{{ route('two-factor.disable') }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Disable 2FA</button>
-                        </form>
-                    @else
-                        <form method="POST" action="{{ route('two-factor.enable') }}">
-                            @csrf
-                            <button type="submit" class="btn btn-success">Enable 2FA</button>
-                        </form>
-                    @endif
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>
 
