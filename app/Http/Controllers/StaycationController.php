@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Staycation;
-use App\Models\Review; // ✅ Import Review model
+use App\Models\Review;
 use Carbon\Carbon;
 
 class StaycationController extends Controller
@@ -12,8 +12,8 @@ class StaycationController extends Controller
     // Display all staycations in the admin bookings page
     public function index()
     {
-        $staycations = Staycation::all(); // Fetch all staycations
-        return view('admin.bookings', compact('staycations')); // Pass to Blade
+        $staycations = Staycation::all(); 
+        return view('admin.bookings', compact('staycations')); 
     }
 
     public function store(Request $request)
@@ -41,18 +41,17 @@ class StaycationController extends Controller
         return redirect()->back()->with('success', 'Staycation house added successfully!');
     }
 
-    // ✅ Show single staycation + ALL reviews
+    // ✅ Show booking page with ALL reviews (not per staycation)
     public function bookingPage($id)
     {
-        // Single staycation with its own reviews
-        $staycation = Staycation::with('reviews.user')->findOrFail($id);
+        // Get selected staycation (without its own reviews)
+        $staycation = Staycation::findOrFail($id);
 
-        // General reviews (all reviews across all staycations)
+        // Fetch all reviews across all staycations
         $allReviews = Review::with(['user', 'booking.staycation'])
                             ->latest()
                             ->get();
 
         return view('home.Booking', compact('staycation', 'allReviews'));
     }
-
 }

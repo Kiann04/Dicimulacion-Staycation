@@ -174,12 +174,11 @@
         <p class="text-muted">No reviews yet for this staycation.</p>
     @endif
 </section>
+<!-- All Guest Reviews Section -->
+<section class="container my-5" id="reviews">
+    <h2 class="fw-bold mb-4">What Our Guests Say</h2>
 
-<!-- General Reviews (all staycations) -->
-<section class="container my-5" id="general-reviews">
-    <h2 class="fw-bold mb-4">All Guest Reviews</h2>
-
-    @if(isset($allReviews) && $allReviews->count() > 0)
+    @if($allReviews->count() > 0)
         <div class="row g-4">
             @foreach($allReviews as $review)
                 <div class="col-md-6">
@@ -194,10 +193,10 @@
                                 </span>
                             </div>
                             <p class="text-muted mb-1">
-                                <small>
-                                    {{ $review->created_at->format('F d, Y') }}
-                                    • Staycation: {{ $review->booking->staycation->house_name ?? 'N/A' }}
-                                </small>
+                                <small>{{ $review->created_at->format('F d, Y') }}</small> 
+                                @if($review->booking && $review->booking->staycation)
+                                    – <em>{{ $review->booking->staycation->house_name }}</em>
+                                @endif
                             </p>
                             <p class="mb-0">{{ $review->comment }}</p>
                         </div>
@@ -209,6 +208,7 @@
         <p class="text-muted">No reviews have been submitted yet across all staycations.</p>
     @endif
 </section>
+
 
 <!-- FullCalendar -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
