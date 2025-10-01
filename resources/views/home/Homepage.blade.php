@@ -6,8 +6,6 @@
     @include('Header')
 @endsection
 <!-- Hero Section -->
-<!-- Hero Section -->
-<!-- Hero Section -->
 <section class="container my-5">
     <div id="heroCarousel" class="carousel slide carousel-fade rounded overflow-hidden shadow"
          data-bs-ride="carousel" data-bs-interval="4000">
@@ -304,6 +302,7 @@
         <button type="submit" class="btn btn-primary w-100">Send</button>
     </form>
 </section>
+@include('partials.chatbot')
 
 @endsection
 @section('Footer')
