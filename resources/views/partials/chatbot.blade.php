@@ -1,15 +1,14 @@
 <!-- Chatbot Wrapper -->
 <div class="chatbot-wrapper">
-    <!-- Floating Button (with eyes) -->
-    <button id="ChatbotBtn" class="btn rounded-circle shadow-lg position-fixed d-flex justify-content-center align-items-center"
-        style="bottom: 20px; right: 20px; width: 80px; height: 80px; z-index: 1050; background: #fff; border: 2px solid #000;">
-        <div class="eye"><div class="pupil"></div></div>
-        <div class="eye"><div class="pupil"></div></div>
+    <!-- Floating Button -->
+    <button id="ChatbotBtn" class="btn btn-primary rounded-circle shadow-lg position-fixed"
+        style="bottom: 20px; right: 20px; width: 60px; height: 60px; z-index: 1050;">
+        <i class="bi bi-chat-dots-fill fs-3"></i>
     </button>
 
     <!-- Chatbot Container -->
     <div id="ChatbotContainer" class="card shadow-lg position-fixed hidden"
-        style="bottom: 110px; right: 20px; width: 320px; height: 450px; z-index: 1050;">
+        style="bottom: 90px; right: 20px; width: 320px; height: 450px; z-index: 1050;">
 
         <!-- Header -->
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -32,7 +31,7 @@
     </div>
 </div>
 
-<!-- Bootstrap Icons -->
+<!-- Bootstrap Icons (for chat/send icon) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <script>
@@ -130,25 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     sendBtn.addEventListener("click", sendMessage);
     input.addEventListener("keypress", e => { if (e.key === "Enter") sendMessage(); });
-
-    // Eye animation
-    const eyes = document.querySelectorAll('.eye');
-    document.addEventListener('mousemove', (event) => {
-        eyes.forEach(eye => {
-            const pupil = eye.querySelector('.pupil');
-            const eyeRect = eye.getBoundingClientRect();
-            const eyeCenterX = eyeRect.left + eyeRect.width / 2;
-            const eyeCenterY = eyeRect.top + eyeRect.height / 2;
-
-            const angle = Math.atan2(event.clientY - eyeCenterY, event.clientX - eyeCenterX);
-            const distance = Math.min(eyeRect.width / 4, eyeRect.height / 4);
-
-            const pupilX = Math.cos(angle) * distance;
-            const pupilY = Math.sin(angle) * distance;
-
-            pupil.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
-        });
-    });
 });
 </script>
 
@@ -156,27 +136,5 @@ document.addEventListener("DOMContentLoaded", () => {
 /* Hide chatbot initially */
 .hidden {
     display: none;
-}
-
-/* Eye styles */
-.eye {
-    width: 24px;
-    height: 24px;
-    background: #fff;
-    border: 2px solid #000;
-    border-radius: 50%;
-    position: relative;
-    overflow: hidden;
-}
-
-.pupil {
-    width: 10px;
-    height: 10px;
-    background: #000;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
 </style>
