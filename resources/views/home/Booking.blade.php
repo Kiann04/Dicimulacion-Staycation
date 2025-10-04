@@ -145,7 +145,8 @@
     </div>
 </section>
 
-<!-- 🏡 Guest Reviews Section -->
+@php $allReviews = $allReviews ?? collect(); @endphp
+
 <section class="container my-5" id="reviews">
     <h2 class="fw-bold mb-4 text-center">What Our Guests Say</h2>
 
@@ -155,11 +156,8 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="card shadow-sm border-0 h-100 rounded-4">
                         <div class="card-body">
-                            <!-- User Name & Rating -->
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 class="mb-0 fw-semibold">
-                                    {{ $review->user->name ?? 'Guest' }}
-                                </h5>
+                                <h5 class="mb-0 fw-semibold">{{ $review->user->name ?? 'Guest' }}</h5>
                                 <div class="text-warning">
                                     @for ($i = 1; $i <= 5; $i++)
                                         <i class="bx {{ $i <= $review->rating ? 'bxs-star' : 'bx-star' }}"></i>
@@ -167,7 +165,6 @@
                                 </div>
                             </div>
 
-                            <!-- Date + Staycation Name -->
                             <p class="text-muted small mb-1">
                                 {{ $review->created_at->format('F d, Y') }}
                                 @if($review->booking && $review->booking->staycation)
@@ -175,21 +172,17 @@
                                 @endif
                             </p>
 
-                            <!-- Review Comment -->
-                            <p class="mb-0 text-secondary">
-                                {{ $review->comment }}
-                            </p>
+                            <p class="mb-0 text-secondary">{{ $review->comment }}</p>
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
     @else
-        <p class="text-center text-muted">
-            No reviews have been submitted yet for this staycation.
-        </p>
+        <p class="text-center text-muted">No reviews have been submitted yet for this staycation.</p>
     @endif
 </section>
+
 
 
 
