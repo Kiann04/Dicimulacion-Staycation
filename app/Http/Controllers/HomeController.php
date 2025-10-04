@@ -111,24 +111,34 @@ class HomeController extends Controller
     }
 
     // Store review for a booking
-    public function storeReview(Request $request, $booking_id)
-    {
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'required|string|max:1000',
-        ]);
+public function storeReview(Request $request)
+{
+    $request->validate([
+        'booking_id' => 'required|exists:bookings,id',
+        'rating' => 'required|integer|min:1|max:5',
+        'comment' => 'required|string|max:1000',
+    ]);
 
-        $booking = Booking::findOrFail($booking_id);
+    $booking = Booking::where('id', $request->booking_id)
+        ->where('user_id', Auth::id()) // ensures user owns this booking
+        ->firstOrFail();
 
-        Review::create([
-            'user_id' => Auth::id(),
-            'booking_id' => $booking->id,
-            'rating' => $request->rating,
-            'comment' => $request->comment,
-        ]);
-
-        return back()->with('success', 'Thank you! Your review has been submitted.');
+    // ✅ Prevent duplicate reviews
+    if ($booking->review) {
+        return back()->with('error', 'You have already submitted a review for this booking.');
     }
+
+    // ✅ Create the review
+    Review::create([
+        'user_id' => Auth::id(),
+        'booking_id' => $booking->id,
+        'rating' => $request->rating,
+        'comment' => $request->comment,
+    ]);
+
+    return back()->with('success', 'Thank you! Your review has been submitted.');
+}
+
 
     // Handle contact form submission with optional attachment
     public function sendInquiry(Request $request)

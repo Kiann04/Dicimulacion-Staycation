@@ -69,7 +69,11 @@ Route::delete('/booking/{id}/cancel', [BookingHistoryController::class, 'cancel'
 // Reviews
 // =========================
 Route::post('/bookings/{booking}/review', [ReviewController::class, 'store'])->middleware('auth')->name('reviews.store');
-Route::post('/reviews/{booking}', [HomeController::class, 'storeReview'])->middleware('auth')->name('reviews.store');
+// routes/web.php
+Route::post('/reviews', [HomeController::class, 'storeReview'])
+    ->middleware('auth')
+    ->name('reviews.store');
+
 
 // =========================
 // Contact / Messages
