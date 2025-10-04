@@ -7,99 +7,79 @@
 @endsection
 <!-- Hero Section -->
 <section class="container my-5">
-  <div id="heroCarousel" class="carousel slide carousel-fade rounded overflow-hidden shadow"
-       data-bs-ride="carousel" data-bs-interval="4000">
+    <div id="heroCarousel" class="carousel slide carousel-fade rounded overflow-hidden shadow"
+         data-bs-ride="carousel" data-bs-interval="4000">
 
-    <!-- Indicators -->
-    <div class="carousel-indicators">
-      <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
-      <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
-      <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+        <!-- Indicators -->
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+        </div>
+
+        <!-- Slides -->
+        <div class="carousel-inner" style="height: 440px;">
+
+            <!-- Slide 1 -->
+            <div class="carousel-item active" data-bs-interval="4000">
+                <div class="d-flex align-items-center text-white"
+                     style="background: url('{{ asset('assets/sunset.jpg') }}') center/cover no-repeat; height: 440px; position: relative;">
+                    
+                    <!-- Gradient Overlay (bottom only) -->
+                    <div class="position-absolute top-0 start-0 w-100 h-100"
+                         style="background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));"></div>
+
+                    <!-- Text -->
+                    <div class="p-5 position-relative">
+                        <h1 class="fw-bold">Find Your Next<br>Perfect Place To<br>Relax</h1>
+                        <a href="{{ url('register') }}" class="btn btn-primary mt-3">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-item" data-bs-interval="4000">
+                <div class="d-flex align-items-center text-white"
+                     style="background: url('{{ asset('assets/bg.jpg') }}') center/cover no-repeat; height: 440px; position: relative;">
+                    
+                    <div class="position-absolute top-0 start-0 w-100 h-100"
+                         style="background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));"></div>
+
+                    <div class="p-5 position-relative">
+                        <h1 class="fw-bold">Experience the<br>Best Staycation<br>With Us</h1>
+                        <a href="{{ url('register') }}" class="btn btn-primary mt-3">Get Started</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="carousel-item" data-bs-interval="4000">
+                <div class="d-flex align-items-center text-white"
+                     style="background: url('{{ asset('assets/bg2.jpg') }}') center/cover no-repeat; height: 440px; position: relative;">
+                    
+                    <div class="position-absolute top-0 start-0 w-100 h-100"
+                         style="background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));"></div>
+
+                    <div class="p-5 position-relative">
+                        <h1 class="fw-bold">Unwind in<br>Beautiful Places<br>Close to You</h1>
+                        <a href="{{ url('register') }}" class="btn btn-primary mt-3">Join Now</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
     </div>
-
-    <!-- Slides -->
-    <div class="carousel-inner" style="height: 440px;">
-
-      <!-- Slide 1 -->
-      <div class="carousel-item active" data-bs-interval="4000">
-        <div class="d-flex align-items-center text-white position-relative"
-             style="background: url('{{ asset('assets/sunset.jpg') }}') center/cover no-repeat; height: 440px;">
-          
-          <!-- Gradient Overlay -->
-          <div class="position-absolute top-0 start-0 w-100 h-100"
-               style="background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));"></div>
-
-          <!-- Text -->
-          <div class="hero-text position-relative p-5">
-            <h1 class="fw-bold">Find Your Next<br>Perfect Place To<br>Relax</h1>
-            <a href="{{ url('register') }}" class="btn btn-primary mt-3">Sign Up</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Slide 2 -->
-      <div class="carousel-item" data-bs-interval="4000">
-        <div class="d-flex align-items-center text-white position-relative"
-             style="background: url('{{ asset('assets/bg.jpg') }}') center/cover no-repeat; height: 440px;">
-          <div class="position-absolute top-0 start-0 w-100 h-100"
-               style="background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));"></div>
-          <div class="hero-text position-relative p-5">
-            <h1 class="fw-bold">Experience the<br>Best Staycation<br>With Us</h1>
-            <a href="{{ url('register') }}" class="btn btn-primary mt-3">Get Started</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Slide 3 -->
-      <div class="carousel-item" data-bs-interval="4000">
-        <div class="d-flex align-items-center text-white position-relative"
-             style="background: url('{{ asset('assets/bg2.jpg') }}') center/cover no-repeat; height: 440px;">
-          <div class="position-absolute top-0 start-0 w-100 h-100"
-               style="background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));"></div>
-          <div class="hero-text position-relative p-5">
-            <h1 class="fw-bold">Unwind in<br>Beautiful Places<br>Close to You</h1>
-            <a href="{{ url('register') }}" class="btn btn-primary mt-3">Join Now</a>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Controls -->
-    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon"></span>
-    </button>
-  </div>
 </section>
 
-<!-- ✅ Styles -->
-<style>
-.carousel .hero-text {
-  position: relative;
-  z-index: 10; /* keep text & button above controls */
-  margin-left: 60px;
-}
 
-.carousel-control-prev,
-.carousel-control-next {
-  z-index: 5; /* controls below button but still clickable */
-}
-
-.carousel-control-prev {
-  left: 10px;
-}
-
-.carousel-control-next {
-  right: 10px;
-}
-
-.carousel .btn {
-  pointer-events: auto !important; /* ensures it's clickable */
-}
-</style>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
