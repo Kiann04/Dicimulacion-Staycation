@@ -69,7 +69,7 @@ class StaycationController extends Controller
 
         return view('home.booking', compact('staycation', 'allReviews'));
     }
-
+    
 
 
 }
