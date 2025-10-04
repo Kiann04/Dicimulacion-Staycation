@@ -59,15 +59,13 @@ class StaycationController extends Controller
     {
         $staycation = Staycation::findOrFail($id);
 
-        // Fetch all reviews related to this staycation
+        // Get all reviews across all staycations (like Airbnb)
         $allReviews = Review::with(['user', 'booking.staycation'])
-            ->whereHas('booking', function($query) use ($id) {
-                $query->where('staycation_id', $id);
-            })
             ->latest()
             ->get();
 
         return view('home.booking', compact('staycation', 'allReviews'));
     }
+
 
 }
