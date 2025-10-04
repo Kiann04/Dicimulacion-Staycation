@@ -176,11 +176,9 @@
             @endforeach
         </div>
     @else
-        <p class="text-muted">No reviews have been submitted yet across all staycations.</p>
+        <p class="text-muted">No reviews have been submitted yet for this staycation.</p>
     @endif
 </section>
-
-
 
 <!-- FullCalendar -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>

@@ -55,4 +55,19 @@ class StaycationController extends Controller
         // pass both variables to the view
         return view('home.Booking', compact('staycation', 'allReviews'));
     }
+    public function showStaycation($id)
+    {
+        $staycation = Staycation::findOrFail($id);
+
+        // Fetch all reviews related to this staycation
+        $allReviews = Review::with(['user', 'booking.staycation'])
+            ->whereHas('booking', function($query) use ($id) {
+                $query->where('staycation_id', $id);
+            })
+            ->latest()
+            ->get();
+
+        return view('home.booking', compact('staycation', 'allReviews'));
+    }
+
 }
