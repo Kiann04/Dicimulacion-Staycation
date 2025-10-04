@@ -9,72 +9,13 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
-
-    <style>
-        /* Glass effect navbar */
-        .navbar {
-            background: rgba(255, 255, 255, 0.75) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            transition: all 0.3s ease-in-out;
-        }
-
-        /* Brand logo */
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.3rem;
-            color: #0d6efd !important;
-        }
-
-        /* Links */
-        .navbar-nav .nav-link {
-            font-weight: 500;
-            position: relative;
-            padding: 8px 15px;
-            transition: color 0.3s ease;
-        }
-        .navbar-nav .nav-link:hover {
-            color: #0d6efd !important;
-        }
-
-        /* Underline animation */
-        .navbar-nav .nav-link::after {
-            content: "";
-            position: absolute;
-            width: 0;
-            height: 2px;
-            background: #0d6efd;
-            left: 0;
-            bottom: 0;
-            transition: width 0.3s;
-        }
-        .navbar-nav .nav-link:hover::after {
-            width: 100%;
-        }
-
-        /* Buttons */
-        .btn-primary {
-            border-radius: 30px;
-            padding: 8px 20px;
-        }
-        .btn-outline-primary {
-            border-radius: 30px;
-            padding: 8px 20px;
-        }
-
-        /* Dropdown */
-        .dropdown-menu {
-            border-radius: 12px;
-            box-shadow: 0px 4px 20px rgba(0,0,0,0.1);
-        }
-    </style>
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
         <div class="container">
             <!-- Brand / Logo -->
-            <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ route('home') }}">
                 <i class='bx bx-home-alt me-2'></i> Dicimulacion
             </a>
 
