@@ -5,49 +5,48 @@
 @section('Header')
     @include('Header')
 @endsection
-<!-- Modern Hero Carousel -->
-<section class="container my-5">
-  <div id="heroCarousel" class="carousel slide carousel-fade rounded overflow-hidden shadow"
-       data-bs-ride="carousel" data-bs-interval="4000">
+<!-- Modern Hero Section -->
+<section class="hero-section">
+  <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
 
     <!-- Indicators -->
     <div class="carousel-indicators">
-      <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+      <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
       <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
       <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
     </div>
 
     <!-- Slides -->
-    <div class="carousel-inner" style="height: 440px;">
+    <div class="carousel-inner">
 
       <!-- Slide 1 -->
-      <div class="carousel-item active" data-bs-interval="4000">
+      <div class="carousel-item active">
         <div class="hero-slide" style="background-image: url('{{ asset('assets/sunset.jpg') }}');">
           <div class="hero-overlay"></div>
-          <div class="hero-content text-center text-white">
-            <h1 class="fw-bold display-5 mb-2">Find Your Next Perfect Place</h1>
+          <div class="hero-content text-center text-white fade-in">
+            <h1 class="fw-bold display-4">Find Your Next Perfect Place</h1>
             <p class="lead">Relax, recharge, and stay in comfort.</p>
           </div>
         </div>
       </div>
 
       <!-- Slide 2 -->
-      <div class="carousel-item" data-bs-interval="4000">
+      <div class="carousel-item">
         <div class="hero-slide" style="background-image: url('{{ asset('assets/bg.jpg') }}');">
           <div class="hero-overlay"></div>
-          <div class="hero-content text-center text-white">
-            <h1 class="fw-bold display-5 mb-2">Experience the Best Staycation</h1>
+          <div class="hero-content text-center text-white fade-in">
+            <h1 class="fw-bold display-4">Experience the Best Staycation</h1>
             <p class="lead">Luxury and peace combined, just for you.</p>
           </div>
         </div>
       </div>
 
       <!-- Slide 3 -->
-      <div class="carousel-item" data-bs-interval="4000">
+      <div class="carousel-item">
         <div class="hero-slide" style="background-image: url('{{ asset('assets/bg2.jpg') }}');">
           <div class="hero-overlay"></div>
-          <div class="hero-content text-center text-white">
-            <h1 class="fw-bold display-5 mb-2">Unwind in Beautiful Places</h1>
+          <div class="hero-content text-center text-white fade-in">
+            <h1 class="fw-bold display-4">Unwind in Beautiful Places</h1>
             <p class="lead">Discover comfort close to home.</p>
           </div>
         </div>
@@ -65,13 +64,20 @@
   </div>
 </section>
 
-<!-- ✅ Modern Styles -->
+<!-- Styles -->
 <style>
+.hero-section {
+  position: relative;
+  height: 80vh;
+  min-height: 440px;
+}
+
 .hero-slide {
   position: relative;
   background-size: cover;
   background-position: center;
-  height: 440px;
+  height: 80vh;
+  min-height: 440px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -80,29 +86,51 @@
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top right, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.2));
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
   z-index: 1;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: 700px;
+  max-width: 800px;
   padding: 1rem;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
 }
 
-.carousel-control-prev,
-.carousel-control-next {
-  width: 5%;
-  z-index: 3;
+.hero-content h1 {
+  font-size: 2.8rem;
+  letter-spacing: 1px;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  font-weight: 300;
+  margin-top: 0.5rem;
 }
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
   filter: brightness(0) invert(1);
 }
+
+.carousel-indicators [data-bs-target] {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.fade-in {
+  animation: fadeInUp 1.2s ease-in-out;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 </style>
 
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- About Us -->
