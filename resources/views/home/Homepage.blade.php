@@ -78,7 +78,17 @@
         </button>
     </div>
 </section>
+<style>
+.carousel .position-relative {
+  position: relative;
+  z-index: 5; /* 👈 keeps buttons above prev/next controls */
+}
 
+.carousel-control-prev,
+.carousel-control-next {
+  z-index: 1; /* 👈 push controls below the button */
+}
+</style>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
