@@ -70,7 +70,7 @@ Route::delete('/booking/{id}/cancel', [BookingHistoryController::class, 'cancel'
 // =========================
 Route::post('/bookings/{booking}/review', [ReviewController::class, 'store'])->middleware('auth')->name('reviews.store');
 // routes/web.php
-Route::post('/reviews', [HomeController::class, 'storeReview'])
+Route::post('/reviews', [ReviewController::class, 'store'])
     ->middleware('auth')
     ->name('reviews.store');
 
