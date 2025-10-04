@@ -49,9 +49,12 @@
                                         && $booking->end_date
                                         && \Carbon\Carbon::today()->greaterThanOrEqualTo(\Carbon\Carbon::parse($booking->end_date))
                                     )
-                                        @if(!$booking->review)
-                                            <form action="{{ route('reviews.store', $booking->id) }}" method="POST" class="d-flex flex-column gap-2">
+                                        {{-- Only show review form if booking has no review --}}
+                                        @if($booking->review === null)
+                                            <form action="{{ route('reviews.store') }}" method="POST" class="d-flex flex-column gap-2">
                                                 @csrf
+                                                <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                                                
                                                 <select name="rating" class="form-select form-select-sm w-auto" required>
                                                     <option value="">Rating</option>
                                                     @for ($i = 1; $i <= 5; $i++)
@@ -62,10 +65,12 @@
                                                 <button type="submit" class="btn btn-sm btn-primary">Submit</button>
                                             </form>
                                         @else
+                                            {{-- Show existing review --}}
                                             <p class="mb-1"><strong>{{ $booking->review->rating }}⭐</strong></p>
                                             <p class="text-muted">{{ $booking->review->comment }}</p>
                                         @endif
                                     @else
+                                        {{-- Not completed or end_date not reached --}}
                                         @if(strtolower($booking->status) !== 'completed')
                                             <span class="text-muted">Review available after booking is completed</span>
                                         @elseif(!$booking->end_date || \Carbon\Carbon::today()->lessThan(\Carbon\Carbon::parse($booking->end_date)))
