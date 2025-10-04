@@ -59,16 +59,17 @@ class StaycationController extends Controller
     {
         $staycation = Staycation::findOrFail($id);
 
-        // ✅ Get reviews only for this staycation
+        // ✅ Only reviews for this staycation (through bookings)
         $allReviews = Review::with(['user', 'booking.staycation'])
-            ->whereHas('booking', function ($query) use ($staycation) {
-                $query->where('staycation_id', $staycation->id);
+            ->whereHas('booking', function ($query) use ($id) {
+                $query->where('staycation_id', $id);
             })
             ->latest()
             ->get();
 
         return view('home.booking', compact('staycation', 'allReviews'));
-    }   
+    }
+
 
 
 }
