@@ -133,56 +133,79 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- About Us -->
+<!-- Modern About Us Section -->
 <section class="container my-5 py-5" id="about">
-    <div class="row align-items-center g-5">
-        <!-- Image -->
-        <div class="col-lg-6">
-            <div class="position-relative">
-                <img src="{{ asset('assets/AboutUs.jpg') }}" 
-                     class="img-fluid rounded-4 shadow-lg" 
-                     alt="About Us">
-                <div class="position-absolute top-0 start-0 bg-primary bg-opacity-25 rounded-4 w-100 h-100"></div>
-            </div>
-        </div>
-
-        <!-- Text -->
-        <div class="col-lg-6">
-            <h5 class="text-primary fw-semibold">About Us</h5>
-            <h2 class="fw-bold display-6 mb-4">
-                We Provide The Best <br> Place For You
-            </h2>
-            <p class="text-muted">
-                We’re a family-owned staycation business with eight homes, all located with beautiful city lights or surrounded by peaceful nature.
-            </p>
-            <p class="text-muted">
-                Whether you want to enjoy the city lights or relax in the calm of nature, we’ve created spaces where you can slow down and feel right at home.
-            </p>
-            <p class="text-muted">
-                Each of our homes is carefully designed and cared for by our family to make sure your stay is comfortable and memorable.
-            </p>
-            <p class="text-muted">
-                We believe in treating guests like friends, with thoughtful details and a personal touch that make all the difference. Come stay with us—and be a part of our story.
-            </p>
-            <a href="#" class="btn btn-primary btn-lg mt-3 rounded-pill px-4">
-                Learn More
-            </a>
-        </div>
+  <div class="row align-items-center g-5">
+    
+    <!-- Image Side -->
+    <div class="col-lg-6">
+      <div class="about-img-wrapper position-relative rounded-4 overflow-hidden shadow-lg">
+        <img src="{{ asset('assets/AboutUs.jpg') }}" class="img-fluid" alt="About Us">
+        <div class="overlay"></div>
+      </div>
     </div>
+
+    <!-- Text Side -->
+    <div class="col-lg-6 fade-in-up">
+      <h5 class="text-primary fw-semibold mb-2">About Us</h5>
+      <h2 class="fw-bold display-6 mb-4">
+        We Provide The Best <br> Place For You
+      </h2>
+      <p class="text-muted fs-5">
+        We’re a family-owned staycation business with eight homes, each perfectly placed to enjoy either breathtaking city views or peaceful nature escapes.
+      </p>
+      <p class="text-muted fs-5">
+        Whether you’re looking to recharge under the stars, or relax in the calm of nature, our homes are designed to make you feel right at home.
+      </p>
+      <p class="text-muted fs-5">
+        Each property is thoughtfully prepared by our family to ensure comfort, style, and unforgettable memories.
+      </p>
+      <a href="#houses" class="btn btn-primary btn-lg mt-3 rounded-pill px-4 shadow-sm">
+        Explore Our Houses
+      </a>
+    </div>
+  </div>
 </section>
 
-<!-- Extra styling -->
+<!-- Modern Styling -->
 <style>
-    #about img {
-        object-fit: cover;
-    }
-    #about .btn {
-        transition: all 0.3s ease;
-    }
-    #about .btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
-    }
+/* Image wrapper */
+.about-img-wrapper {
+  position: relative;
+  height: 100%;
+}
+.about-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+.about-img-wrapper:hover img {
+  transform: scale(1.05);
+}
+.about-img-wrapper .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.35), rgba(0,0,0,0));
+}
+
+/* Fade-in animation */
+.fade-in-up {
+  animation: fadeInUp 1.2s ease-in-out;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Button hover effect */
+#about .btn {
+  transition: all 0.3s ease;
+}
+#about .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 .75rem 1.5rem rgba(0,0,0,.15);
+}
 </style>
 
 
