@@ -197,48 +197,47 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // ===== Date Restriction =====
-    const today = new Date().toISOString().split("T")[0];
     const startInput = document.getElementById("startDate");
     const endInput = document.getElementById("endDate");
+    const priceSummary = document.getElementById("price-summary");
+    const totalPriceElem = document.getElementById("total-price");
+    const pricePerNight = parseFloat(document.getElementById("price-per-night").innerText);
+    const form = document.querySelector("form");
 
+    const today = new Date().toISOString().split("T")[0];
     if (startInput) startInput.min = today;
     if (endInput) endInput.min = today;
 
-    // ===== Departure must be at least next day =====
+    // Update minimum departure date whenever start changes
     startInput.addEventListener("change", function() {
         if (this.value) {
             const arrival = new Date(this.value);
             const minDeparture = new Date(arrival);
-            minDeparture.setDate(arrival.getDate() + 1); // next day minimum
+            minDeparture.setDate(arrival.getDate() + 1); // At least one day later
 
             const yyyy = minDeparture.getFullYear();
             const mm = String(minDeparture.getMonth() + 1).padStart(2, "0");
             const dd = String(minDeparture.getDate()).padStart(2, "0");
-
             const minDateStr = `${yyyy}-${mm}-${dd}`;
+
             endInput.min = minDateStr;
 
-            // If previously selected end date is invalid, update it
+            // Reset end date if it's before the new min
             if (endInput.value && new Date(endInput.value) < minDeparture) {
                 endInput.value = minDateStr;
             }
 
-            calculatePrice(); // recalc when start changes
+            calculatePrice();
         }
     });
 
-    // ===== Price Calculation =====
-    const priceSummary = document.getElementById("price-summary");
-    const totalPriceElem = document.getElementById("total-price");
-    const pricePerNight = parseFloat(document.getElementById("price-per-night").innerText);
-
+    // Calculate price
     function calculatePrice() {
         if (startInput.value && endInput.value) {
             const start = new Date(startInput.value);
             const end = new Date(endInput.value);
 
-            if (end > start) { // departure must be after arrival
+            if (end > start) {
                 const days = Math.floor((end - start) / (1000 * 60 * 60 * 24));
                 const total = days * pricePerNight;
                 priceSummary.style.display = "block";
@@ -253,6 +252,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     startInput.addEventListener("change", calculatePrice);
     endInput.addEventListener("change", calculatePrice);
+
+    // Prevent form submission if dates are invalid
+    if (form) {
+        form.addEventListener("submit", function(e) {
+            const start = new Date(startInput.value);
+            const end = new Date(endInput.value);
+
+            if (end <= start) {
+                e.preventDefault();
+                alert("Departure date must be at least one day after arrival date.");
+                return false;
+            }
+        });
+    }
 
     // ===== Calendar =====
     const staycationId = "{{ $staycation->id }}";
