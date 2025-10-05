@@ -193,7 +193,6 @@
 
 
 
-<!-- FullCalendar -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -240,9 +239,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (end > start) { // strictly greater than start
                 const nights = Math.floor((end - start) / (1000 * 60 * 60 * 24));
-                const total = nights * pricePerNight;
+                const subtotal = nights * pricePerNight;
+                const vat = subtotal * 0.12;
+                const total = subtotal + vat;
+
                 priceSummary.style.display = "block";
-                totalPriceElem.textContent = `Total for ${nights} night(s): ₱${total.toLocaleString()}`;
+                totalPriceElem.innerHTML = `
+                    Subtotal (before VAT): ₱${subtotal.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}<br>
+                    VAT (12%): ₱${vat.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}<br>
+                    Total: <strong>₱${total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong> (${nights} night${nights>1?'s':''})
+                `;
             } else {
                 priceSummary.style.display = "none";
             }
@@ -263,7 +269,6 @@ document.addEventListener("DOMContentLoaded", function () {
             if (end <= start) {
                 e.preventDefault();
                 alert("Departure date must be at least one day after arrival date.");
-                return false;
             }
         });
     }

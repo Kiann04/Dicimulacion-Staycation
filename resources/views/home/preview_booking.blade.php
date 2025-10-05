@@ -64,19 +64,32 @@
 
         @php
             $vatRate = 0.12;
-            $priceWithoutVat = $totalWithVat / (1 + $vatRate);
-            $vatAmount = $totalWithVat - $priceWithoutVat;
+
+            $start = \Carbon\Carbon::parse($startDate);
+            $end = \Carbon\Carbon::parse($endDate);
+
+            // Number of nights (exclude departure)
+            $nights = $end->diffInDays($start);
+
+            // Price calculation
+            $subtotal = $staycation->house_price * $nights;
+            $vatAmount = $subtotal * $vatRate;
+            $totalWithVat = $subtotal + $vatAmount;
+
+            $formattedStart = $start->format('M d, Y');
+            $formattedEnd = $end->format('M d, Y');
         @endphp
 
         <div class="booking-info mb-4">
             <p><strong>Staycation:</strong> {{ $staycation->house_name }}</p>
             <p><strong>Guests:</strong> {{ $guest_number }}</p>
-            <p><strong>Stay Dates:</strong> {{ $startDate }} - {{ $endDate }}</p>
+            <p><strong>Stay Dates:</strong> {{ $formattedStart }} - {{ $formattedEnd }} ({{ $nights }} night{{ $nights>1?'s':'' }})</p>
             <hr>
-            <p>Subtotal (Before VAT): ₱{{ number_format($priceWithoutVat,2) }}</p>
-            <p>VAT (12%): ₱{{ number_format($vatAmount,2) }}</p>
-            <p class="total-amount">Total: ₱{{ number_format($totalWithVat,2) }}</p>
+            <p>Subtotal (Before VAT): ₱{{ number_format($subtotal, 2) }}</p>
+            <p>VAT (12%): ₱{{ number_format($vatAmount, 2) }}</p>
+            <p class="total-amount">Total: ₱{{ number_format($totalWithVat, 2) }}</p>
         </div>
+
 
         <form action="{{ route('booking.submit', $staycation->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
