@@ -5,74 +5,78 @@
 @endsection
 
 <section class="container my-5">
-    <div class="row g-4 align-items-start">
-        <!-- Booking Form -->
-        <div class="col-lg-6">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-4">
-                    <h3 class="fw-bold">Booking Form for {{ $staycation->house_name }}</h3>
-                    <p class="text-muted">Enter the required information to book</p>
+  <div class="row g-4 align-items-start">
+    <!-- Booking Form -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h3 class="fw-bold">Booking Form for {{ $staycation->house_name }}</h3>
+          <p class="text-muted">Enter the required information to book</p>
 
-                    @if(session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
-                    @if(session('message'))
-                        <div class="alert alert-danger">{!! nl2br(e(session('message'))) !!}</div>
-                    @endif
+          @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+          @endif
+          @if(session('message'))
+            <div class="alert alert-danger">{!! nl2br(e(session('message'))) !!}</div>
+          @endif
 
-                    <form action="{{ url('add_booking',$staycation->id) }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" name="name" class="form-control" placeholder="Name" required
-                                @if(Auth::id()) value="{{ Auth::user()->name }}" @endif>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Contact Number</label>
-                            <input type="tel" name="phone" class="form-control" placeholder="9123456789" required
-                                pattern="[0-9]{10}" title="Enter a valid 10-digit Philippine phone number">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Guests</label>
-                            <input type="number" name="guest_number" class="form-control" placeholder="Guest/s" required>
-                        </div>
-
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Date of Arrival</label>
-                                <input type="date" name="startDate" id="startDate" class="form-control" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Date of Departure</label>
-                                <input type="date" name="endDate" id="endDate" class="form-control" required>
-                            </div>
-                        </div>
-
-                        <div id="price-summary" class="border-top pt-3 mb-3" style="display:none;">
-                            <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
-                            <p id="total-price" class="fw-bold text-success"></p>
-                        </div>
-
-                        <div class="form-check mb-3">
-                            <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
-                            <label class="form-check-label" for="terms">
-                                I agree to the <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a>
-                            </label>
-                        </div>
-
-                        @auth
-                            <button type="submit" class="btn btn-primary w-100">Reserve</button>
-                        @else
-                            <a href="{{ route('login') }}" class="btn btn-secondary w-100 disabled">
-                                Please log in to reserve
-                            </a>
-                        @endauth
-                    </form>
-                </div>
+          <!-- ✅ Updated Form -->
+          <form action="{{ route('booking.preview', $staycation->id) }}" method="POST">
+            @csrf
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" name="name" class="form-control" placeholder="Name" required
+                @if(Auth::id()) value="{{ Auth::user()->name }}" @endif>
             </div>
+
+            <div class="mb-3">
+              <label class="form-label">Contact Number</label>
+              <input type="tel" name="phone" class="form-control" placeholder="9123456789" required
+                pattern="[0-9]{10}" title="Enter a valid 10-digit Philippine phone number">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Guests</label>
+              <input type="number" name="guest_number" class="form-control" placeholder="Guest/s" required>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Date of Arrival</label>
+                <input type="date" name="startDate" id="startDate" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Date of Departure</label>
+                <input type="date" name="endDate" id="endDate" class="form-control" required>
+              </div>
+            </div>
+
+            <div id="price-summary" class="border-top pt-3 mb-3" style="display:none;">
+              <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
+              <p id="total-price" class="fw-bold text-success"></p>
+            </div>
+
+            <div class="form-check mb-3">
+              <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+              <label class="form-check-label" for="terms">
+                I agree to the <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a>
+              </label>
+            </div>
+
+            @auth
+              <button type="submit" class="btn btn-primary w-100 fw-semibold">
+                Reserve
+              </button>
+            @else
+              <a href="{{ route('login') }}" class="btn btn-secondary w-100 disabled">
+                Please log in to reserve
+              </a>
+            @endauth
+          </form>
         </div>
+      </div>
+    </div>
+  </div>
 
         <!-- Image Carousel -->
         <div class="col-lg-6">

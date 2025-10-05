@@ -6,28 +6,44 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up()
+    public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->enum('payment_status', ['unpaid', 'half_paid', 'paid'])->default('unpaid');
-            $table->string('payment_proof')->nullable();
-            $table->decimal('vat_amount', 8, 2)->nullable()->default(0);
-            $table->decimal('amount_paid', 10, 2)->nullable()->default(0);
-            $table->string('payment_method', 100)->nullable();
+            // ✅ Only add if column doesn't exist
+            if (!Schema::hasColumn('bookings', 'payment_status')) {
+                $table->enum('payment_status', ['unpaid', 'half_paid', 'paid'])->default('unpaid');
+            }
+
+            if (!Schema::hasColumn('bookings', 'amount_paid')) {
+                $table->decimal('amount_paid', 8, 2)->nullable();
+            }
+
+            if (!Schema::hasColumn('bookings', 'payment_proof')) {
+                $table->string('payment_proof')->nullable();
+            }
+
+            if (!Schema::hasColumn('bookings', 'vat_amount')) {
+                $table->decimal('vat_amount', 8, 2)->default(0);
+            }
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down()
+    public function down(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->dropColumn(['payment_status', 'payment_proof', 'vat_amount', 'amount_paid', 'payment_method']);
+            // Optional: drop columns only if they exist
+            if (Schema::hasColumn('bookings', 'payment_status')) {
+                $table->dropColumn('payment_status');
+            }
+            if (Schema::hasColumn('bookings', 'amount_paid')) {
+                $table->dropColumn('amount_paid');
+            }
+            if (Schema::hasColumn('bookings', 'payment_proof')) {
+                $table->dropColumn('payment_proof');
+            }
+            if (Schema::hasColumn('bookings', 'vat_amount')) {
+                $table->dropColumn('vat_amount');
+            }
         });
     }
-
 };

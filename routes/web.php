@@ -57,7 +57,12 @@ Route::post('/admin/login', [LoginController::class, 'adminStaffLogin'])->name('
 // =========================
 // Booking
 // =========================
-// Booking routes
+// Booking 
+
+Route::get('/request-to-book/{id}', [BookingHistoryController::class, 'showRequestForm'])->name('booking.request');
+Route::post('/request-to-book/{id}', [BookingHistoryController::class, 'submitRequest'])->name('booking.submit');
+Route::post('/booking/preview/{id}', [BookingHistoryController::class, 'previewBooking'])->name('booking.preview');
+
 Route::get('/booking/{id}', [BookingHistoryController::class, 'bookingForm'])->name('booking.form');
 Route::post('/add_booking/{id}', [BookingHistoryController::class, 'addBooking'])->name('booking.add')->middleware('auth');
 
