@@ -4,6 +4,7 @@
 @include('Header')
 @endsection
 
+<main class="flex-grow-1">
 <div class="container my-5">
     <h3 class="fw-bold mb-4">Your Booking History</h3>
 
@@ -38,6 +39,7 @@
         <p>You have no bookings yet.</p>
     @endif
 </div>
+</main>
 
 @section('Footer')
 @include('Footer')
