@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use App\Models\Staycation;
 use App\Models\Booking;
-use App\Mail\BookingCreated;
 use Carbon\Carbon;
 
 class BookingHistoryController extends Controller
@@ -50,25 +48,7 @@ class BookingHistoryController extends Controller
         ]);
     }
 
-    // 💳 Step 2: Show payment form (Request to Book)
-    public function requestToBook(Request $request, $id)
-    {
-        $staycation = Staycation::findOrFail($id);
-
-        return view('home.RequestToBook', [
-            'staycation' => $staycation,
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'guest_number' => $request->guest_number,
-            'startDate' => $request->startDate,
-            'endDate' => $request->endDate,
-            'totalPrice' => $request->totalPrice,
-            'vatAmount' => $request->vatAmount,
-            'totalWithVat' => $request->totalWithVat,
-        ]);
-    }
-
-    // 🧾 Step 3: Handle booking submission with proof of payment
+    // 🧾 Step 2: Handle booking submission with proof of payment
     public function submitRequest(Request $request, $staycation_id)
     {
         $request->validate([
@@ -79,14 +59,15 @@ class BookingHistoryController extends Controller
             'message' => 'nullable|string|max:500',
             'startDate' => 'required|date',
             'endDate' => 'required|date|after_or_equal:startDate',
+            'guest_number' => 'required|integer|min:1',
         ]);
 
         $staycation = Staycation::findOrFail($staycation_id);
 
         $days = Carbon::parse($request->startDate)->diffInDays(Carbon::parse($request->endDate)) + 1;
         $totalPrice = $days * $staycation->house_price;
-        $vat = $totalPrice * 0.12;
-        $totalWithVat = $totalPrice + $vat;
+        $vatAmount = $totalPrice * 0.12;
+        $totalWithVat = $totalPrice + $vatAmount;
 
         $amountPaid = $request->payment_type === 'half'
             ? $totalWithVat / 2
@@ -97,19 +78,18 @@ class BookingHistoryController extends Controller
 
         $user = Auth::user();
 
-        // Save booking record
-        $booking = Booking::create([
+        Booking::create([
             'staycation_id' => $staycation_id,
             'user_id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'phone' => $user->phone ?? '',
-            'guest_number' => $request->guest_number ?? 1,
+            'phone' => $request->phone,
+            'guest_number' => $request->guest_number,
             'start_date' => $request->startDate,
             'end_date' => $request->endDate,
             'price_per_day' => $staycation->house_price,
             'total_price' => $totalWithVat,
-            'vat_amount' => $vat,
+            'vat_amount' => $vatAmount,
             'amount_paid' => $amountPaid,
             'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
             'payment_method' => $request->payment_method,
@@ -119,11 +99,8 @@ class BookingHistoryController extends Controller
             'status' => 'pending',
         ]);
 
-        // Optional email confirmation
-        // Mail::to($user->email)->send(new BookingCreated($booking));
-
         return redirect()->route('BookingHistory.index')
-            ->with('success', 'Your booking request has been submitted! Wait for admin confirmation.');
+            ->with('success', 'Your booking request has been submitted successfully! Wait for admin confirmation.');
     }
 
     // 📜 Show all bookings of logged-in user
