@@ -132,4 +132,23 @@ class BookingHistoryController extends Controller
         return redirect()->route('BookingHistory.index')
             ->with('success', 'Booking cancelled successfully.');
     }
+    // 👀 Preview booking details before confirmation
+    public function previewBooking(Request $request, $staycation_id)
+    {
+        $staycation = Staycation::findOrFail($staycation_id);
+
+        $days = \Carbon\Carbon::parse($request->startDate)->diffInDays(\Carbon\Carbon::parse($request->endDate)) + 1;
+        $totalPrice = $days * $staycation->house_price;
+
+        return view('home.preview_booking', [
+            'staycation' => $staycation,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'guest_number' => $request->guest_number,
+            'startDate' => $request->startDate,
+            'endDate' => $request->endDate,
+            'totalPrice' => $totalPrice
+        ]);
+    }
+
 }
