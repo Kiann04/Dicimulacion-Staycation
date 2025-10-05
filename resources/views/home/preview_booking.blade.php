@@ -1,9 +1,10 @@
 @extends('layouts.default')
 
 @section('Header')
-@include('Header')
+    @include('Header')
 @endsection
 
+@section('content') {{-- Wrap all main content in 'content' section --}}
 <style>
     .booking-card {
         border-radius: 1rem;
@@ -162,4 +163,8 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
 
+@endsection {{-- This ends the 'content' section --}}
+
+@section('Footer')
+    @include('Footer')
 @endsection
