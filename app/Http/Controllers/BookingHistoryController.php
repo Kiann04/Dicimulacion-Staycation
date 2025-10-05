@@ -46,15 +46,16 @@ class BookingHistoryController extends Controller
     }
 
     // 📄 Step 2: Submit booking request
-    public function submitRequest(Request $request, $staycation_id)
+   public function submitRequest(Request $request, $staycation_id)
 {
     $request->validate([
         'guest_number' => 'required|integer|min:1',
         'startDate' => 'required|date',
-        'endDate' => 'required|date|after:startDate', // must be after startDate
+        'endDate' => 'required|date|after:startDate',
         'payment_type' => 'required|in:half,full',
         'payment_method' => 'required|in:gcash,bpi',
         'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        'phone' => 'required|string|max:20',
         'transaction_number' => 'nullable|string|max:255',
         'message' => 'nullable|string|max:500',
     ]);
@@ -65,8 +66,8 @@ class BookingHistoryController extends Controller
     $start = Carbon::parse($request->startDate);
     $end = Carbon::parse($request->endDate);
 
-    // Number of nights (exclude departure)
-    $nights = $end->diffInDays($start); // **do not add +1**
+    // Number of nights (exclude departure date)
+    $nights = $end->diffInDays($start); // do NOT add +1
     $totalPrice = $nights * $staycation->house_price;
 
     // Payment calculation
@@ -76,17 +77,17 @@ class BookingHistoryController extends Controller
     $proofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
 
     // Create booking
-    Booking::create([
+    $booking = Booking::create([
         'staycation_id' => $staycation_id,
         'user_id' => Auth::id(),
         'name' => Auth::user()->name,
         'email' => Auth::user()->email,
-        'phone' => $request->phone, // <-- use request value
+        'phone' => $request->phone, // <-- ensure phone is saved
         'guest_number' => $request->guest_number,
-        'start_date' => $request->startDate,
-        'end_date' => $request->endDate,
+        'start_date' => $start->format('Y-m-d'),
+        'end_date' => $end->format('Y-m-d'),
         'price_per_day' => $staycation->house_price,
-        'total_price' => $totalPrice, // now matches per-night calculation
+        'total_price' => $totalPrice,
         'amount_paid' => $amountPaid,
         'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
         'payment_method' => $request->payment_method,
@@ -99,8 +100,6 @@ class BookingHistoryController extends Controller
     return redirect()->route('BookingHistory.index')
                      ->with('success', 'Your booking request has been submitted! Wait for admin confirmation.');
 }
-
-
 
     // 📖 Show booking history
     public function index()

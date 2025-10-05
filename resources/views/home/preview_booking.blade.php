@@ -80,9 +80,9 @@
             <input type="hidden" name="guest_number" value="{{ $guest_number }}">
             <input type="hidden" name="startDate" value="{{ $startDate }}">
             <input type="hidden" name="endDate" value="{{ $endDate }}">
+            <input type="hidden" name="phone" value="{{ $phone ?? old('phone') }}">
             <input type="hidden" name="totalPrice" value="{{ $totalPrice }}">
-
-            {{-- Payment Option --}}
+                    {{-- Payment Option --}}
             <div class="mb-3">
                 <label class="form-label fw-semibold">Payment Option</label>
                 <select name="payment_type" class="form-select" required>
