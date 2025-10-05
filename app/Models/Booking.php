@@ -36,11 +36,13 @@ class Booking extends Model
     {
         parent::boot();
 
+        // Automatically calculate total_price when saving
         static::saving(function ($booking) {
             if ($booking->staycation) {
-                $days = Carbon::parse($booking->start_date)
-                            ->diffInDays(Carbon::parse($booking->end_date)) + 1; // include last day
-                $booking->total_price = $days * $booking->staycation->house_price;
+                // Number of nights excluding the departure date
+                $nights = Carbon::parse($booking->start_date)
+                            ->diffInDays(Carbon::parse($booking->end_date));
+                $booking->total_price = $nights * $booking->staycation->house_price;
             }
         });
     }
@@ -49,5 +51,4 @@ class Booking extends Model
     {
         return $this->hasOne(Review::class);
     }
-
 }
