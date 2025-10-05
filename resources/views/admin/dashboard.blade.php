@@ -15,26 +15,15 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
-    .btn-approve, .btn-decline {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 4px;
-      color: white;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-    .btn-approve { background-color: #28a745; }
-    .btn-approve:hover { background-color: #218838; }
-    .btn-decline { background-color: #dc3545; margin-left:5px; }
-    .btn-decline:hover { background-color: #c82333; }
-    table td form { display: inline-block; }
-
-    /* Status colors */
-    .status.approved { color: green; font-weight: bold; }
+    table td select { padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+    .status.confirmed { color: green; font-weight: bold; }
     .status.declined { color: red; font-weight: bold; }
     .status.pending { color: orange; font-weight: bold; }
-    .status.confirmed { color: rgb(255, 255, 255); font-weight: bold; }
+
+    /* Dropdown colors */
+    .payment-pending { background-color: orange; color: white; }
+    .payment-paid { background-color: green; color: white; }
+    .payment-failed { background-color: red; color: white; }
   </style>
 </head>
 <body class="admin-dashboard">
@@ -57,8 +46,14 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th><th>Staycation</th><th>Customer</th><th>Phone</th>
-                        <th>Start</th><th>End</th><th>Actions</th><th>Payment</th><th>Status</th>
+                        <th>ID</th>
+                        <th>Staycation</th>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Payment</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,16 +65,6 @@
                         <td>{{ $booking->phone }}</td>
                         <td>{{ $booking->start_date }}</td>
                         <td>{{ $booking->end_date }}</td>
-
-                        {{-- Approve/Decline --}}
-                        <td>
-                            <button class="btn-approve" data-id="{{ $booking->id }}" data-action="approve">
-                                <i class="fa-solid fa-check"></i> Approve
-                            </button>
-                            <button class="btn-decline" data-id="{{ $booking->id }}" data-action="decline">
-                                <i class="fa-solid fa-xmark"></i> Decline
-                            </button>
-                        </td>
 
                         {{-- Payment Dropdown --}}
                         <td>
@@ -96,7 +81,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="9">No bookings found</td></tr>
+                    <tr><td colspan="8">No bookings found</td></tr>
                 @endforelse
                 </tbody>
             </table>
@@ -107,45 +92,25 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    // Approve / Decline buttons
-    $('.btn-approve, .btn-decline').click(function() {
-        const id = $(this).data('id');
-        const action = $(this).data('action'); // approve or decline
-        const actionText = action.charAt(0).toUpperCase() + action.slice(1);
 
-        Swal.fire({
-            icon: 'warning',
-            title: `Are you sure you want to ${actionText} this booking?`,
-            showCancelButton: true,
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No',
-            confirmButtonColor: '#1e40af',
-            cancelButtonColor: '#d33'
-        }).then((result) => {
-            if(result.isConfirmed){
-                $.post(`{{ url('admin/bookings') }}/${id}/${action}`, {
-                    _token: '{{ csrf_token() }}'
-                }, function(res){
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: res.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    // Update status badge immediately
-                    $(`#booking-${id} .status`)
-                        .text(action === 'approve' ? 'Approved' : 'Declined')
-                        .attr('class','status ' + (action === 'approve' ? 'approved' : 'declined'));
-                }).fail(function(xhr){
-                    Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
-                });
-            }
-        });
+    // Function to color the payment dropdown
+    function colorPaymentDropdown(select) {
+        const status = $(select).val();
+        $(select).removeClass('payment-pending payment-paid payment-failed');
+
+        if(status === 'pending') $(select).addClass('payment-pending');
+        else if(status === 'paid') $(select).addClass('payment-paid');
+        else if(status === 'failed') $(select).addClass('payment-failed');
+    }
+
+    // Initial color setup
+    $('.payment-select').each(function(){
+        colorPaymentDropdown(this);
     });
 
     // Payment status change
     $('.payment-select').change(function(){
+        const selectElem = this;
         const id = $(this).data('id');
         const status = $(this).val();
 
@@ -161,7 +126,7 @@ $(document).ready(function() {
             if(result.isConfirmed){
                 $.post(`{{ url('admin/bookings') }}/${id}/update-payment`, {
                     _token:'{{ csrf_token() }}',
-                    payment_status:status
+                    payment_status: status
                 }, function(res){
                     Swal.fire({
                         icon: 'success',
@@ -171,26 +136,29 @@ $(document).ready(function() {
                         showConfirmButton: false
                     });
 
-                    // Update status badge for consistency
-                    if(status === 'paid'){
-                        $(`#booking-${id} .status`)
-                            .text('Confirmed')
-                            .attr('class','status confirmed');
-                    } else if(status === 'failed'){
-                        $(`#booking-${id} .status`)
-                            .text('Declined')
-                            .attr('class','status declined');
-                    } else {
-                        $(`#booking-${id} .status`)
-                            .text('Approved')
-                            .attr('class','status approved');
+                    // Update status badge
+                    let statusText = 'Pending';
+                    let statusClass = 'pending';
+
+                    if(status === 'paid') {
+                        statusText = 'Confirmed';
+                        statusClass = 'confirmed';
+                    } else if(status === 'failed') {
+                        statusText = 'Declined';
+                        statusClass = 'declined';
                     }
+
+                    $(`#booking-${id} .status`)
+                        .text(statusText)
+                        .attr('class','status ' + statusClass);
+
+                    // Update dropdown color
+                    colorPaymentDropdown(selectElem);
 
                 }).fail(function(xhr){
                     Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
                 });
             } else {
-                // Revert if canceled
                 location.reload();
             }
         });
