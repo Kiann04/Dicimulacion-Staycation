@@ -53,19 +53,25 @@ Route::post('/logout', function () {
 // =========================
 Route::get('/admin/login', [LoginController::class, 'showAdminStaffLoginForm'])->name('admin.staff.login');
 Route::post('/admin/login', [LoginController::class, 'adminStaffLogin'])->name('admin.staff.login.perform');
+// =========================
+// PUBLIC BOOKING ROUTES
+// =========================
 
 // Step 0: Show booking form
 Route::get('/booking/{id}', [BookingHistoryController::class, 'bookingForm'])->name('booking.form');
 
-// Step 1: Preview booking details (POST from Reserve)
+// Step 1: Preview booking (POST from Reserve button)
 Route::post('/booking/{id}/preview', [BookingHistoryController::class, 'previewBooking'])->name('booking.preview');
 
-// Step 2: Submit booking request with payment proof
+// Step 2: Submit booking request with payment proof (POST)
 Route::post('/booking/{id}/submit', [BookingHistoryController::class, 'submitRequest'])->name('booking.submit');
 
-// Booking history
+// Booking history for logged-in user
 Route::get('/booking/history', [BookingHistoryController::class, 'index'])->name('BookingHistory.index');
+
+// Cancel a booking
 Route::delete('/booking/{id}/cancel', [BookingHistoryController::class, 'cancel'])->name('BookingHistory.cancel');
+Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('BookingHistory.index')->middleware('auth');
 
 // =========================
 // Reviews
@@ -156,8 +162,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     // Bookings
     Route::get('/bookings', [StaycationController::class, 'index'])->name('bookings');
-    Route::get('/booking/{id}', [StaycationController::class, 'bookingPage'])->name('booking.page');
-    Route::get('/booking/{id}', [StaycationController::class, 'showStaycation'])->name('booking.show');
     Route::get('/staycation/{id}', [StaycationController::class, 'showStaycation'])->name('staycation.show');
     Route::get('/view_bookings', [AdminController::class, 'view_bookings'])->name('view_bookings');
     Route::get('/view_bookings/{staycation_id}', [AdminController::class, 'view_staycation_bookings'])->name('view_staycation_bookings');
