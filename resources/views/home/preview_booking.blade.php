@@ -4,7 +4,7 @@
     @include('Header')
 @endsection
 
-@section('content') {{-- Wrap all main content in 'content' section --}}
+@section('content')
 <style>
     .booking-card {
         border-radius: 1rem;
@@ -46,16 +46,6 @@
     .btn-modern:hover {
         background: linear-gradient(90deg,#0056b3 0%,#00a4cc 100%);
     }
-
-    .bank-info {
-        transition: all 0.3s ease;
-    }
-
-    @media (max-width:576px) {
-        .booking-card {
-            padding: 1.5rem;
-        }
-    }
 </style>
 
 <div class="container my-5">
@@ -63,18 +53,14 @@
         <h3 class="fw-bold mb-4 text-center">Confirm Your Booking</h3>
 
         @php
-            $vatRate = 0.12;
-
             $start = \Carbon\Carbon::parse($startDate);
             $end = \Carbon\Carbon::parse($endDate);
 
             // Number of nights (exclude departure)
             $nights = $end->diffInDays($start);
 
-            // Price calculation
-            $subtotal = $staycation->house_price * $nights;
-            $vatAmount = $subtotal * $vatRate;
-            $totalWithVat = $subtotal + $vatAmount;
+            // Total price
+            $totalPrice = $staycation->house_price * $nights;
 
             $formattedStart = $start->format('M d, Y');
             $formattedEnd = $end->format('M d, Y');
@@ -85,22 +71,16 @@
             <p><strong>Guests:</strong> {{ $guest_number }}</p>
             <p><strong>Stay Dates:</strong> {{ $formattedStart }} - {{ $formattedEnd }} ({{ $nights }} night{{ $nights>1?'s':'' }})</p>
             <hr>
-            <p>Subtotal (Before VAT): ₱{{ number_format($subtotal, 2) }}</p>
-            <p>VAT (12%): ₱{{ number_format($vatAmount, 2) }}</p>
-            <p class="total-amount">Total: ₱{{ number_format($totalWithVat, 2) }}</p>
+            <p class="total-amount">Total Price: ₱{{ number_format($totalPrice, 2) }}</p>
         </div>
-
 
         <form action="{{ route('booking.submit', $staycation->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            {{-- Hidden Inputs --}}
             <input type="hidden" name="guest_number" value="{{ $guest_number }}">
             <input type="hidden" name="startDate" value="{{ $startDate }}">
             <input type="hidden" name="endDate" value="{{ $endDate }}">
-            <input type="hidden" name="priceWithoutVat" value="{{ $priceWithoutVat }}">
-            <input type="hidden" name="vatAmount" value="{{ $vatAmount }}">
-            <input type="hidden" name="totalWithVat" value="{{ $totalWithVat }}">
+            <input type="hidden" name="totalPrice" value="{{ $totalPrice }}">
 
             {{-- Payment Option --}}
             <div class="mb-3">
@@ -123,37 +103,23 @@
             </div>
 
             {{-- GCash Info --}}
-            <div id="gcashInfo" class="bank-info p-3 bg-light border rounded mb-3" style="display:none;">
+            <div id="gcashInfo" class="p-3 bg-light border rounded mb-3" style="display:none;">
                 <h6 class="fw-semibold text-primary">GCash Information</h6>
-                <p class="mb-1"><strong>Account Name:</strong> Dicimulacion Staycation</p>
-                <p class="mb-1"><strong>GCash Number:</strong> 0917-123-4567</p>
-                <p class="mb-0 text-muted">Please upload your GCash payment screenshot below.</p>
+                <p><strong>Account Name:</strong> Dicimulacion Staycation</p>
+                <p><strong>GCash Number:</strong> 0917-123-4567</p>
             </div>
 
             {{-- BPI Info --}}
-            <div id="bpiInfo" class="bank-info p-3 bg-light border rounded mb-3" style="display:none;">
+            <div id="bpiInfo" class="p-3 bg-light border rounded mb-3" style="display:none;">
                 <h6 class="fw-semibold text-primary">BPI Bank Information</h6>
-                <p class="mb-1"><strong>Account Name:</strong> Dicimulacion Staycation</p>
-                <p class="mb-1"><strong>Account Number:</strong> 1234-5678-90</p>
-                <p class="mb-0 text-muted">Please upload your deposit slip or transfer screenshot below.</p>
+                <p><strong>Account Name:</strong> Dicimulacion Staycation</p>
+                <p><strong>Account Number:</strong> 1234-5678-90</p>
             </div>
 
             {{-- Proof of Payment --}}
             <div class="mb-3">
                 <label class="form-label fw-semibold">Upload Proof of Payment</label>
                 <input type="file" name="payment_proof" class="form-control" accept="image/*" required>
-            </div>
-
-            {{-- Transaction Number --}}
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Transaction Number <span class="text-muted">(Optional)</span></label>
-                <input type="text" name="transaction_number" class="form-control" placeholder="Enter transaction number">
-            </div>
-
-            {{-- Message to Admin --}}
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Message to Admin <span class="text-muted">(Optional)</span></label>
-                <textarea name="message" class="form-control" rows="3" placeholder="Any special notes..."></textarea>
             </div>
 
             <button type="submit" class="btn-modern w-100 mt-3">Submit Booking Request</button>
@@ -176,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
 
-@endsection {{-- This ends the 'content' section --}}
+@endsection
 
 @section('Footer')
     @include('Footer')
