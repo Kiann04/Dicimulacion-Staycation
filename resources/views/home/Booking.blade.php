@@ -213,7 +213,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (this.value) {
             const arrival = new Date(this.value);
             const minDeparture = new Date(arrival);
-            minDeparture.setDate(arrival.getDate() + 1); // At least one day later
+            minDeparture.setDate(arrival.getDate() + 1); // strictly next day
 
             const yyyy = minDeparture.getFullYear();
             const mm = String(minDeparture.getMonth() + 1).padStart(2, "0");
@@ -237,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const start = new Date(startInput.value);
             const end = new Date(endInput.value);
 
-            if (end > start) {
+            if (end > start) { // strictly greater than start
                 const days = Math.floor((end - start) / (1000 * 60 * 60 * 24));
                 const total = days * pricePerNight;
                 priceSummary.style.display = "block";
@@ -259,29 +259,12 @@ document.addEventListener("DOMContentLoaded", function () {
             const start = new Date(startInput.value);
             const end = new Date(endInput.value);
 
-            if (end <= start) {
+            if (end <= start) { // strictly enforce next day
                 e.preventDefault();
                 alert("Departure date must be at least one day after arrival date.");
                 return false;
             }
         });
-    }
-
-    // ===== Calendar =====
-    const staycationId = "{{ $staycation->id }}";
-    if (document.getElementById("calendar")) {
-        const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
-            initialView: "dayGridMonth",
-            height: "auto",
-            aspectRatio: 1.4,
-            headerToolbar: {
-                left: "prev,next today",
-                center: "title",
-                right: ""
-            },
-            events: `/events/${staycationId}`
-        });
-        calendar.render();
     }
 });
 </script>
