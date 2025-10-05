@@ -18,7 +18,6 @@ class BookingHistoryController extends Controller
     }
 
     // 📄 Step 1: Preview Booking before confirming
-    // Preview Booking
     public function previewBooking(Request $request, $staycation_id)
     {
         $staycation = Staycation::findOrFail($staycation_id);
@@ -31,12 +30,8 @@ class BookingHistoryController extends Controller
             'endDate' => 'required|date|after_or_equal:startDate',
         ]);
 
-        $start = Carbon::parse($request->startDate);
-        $end = Carbon::parse($request->endDate);
-
-        // Nights = end date minus start date (do NOT add 1)
-        $nights = $end->diffInDays($start);
-
+        // Correct calculation: number of nights
+        $nights = Carbon::parse($request->startDate)->diffInDays(Carbon::parse($request->endDate));
         $totalPrice = $nights * $staycation->house_price;
 
         return view('home.preview_booking', [
@@ -46,12 +41,11 @@ class BookingHistoryController extends Controller
             'guest_number' => $request->guest_number,
             'startDate' => $request->startDate,
             'endDate' => $request->endDate,
-            'nights' => $nights,
             'totalPrice' => $totalPrice,
         ]);
     }
 
-    // Submit Booking
+    // 📄 Step 2: Submit booking request
     public function submitRequest(Request $request, $staycation_id)
     {
         $request->validate([
@@ -67,17 +61,16 @@ class BookingHistoryController extends Controller
 
         $staycation = Staycation::findOrFail($staycation_id);
 
-        $start = Carbon::parse($request->startDate);
-        $end = Carbon::parse($request->endDate);
-
-        $nights = $end->diffInDays($start); // correct nights
+        // Correct calculation: number of nights
+        $nights = Carbon::parse($request->startDate)->diffInDays(Carbon::parse($request->endDate));
         $totalPrice = $nights * $staycation->house_price;
+
+        // Amount paid depending on payment type
+        $amountPaid = $request->payment_type === 'half' ? $totalPrice / 2 : $totalPrice;
 
         $proofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
 
-        $amountPaid = $request->payment_type === 'half' ? $totalPrice / 2 : $totalPrice;
-
-        Booking::create([
+        $booking = Booking::create([
             'staycation_id' => $staycation_id,
             'user_id' => Auth::id(),
             'name' => Auth::user()->name,
@@ -101,13 +94,10 @@ class BookingHistoryController extends Controller
                         ->with('success', 'Your booking request has been submitted! Wait for admin confirmation.');
     }
 
-    // 🏡 Booking history
+    // 📖 Show booking history
     public function index()
     {
-        $bookings = Booking::where('user_id', Auth::id())
-                    ->orderBy('start_date', 'desc')
-                    ->get();
-
+        $bookings = Booking::where('user_id', Auth::id())->orderBy('start_date', 'desc')->get();
         return view('home.Booking_History', compact('bookings'));
     }
 
