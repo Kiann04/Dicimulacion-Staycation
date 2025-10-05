@@ -54,30 +54,22 @@ Route::post('/logout', function () {
 Route::get('/admin/login', [LoginController::class, 'showAdminStaffLoginForm'])->name('admin.staff.login');
 Route::post('/admin/login', [LoginController::class, 'adminStaffLogin'])->name('admin.staff.login.perform');
 
-// =========================
-// Booking
-// =========================
-// Booking 
 
-Route::get('/request-to-book/{id}', [BookingHistoryController::class, 'showRequestForm'])->name('booking.request');
-Route::post('/request-to-book/{id}', [BookingHistoryController::class, 'submitRequest'])->name('booking.submit');
-
-Route::post('/booking/preview/{id}', [BookingHistoryController::class, 'previewBooking'])
-    ->name('booking.preview');
-
-Route::post('/booking/submit/{id}', [BookingHistoryController::class, 'submitBooking'])
-    ->name('booking.submit');
-    // Booking Request Submission (after preview)
-Route::post('/booking/request/{id}', [App\Http\Controllers\BookingHistoryController::class, 'submitRequest'])
-    ->name('booking.request');
-
-
+// Booking process routes
 Route::get('/booking/{id}', [BookingHistoryController::class, 'bookingForm'])->name('booking.form');
-Route::post('/add_booking/{id}', [BookingHistoryController::class, 'addBooking'])->name('booking.add')->middleware('auth');
 
-Route::post('/preview_booking/{staycation_id}', [BookingHistoryController::class, 'previewBooking'])->middleware('auth');
-Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('BookingHistory.index')->middleware('auth');
-Route::delete('/booking/{id}/cancel', [BookingHistoryController::class, 'cancel'])->name('booking.cancel')->middleware('auth');
+// Step 1: Preview booking details after clicking Reserve
+Route::post('/booking/{id}/preview', [BookingHistoryController::class, 'previewBooking'])->name('booking.preview');
+
+// Step 2: Show request to book (payment form)
+Route::post('/booking/{id}/request', [BookingHistoryController::class, 'requestToBook'])->name('booking.request');
+
+// Step 3: Submit booking request with proof of payment
+Route::post('/booking/{id}/submit', [BookingHistoryController::class, 'submitRequest'])->name('booking.submit');
+
+// Booking history & cancel
+Route::get('/booking/history', [BookingHistoryController::class, 'index'])->name('BookingHistory.index');
+Route::delete('/booking/{id}/cancel', [BookingHistoryController::class, 'cancel'])->name('BookingHistory.cancel');
 
 // =========================
 // Reviews
