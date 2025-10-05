@@ -15,19 +15,6 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
-    .btn-approve, .btn-decline {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 4px;
-      color: white;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-    .btn-approve { background-color: #28a745; }
-    .btn-approve:hover { background-color: #218838; }
-    .btn-decline { background-color: #dc3545; margin-left:5px; }
-    .btn-decline:hover { background-color: #c82333; }
     table td form { display: inline-block; }
 
     /* Status colors */
@@ -58,7 +45,7 @@
                 <thead>
                     <tr>
                         <th>ID</th><th>Staycation</th><th>Customer</th><th>Phone</th>
-                        <th>Start</th><th>End</th><th>Actions</th><th>Payment</th><th>Status</th>
+                        <th>Start</th><th>End</th><th>Payment</th><th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,16 +57,6 @@
                         <td>{{ $booking->phone }}</td>
                         <td>{{ $booking->start_date }}</td>
                         <td>{{ $booking->end_date }}</td>
-
-                        {{-- Approve/Decline --}}
-                        <td>
-                            <button class="btn-approve" data-id="{{ $booking->id }}" data-action="approve">
-                                <i class="fa-solid fa-check"></i> Approve
-                            </button>
-                            <button class="btn-decline" data-id="{{ $booking->id }}" data-action="decline">
-                                <i class="fa-solid fa-xmark"></i> Decline
-                            </button>
-                        </td>
 
                         {{-- Payment Dropdown --}}
                         <td>
@@ -96,7 +73,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="9">No bookings found</td></tr>
+                    <tr><td colspan="8">No bookings found</td></tr>
                 @endforelse
                 </tbody>
             </table>
@@ -107,43 +84,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    // Approve / Decline buttons
-    $('.btn-approve, .btn-decline').click(function() {
-        const id = $(this).data('id');
-        const action = $(this).data('action'); // approve or decline
-        const actionText = action.charAt(0).toUpperCase() + action.slice(1);
-
-        Swal.fire({
-            icon: 'warning',
-            title: `Are you sure you want to ${actionText} this booking?`,
-            showCancelButton: true,
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No',
-            confirmButtonColor: '#1e40af',
-            cancelButtonColor: '#d33'
-        }).then((result) => {
-            if(result.isConfirmed){
-                $.post(`{{ url('admin/bookings') }}/${id}/${action}`, {
-                    _token: '{{ csrf_token() }}'
-                }, function(res){
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: res.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                    // Update status badge immediately
-                    $(`#booking-${id} .status`)
-                        .text(action === 'approve' ? 'Approved' : 'Declined')
-                        .attr('class','status ' + (action === 'approve' ? 'approved' : 'declined'));
-                }).fail(function(xhr){
-                    Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
-                });
-            }
-        });
-    });
-
     // Payment status change
     $('.payment-select').change(function(){
         const id = $(this).data('id');
@@ -182,15 +122,14 @@ $(document).ready(function() {
                             .attr('class','status declined');
                     } else {
                         $(`#booking-${id} .status`)
-                            .text('Approved')
-                            .attr('class','status approved');
+                            .text('Pending')
+                            .attr('class','status pending');
                     }
 
                 }).fail(function(xhr){
                     Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
                 });
             } else {
-                // Revert if canceled
                 location.reload();
             }
         });
