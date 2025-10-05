@@ -57,23 +57,18 @@ class BookingHistoryController extends Controller
             'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'transaction_number' => 'nullable|string|max:255',
             'message' => 'nullable|string|max:500',
+            'guest_number' => 'required|integer|min:1',
             'startDate' => 'required|date',
             'endDate' => 'required|date|after_or_equal:startDate',
-            'guest_number' => 'required|integer|min:1',
+            'totalWithVat' => 'required|numeric'
         ]);
 
         $staycation = Staycation::findOrFail($staycation_id);
 
-        $days = Carbon::parse($request->startDate)->diffInDays(Carbon::parse($request->endDate)) + 1;
-        $totalPrice = $days * $staycation->house_price;
-        $vatAmount = $totalPrice * 0.12;
-        $totalWithVat = $totalPrice + $vatAmount;
+        $amountPaid = $request->payment_type === 'half' 
+            ? $request->totalWithVat / 2 
+            : $request->totalWithVat;
 
-        $amountPaid = $request->payment_type === 'half'
-            ? $totalWithVat / 2
-            : $totalWithVat;
-
-        // Upload proof of payment
         $proofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
 
         $user = Auth::user();
@@ -83,24 +78,24 @@ class BookingHistoryController extends Controller
             'user_id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'phone' => $request->phone,
+            'phone' => $user->phone ?? '',
             'guest_number' => $request->guest_number,
             'start_date' => $request->startDate,
             'end_date' => $request->endDate,
             'price_per_day' => $staycation->house_price,
-            'total_price' => $totalWithVat,
-            'vat_amount' => $vatAmount,
+            'total_price' => $request->totalWithVat,
+            'vat_amount' => $request->totalWithVat - ($request->totalWithVat / 1.12),
             'amount_paid' => $amountPaid,
             'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
             'payment_method' => $request->payment_method,
             'payment_proof' => $proofPath,
             'transaction_number' => $request->transaction_number,
             'message_to_admin' => $request->message,
-            'status' => 'pending',
+            'status' => 'pending'
         ]);
 
         return redirect()->route('BookingHistory.index')
-            ->with('success', 'Your booking request has been submitted successfully! Wait for admin confirmation.');
+                        ->with('success', 'Your booking request has been submitted! Wait for admin confirmation.');
     }
 
     // 📜 Show all bookings of logged-in user
