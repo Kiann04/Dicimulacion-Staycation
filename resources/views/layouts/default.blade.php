@@ -14,6 +14,22 @@
     {{-- Custom Styles --}}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
+    <style>
+        /* Ensure the footer sticks to the bottom */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex: 1; /* grow to fill available space */
+        }
+        footer {
+            background: #f8f9fa;
+            padding: 1rem 0;
+        }
+    </style>
+
     @stack('styles')
 </head>
 <body>
