@@ -47,52 +47,59 @@ class BookingHistoryController extends Controller
 
     // 📄 Step 2: Submit booking request
     public function submitRequest(Request $request, $staycation_id)
-    {
-        $request->validate([
-            'guest_number' => 'required|integer|min:1',
-            'startDate' => 'required|date',
-            'endDate' => 'required|date|after_or_equal:startDate',
-            'payment_type' => 'required|in:half,full',
-            'payment_method' => 'required|in:gcash,bpi',
-            'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'transaction_number' => 'nullable|string|max:255',
-            'message' => 'nullable|string|max:500',
-        ]);
+{
+    $request->validate([
+        'guest_number' => 'required|integer|min:1',
+        'startDate' => 'required|date',
+        'endDate' => 'required|date|after_or_equal:startDate',
+        'payment_type' => 'required|in:half,full',
+        'payment_method' => 'required|in:gcash,bpi',
+        'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        'transaction_number' => 'nullable|string|max:255',
+        'message' => 'nullable|string|max:500',
+    ]);
 
-        $staycation = Staycation::findOrFail($staycation_id);
+    $staycation = Staycation::findOrFail($staycation_id);
 
-        // Correct calculation: number of nights
-        $nights = Carbon::parse($request->startDate)->diffInDays(Carbon::parse($request->endDate));
-        $totalPrice = $nights * $staycation->house_price;
+    // Parse dates
+    $start = Carbon::parse($request->startDate);
+    $end = Carbon::parse($request->endDate);
 
-        // Amount paid depending on payment type
-        $amountPaid = $request->payment_type === 'half' ? $totalPrice / 2 : $totalPrice;
+    // Correct calculation: number of nights
+    $nights = $end->diffInDays($start); // no +1
+    $totalPrice = $nights * $staycation->house_price;
 
-        $proofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+    // Amount paid depending on payment type
+    $amountPaid = $request->payment_type === 'half' ? $totalPrice / 2 : $totalPrice;
 
-        $booking = Booking::create([
-            'staycation_id' => $staycation_id,
-            'user_id' => Auth::id(),
-            'name' => Auth::user()->name,
-            'email' => Auth::user()->email,
-            'phone' => Auth::user()->phone ?? $request->phone,
-            'guest_number' => $request->guest_number,
-            'start_date' => $request->startDate,
-            'end_date' => $request->endDate,
-            'price_per_day' => $staycation->house_price,
-            'total_price' => $totalPrice,
-            'amount_paid' => $amountPaid,
-            'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
-            'payment_method' => $request->payment_method,
-            'payment_proof' => $proofPath,
-            'transaction_number' => $request->transaction_number,
-            'message_to_admin' => $request->message,
-            'status' => 'pending',
-        ]);
+    // Store payment proof
+    $proofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
 
-        return redirect()->route('BookingHistory.index')
-                        ->with('success', 'Your booking request has been submitted! Wait for admin confirmation.');
-    }
+    // Create booking
+    $booking = Booking::create([
+        'staycation_id' => $staycation_id,
+        'user_id' => Auth::id(),
+        'name' => Auth::user()->name,
+        'email' => Auth::user()->email,
+        'phone' => Auth::user()->phone ?? $request->phone,
+        'guest_number' => $request->guest_number,
+        'start_date' => $request->startDate,
+        'end_date' => $request->endDate,
+        'price_per_day' => $staycation->house_price,
+        'total_price' => $totalPrice, // this will now match preview
+        'amount_paid' => $amountPaid,
+        'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
+        'payment_method' => $request->payment_method,
+        'payment_proof' => $proofPath,
+        'transaction_number' => $request->transaction_number,
+        'message_to_admin' => $request->message,
+        'status' => 'pending',
+    ]);
+
+    return redirect()->route('BookingHistory.index')
+                    ->with('success', 'Your booking request has been submitted! Wait for admin confirmation.');
+}
+
 
     // 📖 Show booking history
     public function index()
