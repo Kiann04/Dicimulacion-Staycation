@@ -51,7 +51,7 @@ class BookingHistoryController extends Controller
     $request->validate([
         'guest_number' => 'required|integer|min:1',
         'startDate' => 'required|date',
-        'endDate' => 'required|date|after_or_equal:startDate',
+        'endDate' => 'required|date|after:startDate', // must be after startDate
         'payment_type' => 'required|in:half,full',
         'payment_method' => 'required|in:gcash,bpi',
         'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
@@ -65,18 +65,18 @@ class BookingHistoryController extends Controller
     $start = Carbon::parse($request->startDate);
     $end = Carbon::parse($request->endDate);
 
-    // Correct calculation: number of nights
-    $nights = $end->diffInDays($start); // no +1
+    // Number of nights (exclude departure)
+    $nights = $end->diffInDays($start); // **do not add +1**
     $totalPrice = $nights * $staycation->house_price;
 
-    // Amount paid depending on payment type
+    // Payment calculation
     $amountPaid = $request->payment_type === 'half' ? $totalPrice / 2 : $totalPrice;
 
-    // Store payment proof
+    // Upload proof of payment
     $proofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
 
     // Create booking
-    $booking = Booking::create([
+    Booking::create([
         'staycation_id' => $staycation_id,
         'user_id' => Auth::id(),
         'name' => Auth::user()->name,
@@ -86,7 +86,7 @@ class BookingHistoryController extends Controller
         'start_date' => $request->startDate,
         'end_date' => $request->endDate,
         'price_per_day' => $staycation->house_price,
-        'total_price' => $totalPrice, // this will now match preview
+        'total_price' => $totalPrice, // now matches per-night calculation
         'amount_paid' => $amountPaid,
         'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
         'payment_method' => $request->payment_method,
@@ -97,8 +97,9 @@ class BookingHistoryController extends Controller
     ]);
 
     return redirect()->route('BookingHistory.index')
-                    ->with('success', 'Your booking request has been submitted! Wait for admin confirmation.');
+                     ->with('success', 'Your booking request has been submitted! Wait for admin confirmation.');
 }
+
 
 
     // 📖 Show booking history
