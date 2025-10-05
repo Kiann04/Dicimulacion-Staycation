@@ -58,11 +58,11 @@ Route::post('/admin/login', [LoginController::class, 'adminStaffLogin'])->name('
 // Booking process routes
 Route::get('/booking/{id}', [BookingHistoryController::class, 'bookingForm'])->name('booking.form');
 
-// Step 1: Preview booking details after clicking Reserve
+// Step 1: Preview booking details (POST from Reserve button)
 Route::post('/booking/{id}/preview', [BookingHistoryController::class, 'previewBooking'])->name('booking.preview');
 
 // Step 2: Show request to book (payment form)
-Route::post('/booking/{id}/request', [BookingHistoryController::class, 'requestToBook'])->name('booking.request');
+Route::get('/booking/{id}/request', [BookingHistoryController::class, 'requestToBook'])->name('booking.request');
 
 // Step 3: Submit booking request with proof of payment
 Route::post('/booking/{id}/submit', [BookingHistoryController::class, 'submitRequest'])->name('booking.submit');
