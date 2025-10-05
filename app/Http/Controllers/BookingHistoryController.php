@@ -27,13 +27,17 @@ class BookingHistoryController extends Controller
             'phone' => 'required|string|max:20',
             'guest_number' => 'required|integer|min:1',
             'startDate' => 'required|date',
-            'endDate' => 'required|date|after_or_equal:startDate',
+            'endDate' => 'required|date|after:startDate',
         ]);
 
-        $days = Carbon::parse($request->startDate)->diffInDays(Carbon::parse($request->endDate)) + 1;
-        $totalPrice = $days * $staycation->house_price;
-        $vatAmount = $totalPrice * 0.12;
-        $totalWithVat = $totalPrice + $vatAmount;
+        $start = Carbon::parse($request->startDate);
+        $end = Carbon::parse($request->endDate);
+
+        // Correct number of nights (exclude departure day)
+        $nights = $end->diffInDays($start);
+
+        // Total price (before VAT, if you want VAT only in receipt)
+        $totalPrice = $staycation->house_price * $nights;
 
         return view('home.preview_booking', [
             'staycation' => $staycation,
@@ -42,18 +46,18 @@ class BookingHistoryController extends Controller
             'guest_number' => $request->guest_number,
             'startDate' => $request->startDate,
             'endDate' => $request->endDate,
+            'nights' => $nights,
             'totalPrice' => $totalPrice,
-            'vatAmount' => $vatAmount,
-            'totalWithVat' => $totalWithVat,
         ]);
     }
 
+    // ✅ Submit booking
     public function submitRequest(Request $request, $staycation_id)
     {
         $request->validate([
             'guest_number' => 'required|integer|min:1',
             'startDate' => 'required|date',
-            'endDate' => 'required|date|after_or_equal:startDate',
+            'endDate' => 'required|date|after:startDate',
             'payment_type' => 'required|in:half,full',
             'payment_method' => 'required|in:gcash,bpi',
             'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
@@ -62,15 +66,21 @@ class BookingHistoryController extends Controller
         ]);
 
         $staycation = Staycation::findOrFail($staycation_id);
-        $days = Carbon::parse($request->startDate)->diffInDays(Carbon::parse($request->endDate)) + 1;
-        $totalPrice = $days * $staycation->house_price;
+        $start = Carbon::parse($request->startDate);
+        $end = Carbon::parse($request->endDate);
+        $nights = $end->diffInDays($start);
+
+        $totalPrice = $staycation->house_price * $nights;
+
+        // VAT only if you want to store it
         $vat = $totalPrice * 0.12;
         $totalWithVat = $totalPrice + $vat;
-        $amountPaid = $request->payment_type === 'half' ? $totalWithVat / 2 : $totalWithVat;
+
+        $amountPaid = $request->payment_type === 'half' ? $totalPrice / 2 : $totalPrice;
 
         $proofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
 
-        $booking = Booking::create([
+        Booking::create([
             'staycation_id' => $staycation_id,
             'user_id' => Auth::id(),
             'name' => Auth::user()->name,
@@ -80,7 +90,7 @@ class BookingHistoryController extends Controller
             'start_date' => $request->startDate,
             'end_date' => $request->endDate,
             'price_per_day' => $staycation->house_price,
-            'total_price' => $totalWithVat,
+            'total_price' => $totalPrice, // store without adding extra days
             'vat_amount' => $vat,
             'amount_paid' => $amountPaid,
             'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
@@ -92,17 +102,20 @@ class BookingHistoryController extends Controller
         ]);
 
         return redirect()->route('BookingHistory.index')
-                        ->with('success', 'Your booking request has been submitted! Wait for admin confirmation.');
+            ->with('success', 'Your booking request has been submitted! Wait for admin confirmation.');
     }
 
+    // Show booking history
     public function index()
     {
-        $bookings = Booking::where('user_id', Auth::id())->orderBy('start_date', 'desc')->get();
+        $bookings = Booking::where('user_id', Auth::id())
+                    ->orderBy('start_date', 'desc')
+                    ->get();
+
         return view('home.Booking_History', compact('bookings'));
     }
 
-
-    // ❌ Cancel pending booking
+    // Cancel pending booking
     public function cancel($id)
     {
         $booking = Booking::where('id', $id)
