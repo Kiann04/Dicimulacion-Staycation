@@ -81,7 +81,7 @@ class BookingHistoryController extends Controller
         'user_id' => Auth::id(),
         'name' => Auth::user()->name,
         'email' => Auth::user()->email,
-        'phone' => Auth::user()->phone ?? $request->phone,
+        'phone' => $request->phone, // <-- use request value
         'guest_number' => $request->guest_number,
         'start_date' => $request->startDate,
         'end_date' => $request->endDate,
