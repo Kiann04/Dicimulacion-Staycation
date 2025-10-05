@@ -199,14 +199,36 @@
 document.addEventListener("DOMContentLoaded", function () {
     // ===== Date Restriction =====
     const today = new Date().toISOString().split("T")[0];
-    const startDate = document.getElementById("startDate");
-    const endDate = document.getElementById("endDate");
-    if (startDate) startDate.min = today;
-    if (endDate) endDate.min = today;
-
-    // ===== Price Calculation =====
     const startInput = document.getElementById("startDate");
     const endInput = document.getElementById("endDate");
+
+    if (startInput) startInput.min = today;
+    if (endInput) endInput.min = today;
+
+    // ===== Departure must be at least next day =====
+    startInput.addEventListener("change", function() {
+        if (this.value) {
+            const arrival = new Date(this.value);
+            const minDeparture = new Date(arrival);
+            minDeparture.setDate(arrival.getDate() + 1); // next day minimum
+
+            const yyyy = minDeparture.getFullYear();
+            const mm = String(minDeparture.getMonth() + 1).padStart(2, "0");
+            const dd = String(minDeparture.getDate()).padStart(2, "0");
+
+            const minDateStr = `${yyyy}-${mm}-${dd}`;
+            endInput.min = minDateStr;
+
+            // If previously selected end date is invalid, update it
+            if (endInput.value && new Date(endInput.value) < minDeparture) {
+                endInput.value = minDateStr;
+            }
+
+            calculatePrice(); // recalc when start changes
+        }
+    });
+
+    // ===== Price Calculation =====
     const priceSummary = document.getElementById("price-summary");
     const totalPriceElem = document.getElementById("total-price");
     const pricePerNight = parseFloat(document.getElementById("price-per-night").innerText);
@@ -216,16 +238,19 @@ document.addEventListener("DOMContentLoaded", function () {
             const start = new Date(startInput.value);
             const end = new Date(endInput.value);
 
-            if (end >= start) {
-                const days = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
+            if (end > start) { // departure must be after arrival
+                const days = Math.floor((end - start) / (1000 * 60 * 60 * 24));
                 const total = days * pricePerNight;
                 priceSummary.style.display = "block";
                 totalPriceElem.textContent = `Total for ${days} night(s): ₱${total.toLocaleString()}`;
             } else {
                 priceSummary.style.display = "none";
             }
+        } else {
+            priceSummary.style.display = "none";
         }
     }
+
     startInput.addEventListener("change", calculatePrice);
     endInput.addEventListener("change", calculatePrice);
 
