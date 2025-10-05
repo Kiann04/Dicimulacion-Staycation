@@ -129,11 +129,29 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function(){
-    const paymentSelect = document.getElementById("paymentMethod");
+    const paymentSelect = document.querySelector("select[name='payment_type']");
+    const totalPriceElem = document.querySelector(".total-amount");
+    const totalPrice = parseFloat("{{ $totalPrice }}"); // Pass numeric value correctly
+
     const gcashInfo = document.getElementById("gcashInfo");
     const bpiInfo = document.getElementById("bpiInfo");
+    
+    function updatePaymentDisplay() {
+        if(paymentSelect.value === "half") {
+            const halfPrice = totalPrice / 2;
+            totalPriceElem.textContent = "Amount Due (50%): ₱" + halfPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        } else if(paymentSelect.value === "full") {
+            totalPriceElem.textContent = "Total Price: ₱" + totalPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        } else {
+            totalPriceElem.textContent = "Total Price: ₱" + totalPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+    }
 
-    paymentSelect.addEventListener("change", function(){
+    paymentSelect.addEventListener("change", updatePaymentDisplay);
+
+    // Payment method toggle
+    const methodSelect = document.getElementById("paymentMethod");
+    methodSelect.addEventListener("change", function(){
         gcashInfo.style.display = "none";
         bpiInfo.style.display = "none";
         if(this.value === "gcash") gcashInfo.style.display = "block";
@@ -141,6 +159,7 @@ document.addEventListener("DOMContentLoaded", function(){
     });
 });
 </script>
+
 
 @endsection
 
