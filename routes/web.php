@@ -67,6 +67,10 @@ Route::post('/booking/preview/{id}', [BookingHistoryController::class, 'previewB
 
 Route::post('/booking/submit/{id}', [BookingHistoryController::class, 'submitBooking'])
     ->name('booking.submit');
+    // Booking Request Submission (after preview)
+Route::post('/booking/request/{id}', [App\Http\Controllers\BookingHistoryController::class, 'submitRequest'])
+    ->name('booking.request');
+
 
 Route::get('/booking/{id}', [BookingHistoryController::class, 'bookingForm'])->name('booking.form');
 Route::post('/add_booking/{id}', [BookingHistoryController::class, 'addBooking'])->name('booking.add')->middleware('auth');

@@ -150,5 +150,59 @@ class BookingHistoryController extends Controller
             'totalPrice' => $totalPrice
         ]);
     }
+    // 🧾 Handle booking submission after preview page
+    public function submitRequest(Request $request, $staycation_id)
+    {
+        $request->validate([
+            'payment_type' => 'required|in:half,full',
+            'payment_method' => 'required|in:gcash,bpi',
+            'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'transaction_number' => 'nullable|string|max:255',
+            'message' => 'nullable|string|max:500',
+        ]);
+
+        $staycation = \App\Models\Staycation::findOrFail($staycation_id);
+
+        // Compute prices
+        $days = \Carbon\Carbon::parse($request->startDate)->diffInDays(\Carbon\Carbon::parse($request->endDate)) + 1;
+        $totalPrice = $days * $staycation->house_price;
+        $vat = $totalPrice * 0.12; // 12% VAT
+
+        // Compute amount to pay (half or full)
+        $amountPaid = $request->payment_type === 'half'
+            ? $totalPrice * 0.5
+            : $totalPrice;
+
+        // Upload payment proof
+        $proofPath = null;
+        if ($request->hasFile('payment_proof')) {
+            $proofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+        }
+
+        // Create booking record
+        $booking = \App\Models\Booking::create([
+            'staycation_id' => $staycation_id,
+            'user_id' => auth()->id(),
+            'name' => auth()->user()->name,
+            'email' => auth()->user()->email,
+            'phone' => auth()->user()->phone ?? null,
+            'guest_number' => $request->guest_number ?? 1,
+            'start_date' => $request->startDate,
+            'end_date' => $request->endDate,
+            'total_price' => $totalPrice,
+            'price_per_day' => $staycation->house_price,
+            'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
+            'amount_paid' => $amountPaid,
+            'vat_amount' => $vat,
+            'payment_proof' => $proofPath,
+            'status' => 'pending',
+        ]);
+
+        // Optional: send email notification (future use)
+        // Mail::to(auth()->user()->email)->send(new BookingCreated($booking));
+
+        return redirect()->route('BookingHistory.index')->with('success', 'Your booking request has been submitted! Wait for admin verification.');
+    }
+
 
 }
