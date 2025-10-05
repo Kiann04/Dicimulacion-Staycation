@@ -77,7 +77,8 @@
             <p class="total-amount">Total Minus VAT: ₱{{ number_format($totalMinusVat, 2) }}</p>
         </div>
 
-        <form action="{{ route('booking.request', $staycation->id) }}" method="POST">
+        <!-- ✅ Fix: Submit to booking.submit (POST) -->
+        <form action="{{ route('booking.submit', $staycation->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="name" value="{{ $name }}">
             <input type="hidden" name="phone" value="{{ $phone }}">
