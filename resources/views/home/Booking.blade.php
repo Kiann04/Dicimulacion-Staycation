@@ -6,6 +6,7 @@
 
 <section class="container my-5">
   <div class="row g-4 align-items-start">
+    
     <!-- Booking Form -->
     <div class="col-lg-6">
       <div class="card shadow-sm border-0">
@@ -76,34 +77,36 @@
         </div>
       </div>
     </div>
-  </div>
 
-        <!-- Image Carousel -->
-        <div class="col-lg-6">
-            <div id="staycationCarousel" class="carousel slide shadow-sm rounded" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="{{ asset('assets/House1.png') }}" class="d-block w-100 rounded" alt="">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{{ asset('assets/House2.png') }}" class="d-block w-100 rounded" alt="">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{{ asset('assets/House3.png') }}" class="d-block w-100 rounded" alt="">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{{ asset('assets/House5.png') }}" class="d-block w-100 rounded" alt="">
-                    </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#staycationCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#staycationCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon"></span>
-                </button>
-            </div>
+    <!-- Image Carousel -->
+    <div class="col-lg-6">
+      <div id="staycationCarousel" class="carousel slide shadow-sm rounded overflow-hidden" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="{{ asset('assets/House1.png') }}" class="d-block w-100 rounded" alt="Staycation Image">
+          </div>
+          <div class="carousel-item">
+            <img src="{{ asset('assets/House2.png') }}" class="d-block w-100 rounded" alt="Staycation Image">
+          </div>
+          <div class="carousel-item">
+            <img src="{{ asset('assets/House3.png') }}" class="d-block w-100 rounded" alt="Staycation Image">
+          </div>
+          <div class="carousel-item">
+            <img src="{{ asset('assets/House5.png') }}" class="d-block w-100 rounded" alt="Staycation Image">
+          </div>
         </div>
+
+        <!-- Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#staycationCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#staycationCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+      </div>
     </div>
+
+  </div>
 </section>
 
 <!-- Calendar Section -->
