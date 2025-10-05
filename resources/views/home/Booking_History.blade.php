@@ -27,7 +27,11 @@
                 @foreach($bookings as $b)
                 <tr>
                     <td>{{ $b->staycation->house_name }}</td>
-                    <td>{{ $b->start_date }} - {{ $b->end_date }}</td>
+                    <td>
+                        {{ \Carbon\Carbon::parse($b->start_date)->format('M d, Y') }} 
+                        - 
+                        {{ \Carbon\Carbon::parse($b->end_date)->format('M d, Y') }}
+                    </td>
                     <td>{{ $b->guest_number }}</td>
                     <td>₱{{ number_format($b->total_price,2) }}</td>
                     <td>{{ ucfirst($b->status) }}</td>
