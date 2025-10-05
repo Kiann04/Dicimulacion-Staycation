@@ -6,7 +6,7 @@
 
 <section class="container my-5">
   <div class="row g-4 align-items-start">
-    
+
     <!-- Booking Form -->
     <div class="col-lg-6">
       <div class="card shadow-sm border-0">
@@ -21,9 +21,9 @@
             <div class="alert alert-danger">{!! nl2br(e(session('message'))) !!}</div>
           @endif
 
-          <!-- ✅ Updated Form -->
           <form action="{{ route('booking.preview', $staycation->id) }}" method="POST">
             @csrf
+
             <div class="mb-3">
               <label class="form-label">Full Name</label>
               <input type="text" name="name" class="form-control" placeholder="Name" required
@@ -82,18 +82,11 @@
     <div class="col-lg-6">
       <div id="staycationCarousel" class="carousel slide shadow-sm rounded overflow-hidden" data-bs-ride="carousel">
         <div class="carousel-inner">
-          <div class="carousel-item active">
-            <img src="{{ asset('assets/House1.png') }}" class="d-block w-100 rounded" alt="Staycation Image">
+          @foreach(['House1.png','House2.png','House3.png','House5.png'] as $i => $img)
+          <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
+            <img src="{{ asset('assets/'.$img) }}" class="d-block w-100 rounded" alt="Staycation Image">
           </div>
-          <div class="carousel-item">
-            <img src="{{ asset('assets/House2.png') }}" class="d-block w-100 rounded" alt="Staycation Image">
-          </div>
-          <div class="carousel-item">
-            <img src="{{ asset('assets/House3.png') }}" class="d-block w-100 rounded" alt="Staycation Image">
-          </div>
-          <div class="carousel-item">
-            <img src="{{ asset('assets/House5.png') }}" class="d-block w-100 rounded" alt="Staycation Image">
-          </div>
+          @endforeach
         </div>
 
         <!-- Controls -->
@@ -115,47 +108,10 @@
     <div id="calendar"></div>
 </div>
 
-<!-- Info Section -->
-<section class="container my-5" id="info">
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="p-4 border rounded shadow-sm text-center">
-                <i class='bx bxs-home fs-1 text-primary'></i>
-                <h4 class="fw-bold mt-2">Accommodation</h4>
-                <ul class="list-unstyled text-muted">
-                    <li>Kitchen</li>
-                    <li>Free parking on premises</li>
-                    <li>Private patio or balcony</li>
-                    <li>Wifi</li>
-                    <li>Bathtub</li>
-                    <li>Pets allowed</li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="p-4 border rounded shadow-sm text-center">
-                <i class='bx bxs-check-square fs-1 text-success'></i>
-                <h4 class="fw-bold mt-2">Reminders</h4>
-                <p class="text-muted">Check-in after 2:00 PM</p>
-                <p class="text-muted">Checkout before 12:00 PM</p>
-                <p class="text-muted">6 guests maximum</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="p-4 border rounded shadow-sm text-center">
-                <i class='bx bxs-no-entry fs-1 text-danger'></i>
-                <h4 class="fw-bold mt-2">Cancellation Policy</h4>
-                <p class="text-muted">We don't accept sudden cancellation</p>
-                <p class="text-muted">We can offer rescheduling</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-@php $allReviews = $allReviews ?? collect(); @endphp
-
+<!-- Reviews Section -->
 <section class="container my-5" id="reviews">
     <h2 class="fw-bold mb-4 text-center">What Our Guests Say</h2>
+    @php $allReviews = $allReviews ?? collect(); @endphp
 
     @if($allReviews->count() > 0)
         <div class="row g-4">
@@ -190,9 +146,7 @@
     @endif
 </section>
 
-
-
-
+<!-- FullCalendar + Price Calculation -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -203,52 +157,39 @@ document.addEventListener("DOMContentLoaded", function () {
     const pricePerNight = parseFloat(document.getElementById("price-per-night").innerText);
     const form = document.querySelector("form");
 
-    // ===== Set minimum dates =====
+    // Minimum dates
     const today = new Date().toISOString().split("T")[0];
     if (startInput) startInput.min = today;
     if (endInput) endInput.min = today;
 
-    // ===== Update minimum departure date based on arrival =====
-    startInput.addEventListener("change", function() {
-        if (this.value) {
+    // Update departure date min
+    startInput.addEventListener("change", function(){
+        if(this.value){
             const arrival = new Date(this.value);
             const minDeparture = new Date(arrival);
-            minDeparture.setDate(arrival.getDate() + 1); // strictly next day
-
+            minDeparture.setDate(arrival.getDate() + 1);
             const yyyy = minDeparture.getFullYear();
-            const mm = String(minDeparture.getMonth() + 1).padStart(2, "0");
-            const dd = String(minDeparture.getDate()).padStart(2, "0");
+            const mm = String(minDeparture.getMonth() + 1).padStart(2,'0');
+            const dd = String(minDeparture.getDate()).padStart(2,'0');
             const minDateStr = `${yyyy}-${mm}-${dd}`;
-
             endInput.min = minDateStr;
-
-            // Reset end date if it's before the new min
-            if (endInput.value && new Date(endInput.value) < minDeparture) {
+            if(endInput.value && new Date(endInput.value) < minDeparture){
                 endInput.value = minDateStr;
             }
-
             calculatePrice();
         }
     });
 
-    // ===== Calculate price =====
-    function calculatePrice() {
-        if (startInput.value && endInput.value) {
+    // Calculate price (no VAT in preview)
+    function calculatePrice(){
+        if(startInput.value && endInput.value){
             const start = new Date(startInput.value);
             const end = new Date(endInput.value);
-
-            if (end > start) { // strictly greater than start
-                const nights = Math.floor((end - start) / (1000 * 60 * 60 * 24));
-                const subtotal = nights * pricePerNight;
-                const vat = subtotal * 0.12;
-                const total = subtotal + vat;
-
+            if(end > start){
+                const nights = Math.floor((end - start)/(1000*60*60*24));
+                const total = nights * pricePerNight;
                 priceSummary.style.display = "block";
-                totalPriceElem.innerHTML = `
-                    Subtotal (before VAT): ₱${subtotal.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}<br>
-                    VAT (12%): ₱${vat.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}<br>
-                    Total: <strong>₱${total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</strong> (${nights} night${nights>1?'s':''})
-                `;
+                totalPriceElem.textContent = `Total for ${nights} night${nights>1?'s':''}: ₱${total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
             } else {
                 priceSummary.style.display = "none";
             }
@@ -260,55 +201,47 @@ document.addEventListener("DOMContentLoaded", function () {
     startInput.addEventListener("change", calculatePrice);
     endInput.addEventListener("change", calculatePrice);
 
-    // ===== Prevent form submission if dates are invalid =====
-    if (form) {
-        form.addEventListener("submit", function(e) {
+    // Prevent invalid submission
+    if(form){
+        form.addEventListener("submit", function(e){
             const start = new Date(startInput.value);
             const end = new Date(endInput.value);
-
-            if (end <= start) {
+            if(end <= start){
                 e.preventDefault();
                 alert("Departure date must be at least one day after arrival date.");
             }
         });
     }
 
-    // ===== FullCalendar with booked nights (exclude checkout day) =====
+    // FullCalendar - booked nights (exclude checkout)
     const staycationId = "{{ $staycation->id }}";
-    if (document.getElementById("calendar")) {
+    if(document.getElementById("calendar")){
         fetch(`/events/${staycationId}`)
-            .then(res => res.json())
-            .then(events => {
-                const bookedEvents = events.map(event => {
-                    const start = event.start;
-                    const end = new Date(event.end);
-                    end.setDate(end.getDate() - 1); // exclude checkout day
-
-                    return {
-                        title: "Booked",
-                        start: start,
-                        end: end.toISOString().split("T")[0],
-                        allDay: true,
-                        display: 'background',
-                        backgroundColor: '#f56565',
-                        borderColor: '#f56565'
-                    };
-                });
-
-                const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
-                    initialView: "dayGridMonth",
-                    height: "auto",
-                    aspectRatio: 1.4,
-                    headerToolbar: {
-                        left: "prev,next today",
-                        center: "title",
-                        right: ""
-                    },
-                    events: bookedEvents
-                });
-
-                calendar.render();
+        .then(res => res.json())
+        .then(events => {
+            const bookedEvents = events.map(event => {
+                const start = event.start;
+                const end = new Date(event.end);
+                end.setDate(end.getDate() - 1); // exclude checkout
+                return {
+                    title: "Booked",
+                    start: start,
+                    end: end.toISOString().split("T")[0],
+                    allDay: true,
+                    display: 'background',
+                    backgroundColor: '#f56565',
+                    borderColor: '#f56565'
+                };
             });
+            const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
+                initialView: "dayGridMonth",
+                height: "auto",
+                aspectRatio: 1.4,
+                headerToolbar: { left:'prev,next today', center:'title', right:'' },
+                events: bookedEvents
+            });
+            calendar.render();
+        });
     }
 });
 </script>
