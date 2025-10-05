@@ -36,8 +36,7 @@ class BookingHistoryController extends Controller
         // Correct number of nights (exclude departure day)
         $nights = $end->diffInDays($start);
 
-        // Total price (before VAT, if you want VAT only in receipt)
-        $totalPrice = $staycation->house_price * $nights;
+        $totalPrice = $nights * $staycation->house_price;
 
         return view('home.preview_booking', [
             'staycation' => $staycation,
@@ -51,7 +50,7 @@ class BookingHistoryController extends Controller
         ]);
     }
 
-    // ✅ Submit booking
+    // ✅ Submit Booking
     public function submitRequest(Request $request, $staycation_id)
     {
         $request->validate([
@@ -68,19 +67,17 @@ class BookingHistoryController extends Controller
         $staycation = Staycation::findOrFail($staycation_id);
         $start = Carbon::parse($request->startDate);
         $end = Carbon::parse($request->endDate);
+
         $nights = $end->diffInDays($start);
+        $totalPrice = $nights * $staycation->house_price;
 
-        $totalPrice = $staycation->house_price * $nights;
-
-        // VAT only if you want to store it
-        $vat = $totalPrice * 0.12;
-        $totalWithVat = $totalPrice + $vat;
-
+        // Determine amount to pay
         $amountPaid = $request->payment_type === 'half' ? $totalPrice / 2 : $totalPrice;
 
+        // Upload proof of payment
         $proofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
 
-        Booking::create([
+        $booking = Booking::create([
             'staycation_id' => $staycation_id,
             'user_id' => Auth::id(),
             'name' => Auth::user()->name,
@@ -90,8 +87,7 @@ class BookingHistoryController extends Controller
             'start_date' => $request->startDate,
             'end_date' => $request->endDate,
             'price_per_day' => $staycation->house_price,
-            'total_price' => $totalPrice, // store without adding extra days
-            'vat_amount' => $vat,
+            'total_price' => $totalPrice, // store correct total
             'amount_paid' => $amountPaid,
             'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
             'payment_method' => $request->payment_method,
@@ -102,10 +98,10 @@ class BookingHistoryController extends Controller
         ]);
 
         return redirect()->route('BookingHistory.index')
-            ->with('success', 'Your booking request has been submitted! Wait for admin confirmation.');
+                        ->with('success', 'Your booking request has been submitted! Wait for admin confirmation.');
     }
 
-    // Show booking history
+    // 🏡 Booking history
     public function index()
     {
         $bookings = Booking::where('user_id', Auth::id())
@@ -115,7 +111,7 @@ class BookingHistoryController extends Controller
         return view('home.Booking_History', compact('bookings'));
     }
 
-    // Cancel pending booking
+    // ❌ Cancel pending booking
     public function cancel($id)
     {
         $booking = Booking::where('id', $id)
