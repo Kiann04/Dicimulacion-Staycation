@@ -58,10 +58,10 @@ Route::post('/admin/login', [LoginController::class, 'adminStaffLogin'])->name('
 // Booking
 // =========================
 // Booking routes
-Route::get('/booking/{id}', [HomeController::class, 'bookingForm'])->name('booking.form');
-Route::post('/add_booking/{id}', [HomeController::class, 'addBooking'])->name('booking.add')->middleware('auth');
+Route::get('/booking/{id}', [BookingHistoryController::class, 'bookingForm'])->name('booking.form');
+Route::post('/add_booking/{id}', [BookingHistoryController::class, 'addBooking'])->name('booking.add')->middleware('auth');
 
-Route::post('/preview_booking/{staycation_id}', [HomeController::class, 'previewBooking'])->middleware('auth');
+Route::post('/preview_booking/{staycation_id}', [BookingHistoryController::class, 'previewBooking'])->middleware('auth');
 Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('BookingHistory.index')->middleware('auth');
 Route::delete('/booking/{id}/cancel', [BookingHistoryController::class, 'cancel'])->name('booking.cancel')->middleware('auth');
 
