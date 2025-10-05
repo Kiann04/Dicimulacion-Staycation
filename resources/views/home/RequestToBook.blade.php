@@ -7,8 +7,8 @@
 <style>
     .booking-card {
         border-radius: 1rem;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        background: #ffffff;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        background: #fff;
         padding: 2rem;
         transition: transform 0.2s;
     }
@@ -33,7 +33,7 @@
     }
 
     .btn-modern {
-        background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
+        background: linear-gradient(90deg,#007bff 0%,#00c6ff 100%);
         border: none;
         color: #fff;
         font-weight: 600;
@@ -43,14 +43,14 @@
     }
 
     .btn-modern:hover {
-        background: linear-gradient(90deg, #0056b3 0%, #00a4cc 100%);
+        background: linear-gradient(90deg,#0056b3 0%,#00a4cc 100%);
     }
 
     .bank-info {
         transition: all 0.3s ease;
     }
 
-    @media (max-width: 576px) {
+    @media (max-width:576px) {
         .booking-card {
             padding: 1.5rem;
         }
@@ -58,11 +58,11 @@
 </style>
 
 <div class="container my-5">
-    <div class="booking-card mx-auto" style="max-width: 600px;">
+    <div class="booking-card mx-auto" style="max-width:600px;">
         <h3 class="fw-bold mb-4 text-center">Confirm Your Booking</h3>
 
         @php
-            $vatRate = 0.12; 
+            $vatRate = 0.12;
             $priceWithoutVat = $totalWithVat / (1 + $vatRate);
             $vatAmount = $totalWithVat - $priceWithoutVat;
         @endphp
@@ -71,13 +71,16 @@
             <p><strong>Staycation:</strong> {{ $staycation->house_name }}</p>
             <p><strong>Guests:</strong> {{ $guest_number }}</p>
             <p><strong>Stay Dates:</strong> {{ $startDate }} - {{ $endDate }}</p>
-            <p class="fw-bold total-amount">Total Amount (₱{{ number_format($totalWithVat, 2) }})</p>
+            <hr>
+            <p>Subtotal (Before VAT): ₱{{ number_format($priceWithoutVat,2) }}</p>
+            <p>VAT (12%): ₱{{ number_format($vatAmount,2) }}</p>
+            <p class="total-amount">Total: ₱{{ number_format($totalWithVat,2) }}</p>
         </div>
 
         <form action="{{ route('booking.submit', $staycation->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            {{-- Hidden inputs from preview --}}
+            {{-- Hidden Inputs --}}
             <input type="hidden" name="guest_number" value="{{ $guest_number }}">
             <input type="hidden" name="startDate" value="{{ $startDate }}">
             <input type="hidden" name="endDate" value="{{ $endDate }}">
@@ -145,20 +148,16 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function(){
     const paymentSelect = document.getElementById("paymentMethod");
     const gcashInfo = document.getElementById("gcashInfo");
     const bpiInfo = document.getElementById("bpiInfo");
 
-    paymentSelect.addEventListener("change", function () {
+    paymentSelect.addEventListener("change", function(){
         gcashInfo.style.display = "none";
         bpiInfo.style.display = "none";
-
-        if (this.value === "gcash") {
-            gcashInfo.style.display = "block";
-        } else if (this.value === "bpi") {
-            bpiInfo.style.display = "block";
-        }
+        if(this.value === "gcash") gcashInfo.style.display = "block";
+        else if(this.value === "bpi") bpiInfo.style.display = "block";
     });
 });
 </script>
