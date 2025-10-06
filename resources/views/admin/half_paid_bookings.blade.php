@@ -7,7 +7,7 @@
 @section('content')
 <body class="admin-dashboard">
 <div class="content-wrapper">
-    <div class="main-content">
+  <div class="main-content">
     <header>
       <h1>Half-Paid Bookings</h1>
       <p class="subtext">List of all bookings with partial payment.</p>
