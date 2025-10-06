@@ -12,15 +12,22 @@
     <h1>Messages & Payment Proofs</h1>
     <p class="subtext">Manage customer inquiries and booking payment proofs</p>
 
+    @php
+        // Determine which tab is active
+        $activeTab = session('tab') ?? 'inquiries';
+    @endphp
+
     <!-- Tabs -->
     <ul class="nav nav-tabs" id="messagesTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="inquiries-tab" data-bs-toggle="tab" data-bs-target="#inquiries" type="button" role="tab">
+            <button class="nav-link {{ $activeTab == 'inquiries' ? 'active' : '' }}" 
+                    id="inquiries-tab" data-bs-toggle="tab" data-bs-target="#inquiries" type="button" role="tab">
                 Customer Inquiries
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="payments-tab" data-bs-toggle="tab" data-bs-target="#payments" type="button" role="tab">
+            <button class="nav-link {{ $activeTab == 'payments' ? 'active' : '' }}" 
+                    id="payments-tab" data-bs-toggle="tab" data-bs-target="#payments" type="button" role="tab">
                 Booking Payment Proofs
             </button>
         </li>
@@ -29,7 +36,7 @@
     <!-- Tab Content -->
     <div class="tab-content mt-3" id="messagesTabsContent">
         <!-- Customer Inquiries -->
-        <div class="tab-pane fade show active" id="inquiries" role="tabpanel">
+        <div class="tab-pane fade {{ $activeTab == 'inquiries' ? 'show active' : '' }}" id="inquiries" role="tabpanel">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <thead class="table-light">
@@ -65,7 +72,7 @@
         </div>
 
         <!-- Booking Payment Proofs -->
-        <div class="tab-pane fade" id="payments" role="tabpanel">
+        <div class="tab-pane fade {{ $activeTab == 'payments' ? 'show active' : '' }}" id="payments" role="tabpanel">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
                     <thead class="table-light">
@@ -110,4 +117,6 @@
 
 <!-- Bootstrap JS (required for tabs) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+</div>
 @endsection
