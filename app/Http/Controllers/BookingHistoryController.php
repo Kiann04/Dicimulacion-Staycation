@@ -116,7 +116,7 @@ class BookingHistoryController extends Controller
         ]);
 
         return redirect()->route('admin.messagesAndPayments')
-                        ->with('success', 'Booking submitted successfully! Check the Payment Proof tab.');
+                 ->with(['success' => 'Booking submitted!', 'tab' => 'payments']);
     }
 
     // 📖 Show booking history

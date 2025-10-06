@@ -407,13 +407,10 @@ class AdminController extends Controller
     public function messagesAndPayments()
     {
         $inquiries = Inquiry::latest()->get();
-        $bookingProofs = Booking::with(['user','staycation'])->latest()->get();
+        $bookingProofs = Booking::whereNotNull('payment_proof')->latest()->get();
 
-        return view('admin.messages', compact('inquiries','bookingProofs'));
+        return view('admin.message', compact('inquiries', 'bookingProofs'));
     }
-
-
-
 }
 
 

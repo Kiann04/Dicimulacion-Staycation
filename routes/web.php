@@ -196,6 +196,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/bookings/half-paid', [BookingHistoryController::class, 'showHalfPaid'])->name('bookings.half_paid');
     Route::post('/bookings/{id}/mark-paid', [BookingHistoryController::class, 'markAsPaid'])->name('bookings.markAsPaid');
 
+    // Admin Messages & Payment Proofs
+    Route::get('/messages-payments', [AdminController::class, 'messagesAndPayments'])
+     ->name('admin.messagesAndPayments');
+
 
 });
 
