@@ -192,9 +192,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/reviews', [ReviewController::class, 'adminIndex'])->name('reviews');
 
     // Booking Filter Routes
-    // Booking Filter Routes
     Route::get('/bookings/paid', [BookingHistoryController::class, 'showPaid'])->name('bookings.paid');
     Route::get('/bookings/half-paid', [BookingHistoryController::class, 'showHalfPaid'])->name('bookings.half_paid');
+
 });
 
 // =========================
