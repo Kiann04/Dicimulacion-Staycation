@@ -4,6 +4,7 @@
   @include('Aside')
 @endsection
 
+@section('content')
 <body class="admin-dashboard">
 <div class="content-wrapper">
   <div class="main-content">
@@ -56,7 +57,7 @@
     </section>
   </div>
 </div>
-
+@endsection
 
 {{-- ✅ Scripts must go after the content section --}}
 @push('scripts')
