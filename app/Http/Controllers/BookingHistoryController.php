@@ -125,13 +125,15 @@ class BookingHistoryController extends Controller
     public function showPaid()
     {
         $bookings = Booking::where('payment_status', 'paid')->latest()->get();
-        return view('admin.bookings', compact('bookings'))->with('filter', 'Paid Bookings');
+        $staycations = Staycation::all(); // ✅ added
+        return view('admin.bookings', compact('bookings', 'staycations'))->with('filter', 'Paid Bookings');
     }
 
     public function showHalfPaid()
     {
         $bookings = Booking::where('payment_status', 'half_paid')->latest()->get();
-        return view('admin.bookings', compact('bookings'))->with('filter', 'Half-Paid Bookings');
+        $staycations = Staycation::all(); // ✅ added
+        return view('admin.bookings', compact('bookings', 'staycations'))->with('filter', 'Half-Paid Bookings');
     }
 
 
