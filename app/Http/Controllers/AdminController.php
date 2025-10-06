@@ -186,7 +186,7 @@ class AdminController extends Controller
     }   
 
     public function generateReport(Request $request)
-    {   
+    {
         $request->validate([
             'report_type' => 'required',
             'report_year' => 'required|integer|min:2000|max:' . date('Y'),
@@ -195,28 +195,26 @@ class AdminController extends Controller
         $year = $request->input('report_year');
         $type = $request->input('report_type');
 
-        // Get all bookings for the selected year
+        // Only include bookings that are paid or half_paid
         $bookings = Booking::with('staycation')
             ->whereYear('created_at', $year)
+            ->whereIn('payment_status', ['paid', 'half_paid'])
             ->get();
 
-        // Initialize months with zero values and convert to array for modification
+        // Initialize months
         $months = collect(range(1,12))->mapWithKeys(function($m){
             return [Carbon::create()->month($m)->format('F') => ['bookings'=>0, 'revenue'=>0]];
         })->toArray();
 
-        // Populate monthly bookings and revenue
         foreach($bookings as $b){
             $monthName = Carbon::parse($b->created_at)->format('F');
             $months[$monthName]['bookings'] += 1;
             $months[$monthName]['revenue'] += $b->total_price;
         }
 
-        // Calculate totals
         $totalRevenue = array_sum(array_column($months, 'revenue'));
         $totalBookings = array_sum(array_column($months, 'bookings'));
 
-        // Generate and download PDF
         $pdf = Pdf::loadView('admin.reports_pdf', [
             'bookings' => $bookings,
             'months' => $months,
