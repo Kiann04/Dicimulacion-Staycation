@@ -391,6 +391,20 @@ class AdminController extends Controller
 
         return response()->json(['success' => 'Unpaid booking deleted successfully!']);
     }
+    public function viewMessagesAndProofs()
+    {
+        // Load inquiries
+        $inquiries = Inquiry::latest()->get();
+
+        // Load bookings with payment proofs
+        $bookingProofs = Booking::with(['user', 'staycation'])
+                            ->whereNotNull('payment_proof')
+                            ->latest()
+                            ->get();
+
+        return view('admin.messages_and_proofs', compact('inquiries', 'bookingProofs'));
+    }
+
 
 }
 
