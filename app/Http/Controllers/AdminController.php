@@ -16,6 +16,7 @@ use App\Mail\BookingApproved;
 use App\Mail\BookingDeclined;
 use App\Models\AuditLog;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 
 class AdminController extends Controller
@@ -27,10 +28,18 @@ class AdminController extends Controller
             ->where('status', '!=', 'completed')
             ->update(['status' => 'completed']);
 
-        // Stats (unchanged)
+        // Stats
         $totalUsers    = User::count();
         $totalBookings = Booking::count();
-        $totalRevenue  = Booking::where('payment_status', 'paid')->sum('total_price');
+
+        // ✅ Updated Revenue Logic (Full + Half Paid)
+        $totalRevenue = Booking::sum(DB::raw("
+            CASE 
+                WHEN payment_status = 'paid' THEN total_price
+                WHEN payment_status = 'half_paid' THEN total_price / 2
+                ELSE 0
+            END
+        "));
 
         // Only show unpaid bookings on dashboard
         $bookings = Booking::where('payment_status', 'unpaid')
