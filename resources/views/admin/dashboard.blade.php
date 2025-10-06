@@ -38,7 +38,7 @@
             <div class="card"><h3>Revenue</h3><p>₱{{ number_format($totalRevenue, 2) }}</p></div>
         </section>
 
-        <!-- Bookings Table -->
+        <!-- Unpaid Bookings Table -->
         <section class="table-container">
             <h2>Unpaid Bookings</h2>
             <table>
@@ -95,6 +95,13 @@
                 @endforelse
                 </tbody>
             </table>
+
+            <!-- View Paid & Half Paid Button -->
+            <div class="text-center mt-4">
+                <a href="{{ route('admin.settings') }}" class="btn btn-primary px-4 py-2" style="border-radius: 8px;">
+                    View Paid & Half Paid Bookings
+                </a>
+            </div>
         </section>
     </div>
 </div>
