@@ -121,4 +121,16 @@ class BookingHistoryController extends Controller
         return redirect()->route('BookingHistory.index')
             ->with('success', 'Booking cancelled successfully.');
     }
+    public function showPaid()
+    {
+        $bookings = Booking::where('payment_status', 'paid')->get();
+        return view('admin.bookings.index', compact('bookings'))->with('filter', 'paid');
+    }
+
+    public function showHalfPaid()
+    {
+        $bookings = Booking::where('payment_status', 'half_paid')->get();
+        return view('admin.bookings.index', compact('bookings'))->with('filter', 'half_paid');
+    }
+
 }

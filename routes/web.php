@@ -190,6 +190,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/customers/{id}/bookings', [AdminController::class, 'viewBookings'])->name('customers.bookings');
     Route::get('/audit-logs', [AdminController::class, 'auditLogs'])->name('audit.logs');
     Route::get('/reviews', [ReviewController::class, 'adminIndex'])->name('reviews');
+
+    // Booking Filter Routes
+    Route::get('/admin/bookings/paid', [BookingHistoryController::class, 'showPaid'])->name('admin.bookings.paid');
+    Route::get('/admin/bookings/half-paid', [BookingHistoryController::class, 'showHalfPaid'])->name('admin.bookings.half_paid');
+
 });
 
 // =========================
