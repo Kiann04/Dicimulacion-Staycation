@@ -5,9 +5,6 @@
 @endsection
 
 @section('content')
-<body class="admin-dashboard">
-<div class="content-wrapper">
-  <div class="main-content">
 <div class="container my-5">
     <h1>Messages & Payment Proofs</h1>
     <p class="subtext">Manage customer inquiries and booking payment proofs</p>
@@ -56,7 +53,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5">No messages found</td>
+                            <td colspan="5" class="text-center">No messages found</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -89,16 +86,34 @@
                             <td>{{ ucfirst($booking->payment_status) }}</td>
                             <td>
                                 @if($booking->payment_proof)
-                                <a href="{{ asset('storage/'.$booking->payment_proof) }}" target="_blank">View Proof</a>
+                                    <!-- Thumbnail with modal -->
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#proofModal{{ $booking->id }}">
+                                        <img src="{{ asset('storage/'.$booking->payment_proof) }}" alt="Proof" style="height:50px; object-fit:cover;">
+                                    </a>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="proofModal{{ $booking->id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Payment Proof #{{ $booking->id }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <img src="{{ asset('storage/'.$booking->payment_proof) }}" alt="Payment Proof" class="img-fluid">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 @else
-                                N/A
+                                    N/A
                                 @endif
                             </td>
                             <td>{{ $booking->created_at->format('Y-m-d') }}</td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7">No payment proofs found</td>
+                            <td colspan="7" class="text-center">No payment proofs found</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -108,6 +123,6 @@
     </div>
 </div>
 
-<!-- Bootstrap JS (required for tabs) -->
+<!-- Bootstrap JS (required for tabs & modals) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 @endsection
