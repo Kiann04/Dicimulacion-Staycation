@@ -5,9 +5,7 @@
 @endsection
 
 <section class="container my-5">
-  <div class="row g-4 align-items-start">
-
-    <!-- Booking Form -->
+  <div class="row g-4">
     <div class="col-lg-6">
       <div class="card shadow-sm border-0">
         <div class="card-body p-4">
@@ -17,28 +15,23 @@
           @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
           @endif
-          @if(session('message'))
-            <div class="alert alert-danger">{!! nl2br(e(session('message'))) !!}</div>
-          @endif
 
           <form action="{{ route('booking.preview', $staycation->id) }}" method="POST">
             @csrf
 
             <div class="mb-3">
               <label class="form-label">Full Name</label>
-              <input type="text" name="name" class="form-control" placeholder="Name" required
-                @if(Auth::id()) value="{{ Auth::user()->name }}" @endif>
+              <input type="text" name="name" class="form-control" value="{{ Auth::user()->name ?? '' }}" required>
             </div>
 
             <div class="mb-3">
               <label class="form-label">Contact Number</label>
-              <input type="tel" name="phone" class="form-control" placeholder="9123456789" required
-                pattern="[0-9]{10}" title="Enter a valid 10-digit Philippine phone number">
+              <input type="tel" name="phone" class="form-control" value="{{ Auth::user()->phone ?? '' }}" required>
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Guests</label>
-              <input type="number" name="guest_number" class="form-control" placeholder="Guest/s" required>
+              <label class="form-label">Number of Guests</label>
+              <input type="number" name="guest_number" class="form-control" required>
             </div>
 
             <div class="row g-3 mb-3">
@@ -52,26 +45,15 @@
               </div>
             </div>
 
-            <div id="price-summary" class="border-top pt-3 mb-3" style="display:none;">
-              <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
-              <p id="total-price" class="fw-bold text-success"></p>
-            </div>
-
             <div class="form-check mb-3">
-              <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
-              <label class="form-check-label" for="terms">
-                I agree to the <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a>
-              </label>
+              <input type="checkbox" name="terms" class="form-check-input" required>
+              <label class="form-check-label">I agree to the <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a></label>
             </div>
 
             @auth
-              <button type="submit" class="btn btn-primary w-100 fw-semibold">
-                Reserve
-              </button>
+            <button type="submit" class="btn btn-primary w-100">Preview Booking</button>
             @else
-              <a href="{{ route('login') }}" class="btn btn-secondary w-100 disabled">
-                Please log in to reserve
-              </a>
+            <a href="{{ route('login') }}" class="btn btn-secondary w-100 disabled">Log in to book</a>
             @endauth
           </form>
         </div>
@@ -80,25 +62,22 @@
 
     <!-- Image Carousel -->
     <div class="col-lg-6">
-      <div id="staycationCarousel" class="carousel slide shadow-sm rounded overflow-hidden" data-bs-ride="carousel">
+      <div id="carouselStaycation" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
-          @foreach(['House1.png','House2.png','House3.png','House5.png'] as $i => $img)
-          <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
-            <img src="{{ asset('assets/'.$img) }}" class="d-block w-100 rounded" alt="Staycation Image">
+          @foreach(['House1.png','House2.png','House3.png'] as $i => $img)
+          <div class="carousel-item {{ $i==0 ? 'active' : '' }}">
+            <img src="{{ asset('assets/'.$img) }}" class="d-block w-100" alt="Staycation Image">
           </div>
           @endforeach
         </div>
-
-        <!-- Controls -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#staycationCarousel" data-bs-slide="prev">
+        <button class="carousel-control-prev" data-bs-target="#carouselStaycation" data-bs-slide="prev">
           <span class="carousel-control-prev-icon"></span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#staycationCarousel" data-bs-slide="next">
+        <button class="carousel-control-next" data-bs-target="#carouselStaycation" data-bs-slide="next">
           <span class="carousel-control-next-icon"></span>
         </button>
       </div>
     </div>
-
   </div>
 </section>
 

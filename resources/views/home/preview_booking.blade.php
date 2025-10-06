@@ -13,26 +13,21 @@
         padding: 2rem;
         transition: transform 0.2s;
     }
-
     .booking-card:hover {
         transform: translateY(-5px);
     }
-
     .booking-card h3 {
         color: #2c3e50;
     }
-
     .booking-info p {
         font-size: 1rem;
         margin-bottom: 0.5rem;
     }
-
     .total-amount {
         font-size: 1.25rem;
         font-weight: 700;
         color: #007bff;
     }
-
     .btn-modern {
         background: linear-gradient(90deg,#007bff 0%,#00c6ff 100%);
         border: none;
@@ -42,7 +37,6 @@
         border-radius: 0.5rem;
         transition: 0.3s;
     }
-
     .btn-modern:hover {
         background: linear-gradient(90deg,#0056b3 0%,#00a4cc 100%);
     }
@@ -55,13 +49,8 @@
         @php
             $start = \Carbon\Carbon::parse($startDate);
             $end = \Carbon\Carbon::parse($endDate);
-
-            // Number of nights (exclude departure)
             $nights = $end->diffInDays($start);
-
-            // Total price
             $totalPrice = $staycation->house_price * $nights;
-
             $formattedStart = $start->format('M d, Y');
             $formattedEnd = $end->format('M d, Y');
         @endphp
@@ -69,7 +58,7 @@
         <div class="booking-info mb-4">
             <p><strong>Staycation:</strong> {{ $staycation->house_name }}</p>
             <p><strong>Guests:</strong> {{ $guest_number }}</p>
-            <p><strong>Stay Dates:</strong> {{ $formattedStart }} - {{ $formattedEnd }} ({{ $nights }} night{{ $nights>1?'s':'' }})</p>
+            <p><strong>Stay Dates:</strong> {{ $formattedStart }} - {{ $formattedEnd }} ({{ $nights }} night{{ $nights>1 ? 's' : '' }})</p>
             <hr>
             <p class="total-amount">Total Price: ₱{{ number_format($totalPrice, 2) }}</p>
         </div>
@@ -77,12 +66,14 @@
         <form action="{{ route('booking.submit', $staycation->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
 
+            <!-- Hidden fields to pass all data -->
             <input type="hidden" name="guest_number" value="{{ $guest_number }}">
             <input type="hidden" name="startDate" value="{{ $startDate }}">
             <input type="hidden" name="endDate" value="{{ $endDate }}">
-            <input type="hidden" name="phone" value="{{ $phone ?? old('phone') }}">
+            <input type="hidden" name="phone" value="{{ $phone ?? Auth::user()->phone ?? old('phone') }}">
             <input type="hidden" name="totalPrice" value="{{ $totalPrice }}">
-                    {{-- Payment Option --}}
+
+            <!-- Payment Option -->
             <div class="mb-3">
                 <label class="form-label fw-semibold">Payment Option</label>
                 <select name="payment_type" class="form-select" required>
@@ -92,7 +83,7 @@
                 </select>
             </div>
 
-            {{-- Payment Method --}}
+            <!-- Payment Method -->
             <div class="mb-3">
                 <label class="form-label fw-semibold">Payment Method</label>
                 <select name="payment_method" id="paymentMethod" class="form-select" required>
@@ -102,24 +93,36 @@
                 </select>
             </div>
 
-            {{-- GCash Info --}}
+            <!-- GCash Info -->
             <div id="gcashInfo" class="p-3 bg-light border rounded mb-3" style="display:none;">
                 <h6 class="fw-semibold text-primary">GCash Information</h6>
                 <p><strong>Account Name:</strong> Dicimulacion Staycation</p>
                 <p><strong>GCash Number:</strong> 0917-123-4567</p>
             </div>
 
-            {{-- BPI Info --}}
+            <!-- BPI Info -->
             <div id="bpiInfo" class="p-3 bg-light border rounded mb-3" style="display:none;">
                 <h6 class="fw-semibold text-primary">BPI Bank Information</h6>
                 <p><strong>Account Name:</strong> Dicimulacion Staycation</p>
                 <p><strong>Account Number:</strong> 1234-5678-90</p>
             </div>
 
-            {{-- Proof of Payment --}}
+            <!-- Upload Proof of Payment -->
             <div class="mb-3">
                 <label class="form-label fw-semibold">Upload Proof of Payment</label>
                 <input type="file" name="payment_proof" class="form-control" accept="image/*" required>
+            </div>
+
+            <!-- Optional: Transaction number -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Transaction Number (Optional)</label>
+                <input type="text" name="transaction_number" class="form-control" placeholder="Enter transaction number">
+            </div>
+
+            <!-- Optional: Message to admin -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Message to Admin (Optional)</label>
+                <textarea name="message" class="form-control" rows="3" placeholder="Any special requests or notes"></textarea>
             </div>
 
             <button type="submit" class="btn-modern w-100 mt-3">Submit Booking Request</button>
@@ -131,17 +134,16 @@
 document.addEventListener("DOMContentLoaded", function(){
     const paymentSelect = document.querySelector("select[name='payment_type']");
     const totalPriceElem = document.querySelector(".total-amount");
-    const totalPrice = parseFloat("{{ $totalPrice }}"); // Pass numeric value correctly
+    const totalPrice = parseFloat("{{ $totalPrice }}");
 
     const gcashInfo = document.getElementById("gcashInfo");
     const bpiInfo = document.getElementById("bpiInfo");
-    
+
+    // Update total price based on payment type
     function updatePaymentDisplay() {
         if(paymentSelect.value === "half") {
             const halfPrice = totalPrice / 2;
             totalPriceElem.textContent = "Amount Due (50%): ₱" + halfPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        } else if(paymentSelect.value === "full") {
-            totalPriceElem.textContent = "Total Price: ₱" + totalPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
         } else {
             totalPriceElem.textContent = "Total Price: ₱" + totalPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
         }
@@ -149,17 +151,14 @@ document.addEventListener("DOMContentLoaded", function(){
 
     paymentSelect.addEventListener("change", updatePaymentDisplay);
 
-    // Payment method toggle
+    // Toggle payment method info
     const methodSelect = document.getElementById("paymentMethod");
     methodSelect.addEventListener("change", function(){
-        gcashInfo.style.display = "none";
-        bpiInfo.style.display = "none";
-        if(this.value === "gcash") gcashInfo.style.display = "block";
-        else if(this.value === "bpi") bpiInfo.style.display = "block";
+        gcashInfo.style.display = this.value === "gcash" ? "block" : "none";
+        bpiInfo.style.display = this.value === "bpi" ? "block" : "none";
     });
 });
 </script>
-
 
 @endsection
 

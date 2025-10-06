@@ -60,8 +60,9 @@ class BookingHistoryController extends Controller
         ])->with('success', '✅ Dates are available! Please confirm your booking.');
     }
     // 📄 Step 2: Submit booking request
-   public function submitRequest(Request $request, $staycation_id)
+    public function submitRequest(Request $request, $staycation_id)
     {
+        // Validate the request
         $request->validate([
             'guest_number' => 'required|integer|min:1',
             'startDate' => 'required|date',
@@ -74,21 +75,26 @@ class BookingHistoryController extends Controller
             'message' => 'nullable|string|max:500',
         ]);
 
+        // Find the staycation
         $staycation = Staycation::findOrFail($staycation_id);
 
-        // Parse dates
+        // Parse dates and calculate nights
         $start = Carbon::parse($request->startDate);
         $end = Carbon::parse($request->endDate);
+        $nights = $end->diffInDays($start);
 
-        // Number of nights (exclude departure date)
-        $nights = $end->diffInDays($start); // do NOT add +1
+        // Calculate total and amount to pay
         $totalPrice = $nights * $staycation->house_price;
+        $amountPaid = $request->payment_type === 'half' ? round($totalPrice / 2, 2) : $totalPrice;
 
-        // Payment calculation
-        $amountPaid = $request->payment_type === 'half' ? $totalPrice / 2 : $totalPrice;
-
-        // Upload proof of payment
-        $proofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+        // Upload proof of payment with unique filename
+        if ($request->hasFile('payment_proof')) {
+            $proofFile = $request->file('payment_proof');
+            $proofName = time() . '_' . $proofFile->getClientOriginalName();
+            $proofPath = $proofFile->storeAs('payment_proofs', $proofName, 'public');
+        } else {
+            $proofPath = null;
+        }
 
         // Create booking
         $booking = Booking::create([
@@ -96,7 +102,7 @@ class BookingHistoryController extends Controller
             'user_id' => Auth::id(),
             'name' => Auth::user()->name,
             'email' => Auth::user()->email,
-            'phone' => $request->phone, // <-- ensure phone is saved
+            'phone' => $request->phone,
             'guest_number' => $request->guest_number,
             'start_date' => $start->format('Y-m-d'),
             'end_date' => $end->format('Y-m-d'),
@@ -106,8 +112,8 @@ class BookingHistoryController extends Controller
             'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
             'payment_method' => $request->payment_method,
             'payment_proof' => $proofPath,
-            'transaction_number' => $request->transaction_number,
-            'message_to_admin' => $request->message,
+            'transaction_number' => $request->transaction_number ?? null,
+            'message_to_admin' => $request->message ?? null,
             'status' => 'pending',
         ]);
 
