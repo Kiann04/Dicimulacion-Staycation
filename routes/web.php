@@ -168,6 +168,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/update_booking/{id}', [AdminController::class, 'editBooking']);
     Route::put('/update_booking/{id}', [AdminController::class, 'updateBooking']);
 
+    // ✅ Add this route to delete unpaid bookings
+    Route::delete('/bookings/{id}', [AdminController::class, 'deleteBooking'])->name('bookings.delete');
+
     // Messages
     Route::get('/view_messages/{id}', [AdminController::class, 'viewMessage'])->name('view_messages');
     Route::get('/messages/delete/{id}', [AdminController::class, 'deleteMessage'])->name('delete_message');

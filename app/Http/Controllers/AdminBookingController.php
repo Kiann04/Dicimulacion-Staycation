@@ -65,17 +65,21 @@ class AdminBookingController extends Controller
 
 
     // ✅ Update payment status
-    public function updatePayment(Request $request, $id)
-    {
-        $booking = Booking::with('user', 'staycation')->findOrFail($id);
-        $paymentStatus = strtolower($request->input('payment_status'));
+public function updatePayment(Request $request, $id)
+{
+    $booking = Booking::with('user', 'staycation')->findOrFail($id);
+    $paymentStatus = strtolower($request->input('payment_status'));
 
-        $booking->payment_status = $paymentStatus;
+    $booking->payment_status = $paymentStatus;
 
-        if ($paymentStatus === 'paid') {
+    // Define email recipient (user email or fallback)
+    $recipient = $booking->user->email ?? $booking->email;
+
+    switch ($paymentStatus) {
+        case 'paid':
             $booking->status = 'confirmed';
 
-            $recipient = $booking->user->email ?? $booking->email;
+            // Send payment receipt email
             if (!empty($recipient)) {
                 Mail::to($recipient)->send(new PaymentReceiptMail($booking));
             }
@@ -86,23 +90,38 @@ class AdminBookingController extends Controller
                 'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as Paid.",
                 'ip_address' => request()->ip(),
             ]);
-        } elseif ($paymentStatus === 'failed') {
-            $booking->status = 'declined';
+            break;
+
+        case 'half_paid':
+            $booking->status = 'pending';
 
             AuditLog::create([
                 'user_id'    => Auth::id(),
-                'action'     => 'Payment Failed',
-                'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) payment failed.",
+                'action'     => 'Partial Payment',
+                'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as Half Paid.",
                 'ip_address' => request()->ip(),
             ]);
-        } else {
-            if ($booking->status !== 'approved') {
-                $booking->status = 'approved';
-            }
-        }
+            break;
 
-        $booking->save();
+        case 'unpaid':
+            $booking->status = 'cancelled';
 
-        return redirect()->back()->with('success', 'Payment status updated successfully!');
+            AuditLog::create([
+                'user_id'    => Auth::id(),
+                'action'     => 'Payment Unpaid',
+                'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as Unpaid.",
+                'ip_address' => request()->ip(),
+            ]);
+            break;
+
+        default:
+            $booking->status = 'approved';
+            break;
     }
+
+    $booking->save();
+
+    return redirect()->back()->with('success', 'Payment status updated successfully!');
+}
+
 }

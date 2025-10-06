@@ -22,15 +22,21 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        // Automatically update status if booking end date is past today
+        // Automatically mark completed bookings
         Booking::whereDate('end_date', '<', Carbon::today())
-            ->where('status', '!=', 'completed') // avoid overwriting
+            ->where('status', '!=', 'completed')
             ->update(['status' => 'completed']);
 
-        $totalUsers     = User::count();
-        $totalBookings  = Booking::count();
-        $totalRevenue = Booking::where('payment_status', 'paid')->sum('total_price');
-        $bookings       = Booking::latest()->take(10)->get();
+        // Stats (unchanged)
+        $totalUsers    = User::count();
+        $totalBookings = Booking::count();
+        $totalRevenue  = Booking::where('payment_status', 'paid')->sum('total_price');
+
+        // Only show unpaid bookings on dashboard
+        $bookings = Booking::where('payment_status', 'unpaid')
+            ->latest()
+            ->take(10)
+            ->get();
 
         return view('admin.dashboard', compact(
             'totalUsers',
@@ -39,6 +45,7 @@ class AdminController extends Controller
             'bookings'
         ));
     }
+
     
     public function customers(Request $request)
     {
@@ -297,6 +304,26 @@ class AdminController extends Controller
 
     return redirect()->back()->with('success', 'Staycation availability updated!');
     }
+    public function deleteBooking($id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        if ($booking->payment_status !== 'unpaid') {
+            return response()->json(['error' => 'Only unpaid bookings can be deleted.'], 403);
+        }
+
+        $booking->delete();
+
+        AuditLog::create([
+            'user_id'    => Auth::id(),
+            'action'     => 'Booking Deleted',
+            'description'=> "Booking ID: {$booking->id} deleted by admin.",
+            'ip_address' => request()->ip(),
+        ]);
+
+        return response()->json(['success' => 'Unpaid booking deleted successfully!']);
+    }
+
 }
 
 

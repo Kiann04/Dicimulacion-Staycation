@@ -40,16 +40,24 @@
 
         <!-- Bookings Table -->
         <section class="table-container">
-            <h2>Recent Bookings</h2>
+            <h2>Unpaid Bookings</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th><th>Staycation</th><th>Customer</th><th>Phone</th>
-                        <th>Start</th><th>End</th><th>Payment</th><th>Status</th>
+                        <th>ID</th>
+                        <th>Staycation</th>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                 @forelse($bookings as $booking)
+                    @if($booking->payment_status == 'unpaid')
                     <tr id="booking-{{ $booking->id }}">
                         <td>{{ $booking->id }}</td>
                         <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
@@ -71,15 +79,26 @@
                         <td>
                             <span class="status {{ $booking->status }}">{{ ucfirst($booking->status) }}</span>
                         </td>
+
+                        {{-- Delete Button --}}
+                        <td>
+                            <form action="{{ route('admin.bookings.delete', $booking->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this unpaid booking?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
                     </tr>
+                    @endif
                 @empty
-                    <tr><td colspan="8">No bookings found</td></tr>
+                    <tr><td colspan="9">No unpaid bookings found</td></tr>
                 @endforelse
                 </tbody>
             </table>
         </section>
     </div>
 </div>
+</body>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
