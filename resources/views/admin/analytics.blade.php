@@ -81,12 +81,18 @@
         }
 
         /* --- Chart Sections --- */
+        .charts-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
         .chart-section {
             background: #fff;
             border-radius: 16px;
             padding: 25px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
         }
 
         .chart-section h2 {
@@ -129,16 +135,17 @@
             </section>
 
             <!-- Chart: Bookings -->
-            <section class="chart-section">
-                <h2>📅 Booking Trends</h2>
-                <canvas id="bookingChart" height="100"></canvas>
-            </section>
+            <section class="charts-wrapper">
+                  <div class="chart-section">
+                      <h2>📅 Booking Trends</h2>
+                      <canvas id="bookingChart" height="100"></canvas>
+                  </div>
 
-            <!-- Chart: Revenue -->
-            <section class="chart-section">
-                <h2>💰 Revenue Growth</h2>
-                <canvas id="revenueChart" height="100"></canvas>
-            </section>
+                  <div class="chart-section">
+                      <h2>💰 Revenue Growth</h2>
+                      <canvas id="revenueChart" height="100"></canvas>
+                  </div>
+              </section>
         </div>
     </div>
 
