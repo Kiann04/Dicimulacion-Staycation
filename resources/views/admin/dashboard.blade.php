@@ -56,7 +56,7 @@
     </section>
   </div>
 </div>
-@endsection
+
 
 {{-- ✅ Scripts must go after the content section --}}
 @push('scripts')
