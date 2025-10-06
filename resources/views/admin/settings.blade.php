@@ -65,23 +65,67 @@
   </div>
 
   <style>
+    /* Button group layout */
     .settings-btn-group {
       display: flex;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 1rem;
+      margin-top: 1.5rem;
       flex-wrap: wrap;
     }
-    .settings-btn.paid-btn {
-      background-color: #28a745;
-      color: #fff;
+
+    /* Base button style */
+    .settings-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     }
-    .settings-btn.unpaid-btn {
-      background-color: #dc3545;
-      color: #fff;
+
+    /* Paid Button */
+    .paid-btn {
+      background: linear-gradient(135deg, #16a34a, #22c55e);
     }
-    .settings-btn.paid-btn:hover,
-    .settings-btn.unpaid-btn:hover {
-      opacity: 0.9;
+
+    .paid-btn:hover {
+      background: linear-gradient(135deg, #15803d, #16a34a);
+      transform: translateY(-2px);
+    }
+
+    /* Half Paid Button */
+    .half-paid-btn {
+      background: linear-gradient(135deg, #eab308, #facc15);
+      color: #1a1a1a;
+    }
+
+    .half-paid-btn:hover {
+      background: linear-gradient(135deg, #ca8a04, #eab308);
+      transform: translateY(-2px);
+    }
+
+    /* Optional: icon styling */
+    .settings-btn i {
+      font-size: 1.1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .settings-btn-group {
+        flex-direction: column;
+      }
+      .settings-btn {
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 </body>
