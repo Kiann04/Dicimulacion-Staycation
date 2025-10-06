@@ -1,8 +1,9 @@
-@extends ('layouts.default');
+@extends('layouts.default')
 
-@section ('Aside')
-@include ('Aside')
+@section('Aside')
+    @include('Aside')
 @endsection
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,23 +20,66 @@
         <h1>System Settings</h1>
         <p class="subtext">Manage system configurations, settings, and preferences.</p>
       </header>
+
+      <!-- System Configuration Cards -->
       <section class="settings-sections">
+
         <div class="setting-card">
           <h3>General Settings</h3>
           <p>Configure site-wide settings like business name, contact information, and more.</p>
           <a href="{{ route('home') }}" class="settings-btn">Configure</a>
         </div>
+
         <div class="setting-card">
-            <h3>Customer Reviews</h3>
-            <p>View all reviews submitted by users.</p>
-            <a href="{{ route('admin.reviews') }}" class="settings-btn">View Reviews</a>
+          <h3>Customer Reviews</h3>
+          <p>View all reviews submitted by users.</p>
+          <a href="{{ route('admin.reviews') }}" class="settings-btn">View Reviews</a>
         </div>
+
+        <!-- 💰 Paid and Half Paid Bookings -->
         <div class="setting-card">
-            <h3>System Logs</h3>
-            <p>View system logs for activities and errors.</p>
-            <a href="{{ route('admin.audit.logs') }}" class="settings-btn">View Logs</a>
+          <h3>Booking History</h3>
+          <p>Manage all bookings that have been paid or partially paid.</p>
+
+          <div class="settings-btn-group">
+            <a href="{{ route('admin.bookings') }}?status=paid" class="settings-btn paid-btn">
+              <i class="fa-solid fa-check-circle"></i> View Paid
+            </a>
+
+            <a href="{{ route('admin.bookings') }}?status=half_paid" class="settings-btn half-btn">
+              <i class="fa-solid fa-hourglass-half"></i> View Half Paid
+            </a>
+          </div>
         </div>
+
+        <div class="setting-card">
+          <h3>System Logs</h3>
+          <p>View system logs for activities and errors.</p>
+          <a href="{{ route('admin.audit.logs') }}" class="settings-btn">View Logs</a>
+        </div>
+
+      </section>
     </div>
   </div>
+
+  <style>
+    .settings-btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .settings-btn.paid-btn {
+      background-color: #28a745;
+      color: #fff;
+    }
+    .settings-btn.half-btn {
+      background-color: #ffc107;
+      color: #000;
+    }
+    .settings-btn.paid-btn:hover,
+    .settings-btn.half-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
 </body>
 </html>
