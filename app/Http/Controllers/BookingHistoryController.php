@@ -135,6 +135,20 @@ class BookingHistoryController extends Controller
         $staycations = Staycation::all(); // ✅ added
         return view('admin.half_paid_bookings', compact('bookings', 'staycations'))->with('filter', 'Half-Paid Bookings');
     }
+    public function markAsPaid($id)
+    {
+        $booking = Booking::findOrFail($id);
+        $booking->payment_status = 'paid';
+        $booking->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking marked as fully paid!',
+            'id' => $booking->id,
+        ]);
+    }
+
+
 
 
 }
