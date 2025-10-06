@@ -73,13 +73,13 @@ class AdminController extends Controller
     }
 
     
+    
     public function analytics()
     {
-        // Get current month and year
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
 
-        // --- Cards Data ---
+        // --- Cards ---
         $monthlyBookings = Booking::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
             ->count();
@@ -92,21 +92,20 @@ class AdminController extends Controller
             ->whereYear('created_at', $currentYear)
             ->count();
 
-        // Optional: Estimate average occupancy (example logic)
+        // --- Average Occupancy (optional) ---
         $totalDays = now()->daysInMonth;
-        $bookedDays = Booking::whereMonth('startDate', $currentMonth)
-            ->whereYear('startDate', $currentYear)
+        $bookedDays = Booking::whereMonth('start_date', $currentMonth)
+            ->whereYear('start_date', $currentYear)
             ->get()
             ->sum(function ($b) {
-                return Carbon::parse($b->startDate)->diffInDays(Carbon::parse($b->endDate));
+                return Carbon::parse($b->start_date)->diffInDays(Carbon::parse($b->end_date));
             });
+
         $averageOccupancy = round(($bookedDays / ($totalDays * 1)) * 100) . '%'; // assuming 1 property
 
-        // --- Chart Data (last 6 months) ---
+        // --- Charts (last 6 months) ---
         $months = collect(range(0, 5))
-            ->map(function ($i) {
-                return Carbon::now()->subMonths($i)->format('M');
-            })
+            ->map(fn($i) => Carbon::now()->subMonths($i)->format('M'))
             ->reverse()
             ->values();
 
@@ -130,7 +129,6 @@ class AdminController extends Controller
             ->reverse()
             ->values();
 
-        // Pass all data to the view
         return view('admin.Analytics', [
             'monthlyBookings' => $monthlyBookings,
             'monthlyRevenue' => $monthlyRevenue,
