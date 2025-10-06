@@ -90,9 +90,10 @@ class BookingHistoryController extends Controller
         $proofPath = null;
         if ($request->hasFile('payment_proof')) {
             $proofFile = $request->file('payment_proof');
-            $proofName = time() . '_' . $proofFile->getClientOriginalName();
-            $proofPath = $proofFile->storeAs('payment_proofs', $proofName, 'public');
+            $proofName = time().'_'.$proofFile->getClientOriginalName();
+            $proofPath = $proofFile->move(public_path('payment_proofs'), $proofName);
         }
+
 
         // Create booking
         Booking::create([

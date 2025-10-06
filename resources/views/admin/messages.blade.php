@@ -96,10 +96,9 @@
                             <td>{{ ucfirst($booking->payment_status) }}</td>
                             <td>
                                 @if($booking->payment_proof)
-                                <a href="{{ asset('storage/'.$booking->payment_proof) }}" target="_blank">View Proof</a>
-                                @else
-                                N/A
+                                <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" target="_blank">View Proof</a>
                                 @endif
+
                             </td>
                             <td>{{ $booking->created_at->format('Y-m-d') }}</td>
                         </tr>
