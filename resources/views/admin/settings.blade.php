@@ -65,52 +65,54 @@
   </div>
 
   <style>
-    /* Button group layout */
-    .settings-btn-group {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1.5rem;
-      flex-wrap: wrap;
-    }
+    /* Group layout aligned to the right */
+.settings-btn-group {
+  display: flex;
+  justify-content: flex-end; /* pushes buttons to the right */
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: nowrap; /* keeps them on one line */
+}
 
-    /* Base button style */
-    .settings-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6rem;
-      padding: 12px 22px;
-      border-radius: 10px;
-      font-weight: 600;
-      text-decoration: none;
-      font-size: 0.95rem;
-      transition: all 0.3s ease;
-      border: none;
-      cursor: pointer;
-      color: white;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-    }
+/* Base button style */
+.settings-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  color: white;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
 
-    /* Paid Button */
-    .paid-btn {
-      background: linear-gradient(135deg, #16a34a, #22c55e);
-    }
+/* Paid Button */
+.paid-btn {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+}
 
-    .paid-btn:hover {
-      background: linear-gradient(135deg, #15803d, #16a34a);
-      transform: translateY(-2px);
-    }
+.paid-btn:hover {
+  background: linear-gradient(135deg, #15803d, #16a34a);
+  transform: translateY(-2px);
+}
 
-    /* Half Paid Button */
-    .half-paid-btn {
-      background: linear-gradient(135deg, #eab308, #facc15);
-      color: #1a1a1a;
-    }
+/* Half Paid Button */
+.half-paid-btn {
+  background: linear-gradient(135deg, #eab308, #facc15);
+  color: #1a1a1a;
+}
 
-    .half-paid-btn:hover {
-      background: linear-gradient(135deg, #ca8a04, #eab308);
-      transform: translateY(-2px);
-    }
+.half-paid-btn:hover {
+  background: linear-gradient(135deg, #ca8a04, #eab308);
+  transform: translateY(-2px);
+}
+
 
     /* Optional: icon styling */
     .settings-btn i {
