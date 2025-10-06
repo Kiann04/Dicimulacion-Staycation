@@ -186,7 +186,7 @@ class AdminController extends Controller
     }   
 
     public function generateReport(Request $request)
-    {
+    {   
         $request->validate([
             'report_type' => 'required',
             'report_year' => 'required|integer|min:2000|max:' . date('Y'),
@@ -195,23 +195,28 @@ class AdminController extends Controller
         $year = $request->input('report_year');
         $type = $request->input('report_type');
 
-        // Get bookings
-        $bookings = Booking::with('staycation')->whereYear('created_at', $year)->get();
+        // Get all bookings for the selected year
+        $bookings = Booking::with('staycation')
+            ->whereYear('created_at', $year)
+            ->get();
 
-        // Prepare months summary
-        $months = collect(range(1, 12))->mapWithKeys(function($m) {
-            return [\Carbon\Carbon::create()->month($m)->format('F') => ['bookings' => 0, 'revenue' => 0]];
-        });
+        // Initialize months with zero values and convert to array for modification
+        $months = collect(range(1,12))->mapWithKeys(function($m){
+            return [Carbon::create()->month($m)->format('F') => ['bookings'=>0, 'revenue'=>0]];
+        })->toArray();
 
-        foreach ($bookings as $b) {
-            $monthName = \Carbon\Carbon::parse($b->created_at)->format('F');
+        // Populate monthly bookings and revenue
+        foreach($bookings as $b){
+            $monthName = Carbon::parse($b->created_at)->format('F');
             $months[$monthName]['bookings'] += 1;
             $months[$monthName]['revenue'] += $b->total_price;
         }
 
-        $totalRevenue = $months->sum(fn($m) => $m['revenue']);
-        $totalBookings = $months->sum(fn($m) => $m['bookings']);
+        // Calculate totals
+        $totalRevenue = array_sum(array_column($months, 'revenue'));
+        $totalBookings = array_sum(array_column($months, 'bookings'));
 
+        // Generate and download PDF
         $pdf = Pdf::loadView('admin.reports_pdf', [
             'bookings' => $bookings,
             'months' => $months,
@@ -223,7 +228,6 @@ class AdminController extends Controller
 
         return $pdf->download('Annual_Report_' . $year . '.pdf');
     }
-
 
 
     public function downloadReport($id)
