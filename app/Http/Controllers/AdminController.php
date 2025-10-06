@@ -72,43 +72,75 @@ class AdminController extends Controller
         return view('admin.customers', compact('customers', 'search'));
     }
 
+    
     public function analytics()
     {
-    $currentMonth = \Carbon\Carbon::now()->month;
-    $currentYear = \Carbon\Carbon::now()->year;
+        // Get current month and year
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
 
-    // Get bookings grouped by month
-    $bookingsPerMonth = \App\Models\Booking::selectRaw('MONTH(created_at) as month, COUNT(*) as total')
-        ->whereYear('created_at', $currentYear)
-        ->groupBy('month')
-        ->orderBy('month')
-        ->pluck('total', 'month')
-        ->toArray();
+        // --- Cards Data ---
+        $monthlyBookings = Booking::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->count();
 
-    // Ensure all 12 months are present
-    $months = [];
-    $totals = [];
-    for ($m = 1; $m <= 12; $m++) {
-        $months[] = date('F', mktime(0, 0, 0, $m, 1));
-        $totals[] = $bookingsPerMonth[$m] ?? 0;
+        $monthlyRevenue = Booking::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->sum('total_price');
+
+        $newUsers = User::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->count();
+
+        // Optional: Estimate average occupancy (example logic)
+        $totalDays = now()->daysInMonth;
+        $bookedDays = Booking::whereMonth('startDate', $currentMonth)
+            ->whereYear('startDate', $currentYear)
+            ->get()
+            ->sum(function ($b) {
+                return Carbon::parse($b->startDate)->diffInDays(Carbon::parse($b->endDate));
+            });
+        $averageOccupancy = round(($bookedDays / ($totalDays * 1)) * 100) . '%'; // assuming 1 property
+
+        // --- Chart Data (last 6 months) ---
+        $months = collect(range(0, 5))
+            ->map(function ($i) {
+                return Carbon::now()->subMonths($i)->format('M');
+            })
+            ->reverse()
+            ->values();
+
+        $totals = collect(range(0, 5))
+            ->map(function ($i) {
+                $month = Carbon::now()->subMonths($i);
+                return Booking::whereMonth('created_at', $month->month)
+                    ->whereYear('created_at', $month->year)
+                    ->count();
+            })
+            ->reverse()
+            ->values();
+
+        $revenues = collect(range(0, 5))
+            ->map(function ($i) {
+                $month = Carbon::now()->subMonths($i);
+                return Booking::whereMonth('created_at', $month->month)
+                    ->whereYear('created_at', $month->year)
+                    ->sum('total_price');
+            })
+            ->reverse()
+            ->values();
+
+        // Pass all data to the view
+        return view('admin.Analytics', [
+            'monthlyBookings' => $monthlyBookings,
+            'monthlyRevenue' => $monthlyRevenue,
+            'newUsers' => $newUsers,
+            'averageOccupancy' => $averageOccupancy,
+            'months' => $months,
+            'totals' => $totals,
+            'revenues' => $revenues,
+        ]);
     }
-
-    // Dashboard cards
-    $monthlyBookings = \App\Models\Booking::whereMonth('created_at', $currentMonth)->count();
-    $monthlyRevenue = \App\Models\Booking::join('staycations', 'bookings.staycation_id', '=', 'staycations.id')
-        ->whereMonth('bookings.created_at', $currentMonth)
-        ->sum('staycations.house_price');
-    $newUsers = \App\Models\User::whereMonth('created_at', $currentMonth)->count();
-
-    return view('admin.analytics', compact(
-        'monthlyBookings',
-        'monthlyRevenue',
-        'newUsers',
-        'months',
-        'totals'
-    ));
-    }
-
 
     public function messages()
     {

@@ -1,78 +1,198 @@
-@extends ('layouts.default')
+@extends('layouts.default')
 
-@section ('Aside')
-@include ('Aside')
+@section('Aside')
+    @include('Aside')
 @endsection
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Analytics</title>
-  <link rel="stylesheet" href="../Css/Admin.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Analytics Dashboard</title>
+
+    <!-- FontAwesome & Chart.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body.admin-dashboard {
+            background-color: #f7f8fa;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+        }
+
+        .content-wrapper {
+            padding: 30px;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-weight: 700;
+            color: #1e1e2f;
+        }
+
+        header .subtext {
+            color: #666;
+        }
+
+        /* --- Analytics Cards --- */
+        .analytics-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .analytics-card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            position: relative;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .analytics-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .analytics-card p {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin: 10px 0 0;
+        }
+
+        .analytics-icon {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 2rem;
+            opacity: 0.15;
+        }
+
+        /* --- Chart Sections --- */
+        .chart-section {
+            background: #fff;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .chart-section h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+    </style>
 </head>
 <body class="admin-dashboard">
-  <div class="content-wrapper">
-    <div class="main-content">
-      <header>
-        <h1>Analytics</h1>
-        <p class="subtext">Overview of system performance and booking trends</p>
-      </header>
+    <div class="content-wrapper">
+        <div class="main-content">
+            <header>
+                <h1>📊 Analytics Dashboard</h1>
+                <p class="subtext">Monitor booking trends and system performance</p>
+            </header>
 
-      <section class="analytics-cards">
-        <div class="analytics-card">
-          <h3>Monthly Bookings</h3>
-          <p>{{ $monthlyBookings }}</p>
-        </div>
-        <div class="analytics-card">
-          <h3>Monthly Revenue</h3>
-          <p>₱{{ number_format($monthlyRevenue, 2) }}</p>
-        </div>
-        <div class="analytics-card">
-          <h3>New Users</h3>
-          <p>{{ $newUsers }}</p>
-        </div>
-      </section>
+            <!-- Summary Cards -->
+            <section class="analytics-cards">
+                <div class="analytics-card">
+                    <i class="fa-solid fa-calendar-check analytics-icon"></i>
+                    <h3>Monthly Bookings</h3>
+                    <p>{{ $monthlyBookings }}</p>
+                </div>
+                <div class="analytics-card">
+                    <i class="fa-solid fa-peso-sign analytics-icon"></i>
+                    <h3>Monthly Revenue</h3>
+                    <p>₱{{ number_format($monthlyRevenue, 2) }}</p>
+                </div>
+                <div class="analytics-card">
+                    <i class="fa-solid fa-user-plus analytics-icon"></i>
+                    <h3>New Users</h3>
+                    <p>{{ $newUsers }}</p>
+                </div>
+                <div class="analytics-card">
+                    <i class="fa-solid fa-chart-line analytics-icon"></i>
+                    <h3>Average Occupancy</h3>
+                    <p>{{ $averageOccupancy ?? '85%' }}</p>
+                </div>
+            </section>
 
-      <section class="chart-section">
-    <h2>Booking Trends</h2>
-    <canvas id="bookingChart" height="100"></canvas>
-</section>
+            <!-- Chart: Bookings -->
+            <section class="chart-section">
+                <h2>📅 Booking Trends</h2>
+                <canvas id="bookingChart" height="100"></canvas>
+            </section>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const ctx = document.getElementById('bookingChart').getContext('2d');
-    const bookingChart = new Chart(ctx, {
-        type: 'line', // change to 'bar' if you prefer
-        data: {
-            labels: @json($months), // months from controller
-            datasets: [{
-                label: 'Bookings',
-                data: @json($totals), // totals from controller
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.3
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: true },
+            <!-- Chart: Revenue -->
+            <section class="chart-section">
+                <h2>💰 Revenue Growth</h2>
+                <canvas id="revenueChart" height="100"></canvas>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const months = @json($months);
+        const bookingData = @json($totals);
+        const revenueData = @json($revenues ?? []);
+
+        // Bookings Chart
+        new Chart(document.getElementById('bookingChart'), {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Bookings',
+                    data: bookingData,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#1abc9c'
+                }]
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { stepSize: 1 }
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
                 }
             }
-        }
-    });
-</script>
-    </div>
-  </div>
+        });
+
+        // Revenue Chart
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Revenue (₱)',
+                    data: revenueData,
+                    backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1,
+                    borderRadius: 10,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
