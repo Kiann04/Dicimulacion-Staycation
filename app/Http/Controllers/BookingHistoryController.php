@@ -115,8 +115,8 @@ class BookingHistoryController extends Controller
             'status' => 'pending',
         ]);
 
-        return redirect()->route('admin.messages')
-                 ->with(['success' => 'Booking submitted!', 'tab' => 'payments']);
+        return redirect()->route('BookingHistory.index')
+                 ->with('success', 'Your booking has been submitted! Please wait for admin confirmation.');
     }
 
     // 📖 Show booking history
