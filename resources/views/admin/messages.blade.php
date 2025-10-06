@@ -5,6 +5,9 @@
 @endsection
 
 @section('content')
+<body class="admin-dashboard">
+<div class="content-wrapper">
+  <div class="main-content">
 <div class="container my-5">
     <h1>Messages & Payment Proofs</h1>
     <p class="subtext">Manage customer inquiries and booking payment proofs</p>
