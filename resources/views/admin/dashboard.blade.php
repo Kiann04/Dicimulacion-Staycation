@@ -84,49 +84,49 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    // Payment status change
-    $('.payment-select').change(function(){
+    $('.payment-select').change(function() {
         const id = $(this).data('id');
         const status = $(this).val();
 
         Swal.fire({
             icon: 'warning',
-            title: `Change payment status to "${status}"?`,
+            title: `Change payment status to "${status.replace('_', ' ')}"?`,
             showCancelButton: true,
             confirmButtonText: 'Yes',
             cancelButtonText: 'No',
             confirmButtonColor: '#1e40af',
             cancelButtonColor: '#d33'
         }).then((result) => {
-            if(result.isConfirmed){
+            if (result.isConfirmed) {
                 $.post(`{{ url('admin/bookings') }}/${id}/update-payment`, {
-                    _token:'{{ csrf_token() }}',
-                    payment_status:status
-                }, function(res){
+                    _token: '{{ csrf_token() }}',
+                    payment_status: status
+                }, function(res) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Updated!',
-                        text: res.message,
+                        text: res.message || 'Payment status updated successfully.',
                         timer: 1500,
                         showConfirmButton: false
                     });
 
-                    // Update status badge for consistency
-                    if(status === 'paid'){
-                        $(`#booking-${id} .status`)
-                            .text('Confirmed')
-                            .attr('class','status confirmed');
-                    } else if(status === 'failed'){
-                        $(`#booking-${id} .status`)
-                            .text('Declined')
-                            .attr('class','status declined');
-                    } else {
-                        $(`#booking-${id} .status`)
-                            .text('Pending')
-                            .attr('class','status pending');
+                    // Update visual booking status based on payment
+                    const statusEl = $(`#booking-${id} .status`);
+
+                    if (status === 'paid') {
+                        statusEl.text('Confirmed').attr('class', 'status approved');
+                    } 
+                    else if (status === 'half_paid') {
+                        statusEl.text('Partially Paid').attr('class', 'status pending');
+                    } 
+                    else if (status === 'unpaid') {
+                        statusEl.text('Cancelled').attr('class', 'status declined');
+
+                        // Optional: automatically move unpaid bookings to "Settings"
+                        $(`#booking-${id}`).fadeOut(500);
                     }
 
-                }).fail(function(xhr){
+                }).fail(function(xhr) {
                     Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
                 });
             } else {
@@ -136,6 +136,7 @@ $(document).ready(function() {
     });
 });
 </script>
+
 
 </body>
 </html>
