@@ -62,8 +62,8 @@ class BookingHistoryController extends Controller
     // 📄 Step 2: Submit booking request
     public function submitRequest(Request $request, $staycation_id)
     {
-        // Validate request
-        $validated = $request->validate([
+        // Validate the request
+        $request->validate([
             'guest_number' => 'required|integer|min:1',
             'startDate' => 'required|date',
             'endDate' => 'required|date|after:startDate',
@@ -75,52 +75,49 @@ class BookingHistoryController extends Controller
             'message' => 'nullable|string|max:500',
         ]);
 
-        // Find the staycation
         $staycation = Staycation::findOrFail($staycation_id);
 
-        // Parse dates and calculate nights
-        $start = Carbon::parse($validated['startDate']);
-        $end = Carbon::parse($validated['endDate']);
+        // Dates & nights
+        $start = Carbon::parse($request->startDate);
+        $end = Carbon::parse($request->endDate);
         $nights = $end->diffInDays($start);
 
-        // Calculate total and amount to pay
+        // Total price
         $totalPrice = $nights * $staycation->house_price;
-        $amountPaid = $validated['payment_type'] === 'half' ? round($totalPrice / 2, 2) : $totalPrice;
+        $amountPaid = $request->payment_type === 'half' ? round($totalPrice / 2, 2) : $totalPrice;
 
-        // Upload proof of payment with unique filename
+        // Upload proof
         $proofPath = null;
         if ($request->hasFile('payment_proof')) {
             $proofFile = $request->file('payment_proof');
-            $proofName = time() . '_' . uniqid() . '.' . $proofFile->getClientOriginalExtension();
+            $proofName = time() . '_' . $proofFile->getClientOriginalName();
             $proofPath = $proofFile->storeAs('payment_proofs', $proofName, 'public');
         }
 
         // Create booking
-        $booking = Booking::create([
+        Booking::create([
             'staycation_id' => $staycation_id,
             'user_id' => Auth::id(),
             'name' => Auth::user()->name,
             'email' => Auth::user()->email,
-            'phone' => $validated['phone'],
-            'guest_number' => $validated['guest_number'],
+            'phone' => $request->phone,
+            'guest_number' => $request->guest_number,
             'start_date' => $start->format('Y-m-d'),
             'end_date' => $end->format('Y-m-d'),
             'price_per_day' => $staycation->house_price,
             'total_price' => $totalPrice,
             'amount_paid' => $amountPaid,
-            'payment_status' => $validated['payment_type'] === 'half' ? 'half_paid' : 'paid',
-            'payment_method' => $validated['payment_method'],
+            'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
+            'payment_method' => $request->payment_method,
             'payment_proof' => $proofPath,
-            'transaction_number' => $validated['transaction_number'] ?? null,
-            'message_to_admin' => $validated['message'] ?? null,
+            'transaction_number' => $request->transaction_number ?? null,
+            'message_to_admin' => $request->message ?? null,
             'status' => 'pending',
         ]);
 
-        // Redirect to booking history with success
-        return redirect()->route('BookingHistory.index')
-                        ->with('success', 'Your booking request has been submitted! Wait for admin confirmation.');
+        return redirect()->route('admin.messagesAndPayments')
+                        ->with('success', 'Booking submitted successfully! Check the Payment Proof tab.');
     }
-
 
     // 📖 Show booking history
     public function index()
