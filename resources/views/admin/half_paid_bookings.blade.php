@@ -184,4 +184,3 @@ header .subtext {
 }
 </style>
 @endpush
-@endsection
