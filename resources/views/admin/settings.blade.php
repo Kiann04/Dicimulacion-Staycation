@@ -30,14 +30,15 @@
           <p>View and manage all bookings based on their payment status.</p>
 
           <div class="settings-btn-group">
-            <a href="{{ route('admin.bookings') }}?status=paid" class="settings-btn paid-btn">
-              <i class="fa-solid fa-check-circle"></i> View Paid
-            </a>
+              <a href="{{ route('admin.bookings.paid') }}" class="settings-btn paid-btn">
+                  <i class="fa-solid fa-check-circle"></i> View Paid
+              </a>
 
-            <a href="{{ route('admin.bookings') }}?status=unpaid" class="settings-btn unpaid-btn">
-              <i class="fa-solid fa-times-circle"></i> View Unpaid
-            </a>
+              <a href="{{ route('admin.bookings.half_paid') }}" class="settings-btn half-paid-btn">
+                  <i class="fa-solid fa-hourglass-half"></i> View Half Paid
+              </a>
           </div>
+
         </div>
 
         <div class="setting-card">
