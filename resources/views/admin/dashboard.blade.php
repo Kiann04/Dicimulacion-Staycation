@@ -57,10 +57,11 @@
     </section>
   </div>
 </div>
+@endsection
 
-{{-- SweetAlert2 --}}
+{{-- ✅ Scripts must go after the content section --}}
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script>
 document.addEventListener("DOMContentLoaded", function() {
   const buttons = document.querySelectorAll(".mark-paid-btn");
@@ -70,8 +71,8 @@ document.addEventListener("DOMContentLoaded", function() {
       const form = this.closest(".paid-form");
 
       Swal.fire({
-        title: "Are you sure?",
-        text: "This booking will be marked as fully paid.",
+        title: "Mark as Paid?",
+        text: "Are you sure you want to mark this booking as fully paid?",
         icon: "question",
         showCancelButton: true,
         confirmButtonColor: "#28a745",
@@ -79,15 +80,74 @@ document.addEventListener("DOMContentLoaded", function() {
         confirmButtonText: "Yes, mark as paid"
       }).then((result) => {
         if (result.isConfirmed) {
-          form.submit();
+          Swal.fire({
+            title: "Success!",
+            text: "Booking has been marked as fully paid.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false
+          });
+          setTimeout(() => form.submit(), 1600);
         }
       });
     });
   });
 });
 </script>
+@endpush
 
 <style>
+/* === Layout === */
+.content-wrapper {
+  padding: 30px;
+  background: #f7f7f7;
+  min-height: 100vh;
+}
+
+header h1 {
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
+}
+
+header .subtext {
+  color: #777;
+  margin-bottom: 20px;
+}
+
+/* === Table Styling === */
+.table-container {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.booking-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.booking-table th, 
+.booking-table td {
+  padding: 12px 14px;
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.booking-table th {
+  background: #f1f1f1;
+  color: #444;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+.booking-table td {
+  font-size: 15px;
+  color: #333;
+}
+
 /* === Status Badges === */
 .status {
   padding: 5px 10px;
@@ -134,4 +194,3 @@ document.addEventListener("DOMContentLoaded", function() {
   padding: 20px 0;
 }
 </style>
-@endsection
