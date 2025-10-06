@@ -28,30 +28,24 @@ class BookingHistoryController extends Controller
             'phone' => 'required|string|max:20',
             'guest_number' => 'required|integer|min:1',
             'startDate' => 'required|date',
-            'endDate' => 'required|date|after_or_equal:startDate',
+            'endDate' => 'required|date|after:startDate',
         ]);
 
         $startDate = Carbon::parse($request->startDate);
         $endDate = Carbon::parse($request->endDate);
 
-        // 🧩 Check for overlapping bookings
+        // 🧩 Fix overlap logic (allow check-in on same day another booking checks out)
         $hasOverlap = Booking::where('staycation_id', $staycation->id)
             ->where(function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('start_date', [$startDate, $endDate])
-                    ->orWhereBetween('end_date', [$startDate, $endDate])
-                    ->orWhere(function ($query) use ($startDate, $endDate) {
-                        $query->where('start_date', '<', $startDate)
-                                ->where('end_date', '>', $endDate);
-                    });
+                $query->where('start_date', '<', $endDate)
+                    ->where('end_date', '>', $startDate);
             })
             ->exists();
 
         if ($hasOverlap) {
-            // ❌ If any overlap is found, redirect back with an error
-            return back()->with('message', "⚠️ The selected dates are already booked. Please choose different dates.");
+            return back()->with('message', "⚠️ The selected dates overlap with an existing booking. Please choose another range.");
         }
 
-        // ✅ If no overlap, calculate total price and proceed
         $nights = $startDate->diffInDays($endDate);
         $totalPrice = $nights * $staycation->house_price;
 
@@ -63,7 +57,7 @@ class BookingHistoryController extends Controller
             'startDate' => $request->startDate,
             'endDate' => $request->endDate,
             'totalPrice' => $totalPrice,
-        ])->with('success', '✅ Dates are available. Please review your booking details below.');
+        ])->with('success', '✅ Dates are available! Please confirm your booking.');
     }
     // 📄 Step 2: Submit booking request
    public function submitRequest(Request $request, $staycation_id)
