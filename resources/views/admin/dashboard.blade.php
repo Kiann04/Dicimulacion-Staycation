@@ -4,7 +4,7 @@
     @include('Aside')
 @endsection
 
-
+@section('content')
 <body class="admin-dashboard">
 <div class="content-wrapper">
     <div class="main-content">
@@ -87,3 +87,59 @@
     </div>
 </div>
 </body>
+@endsection
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$(document).ready(function() {
+    $('.payment-select').change(function() {
+        const id = $(this).data('id');
+        const status = $(this).val();
+
+        Swal.fire({
+            icon: 'warning',
+            title: `Change payment status to "${status.replace('_', ' ')}"?`,
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            confirmButtonColor: '#1e40af',
+            cancelButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.post(`{{ url('admin/bookings') }}/${id}/update-payment`, {
+                    _token: '{{ csrf_token() }}',
+                    payment_status: status
+                }, function(res) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Updated!',
+                        text: res.message || 'Payment status updated successfully.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    const statusEl = $(`#booking-${id} .status`);
+
+                    if (status === 'paid') {
+                        statusEl.text('Confirmed').attr('class', 'status approved');
+                    } else if (status === 'half_paid') {
+                        statusEl.text('Partially Paid').attr('class', 'status pending');
+                    } else {
+                        statusEl.text('Cancelled').attr('class', 'status declined');
+                        $(`#booking-${id}`).fadeOut(500);
+                    }
+
+                }).fail(function(xhr) {
+                    Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
+                });
+            } else {
+                location.reload();
+            }
+        });
+    });
+});
+</script>
+@endpush
