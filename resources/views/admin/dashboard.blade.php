@@ -1,86 +1,82 @@
-@extends('layouts.default')
-
-@section('Aside')
-    @include('Aside')
-@endsection
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>System Settings</title>
-  <link rel="stylesheet" href="../Css/Admin.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
 <body class="admin-dashboard">
-  <div class="content-wrapper">
+<div class="content-wrapper">
     <div class="main-content">
-      <header>
-        <h1>System Settings</h1>
-        <p class="subtext">Manage system configurations, settings, and preferences.</p>
-      </header>
+        <header>
+            <h1>Admin Dashboard</h1>
+        </header>
 
-      <!-- System Configuration Cards -->
-      <section class="settings-sections">
+        <!-- Cards -->
+        <section class="cards">
+            <div class="card"><h3>Total Users</h3><p>{{ $totalUsers }}</p></div>
+            <div class="card"><h3>Total Bookings</h3><p>{{ $totalBookings }}</p></div>
+            <div class="card"><h3>Revenue</h3><p>₱{{ number_format($totalRevenue, 2) }}</p></div>
+        </section>
 
-        <!-- 💰 Booking History (Paid / Unpaid) -->
-        <div class="setting-card">
-          <h3>Booking History</h3>
-          <p>View and manage all bookings based on their payment status.</p>
+        <!-- Unpaid Bookings Table -->
+        <section class="table-container">
+            <h2>Unpaid Bookings</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Staycation</th>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @forelse($bookings as $booking)
+                    @if($booking->payment_status == 'unpaid')
+                    <tr id="booking-{{ $booking->id }}">
+                        <td>{{ $booking->id }}</td>
+                        <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
+                        <td>{{ $booking->name }}</td>
+                        <td>{{ $booking->phone }}</td>
+                        <td>{{ $booking->start_date }}</td>
+                        <td>{{ $booking->end_date }}</td>
 
-          <div class="settings-btn-group">
-            <a href="{{ route('admin.bookings') }}?status=paid" class="settings-btn paid-btn">
-              <i class="fa-solid fa-check-circle"></i> View Paid
-            </a>
+                        {{-- Payment Dropdown --}}
+                        <td>
+                            <select class="payment-select" data-id="{{ $booking->id }}">
+                                <option value="unpaid" {{ $booking->payment_status=='unpaid'?'selected':'' }}>Unpaid</option>
+                                <option value="half_paid" {{ $booking->payment_status=='half_paid'?'selected':'' }}>Half Paid</option>
+                                <option value="paid" {{ $booking->payment_status=='paid'?'selected':'' }}>Paid</option>
+                            </select>
+                        </td>
 
-            <a href="{{ route('admin.bookings') }}?status=unpaid" class="settings-btn unpaid-btn">
-              <i class="fa-solid fa-times-circle"></i> View Unpaid
-            </a>
-          </div>
-        </div>
+                        {{-- Status --}}
+                        <td>
+                            <span class="status {{ $booking->status }}">{{ ucfirst($booking->status) }}</span>
+                        </td>
 
-        <div class="setting-card">
-          <h3>General Settings</h3>
-          <p>Configure site-wide settings like business name, contact information, and more.</p>
-          <a href="{{ route('home') }}" class="settings-btn">Configure</a>
-        </div>
+                        {{-- Delete Button --}}
+                        <td>
+                            <form action="{{ route('admin.bookings.delete', $booking->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this unpaid booking?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endif
+                @empty
+                    <tr><td colspan="9">No unpaid bookings found</td></tr>
+                @endforelse
+                </tbody>
+            </table>
 
-        <div class="setting-card">
-          <h3>Customer Reviews</h3>
-          <p>View all reviews submitted by users.</p>
-          <a href="{{ route('admin.reviews') }}" class="settings-btn">View Reviews</a>
-        </div>
-
-        <div class="setting-card">
-          <h3>System Logs</h3>
-          <p>View system logs for activities and errors.</p>
-          <a href="{{ route('admin.audit.logs') }}" class="settings-btn">View Logs</a>
-        </div>
-
-      </section>
+            <!-- View Paid & Half Paid Button -->
+            <div class="text-center mt-4">
+                <a href="{{ route('admin.settings') }}" class="btn btn-primary px-4 py-2" style="border-radius: 8px;">
+                    View Paid & Half Paid Bookings
+                </a>
+            </div>
+        </section>
     </div>
-  </div>
-
-  <style>
-    .settings-btn-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-    .settings-btn.paid-btn {
-      background-color: #28a745;
-      color: #fff;
-    }
-    .settings-btn.unpaid-btn {
-      background-color: #dc3545;
-      color: #fff;
-    }
-    .settings-btn.paid-btn:hover,
-    .settings-btn.unpaid-btn:hover {
-      opacity: 0.9;
-    }
-  </style>
+</div>
 </body>
-</html>
