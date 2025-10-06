@@ -185,6 +185,7 @@ class AdminController extends Controller
     return view('admin.reports', compact('reports', 'monthlyBookings'));
     }   
 
+    
     public function generateReport(Request $request)
     {
         $request->validate([
@@ -195,7 +196,7 @@ class AdminController extends Controller
         $year = $request->input('report_year');
         $type = $request->input('report_type');
 
-        // Only include bookings that are paid or half_paid
+        // Only include paid and half_paid bookings
         $bookings = Booking::with('staycation')
             ->whereYear('created_at', $year)
             ->whereIn('payment_status', ['paid', 'half_paid'])
@@ -209,7 +210,13 @@ class AdminController extends Controller
         foreach($bookings as $b){
             $monthName = Carbon::parse($b->created_at)->format('F');
             $months[$monthName]['bookings'] += 1;
-            $months[$monthName]['revenue'] += $b->total_price;
+
+            // Add full price for 'paid', half price for 'half_paid'
+            if($b->payment_status === 'paid'){
+                $months[$monthName]['revenue'] += $b->total_price;
+            } elseif($b->payment_status === 'half_paid'){
+                $months[$monthName]['revenue'] += $b->total_price / 2;
+            }
         }
 
         $totalRevenue = array_sum(array_column($months, 'revenue'));
@@ -226,7 +233,6 @@ class AdminController extends Controller
 
         return $pdf->download('Annual_Report_' . $year . '.pdf');
     }
-
 
     public function downloadReport($id)
     {
