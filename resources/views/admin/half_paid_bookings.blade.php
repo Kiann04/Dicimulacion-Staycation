@@ -5,8 +5,7 @@
 @endsection
 
 @section('content')
-<body class="admin-dashboard">
-<div class="content-wrapper">
+<div class="admin-dashboard content-wrapper">
   <div class="main-content">
     <header>
       <h1>Half-Paid Bookings</h1>
