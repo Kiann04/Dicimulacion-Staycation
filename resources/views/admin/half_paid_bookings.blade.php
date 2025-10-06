@@ -14,7 +14,7 @@
     </header>
 
     <section class="table-container">
-      <table class="custom-table">
+      <table class="booking-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -30,7 +30,7 @@
         </thead>
         <tbody>
           @forelse($bookings as $booking)
-            <tr id="booking-{{ $booking->id }}">
+            <tr>
               <td>{{ $booking->id }}</td>
               <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
               <td>{{ $booking->name }}</td>
@@ -40,18 +40,17 @@
               <td><span class="status half-paid">Half Paid</span></td>
               <td><span class="status {{ $booking->status }}">{{ ucfirst($booking->status) }}</span></td>
               <td>
-                <div class="action-menu">
-                  <button class="action-btn">⋮</button>
-                  <div class="dropdown">
-                    <button class="dropdown-item mark-paid" data-id="{{ $booking->id }}">
-                      Mark as Fully Paid
-                    </button>
-                  </div>
-                </div>
+                <form action="{{ route('admin.bookings.updatePayment', $booking->id) }}" method="POST" onsubmit="return confirm('Mark as fully paid?')">
+                  @csrf
+                  <input type="hidden" name="payment_status" value="paid">
+                  <button type="submit" class="action-btn">Mark as Paid</button>
+                </form>
               </td>
             </tr>
           @empty
-            <tr><td colspan="9">No half-paid bookings found.</td></tr>
+            <tr>
+              <td colspan="9" class="empty-text">No half-paid bookings found.</td>
+            </tr>
           @endforelse
         </tbody>
       </table>
@@ -59,52 +58,101 @@
   </div>
 </div>
 
-{{-- JavaScript --}}
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const token = '{{ csrf_token() }}';
+<style>
+/* === Layout === */
+.content-wrapper {
+  padding: 30px;
+  background: #f7f7f7;
+  min-height: 100vh;
+}
 
-  // Show/hide dropdown menu
-  document.querySelectorAll('.action-btn').forEach(button => {
-    button.addEventListener('click', function (e) {
-      e.stopPropagation();
-      const dropdown = this.nextElementSibling;
-      dropdown.classList.toggle('show');
-    });
-  });
+header h1 {
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
+}
 
-  document.addEventListener('click', () => {
-    document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('show'));
-  });
+header .subtext {
+  color: #777;
+  margin-bottom: 20px;
+}
 
-  // Handle "Mark as Fully Paid"
-  document.querySelectorAll('.mark-paid').forEach(button => {
-    button.addEventListener('click', function () {
-      const id = this.getAttribute('data-id');
-      if (!confirm('Mark this booking as fully paid?')) return;
+/* === Table Styling === */
+.table-container {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
 
-      fetch(`/admin/bookings/${id}/mark-paid`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': token
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          const row = document.getElementById(`booking-${id}`);
-          row.style.background = '#e8fbe8';
-          setTimeout(() => row.remove(), 700);
-          alert('Booking marked as fully paid!');
-        } else {
-          alert('Failed to update booking.');
-        }
-      })
-      .catch(() => alert('Error processing request.'));
-    });
-  });
-});
-</script>
+.booking-table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
+.booking-table th, 
+.booking-table td {
+  padding: 12px 14px;
+  text-align: center;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.booking-table th {
+  background: #f1f1f1;
+  color: #444;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+.booking-table td {
+  font-size: 15px;
+  color: #333;
+}
+
+/* === Status Badges === */
+.status {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.status.half-paid {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status.paid {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status.unpaid {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* === Button Styling === */
+.action-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.action-btn:hover {
+  background: #218838;
+}
+
+.empty-text {
+  text-align: center;
+  color: #999;
+  padding: 20px 0;
+}
+</style>
 @endsection
