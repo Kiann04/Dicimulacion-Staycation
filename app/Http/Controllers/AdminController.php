@@ -129,7 +129,7 @@ class AdminController extends Controller
             ->reverse()
             ->values();
 
-        return view('admin.Analytics', [
+        return view('admin.analytics', [
             'monthlyBookings' => $monthlyBookings,
             'monthlyRevenue' => $monthlyRevenue,
             'newUsers' => $newUsers,
