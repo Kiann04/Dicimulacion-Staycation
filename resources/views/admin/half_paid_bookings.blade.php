@@ -90,54 +90,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 @push('styles')
 <style>
-.content-wrapper {
-  padding: 30px;
-  background: #f7f7f7;
-  min-height: 100vh;
-}
-
-header h1 {
-  font-size: 26px;
-  font-weight: bold;
-  color: #333;
-}
-
-header .subtext {
-  color: #777;
-  margin-bottom: 20px;
-}
-
-.table-container {
-  background: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-}
-
-.booking-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.booking-table th, 
-.booking-table td {
-  padding: 12px 14px;
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.booking-table th {
-  background: #f1f1f1;
-  color: #444;
-  text-transform: uppercase;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-}
-
-.booking-table td {
-  font-size: 15px;
-  color: #333;
-}
 
 .status {
   padding: 5px 10px;
