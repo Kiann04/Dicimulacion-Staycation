@@ -8,6 +8,7 @@ use App\Models\Staycation;
 use App\Models\Booking;
 use Carbon\Carbon;
 
+
 class BookingHistoryController extends Controller
 {
     // 🏠 Show booking form for selected staycation
@@ -123,14 +124,15 @@ class BookingHistoryController extends Controller
     }
     public function showPaid()
     {
-        $bookings = Booking::where('payment_status', 'paid')->get();
-        return view('admin.bookings.index', compact('bookings'))->with('filter', 'paid');
+        $bookings = Booking::where('payment_status', 'paid')->latest()->get();
+        return view('admin.bookings', compact('bookings'))->with('filter', 'Paid Bookings');
     }
 
     public function showHalfPaid()
     {
-        $bookings = Booking::where('payment_status', 'half_paid')->get();
-        return view('admin.bookings.index', compact('bookings'))->with('filter', 'half_paid');
+        $bookings = Booking::where('payment_status', 'half_paid')->latest()->get();
+        return view('admin.bookings', compact('bookings'))->with('filter', 'Half-Paid Bookings');
     }
+
 
 }
