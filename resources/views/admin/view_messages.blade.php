@@ -46,7 +46,7 @@
         <p class="status-text"><span class="info-label">Status:</span> {{ ucfirst($inquiry->status) }}</p>
         <p class="date-text"><span class="info-label">Date:</span> {{ $inquiry->created_at->format('Y-m-d H:i') }}</p>
 
-        <a href="{{ route('staff.messages') }}" class="back-link">Back to Messages</a>
+        <a href="{{ route('admin.messages') }}" class="back-link">Back to Messages</a>
     </div>
 </div>
 
