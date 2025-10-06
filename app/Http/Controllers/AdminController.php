@@ -186,38 +186,34 @@ class AdminController extends Controller
     }   
 
     public function generateReport(Request $request)
-    {   
+    {
         $request->validate([
             'report_type' => 'required',
-            'report-year' => 'required|integer|min:2000|max:' . date('Y'),
+            'report_year' => 'required|integer|min:2000|max:' . date('Y'),
         ]);
 
+        $year = $request->input('report_year');
         $type = $request->input('report_type');
-        $year = $request->input('report-year');
 
-        // Get all bookings for the selected year
-        $bookings = Booking::with('staycation')
-            ->whereYear('created_at', $year)
-            ->get();
+        // Get bookings
+        $bookings = Booking::with('staycation')->whereYear('created_at', $year)->get();
 
-        // Initialize report array with all months
+        // Prepare months summary
         $months = collect(range(1, 12))->mapWithKeys(function($m) {
             return [\Carbon\Carbon::create()->month($m)->format('F') => ['bookings' => 0, 'revenue' => 0]];
         });
 
-        // Populate monthly bookings and revenue
         foreach ($bookings as $b) {
             $monthName = \Carbon\Carbon::parse($b->created_at)->format('F');
             $months[$monthName]['bookings'] += 1;
             $months[$monthName]['revenue'] += $b->total_price;
         }
 
-        // Calculate yearly totals
         $totalRevenue = $months->sum(fn($m) => $m['revenue']);
         $totalBookings = $months->sum(fn($m) => $m['bookings']);
 
-        // Pass data to PDF view
         $pdf = Pdf::loadView('admin.reports_pdf', [
+            'bookings' => $bookings,
             'months' => $months,
             'totalRevenue' => $totalRevenue,
             'totalBookings' => $totalBookings,
@@ -227,6 +223,7 @@ class AdminController extends Controller
 
         return $pdf->download('Annual_Report_' . $year . '.pdf');
     }
+
 
 
     public function downloadReport($id)

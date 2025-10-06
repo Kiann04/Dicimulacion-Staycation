@@ -17,15 +17,10 @@
             <h2>Select Report Parameters</h2>
             <form action="{{ route('admin.reports.generate') }}" method="POST">
                 @csrf
-                <div class="form-group mb-3">
-                    <label for="report-year" class="form-label">Select Year:</label>
-                    <select id="report-year" name="report_year" class="form-control" required>
-                        @for ($y = date('Y'); $y >= 2000; $y--)
-                            <option value="{{ $y }}" {{ $y == date('Y') ? 'selected' : '' }}>{{ $y }}</option>
-                        @endfor
-                    </select>
+                <div class="form-group">
+                    <label for="report-year">Select Year:</label>
+                    <input type="number" id="report_year" name="report_year" min="2000" max="{{ date('Y') }}" value="{{ date('Y') }}" required>
                 </div>
-
                 <button type="submit" class="btn btn-primary">Generate Annual Report</button>
             </form>
         </section>
