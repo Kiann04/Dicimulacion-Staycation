@@ -10,13 +10,12 @@ class Review extends Model
     use HasFactory;
 
     protected $fillable = [
-    'user_id',
-    'booking_id',
-    'staycation_id', // add this
-    'rating',
-    'comment',
+        'user_id',
+        'booking_id',
+        'staycation_id', // ✅ Add this
+        'rating',
+        'comment',
     ];
-
 
     // The user who wrote the review
     public function user()
@@ -28,5 +27,11 @@ class Review extends Model
     public function booking()
     {
         return $this->belongsTo(Booking::class);
+    }
+
+    // The staycation this review belongs to
+    public function staycation()
+    {
+        return $this->belongsTo(Staycation::class);
     }
 }

@@ -67,11 +67,18 @@ class User extends Authenticatable
     }
     public function updateProfilePhoto($photo)
     {
-        // Store in public disk
-        $path = $photo->store('profile_photos', 'public');
+        // Ensure folder exists
+        $destination = public_path('uploads/profile_photos');
+        if (!file_exists($destination)) {
+            mkdir($destination, 0755, true);
+        }
 
-        // Save path in database
-        $this->update(['photo' => $path]);
+        // Save file with unique name
+        $filename = time() . '_' . $photo->getClientOriginalName();
+        $photo->move($destination, $filename);
+
+        // Save relative path in DB
+        $this->update(['photo' => 'uploads/profile_photos/' . $filename]);
     }
 
     public function reviews()
