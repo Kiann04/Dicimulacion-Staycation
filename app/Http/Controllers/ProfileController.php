@@ -46,7 +46,8 @@ class ProfileController extends Controller
      */
     private function saveProfilePhoto(User $user, $photo)
     {
-        $destination = public_path('uploads/profile_photos');
+        // Use DOCUMENT_ROOT to point directly to public_html (Hostinger)
+        $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/profile_photos';
 
         // Ensure folder exists
         if (!file_exists($destination)) {
@@ -56,8 +57,8 @@ class ProfileController extends Controller
         }
 
         // Delete old photo if exists
-        if ($user->photo && file_exists(public_path($user->photo))) {
-            unlink(public_path($user->photo));
+        if ($user->photo && file_exists($_SERVER['DOCUMENT_ROOT'] . '/' . $user->photo)) {
+            unlink($_SERVER['DOCUMENT_ROOT'] . '/' . $user->photo);
         }
 
         // Sanitize filename (remove spaces & special chars)
@@ -66,15 +67,14 @@ class ProfileController extends Controller
         $cleanName = preg_replace("/[^A-Za-z0-9_-]/", '_', $originalName);
         $filename = time() . '_' . $cleanName . '.' . $extension;
 
-        // Move file and debug
+        // Move file to uploads folder
         if (!$photo->move($destination, $filename)) {
-            dd('Failed to move file! Check folder permissions and filename.');
-        } else {
-            dd('Saved at: ' . public_path('uploads/profile_photos/' . $filename));
+            abort(500, 'Failed to save the uploaded photo. Check folder permissions.');
         }
 
-        // Save path in DB
+        // Save relative path in DB (so asset() works in Blade)
         $user->photo = 'uploads/profile_photos/' . $filename;
         $user->save();
     }
+
 }
