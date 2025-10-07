@@ -341,47 +341,78 @@
         <p class="text-muted">What our happy clients say about Dicimulacion Staycation</p>
     </div>
 
-    <div class="row g-4">
-        <!-- Review 1 -->
-        <div class="col-md-4">
-            <div class="card h-100 shadow-lg border-0 text-center p-4">
-                <img src="{{ asset('assets/Matt.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Darwin">
-                <h5 class="fw-bold">Darwin</h5>
-                <p class="text-muted small">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae, tempora!</p>
-                <div class="text-warning">
-                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i>
+    <div id="reviewsCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active">
+                <div class="row g-4 justify-content-center">
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-lg border-0 text-center p-4">
+                            <img src="{{ asset('assets/Matt.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Darwin">
+                            <h5 class="fw-bold">Darwin</h5>
+                            <p class="text-muted small">"The staycation was perfect! The house was clean, spacious, and the view was breathtaking. Highly recommend!"</p>
+                            <div class="text-warning">
+                                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-item">
+                <div class="row g-4 justify-content-center">
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-lg border-0 text-center p-4">
+                            <img src="{{ asset('assets/Sarah.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Sarah">
+                            <h5 class="fw-bold">Sarah</h5>
+                            <p class="text-muted small">"Amazing experience! The staff were friendly, the rooms were cozy, and everything exceeded our expectations."</p>
+                            <div class="text-warning">
+                                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="carousel-item">
+                <div class="row g-4 justify-content-center">
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-lg border-0 text-center p-4">
+                            <img src="{{ asset('assets/James.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="James">
+                            <h5 class="fw-bold">James</h5>
+                            <p class="text-muted small">"A truly relaxing staycation. The house had everything we needed, and the view was simply stunning. Will return!"</p>
+                            <div class="text-warning">
+                                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                                <i class='bx bxs-star'></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Review 2 -->
-        <div class="col-md-4">
-            <div class="card h-100 shadow-lg border-0 text-center p-4">
-                <img src="{{ asset('assets/Sarah.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Sarah">
-                <h5 class="fw-bold">Sarah</h5>
-                <p class="text-muted small">Amazing staycation experience! Highly recommended for families and friends.</p>
-                <div class="text-warning">
-                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i>
-                </div>
-            </div>
-        </div>
+        <!-- Carousel Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
 
-        <!-- Review 3 -->
-        <div class="col-md-4">
-            <div class="card h-100 shadow-lg border-0 text-center p-4">
-                <img src="{{ asset('assets/James.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="James">
-                <h5 class="fw-bold">James</h5>
-                <p class="text-muted small">Clean rooms, excellent service, and stunning views. Will come back soon!</p>
-                <div class="text-warning">
-                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i>
-                </div>
-            </div>
+        <!-- Carousel Indicators -->
+        <div class="carousel-indicators mt-4">
+            <button type="button" data-bs-target="#reviewsCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+            <button type="button" data-bs-target="#reviewsCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#reviewsCarousel" data-bs-slide-to="2"></button>
         </div>
     </div>
 </section>
