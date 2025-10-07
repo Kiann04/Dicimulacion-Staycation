@@ -355,7 +355,7 @@
         </div>
 
         <div class="review-card card h-100 shadow border-0 text-center p-4">
-            <img src="{{ asset('assets/test.jpg') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Sarah">
+            <img src="{{ asset('assets/Sarah.jpg') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Sarah">
             <h5 class="fw-bold">Sarah</h5>
             <p class="text-muted small">"Amazing experience! The staff were friendly, the rooms were cozy, and everything exceeded our expectations."</p>
             <div class="text-warning">
@@ -366,7 +366,7 @@
         </div>
 
         <div class="review-card card h-100 shadow border-0 text-center p-4">
-            <img src="{{ asset('assets/Matt.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="James">
+            <img src="{{ asset('assets/Alex.jpg') }}" class="rounded-circle mx-auto mb-3" width="80" alt="James">
             <h5 class="fw-bold">James</h5>
             <p class="text-muted small">"A truly relaxing staycation. The house had everything we needed, and the view was simply stunning. Will return!"</p>
             <div class="text-warning">
