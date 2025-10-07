@@ -25,6 +25,6 @@ class Review extends Model
     // The booking this review belongs to
     public function booking()
     {
-        return $this->belongsTo(Booking::class, 'booking_id');
+        return $this->belongsTo(\App\Models\Booking::class, 'booking_id');
     }
 }

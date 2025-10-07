@@ -40,9 +40,9 @@ class Booking extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function reviews()
-    {
-        return $this->hasOne(Review::class, 'booking_id');
+    public function review()
+    {   
+        return $this->hasOne(\App\Models\Review::class, 'booking_id');
     }
 
 
