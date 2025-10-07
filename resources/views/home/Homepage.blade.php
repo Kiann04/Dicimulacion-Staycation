@@ -161,12 +161,10 @@
       <p class="text-muted fs-5">
         Each property is thoughtfully prepared by our family to ensure comfort, style, and unforgettable memories.
       </p>
-      <a href="#houses" class="btn btn-primary btn-lg mt-3 rounded-pill px-4 shadow-sm">
-        Explore Our Houses
-      </a>
     </div>
   </div>
 </section>
+
 
 <!-- Modern Styling -->
 <style>
