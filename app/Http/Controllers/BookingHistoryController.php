@@ -108,7 +108,7 @@ class BookingHistoryController extends Controller
             'price_per_day' => $staycation->house_price,
             'total_price' => $totalPrice,
             'amount_paid' => $amountPaid,
-            'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
+            'payment_status' => 'unpaid',
             'payment_method' => $request->payment_method,
             'payment_proof' => $proofPath,
             'transaction_number' => $request->transaction_number ?? null,
