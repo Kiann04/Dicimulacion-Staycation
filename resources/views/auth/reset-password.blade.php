@@ -4,8 +4,6 @@
 @include('Header')
 @endsection
 
-<link rel="stylesheet" href="{{ asset('Css/Homepage.css') }}">
-
 <section class="container my-5">
     <div class="row justify-content-center align-items-center">
         <!-- Form Column -->
