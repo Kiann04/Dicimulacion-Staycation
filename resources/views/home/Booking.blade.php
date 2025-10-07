@@ -115,21 +115,36 @@
 
 <!-- Reviews Section -->
 <section class="container my-5" id="reviews">
-    <h2 class="fw-bold mb-4 text-center">What Our Guests Say</h2>
+    <h2 class="fw-bold mb-5 text-center display-6">What Our Guests Say</h2>
 
     <div class="row g-4 justify-content-center">
         @forelse($reviews as $review)
-        <div class="col-md-6 col-lg-4">
-            <div class="review-card card h-100 shadow border-0 text-center p-4 rounded-4">
-                <img src="{{ $review->user && $review->user->photo ? asset($review->user->photo) : asset('Assets/default.png') }}"
-                     class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80"
-                     alt="{{ $review->user ? $review->user->name : 'Guest' }}">
-                <h5 class="fw-bold mb-1">{{ $review->user ? $review->user->name : 'Guest' }}</h5>
-                <p class="text-muted small mb-3">"{{ $review->comment }}"</p>
-                <div class="text-warning">
+        <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 position-relative hover-shadow transition">
+                
+                <!-- Profile Picture -->
+                <div class="d-flex justify-content-center mb-3">
+                    <img src="{{ $review->user && $review->user->photo ? asset($review->user->photo) : asset('Assets/default.png') }}" 
+                         class="rounded-circle shadow-sm" width="80" height="80" 
+                         alt="{{ $review->user ? $review->user->name : 'Guest' }}">
+                </div>
+
+                <!-- Guest Name -->
+                <h5 class="fw-bold text-center mb-2">{{ $review->user ? $review->user->name : 'Guest' }}</h5>
+
+                <!-- Star Rating -->
+                <div class="d-flex justify-content-center mb-3">
                     @for ($i = 0; $i < $review->stars; $i++)
-                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star text-warning me-1'></i>
                     @endfor
+                </div>
+
+                <!-- Review Text -->
+                <p class="text-center text-muted small mb-0 fst-italic">"{{ $review->comment }}"</p>
+
+                <!-- Optional: subtle background icon -->
+                <div class="position-absolute top-0 end-0 opacity-10 fs-1 me-3 mt-3">
+                    <i class='bx bxs-quote-right'></i>
                 </div>
             </div>
         </div>
@@ -138,6 +153,17 @@
         @endforelse
     </div>
 </section>
+
+<!-- Custom CSS -->
+<style>
+.hover-shadow {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.15);
+}
+</style>
 
 
 <!-- FullCalendar + Price Calculation -->
