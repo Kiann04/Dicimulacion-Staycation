@@ -42,7 +42,7 @@ class Booking extends Model
 
     public function reviews()
     {
-        return $this->hasMany(Review::class, 'booking_id');
+        return $this->hasOne(Review::class, 'booking_id');
     }
 
 
