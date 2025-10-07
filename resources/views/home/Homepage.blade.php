@@ -334,7 +334,7 @@
         transition: all 0.3s ease-in-out;
     }
 </style>
-<!-- Testimonials -->
+<!-- Testimonials Carousel -->
 <section class="container my-5" id="featured-reviews">
     <div class="text-center mb-5">
         <h2 class="fw-bold">Featured Reviews</h2>
@@ -343,7 +343,7 @@
 
     <div class="reviews-slider">
         <!-- Review 1 -->
-        <div class="card h-100 shadow-lg border-0 text-center p-4 mx-2">
+        <div class="review-card card h-100 shadow-lg border-0 text-center p-4">
             <img src="{{ asset('assets/Matt.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Darwin">
             <h5 class="fw-bold">Darwin</h5>
             <p class="text-muted small">"The staycation was perfect! The house was clean, spacious, and the view was breathtaking. Highly recommend!"</p>
@@ -355,7 +355,7 @@
         </div>
 
         <!-- Review 2 -->
-        <div class="card h-100 shadow-lg border-0 text-center p-4 mx-2">
+        <div class="review-card card h-100 shadow-lg border-0 text-center p-4">
             <img src="{{ asset('assets/Sarah.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Sarah">
             <h5 class="fw-bold">Sarah</h5>
             <p class="text-muted small">"Amazing experience! The staff were friendly, the rooms were cozy, and everything exceeded our expectations."</p>
@@ -367,7 +367,7 @@
         </div>
 
         <!-- Review 3 -->
-        <div class="card h-100 shadow-lg border-0 text-center p-4 mx-2">
+        <div class="review-card card h-100 shadow-lg border-0 text-center p-4">
             <img src="{{ asset('assets/James.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="James">
             <h5 class="fw-bold">James</h5>
             <p class="text-muted small">"A truly relaxing staycation. The house had everything we needed, and the view was simply stunning. Will return!"</p>
@@ -379,7 +379,7 @@
         </div>
 
         <!-- Review 4 -->
-        <div class="card h-100 shadow-lg border-0 text-center p-4 mx-2">
+        <div class="review-card card h-100 shadow-lg border-0 text-center p-4">
             <img src="{{ asset('assets/Anna.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Anna">
             <h5 class="fw-bold">Anna</h5>
             <p class="text-muted small">"Wonderful stay! Everything was neat and organized, and the location is perfect for a weekend getaway."</p>
@@ -392,7 +392,15 @@
     </div>
 </section>
 
-<!-- Carousel JS -->
+<!-- Slick CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
+<!-- jQuery + Slick JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+<!-- Initialize Slick -->
 <script>
 $(document).ready(function(){
     $('.reviews-slider').slick({
@@ -401,24 +409,19 @@ $(document).ready(function(){
         infinite: true,
         autoplay: true,
         autoplaySpeed: 4000,
-        dots: true,
         arrows: true,
+        dots: true,
         responsive: [
-            {
-                breakpoint: 992, // tablet
-                settings: { slidesToShow: 2 }
-            },
-            {
-                breakpoint: 768, // mobile
-                settings: { slidesToShow: 1 }
-            }
+            { breakpoint: 992, settings: { slidesToShow: 2 } },
+            { breakpoint: 768, settings: { slidesToShow: 1 } }
         ]
     });
 });
 </script>
 
+<!-- Styles -->
 <style>
-.reviews-slider .card {
+.reviews-slider .review-card {
     margin: 0 10px;
 }
 .slick-slide {
@@ -430,7 +433,6 @@ $(document).ready(function(){
     color: #0d6efd;
 }
 </style>
-
 
 
 <!-- Contact Us -->
