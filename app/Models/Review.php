@@ -10,11 +10,13 @@ class Review extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'booking_id',
-        'rating',
-        'comment',
+    'user_id',
+    'booking_id',
+    'staycation_id', // add this
+    'rating',
+    'comment',
     ];
+
 
     // The user who wrote the review
     public function user()

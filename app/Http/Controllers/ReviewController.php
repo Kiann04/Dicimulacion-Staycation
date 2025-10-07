@@ -29,12 +29,14 @@ class ReviewController extends Controller
         Review::create([
             'user_id' => Auth::id(),
             'booking_id' => $booking->id,
+            'staycation_id' => $booking->staycation_id, // ✅ get staycation id from booking
             'rating' => $request->rating,
             'comment' => $request->comment,
         ]);
 
         return back()->with('success', 'Thank you! Your review has been submitted.');
     }
+
     // Admin view for all reviews
     public function adminIndex()
     {
