@@ -5,11 +5,6 @@
 @section('Header')
     @include('Header')
 @endsection
-<!-- Slick Carousel CSS -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
-<!-- Slick Carousel JS -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
 <!-- Modern Hero Section -->
 <section class="hero-section">
@@ -339,7 +334,6 @@
         transition: all 0.3s ease-in-out;
     }
 </style>
-
 <!-- Testimonials -->
 <section class="container my-5" id="featured-reviews">
     <div class="text-center mb-5">
@@ -397,6 +391,47 @@
         </div>
     </div>
 </section>
+
+<!-- Carousel JS -->
+<script>
+$(document).ready(function(){
+    $('.reviews-slider').slick({
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        infinite: true,
+        autoplay: true,
+        autoplaySpeed: 4000,
+        dots: true,
+        arrows: true,
+        responsive: [
+            {
+                breakpoint: 992, // tablet
+                settings: { slidesToShow: 2 }
+            },
+            {
+                breakpoint: 768, // mobile
+                settings: { slidesToShow: 1 }
+            }
+        ]
+    });
+});
+</script>
+
+<style>
+.reviews-slider .card {
+    margin: 0 10px;
+}
+.slick-slide {
+    display: flex !important;
+    justify-content: center;
+}
+.slick-dots li button:before {
+    font-size: 12px;
+    color: #0d6efd;
+}
+</style>
+
+
 
 <!-- Contact Us -->
 <section class="container my-5" id="contact">
