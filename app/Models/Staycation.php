@@ -24,5 +24,6 @@ class Staycation extends Model
             'id'             // Local key on bookings
         );
     }
+    
 }
 
