@@ -57,7 +57,7 @@
                                 <form action="{{ route('reviews.store') }}" method="POST" class="mt-2">
                                     @csrf
                                     <input type="hidden" name="booking_id" value="{{ $b->id }}">
-                                    <input type="hidden" name="staycation_id" value="{{ $staycation->id }}">
+
 
                                     <div class="mb-1">
                                         <select name="rating" class="form-select form-select-sm" required>
