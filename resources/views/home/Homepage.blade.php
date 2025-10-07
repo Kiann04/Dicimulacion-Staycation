@@ -27,6 +27,7 @@
           <div class="hero-content text-center text-white fade-in">
             <h1 class="fw-bold display-4">Find Your Next Perfect Place</h1>
             <p class="lead">Relax, recharge, and stay in comfort.</p>
+            <a href="#properties" class="btn btn-primary btn-lg rounded-pill mt-3 px-4 shadow-sm">Explore Houses</a>
           </div>
         </div>
       </div>
@@ -38,6 +39,7 @@
           <div class="hero-content text-center text-white fade-in">
             <h1 class="fw-bold display-4">Experience the Best Staycation</h1>
             <p class="lead">Luxury and peace combined, just for you.</p>
+            <a href="#properties" class="btn btn-primary btn-lg rounded-pill mt-3 px-4 shadow-sm">Explore Houses</a>
           </div>
         </div>
       </div>
@@ -49,6 +51,7 @@
           <div class="hero-content text-center text-white fade-in">
             <h1 class="fw-bold display-4">Unwind in Beautiful Places</h1>
             <p class="lead">Discover comfort close to home.</p>
+            <a href="#properties" class="btn btn-primary btn-lg rounded-pill mt-3 px-4 shadow-sm">Explore Houses</a>
           </div>
         </div>
       </div>
@@ -67,210 +70,106 @@
 
 <!-- Styles -->
 <style>
-.hero-section {
-  position: relative;
-  height: 80vh;
-  min-height: 440px;
-}
-
-.hero-slide {
-  position: relative;
-  background-size: cover;
-  background-position: center;
-  height: 80vh;
-  min-height: 440px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
-  z-index: 1;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 800px;
-  padding: 1rem;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
-}
-
-.hero-content h1 {
-  font-size: 2.8rem;
-  letter-spacing: 1px;
-}
-
-.hero-content p {
-  font-size: 1.2rem;
-  font-weight: 300;
-  margin-top: 0.5rem;
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  filter: brightness(0) invert(1);
-}
-
-.carousel-indicators [data-bs-target] {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.fade-in {
-  animation: fadeInUp 1.2s ease-in-out;
-}
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+.hero-section { position: relative; height: 80vh; min-height: 440px; }
+.hero-slide { position: relative; background-size: cover; background-position: center; height: 80vh; min-height: 440px; display: flex; align-items: center; justify-content: center; }
+.hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.2)); z-index: 1; }
+.hero-content { position: relative; z-index: 2; max-width: 800px; padding: 1rem; text-shadow: 0 2px 10px rgba(0,0,0,0.7); }
+.hero-content h1 { font-size: 2.8rem; letter-spacing: 1px; }
+.hero-content p { font-size: 1.2rem; font-weight: 300; margin-top: 0.5rem; }
+.carousel-control-prev-icon, .carousel-control-next-icon { filter: brightness(0) invert(1); }
+.carousel-indicators [data-bs-target] { width: 12px; height: 12px; border-radius: 50%; }
+.fade-in { animation: fadeInUp 1.2s ease-in-out; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Modern About Us Section -->
+<!-- About Us Section -->
 <section class="container my-5 py-5" id="about">
   <div class="row align-items-center g-5">
-    
-    <!-- Image Side -->
     <div class="col-lg-6">
       <div class="about-img-wrapper position-relative rounded-4 overflow-hidden shadow-lg">
         <img src="{{ asset('assets/AboutUs.jpg') }}" class="img-fluid" alt="About Us">
         <div class="overlay"></div>
       </div>
     </div>
-
-    <!-- Text Side -->
     <div class="col-lg-6 fade-in-up">
       <h5 class="text-primary fw-semibold mb-2">About Us</h5>
-      <h2 class="fw-bold display-6 mb-4">
-        We Provide The Best <br> Place For You
-      </h2>
-      <p class="text-muted fs-5">
-        We’re a family-owned staycation business with eight homes, each perfectly placed to enjoy either breathtaking city views or peaceful nature escapes.
-      </p>
-      <p class="text-muted fs-5">
-        Whether you’re looking to recharge under the stars, or relax in the calm of nature, our homes are designed to make you feel right at home.
-      </p>
-      <p class="text-muted fs-5">
-        Each property is thoughtfully prepared by our family to ensure comfort, style, and unforgettable memories.
-      </p>
+      <h2 class="fw-bold display-6 mb-4">We Provide The Best <br> Place For You</h2>
+      <p class="text-muted fs-5">We’re a family-owned staycation business with eight homes, each perfectly placed to enjoy either breathtaking city views or peaceful nature escapes.</p>
+      <p class="text-muted fs-5">Whether you’re looking to recharge under the stars, or relax in the calm of nature, our homes are designed to make you feel right at home.</p>
+      <p class="text-muted fs-5">Each property is thoughtfully prepared by our family to ensure comfort, style, and unforgettable memories.</p>
+      
+      <!-- Mini Icons -->
+      <div class="row mt-4 text-center">
+        <div class="col">
+          <h3>8 Homes</h3>
+          <p>Perfectly placed for city and nature escapes</p>
+        </div>
+        <div class="col">
+          <h3>Family-Owned</h3>
+          <p>Personalized care in every stay</p>
+        </div>
+        <div class="col">
+          <h3>5-Star Reviews</h3>
+          <p>Happy guests all over the world</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-
-<!-- Modern Styling -->
 <style>
-/* Image wrapper */
-.about-img-wrapper {
-  position: relative;
-  height: 100%;
-}
-.about-img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform .5s ease;
-}
-.about-img-wrapper:hover img {
-  transform: scale(1.05);
-}
-.about-img-wrapper .overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.35), rgba(0,0,0,0));
-}
-
-/* Fade-in animation */
-.fade-in-up {
-  animation: fadeInUp 1.2s ease-in-out;
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Button hover effect */
-#about .btn {
-  transition: all 0.3s ease;
-}
-#about .btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 .75rem 1.5rem rgba(0,0,0,.15);
-}
+.about-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.about-img-wrapper:hover img { transform: scale(1.05); }
+.about-img-wrapper .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.35), rgba(0,0,0,0)); }
+.fade-in-up { animation: fadeInUp 1.2s ease-in-out; }
 </style>
 
-
-<!-- Info Cards -->
+<!-- Info Cards Section -->
 <section class="container my-5 text-center" id="sales">
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 hover-card">
-                <div class="card-body">
-                    <div class="icon-circle bg-primary bg-opacity-10 text-primary mb-3 mx-auto">
-                        <i class='bx bxs-map-pin fs-1'></i>
-                    </div>
-                    <h4 class="fw-bold">Stay</h4>
-                    <p class="text-muted">
-                        Stay in comfort, stay in style. Your perfect getaway starts right here, without going far.
-                    </p>
-                </div>
-            </div>
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm border-0 rounded-4 p-4 hover-card">
+        <div class="card-body">
+          <div class="icon-circle bg-primary bg-opacity-10 text-primary mb-3 mx-auto">
+            <i class='bx bxs-map-pin fs-1'></i>
+          </div>
+          <h4 class="fw-bold">Stay</h4>
+          <p class="text-muted">Stay in comfort, stay in style. Your perfect getaway starts right here, without going far.</p>
         </div>
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 hover-card">
-                <div class="card-body">
-                    <div class="icon-circle bg-success bg-opacity-10 text-success mb-3 mx-auto">
-                        <i class='bx bx-wink-smile fs-1'></i>
-                    </div>
-                    <h4 class="fw-bold">Enjoy</h4>
-                    <p class="text-muted">
-                        Enjoy cozy spaces, fresh linens, and the kind of peace that makes you want to stay just a little longer.
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 rounded-4 p-4 hover-card">
-                <div class="card-body">
-                    <div class="icon-circle bg-warning bg-opacity-10 text-warning mb-3 mx-auto">
-                        <i class='bx bxs-user-check fs-1'></i>
-                    </div>
-                    <h4 class="fw-bold">Relax</h4>
-                    <p class="text-muted">
-                        Relax and recharge in a space designed for rest, where every detail whispers calm and comfort.
-                    </p>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm border-0 rounded-4 p-4 hover-card">
+        <div class="card-body">
+          <div class="icon-circle bg-success bg-opacity-10 text-success mb-3 mx-auto">
+            <i class='bx bx-wink-smile fs-1'></i>
+          </div>
+          <h4 class="fw-bold">Enjoy</h4>
+          <p class="text-muted">Enjoy cozy spaces, fresh linens, and the kind of peace that makes you want to stay just a little longer.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm border-0 rounded-4 p-4 hover-card">
+        <div class="card-body">
+          <div class="icon-circle bg-warning bg-opacity-10 text-warning mb-3 mx-auto">
+            <i class='bx bxs-user-check fs-1'></i>
+          </div>
+          <h4 class="fw-bold">Relax</h4>
+          <p class="text-muted">Relax and recharge in a space designed for rest, where every detail whispers calm and comfort.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- Extra styling -->
 <style>
-    .icon-circle {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .hover-card {
-        transition: all 0.3s ease;
-    }
-    .hover-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 1rem 2rem rgba(0,0,0,0.15) !important;
-    }
+.hover-card { transition: all 0.3s ease; }
+.hover-card:hover { transform: translateY(-6px); box-shadow: 0 1rem 2rem rgba(0,0,0,0.15) !important; }
+.icon-circle { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 </style>
 
 
