@@ -117,66 +117,62 @@
 <section class="container my-5" id="reviews">
     <h2 class="fw-bold mb-4 text-center">What Our Guests Say</h2>
 
-    <div class="row g-4">
+    <div class="row g-4 justify-content-center">
+
         <!-- ✅ Review 1 -->
         <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm border-0 h-100 rounded-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h5 class="mb-0 fw-semibold">John D.</h5>
-                        <div class="text-warning">
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bx-star"></i>
-                        </div>
-                    </div>
-                    <p class="text-muted small mb-1">October 5, 2025 – <em>Staycation 1</em></p>
-                    <p class="mb-0 text-secondary">The place was clean and cozy! Perfect for a short weekend getaway.</p>
+            <div class="review-card card h-100 shadow border-0 text-center p-4 rounded-4">
+                <img src="{{ asset('assets/Matt.png') }}" class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80" alt="James">
+                <h5 class="fw-bold mb-1">James</h5>
+                <p class="text-muted small mb-3">
+                    "A truly relaxing staycation. The house had everything we needed, and the view was simply stunning. Will return!"
+                </p>
+                <div class="text-warning">
+                    <i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
                 </div>
             </div>
         </div>
 
         <!-- ✅ Review 2 -->
         <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm border-0 h-100 rounded-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h5 class="mb-0 fw-semibold">Maria S.</h5>
-                        <div class="text-warning">
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star-half"></i>
-                            <i class="bx bx-star"></i>
-                        </div>
-                    </div>
-                    <p class="text-muted small mb-1">September 20, 2025 – <em>Staycation 2</em></p>
-                    <p class="mb-0 text-secondary">We enjoyed our stay! The host was very accommodating.</p>
+            <div class="review-card card h-100 shadow border-0 text-center p-4 rounded-4">
+                <img src="{{ asset('assets/Sarah.png') }}" class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80" alt="Sarah">
+                <h5 class="fw-bold mb-1">Sarah</h5>
+                <p class="text-muted small mb-3">
+                    "Host was very accommodating and quick to respond. The staycation was spotless and cozy!"
+                </p>
+                <div class="text-warning">
+                    <i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
+                    <i class='bx bx-star'></i>
                 </div>
             </div>
         </div>
 
         <!-- ✅ Review 3 -->
         <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm border-0 h-100 rounded-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h5 class="mb-0 fw-semibold">Alex G.</h5>
-                        <div class="text-warning">
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                            <i class="bx bxs-star"></i>
-                        </div>
-                    </div>
-                    <p class="text-muted small mb-1">August 12, 2025 – <em>Staycation 3</em></p>
-                    <p class="mb-0 text-secondary">Amazing stay! The view was beautiful, and the staff was friendly.</p>
+            <div class="review-card card h-100 shadow border-0 text-center p-4 rounded-4">
+                <img src="{{ asset('assets/Alex.png') }}" class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80" alt="Alex">
+                <h5 class="fw-bold mb-1">Alex</h5>
+                <p class="text-muted small mb-3">
+                    "The place exceeded our expectations. Great amenities, peaceful surroundings, and perfect for families."
+                </p>
+                <div class="text-warning">
+                    <i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
+                    <i class='bx bxs-star-half'></i>
+                    <i class='bx bx-star'></i>
                 </div>
             </div>
         </div>
+
     </div>
 </section>
 
