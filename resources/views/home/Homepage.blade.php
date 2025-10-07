@@ -147,36 +147,39 @@
     </div>
 
     <!-- Text Side -->
-      <div class="col-lg-6 fade-in-up">
-        <h5 class="text-primary fw-semibold mb-2">About Us</h5>
-        <h2 class="fw-bold display-6 mb-4">
-          We Provide The Best <br> Place For You
-        </h2>
-        <p class="text-muted fs-5 mb-3">
-          We’re a family-owned staycation business with eight homes, each perfectly placed to enjoy either breathtaking city views or peaceful nature escapes.
-        </p>
-        <p class="text-muted fs-5 mb-3">
-          Whether you’re looking to recharge under the stars, or relax in the calm of nature, our homes are designed to make you feel right at home.
-        </p>
-        <p class="text-muted fs-5">
-          Each property is thoughtfully prepared by our family to ensure comfort, style, and unforgettable memories.
-        </p>
-        <!-- Mini Icons / Stats -->
-        <div class="row mt-4 text-center">
-          <div class="col">
-            <h3 class="fw-bold">8 Homes</h3>
-            <p class="text-muted mb-0">Perfectly placed for city and nature escapes</p>
-          </div>
-          <div class="col">
-            <h3 class="fw-bold">Family-Owned</h3>
-            <p class="text-muted mb-0">Personalized care in every stay</p>
-          </div>
-          <div class="col">
-            <h3 class="fw-bold">5-Star Reviews</h3>
-            <p class="text-muted mb-0">Happy guests all over the world</p>
-          </div>
-      </div>
-  </div>
+    <div class="col-lg-6 fade-in-up">
+      <h5 class="text-primary fw-semibold mb-2">About Us</h5>
+      <h2 class="fw-bold display-6 mb-4">
+        We Provide The Best <br> Place For You
+      </h2>
+      <p class="text-muted fs-5 mb-3">
+        We’re a family-owned staycation business with eight homes, each perfectly placed to enjoy either breathtaking city views or peaceful nature escapes.
+      </p>
+      <p class="text-muted fs-5 mb-3">
+        Whether you’re looking to recharge under the stars, or relax in the calm of nature, our homes are designed to make you feel right at home.
+      </p>
+      <p class="text-muted fs-5 mb-3">
+        Each property is thoughtfully prepared by our family to ensure comfort, style, and unforgettable memories.
+      </p>
+
+      <!-- Mini Icons / Stats -->
+      <div class="row mt-4 text-center">
+        <div class="col">
+          <h3 class="fw-bold">8 Homes</h3>
+          <p class="text-muted mb-0">Perfectly placed for city and nature escapes</p>
+        </div>
+        <div class="col">
+          <h3 class="fw-bold">Family-Owned</h3>
+          <p class="text-muted mb-0">Personalized care in every stay</p>
+        </div>
+        <div class="col">
+          <h3 class="fw-bold">5-Star Reviews</h3>
+          <p class="text-muted mb-0">Happy guests all over the world</p>
+        </div>
+      </div> <!-- Close mini-icons row -->
+    </div> <!-- Close text column -->
+    
+  </div> <!-- Close main row -->
 </section>
 
 <!-- Modern Styling -->
@@ -215,8 +218,6 @@
   padding-bottom: 1rem;
 }
 </style>
-
-
 
 <!-- Info Cards -->
 <section class="container my-5 text-center" id="sales">
