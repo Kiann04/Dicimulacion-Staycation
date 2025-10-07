@@ -32,7 +32,7 @@ class Booking extends Model
 
     public function staycation()
     {
-        return $this->belongsTo(Staycation::class, 'staycation_id');
+        return $this->belongsTo(Staycation::class);
     }
 
     public function user()
@@ -41,13 +41,9 @@ class Booking extends Model
     }
 
     public function review()
-    {   
-        return $this->hasOne(\App\Models\Review::class, 'booking_id');
+    {
+        return $this->hasOne(Review::class);
     }
-
-
- 
-
     protected static function boot()
     {
         parent::boot();

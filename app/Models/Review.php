@@ -19,12 +19,12 @@ class Review extends Model
     // The user who wrote the review
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
     // The booking this review belongs to
     public function booking()
     {
-        return $this->belongsTo(\App\Models\Booking::class, 'booking_id');
+        return $this->belongsTo(Booking::class);
     }
 }
