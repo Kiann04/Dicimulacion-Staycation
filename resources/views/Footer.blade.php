@@ -1,5 +1,5 @@
-<!-- Footer -->
-<footer class="bg-dark text-light pt-4 pb-4"> <!-- remove mt-5 -->
+<!-- footer.blade.php -->
+<footer class="bg-dark text-light pt-4 pb-4">
     <div class="container">
         <div class="row">
             <!-- Brand -->
@@ -36,3 +36,22 @@
         <p class="text-center mb-0">&copy; {{ date('Y') }} Dicimulacion Staycation. All rights reserved.</p>
     </div>
 </footer>
+
+<!-- Optional CSS to remove extra bottom space and stick footer -->
+<style>
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* ensures footer sticks at bottom */
+}
+
+main {
+    flex: 1; /* make content expand to push footer down */
+}
+</style>
