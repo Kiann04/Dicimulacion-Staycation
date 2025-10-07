@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Staycation;
 use App\Models\Booking;
 use Carbon\Carbon;
+use App\Models\Review;
 
 
 class BookingHistoryController extends Controller
