@@ -4,7 +4,7 @@
     @include('Header')
 @endsection
 
-<section class="container my-5">
+<section class="container my-5 pt-5">
   <div class="row g-4 align-items-start">
 
     <!-- Booking Form -->
