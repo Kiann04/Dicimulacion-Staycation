@@ -173,7 +173,7 @@
           <p class="text-muted mb-0">Personalized care in every stay</p>
         </div>
         <div class="col">
-          <h3 class="fw-bold">5-Star Reviews</h3>
+          <h3 class="fw-bold">Excellent Feedback</h3>
           <p class="text-muted mb-0">Happy guests all over the world</p>
         </div>
       </div> <!-- Close mini-icons row -->
