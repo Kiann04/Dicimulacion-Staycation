@@ -59,19 +59,22 @@ class StaycationController extends Controller
     }
 
     public function showStaycation($id)
-    {
+    {   
+        // Find the staycation
         $staycation = Staycation::findOrFail($id);
 
-        // ✅ Only reviews for this staycation (through bookings)
-        $allReviews = Review::with(['user', 'booking.staycation'])
-            ->whereHas('booking', function ($query) use ($id) {
-                $query->where('staycation_id', $id);
-            })
-            ->latest()
-            ->get();
+        // ✅ Fetch all reviews linked to this staycation via bookings
+        $allReviews = \App\Models\Review::whereHas('booking', function ($query) use ($id) {
+            $query->where('staycation_id', $id);
+        })
+        ->with(['user', 'booking.staycation'])
+        ->latest()
+        ->get();
 
-        return view('home.booking', compact('staycation', 'allReviews'));
+        // Pass data to your Blade
+        return view('home.Booking', compact('staycation', 'allReviews'));
     }
+
     public function allReviews()
     {
         $allReviews = Review::with(['user', 'booking.staycation'])
