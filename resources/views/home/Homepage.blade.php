@@ -388,6 +388,16 @@
         </div>
     </div>
 </section>
+<style>
+.reviews-slider .review-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover; /* Ensures the face fills the circle nicely */
+    border-radius: 50%; /* Makes it a circle */
+    aspect-ratio: 1/1; /* Forces it to stay square even if the source image isn't */
+    border: 3px solid #f8f9fa; /* optional light border */
+}
+</style>
 
 <!-- Slick CSS -->
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
