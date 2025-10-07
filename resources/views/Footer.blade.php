@@ -1,5 +1,5 @@
 <!-- Footer -->
-<footer class="bg-dark text-light pt-4 mt-5">
+<footer class="bg-dark text-light pt-4 pb-4"> <!-- remove mt-5 -->
     <div class="container">
         <div class="row">
             <!-- Brand -->
