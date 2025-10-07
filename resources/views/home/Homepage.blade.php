@@ -231,68 +231,46 @@
         transition: all 0.3s ease-in-out;
     }
 </style>
-<!-- Testimonials Carousel -->
-<section class="container my-5" id="featured-reviews">
+<!-- Testimonials Section -->
+<section class="container my-5 py-5" id="featured-reviews">
     <div class="text-center mb-5">
-        <h2 class="fw-bold">Featured Reviews</h2>
-        <p class="text-muted">What our happy clients say about Dicimulacion Staycation</p>
+        <h2 class="fw-bold">What Our Guests Say</h2>
+        <p class="text-muted mx-auto" style="max-width: 600px;">Real feedback from happy guests who experienced our staycations.</p>
     </div>
 
     <div class="reviews-slider">
-        <!-- Review Cards -->
-        <div class="review-card card h-100 shadow border-0 text-center p-4">
-            <img src="{{ asset('assets/Matt.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Darwin">
-            <h5 class="fw-bold">Darwin</h5>
-            <p class="text-muted small">"The staycation was perfect! The house was clean, spacious, and the view was breathtaking. Highly recommend!"</p>
+        @foreach($reviews as $review)
+        <div class="review-card card h-100 shadow-sm border-0 text-center p-4">
+            <img src="{{ asset($review->image) }}" class="rounded-circle mx-auto mb-3" width="80" alt="{{ $review->name }}">
+            <h5 class="fw-bold">{{ $review->name }}</h5>
+            <p class="text-muted small">"{{ $review->comment }}"</p>
             <div class="text-warning">
-                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                <i class='bx bxs-star'></i>
+                @for ($i = 0; $i < $review->stars; $i++)
+                    <i class='bx bxs-star'></i>
+                @endfor
             </div>
         </div>
-
-        <div class="review-card card h-100 shadow border-0 text-center p-4">
-            <img src="{{ asset('assets/Sarah.jpg') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Sarah">
-            <h5 class="fw-bold">Sarah</h5>
-            <p class="text-muted small">"Amazing experience! The staff were friendly, the rooms were cozy, and everything exceeded our expectations."</p>
-            <div class="text-warning">
-                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                <i class='bx bxs-star'></i>
-            </div>
-        </div>
-
-        <div class="review-card card h-100 shadow border-0 text-center p-4">
-            <img src="{{ asset('assets/Alex.jpg') }}" class="rounded-circle mx-auto mb-3" width="80" alt="James">
-            <h5 class="fw-bold">James</h5>
-            <p class="text-muted small">"A truly relaxing staycation. The house had everything we needed, and the view was simply stunning. Will return!"</p>
-            <div class="text-warning">
-                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                <i class='bx bxs-star'></i>
-            </div>
-        </div>
-
-        <div class="review-card card h-100 shadow border-0 text-center p-4">
-            <img src="{{ asset('assets/test.jpg') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Anna">
-            <h5 class="fw-bold">Anna</h5>
-            <p class="text-muted small">"Wonderful stay! Everything was neat and organized, and the location is perfect for a weekend getaway."</p>
-            <div class="text-warning">
-                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
-                <i class='bx bxs-star'></i>
-            </div>
-        </div>
+        @endforeach
     </div>
 </section>
+
 <style>
+.reviews-slider .review-card {
+    margin: 0 10px;
+    border-radius: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background: #ffffff;
+}
+.reviews-slider .review-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
 .reviews-slider .review-card img {
     width: 80px;
     height: 80px;
-    object-fit: cover; /* Ensures the face fills the circle nicely */
-    border-radius: 50%; /* Makes it a circle */
-    aspect-ratio: 1/1; /* Forces it to stay square even if the source image isn't */
-    border: 3px solid #f8f9fa; /* optional light border */
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #f8f9fa;
 }
 </style>
 
@@ -302,7 +280,7 @@
 
 <!-- jQuery + Slick JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
 <!-- Initialize Slick -->
 <script>
@@ -312,10 +290,10 @@ $(document).ready(function(){
         slidesToScroll: 1,
         infinite: true,
         autoplay: true,
-        autoplaySpeed: 0, // continuous scrolling
-        speed: 8000, // adjust for scroll speed
-        cssEase: 'linear', // smooth continuous movement
-        arrows: false, // modern look
+        autoplaySpeed: 0,
+        speed: 8000,
+        cssEase: 'linear',
+        arrows: false,
         dots: false,
         pauseOnHover: true,
         responsive: [
@@ -326,56 +304,26 @@ $(document).ready(function(){
 });
 </script>
 
-<!-- Optional Modern Card CSS -->
-<style>
-.review-card {
-    transition: transform 0.3s, box-shadow 0.3s;
-    border-radius: 20px;
-    background: #ffffff;
-}
-.review-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-}
-</style>
-
-
-<!-- Styles -->
-<style>
-.reviews-slider .review-card {
-    margin: 0 10px;
-}
-.slick-slide {
-    display: flex !important;
-    justify-content: center;
-}
-.slick-dots li button:before {
-    font-size: 12px;
-    color: #0d6efd;
-}
-</style>
-
-
-<!-- Contact Us -->
+<!-- Contact Us Section -->
 <section class="container my-5" id="contact">
     <div class="text-center mb-4">
-        <h2 class="fw-bold">Have a Question? <br> Contact Us</h2>
+        <h2 class="fw-bold">Have a Question? Contact Us</h2>
+        <p class="text-muted mx-auto" style="max-width: 600px;">Reach out anytime, and we’ll help you find the perfect staycation.</p>
     </div>
-    <form class="mx-auto" style="max-width: 600px;" method="POST" action="{{ route('contact.send') }}" enctype="multipart/form-data">
+    <form class="mx-auto shadow-sm p-4 rounded-4" style="max-width: 600px; background: #f8f9fa;" method="POST" action="{{ route('contact.send') }}" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
-            <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+            <input type="email" class="form-control form-control-lg" name="email" placeholder="Your Email" required>
         </div>
         <div class="mb-3">
-            <textarea class="form-control" name="message" rows="4" placeholder="Write your message here..." required></textarea>
+            <textarea class="form-control form-control-lg" name="message" rows="4" placeholder="Write your message here..." required></textarea>
         </div>
         <div class="mb-3">
             <input type="file" class="form-control" name="attachment" accept="image/*">
         </div>
-        <button type="submit" class="btn btn-primary w-100">Send</button>
+        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill">Send Message</button>
     </form>
 </section>
-
 @include('partials.chatbot')
 
 @endsection
