@@ -134,7 +134,7 @@
 
                 <!-- Star Rating -->
                 <div class="d-flex justify-content-center mb-3">
-                    @for ($i = 0; $i < $review->stars; $i++)
+                    @for ($i = 0; $i < $review->rating; $i++)
                         <i class='bx bxs-star text-warning me-1'></i>
                     @endfor
                 </div>
@@ -153,17 +153,6 @@
         @endforelse
     </div>
 </section>
-
-<!-- Custom CSS -->
-<style>
-.hover-shadow {
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-.hover-shadow:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 25px rgba(0,0,0,0.15);
-}
-</style>
 
 
 <!-- FullCalendar + Price Calculation -->
