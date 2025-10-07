@@ -18,17 +18,14 @@ class ReviewController extends Controller
             'comment' => 'required|string|max:1000',
         ]);
 
-        // Find the booking for the logged-in user
         $booking = Booking::where('id', $request->booking_id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        // Prevent duplicate reviews
         if ($booking->review) {
             return back()->with('error', 'You already reviewed this booking.');
         }
 
-        // Create review
         Review::create([
             'user_id' => Auth::id(),
             'booking_id' => $booking->id,
@@ -38,7 +35,6 @@ class ReviewController extends Controller
 
         return back()->with('success', 'Thank you! Your review has been submitted.');
     }
-
     // Admin view for all reviews
     public function adminIndex()
     {

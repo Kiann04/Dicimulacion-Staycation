@@ -16,9 +16,9 @@ class Review extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function booking()
+    public function booking() 
     {
-        return $this->belongsTo(Booking::class);
+        return $this->belongsTo(Booking::class, 'booking_id');
     }
     public function staycation()
     {
