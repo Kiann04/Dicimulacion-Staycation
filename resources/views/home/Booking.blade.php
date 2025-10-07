@@ -117,59 +117,42 @@
 <section class="container my-5" id="reviews">
     <h2 class="fw-bold mb-5 text-center display-6">What Our Guests Say</h2>
 
-    <!-- Swiper Slider -->
-    <div class="swiper reviews-swiper">
-        <div class="swiper-wrapper">
-            @forelse($reviews as $review)
-            <div class="swiper-slide">
-                <div class="card h-100 border-0 shadow-sm rounded-4 p-4 hover-shadow position-relative">
-                    
-                    <!-- Profile Picture -->
-                    <div class="d-flex justify-content-center mb-3">
-                        <img src="{{ $review->user && $review->user->photo ? asset($review->user->photo) : asset('Assets/default.png') }}" 
-                             class="rounded-circle shadow-sm" width="80" height="80" 
-                             alt="{{ $review->user ? $review->user->name : 'Guest' }}">
-                    </div>
+    <div class="row g-4 justify-content-center">
+        @forelse($reviews as $review)
+        <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 position-relative hover-shadow transition">
+                
+                <!-- Profile Picture -->
+                <div class="d-flex justify-content-center mb-3">
+                    <img src="{{ $review->user && $review->user->photo ? asset($review->user->photo) : asset('Assets/default.png') }}" 
+                         class="rounded-circle shadow-sm" width="80" height="80" 
+                         alt="{{ $review->user ? $review->user->name : 'Guest' }}">
+                </div>
 
-                    <!-- Guest Name -->
-                    <h5 class="fw-semibold text-center mb-1">{{ $review->user ? $review->user->name : 'Guest' }}</h5>
+                <!-- Guest Name -->
+                <h5 class="fw-bold text-center mb-2">{{ $review->user ? $review->user->name : 'Guest' }}</h5>
 
-                    <!-- Optional: Guest Location or Date -->
-                    @if($review->user && $review->user->location)
-                    <p class="text-center text-muted small mb-2">{{ $review->user->location }}</p>
-                    @endif
+                <!-- Star Rating -->
+                <div class="d-flex justify-content-center mb-3">
+                    @for ($i = 0; $i < $review->stars; $i++)
+                        <i class='bx bxs-star text-warning me-1'></i>
+                    @endfor
+                </div>
 
-                    <!-- Star Rating -->
-                    <div class="d-flex justify-content-center mb-3">
-                        @for ($i = 0; $i < $review->stars; $i++)
-                            <i class='bx bxs-star text-warning me-1'></i>
-                        @endfor
-                    </div>
+                <!-- Review Text -->
+                <p class="text-center text-muted small mb-0 fst-italic">"{{ $review->comment }}"</p>
 
-                    <!-- Review Text -->
-                    <p class="text-center text-muted small mb-0 fst-italic">"{{ $review->comment }}"</p>
-
-                    <!-- Subtle quote icon -->
-                    <div class="position-absolute top-0 end-0 opacity-10 fs-1 me-3 mt-3">
-                        <i class='bx bxs-quote-right'></i>
-                    </div>
+                <!-- Optional: subtle background icon -->
+                <div class="position-absolute top-0 end-0 opacity-10 fs-1 me-3 mt-3">
+                    <i class='bx bxs-quote-right'></i>
                 </div>
             </div>
-            @empty
-            <p class="text-center text-muted">No reviews yet for this staycation.</p>
-            @endforelse
         </div>
-
-        <!-- Navigation -->
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-pagination mt-4"></div>
+        @empty
+        <p class="text-center text-muted">No reviews yet for this staycation.</p>
+        @endforelse
     </div>
 </section>
-
-<!-- Swiper JS & CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
 <!-- Custom CSS -->
 <style>
@@ -177,46 +160,10 @@
     transition: transform 0.3s, box-shadow 0.3s;
 }
 .hover-shadow:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 20px 30px rgba(0,0,0,0.15);
-}
-
-/* Swiper custom styling */
-.reviews-swiper .swiper-slide {
-    width: 300px; /* card width */
-    display: flex;
-    justify-content: center;
-}
-.swiper-button-next, .swiper-button-prev {
-    color: #000;
-}
-.swiper-pagination-bullet-active {
-    background: #ff5a5f; /* Airbnb primary color */
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.15);
 }
 </style>
-
-<!-- Swiper Init -->
-<script>
-const swiper = new Swiper('.reviews-swiper', {
-    slidesPerView: 1,
-    spaceBetween: 30,
-    loop: true,
-    pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-    },
-    navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-    },
-    breakpoints: {
-        576: { slidesPerView: 1 },
-        768: { slidesPerView: 2 },
-        992: { slidesPerView: 3 },
-    }
-});
-</script>
-
 
 
 <!-- FullCalendar + Price Calculation -->
