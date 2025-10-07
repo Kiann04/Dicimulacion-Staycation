@@ -121,8 +121,10 @@
         @forelse($reviews as $review)
         <div class="col-md-6 col-lg-4">
             <div class="review-card card h-100 shadow border-0 text-center p-4 rounded-4">
-                <img src="{{ asset($review->image) }}" class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80" alt="{{ $review->name }}">
-                <h5 class="fw-bold mb-1">{{ $review->name }}</h5>
+                <img src="{{ $review->user && $review->user->photo ? asset($review->user->photo) : asset('Assets/default.png') }}"
+                     class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80"
+                     alt="{{ $review->user ? $review->user->name : 'Guest' }}">
+                <h5 class="fw-bold mb-1">{{ $review->user ? $review->user->name : 'Guest' }}</h5>
                 <p class="text-muted small mb-3">"{{ $review->comment }}"</p>
                 <div class="text-warning">
                     @for ($i = 0; $i < $review->stars; $i++)
