@@ -152,18 +152,15 @@
       <h2 class="fw-bold display-6 mb-4">
         We Provide The Best <br> Place For You
       </h2>
-      <p class="text-muted fs-5">
+      <p class="text-muted fs-5 mb-3">
         We’re a family-owned staycation business with eight homes, each perfectly placed to enjoy either breathtaking city views or peaceful nature escapes.
       </p>
-      <p class="text-muted fs-5">
+      <p class="text-muted fs-5 mb-3">
         Whether you’re looking to recharge under the stars, or relax in the calm of nature, our homes are designed to make you feel right at home.
       </p>
       <p class="text-muted fs-5">
         Each property is thoughtfully prepared by our family to ensure comfort, style, and unforgettable memories.
       </p>
-      <a href="#houses" class="btn btn-primary btn-lg mt-3 rounded-pill px-4 shadow-sm">
-        Explore Our Houses
-      </a>
     </div>
   </div>
 </section>
@@ -199,15 +196,12 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Button hover effect */
-#about .btn {
-  transition: all 0.3s ease;
-}
-#about .btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 .75rem 1.5rem rgba(0,0,0,.15);
+/* Adjust spacing for text-only layout */
+#about .col-lg-6.fade-in-up {
+  padding-bottom: 1rem;
 }
 </style>
+
 
 
 <!-- Info Cards -->
