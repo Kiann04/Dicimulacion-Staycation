@@ -42,7 +42,7 @@ class Booking extends Model
 
     public function reviews()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasOne(Review::class);
     }
 
     protected static function boot()
