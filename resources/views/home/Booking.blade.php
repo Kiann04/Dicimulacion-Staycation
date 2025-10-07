@@ -140,7 +140,7 @@
         <!-- ✅ Review 2 -->
         <div class="col-md-6 col-lg-4">
             <div class="review-card card h-100 shadow border-0 text-center p-4 rounded-4">
-                <img src="{{ asset('assets/Sarah.png') }}" class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80" alt="Sarah">
+                <img src="{{ asset('assets/Sarah.jpg') }}" class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80" alt="Sarah">
                 <h5 class="fw-bold mb-1">Sarah</h5>
                 <p class="text-muted small mb-3">
                     "Host was very accommodating and quick to respond. The staycation was spotless and cozy!"
@@ -158,7 +158,7 @@
         <!-- ✅ Review 3 -->
         <div class="col-md-6 col-lg-4">
             <div class="review-card card h-100 shadow border-0 text-center p-4 rounded-4">
-                <img src="{{ asset('assets/Alex.png') }}" class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80" alt="Alex">
+                <img src="{{ asset('assets/Alex.jpg') }}" class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80" alt="Alex">
                 <h5 class="fw-bold mb-1">Alex</h5>
                 <p class="text-muted small mb-3">
                     "The place exceeded our expectations. Great amenities, peaceful surroundings, and perfect for families."
