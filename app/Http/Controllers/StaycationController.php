@@ -9,13 +9,14 @@ use Carbon\Carbon;
 
 class StaycationController extends Controller
 {
-    // Display all staycations in the admin bookings page
+    // ✅ Show list of staycations for admin
     public function index()
     {
         $staycations = Staycation::all(); 
         return view('admin.bookings', compact('staycations')); 
     }
 
+    // ✅ Add new staycation
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -41,50 +42,29 @@ class StaycationController extends Controller
         return redirect()->back()->with('success', 'Staycation house added successfully!');
     }
 
-    // ✅ Show booking page with ALL reviews (not per staycation)
-    public function bookingPage($id)
-    {
-        // ✅ Load the specific staycation
-        $staycation = Staycation::findOrFail($id);
-
-        $allReviews = \App\Models\Review::whereHas('booking', function($query) use ($staycation) {
-            $query->where('staycation_id', $staycation->id);
-        })
-        ->with(['user', 'booking.staycation'])
-        ->latest()
-        ->get();
-
-        return view('booking', compact('staycation', 'allReviews'));
-
-    }
-
+    // ✅ Show single staycation details + all reviews for that staycation
     public function showStaycation($id)
     {   
-        // Find the staycation
         $staycation = Staycation::findOrFail($id);
 
-        // ✅ Fetch all reviews linked to this staycation via bookings
-        $allReviews = \App\Models\Review::whereHas('booking', function ($query) use ($id) {
-            $query->where('staycation_id', $id);
-        })
-        ->with(['user', 'booking.staycation'])
-        ->latest()
-        ->get();
+        // Fetch reviews linked through bookings
+        $allReviews = Review::with(['user', 'booking.staycation'])
+            ->whereHas('booking', function ($query) use ($id) {
+                $query->where('staycation_id', $id);
+            })
+            ->latest()
+            ->get();
 
-        // Pass data to your Blade
-        return view('home.Booking', compact('staycation', 'allReviews'));
+        return view('home.booking', compact('staycation', 'allReviews'));
     }
 
+    // ✅ Show all reviews (for separate reviews page)
     public function allReviews()
     {
         $allReviews = Review::with(['user', 'booking.staycation'])
                             ->latest()
-                            ->paginate(12); // Paginate for better UX
+                            ->paginate(12);
 
         return view('home.AllReviews', compact('allReviews'));
     }
-
-    
-
-
 }
