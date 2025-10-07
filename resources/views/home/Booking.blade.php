@@ -116,28 +116,31 @@
 <!-- Reviews Section -->
 <section class="container my-5" id="reviews">
     <h2 class="fw-bold mb-4 text-center">What Our Guests Say</h2>
-    @php $allReviews = $allReviews ?? collect(); @endphp
 
-    @if($allReviews->count() > 0)
+    @if(isset($allReviews) && $allReviews->count() > 0)
         <div class="row g-4">
             @foreach($allReviews as $review)
                 <div class="col-md-6 col-lg-4">
                     <div class="card shadow-sm border-0 h-100 rounded-4">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 class="mb-0 fw-semibold">{{ $review->user->name ?? 'Guest' }}</h5>
+                                <h5 class="mb-0 fw-semibold">
+                                    {{ $review->user->name ?? 'Guest' }}
+                                </h5>
                                 <div class="text-warning">
                                     @for ($i = 1; $i <= 5; $i++)
                                         <i class="bx {{ $i <= $review->rating ? 'bxs-star' : 'bx-star' }}"></i>
                                     @endfor
                                 </div>
                             </div>
+
                             <p class="text-muted small mb-1">
                                 {{ $review->created_at->format('F d, Y') }}
-                                @if($review->booking && $review->booking->staycation)
+                                @if(optional($review->booking->staycation)->house_name)
                                     – <em>{{ $review->booking->staycation->house_name }}</em>
                                 @endif
                             </p>
+
                             <p class="mb-0 text-secondary">{{ $review->comment }}</p>
                         </div>
                     </div>
@@ -148,6 +151,7 @@
         <p class="text-center text-muted">No reviews have been submitted yet for this staycation.</p>
     @endif
 </section>
+
 
 <!-- FullCalendar + Price Calculation -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
