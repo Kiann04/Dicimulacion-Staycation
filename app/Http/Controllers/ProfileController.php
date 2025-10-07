@@ -9,17 +9,11 @@ use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
-    /**
-     * Show profile edit form
-     */
     public function edit()
     {
         return view('profile'); // your Blade file
     }
 
-    /**
-     * Update profile info and photo
-     */
     public function update(Request $request)
     {
         /** @var User $user */
@@ -66,13 +60,20 @@ class ProfileController extends Controller
             unlink(public_path($user->photo));
         }
 
-        // Save new photo
-        $filename = time() . '_' . $photo->getClientOriginalName();
+        // Sanitize filename (remove spaces & special chars)
+        $originalName = pathinfo($photo->getClientOriginalName(), PATHINFO_FILENAME);
+        $extension = $photo->getClientOriginalExtension();
+        $cleanName = preg_replace("/[^A-Za-z0-9_-]/", '_', $originalName);
+        $filename = time() . '_' . $cleanName . '.' . $extension;
+
+        // Move file and debug
         if (!$photo->move($destination, $filename)) {
-            abort(500, 'Failed to save the uploaded photo. Check folder permissions.');
+            dd('Failed to move file! Check folder permissions and filename.');
+        } else {
+            dd('Saved at: ' . public_path('uploads/profile_photos/' . $filename));
         }
 
-        // Update DB
+        // Save path in DB
         $user->photo = 'uploads/profile_photos/' . $filename;
         $user->save();
     }
