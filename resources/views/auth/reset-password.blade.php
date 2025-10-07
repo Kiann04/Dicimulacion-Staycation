@@ -4,10 +4,10 @@
 @include('Header')
 @endsection
 
-<section class="container my-5">
-    <div class="row justify-content-center align-items-center">
+<section class="container min-vh-100 d-flex justify-content-center align-items-center">
+    <div class="row justify-content-center align-items-center w-100">
         <!-- Form Column -->
-        <div class="col-lg-5 col-md-7">
+        <div class="col-lg-5 col-md-7 mb-4 mb-lg-0">
             <div class="card shadow-lg p-4 rounded-4">
                 <h2 class="fw-bold text-center mb-3">Forgot Password?</h2>
                 <p class="text-center text-muted mb-4">Enter your email and new password</p>
@@ -37,7 +37,7 @@
         </div>
 
         <!-- Image Column -->
-        <div class="col-lg-5 d-none d-lg-block">
+        <div class="col-lg-5 d-none d-lg-flex justify-content-center">
             <img src="{{ asset('assets/ForgotSticker.png') }}" class="img-fluid" alt="Forgot Password Illustration">
         </div>
     </div>
