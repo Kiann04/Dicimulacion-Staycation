@@ -44,18 +44,22 @@ class StaycationController extends Controller
     // ✅ Show booking page with ALL reviews (not per staycation)
     public function bookingPage($id)
     {
-        // Load staycation
+        // ✅ Load the specific staycation
         $staycation = Staycation::findOrFail($id);
 
-        // Fetch the latest 10 reviews with user and booking->staycation relationships
-        $allReviews = Review::with(['user', 'booking.staycation'])
+        // ✅ Fetch only reviews related to this staycation (limit to 10)
+        $allReviews = Review::whereHas('booking', function ($query) use ($staycation) {
+                                $query->where('staycation_id', $staycation->id);
+                            })
+                            ->with(['user', 'booking.staycation'])
                             ->latest()
-                            ->take(10)   // Limit to 10 reviews
+                            ->take(10)
                             ->get();
 
-        // Pass both variables to the view
+        // ✅ Pass both variables to the view
         return view('home.Booking', compact('staycation', 'allReviews'));
     }
+
     public function showStaycation($id)
     {
         $staycation = Staycation::findOrFail($id);
