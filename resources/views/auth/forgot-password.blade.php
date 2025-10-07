@@ -6,10 +6,10 @@
 
 <x-guest-layout>
 <section class="container my-5">
-    <div class="row justify-content-center align-items-center">
+    <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
         <!-- Form Column -->
-        <div class="col-lg-5 col-md-7 d-flex align-items-center">
-            <div class="card shadow-lg p-4 rounded-4 w-100">
+        <div class="col-lg-5 col-md-7 d-flex">
+            <div class="card shadow-lg p-4 rounded-4 w-100 d-flex flex-column justify-content-center">
                 <h2 class="fw-bold text-center mb-3">Forgot Password?</h2>
                 <p class="text-center text-muted mb-4">Enter your email and we’ll send you a reset link</p>
 
@@ -24,7 +24,7 @@
                 <x-validation-errors class="mb-3" />
 
                 <!-- Forgot Password Form -->
-                <form method="POST" action="{{ route('password.email') }}">
+                <form method="POST" action="{{ route('password.email') }}" class="mt-auto mb-auto">
                     @csrf
 
                     <div class="mb-3">
@@ -39,7 +39,7 @@
 
         <!-- Image Column -->
         <div class="col-lg-5 d-flex justify-content-center">
-            <img src="{{ asset('assets/ForgotSticker.png') }}" class="img-fluid" alt="Forgot Password Illustration" style="max-height: 500px; object-fit: contain;">
+            <img src="{{ asset('assets/ForgotSticker.png') }}" class="img-fluid" style="max-height: 500px; object-fit: contain;" alt="Forgot Password Illustration">
         </div>
     </div>
 </section>
