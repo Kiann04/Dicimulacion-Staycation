@@ -117,40 +117,69 @@
 <section class="container my-5" id="reviews">
     <h2 class="fw-bold mb-4 text-center">What Our Guests Say</h2>
 
-    @if(isset($allReviews) && $allReviews->count() > 0)
-        <div class="row g-4">
-            @foreach($allReviews as $review)
-                <div class="col-md-6 col-lg-4">
-                    <div class="card shadow-sm border-0 h-100 rounded-4">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 class="mb-0 fw-semibold">
-                                    {{ $review->user->name ?? 'Guest' }}
-                                </h5>
-                                <div class="text-warning">
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        <i class="bx {{ $i <= $review->rating ? 'bxs-star' : 'bx-star' }}"></i>
-                                    @endfor
-                                </div>
-                            </div>
-
-                            <p class="text-muted small mb-1">
-                                {{ $review->created_at->format('F d, Y') }}
-                                @if(optional($review->booking->staycation)->house_name)
-                                    – <em>{{ $review->booking->staycation->house_name }}</em>
-                                @endif
-                            </p>
-
-                            <p class="mb-0 text-secondary">{{ $review->comment }}</p>
+    <div class="row g-4">
+        <!-- ✅ Review 1 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0 fw-semibold">John D.</h5>
+                        <div class="text-warning">
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bx-star"></i>
                         </div>
                     </div>
+                    <p class="text-muted small mb-1">October 5, 2025 – <em>Staycation 1</em></p>
+                    <p class="mb-0 text-secondary">The place was clean and cozy! Perfect for a short weekend getaway.</p>
                 </div>
-            @endforeach
+            </div>
         </div>
-    @else
-        <p class="text-center text-muted">No reviews have been submitted yet for this staycation.</p>
-    @endif
+
+        <!-- ✅ Review 2 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0 fw-semibold">Maria S.</h5>
+                        <div class="text-warning">
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star-half"></i>
+                            <i class="bx bx-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-muted small mb-1">September 20, 2025 – <em>Staycation 2</em></p>
+                    <p class="mb-0 text-secondary">We enjoyed our stay! The host was very accommodating.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ Review 3 -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 h-100 rounded-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0 fw-semibold">Alex G.</h5>
+                        <div class="text-warning">
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star"></i>
+                            <i class="bx bxs-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-muted small mb-1">August 12, 2025 – <em>Staycation 3</em></p>
+                    <p class="mb-0 text-secondary">Amazing stay! The view was beautiful, and the staff was friendly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
+
 
 
 <!-- FullCalendar + Price Calculation -->
