@@ -9,27 +9,22 @@ class Review extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','booking_id','rating','comment'];
+    protected $fillable = [
+        'user_id',
+        'booking_id',
+        'rating',
+        'comment',
+    ];
 
+    // The user who wrote the review
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function booking() 
+    // The booking this review belongs to
+    public function booking()
     {
         return $this->belongsTo(Booking::class, 'booking_id');
     }
-    public function staycation()
-    {
-    return $this->hasOneThrough(
-        Staycation::class,   // final model
-        Booking::class,      // intermediate model
-        'id',                // Foreign key on bookings table
-        'id',                // Foreign key on staycations table
-        'booking_id',        // Local key on reviews table
-        'staycation_id'      // Local key on bookings table
-    );
-    }
-
 }

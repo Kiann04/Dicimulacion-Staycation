@@ -32,7 +32,7 @@ class Booking extends Model
 
     public function staycation()
     {
-        return $this->belongsTo(Staycation::class);
+        return $this->belongsTo(Staycation::class, 'staycation_id');
     }
 
     public function user()
@@ -40,10 +40,11 @@ class Booking extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function review() 
+    public function review()
     {
-    return $this->hasOne(Review::class, 'booking_id');
+        return $this->hasOne(Review::class);
     }
+
  
 
     protected static function boot()
