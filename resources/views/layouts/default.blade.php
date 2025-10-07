@@ -26,7 +26,7 @@
         }
         footer {
             background: #f8f9fa;
-            padding: 1rem 0;
+            
         }
     </style>
 
