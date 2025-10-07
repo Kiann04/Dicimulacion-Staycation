@@ -1,40 +1,50 @@
-@extends ('layouts.default');
+@extends('layouts.default')
 
-@section ('Header')
-@include ('Header')
+@section('Header')
+@include('Header')
 @endsection
+
 <x-guest-layout>
-    <div class="login container">
-        <div class="login-container">
-            <h2>Forgot Password?</h2> 
-            <p>Enter your email and we’ll send you a reset link</p>
+<section class="container my-5">
+    <div class="row justify-content-center align-items-center">
+        <!-- Form Column -->
+        <div class="col-lg-5 col-md-7">
+            <div class="card shadow-lg p-4 rounded-4">
+                <h2 class="fw-bold text-center mb-3">Forgot Password?</h2>
+                <p class="text-center text-muted mb-4">Enter your email and we’ll send you a reset link</p>
 
-            <!-- Show success message -->
-            @if (session('status'))
-                <div class="mb-4 font-medium text-sm text-green-600">
-                    {{ session('status') }}
-                </div>
-            @endif
+                <!-- Success Message -->
+                @if (session('status'))
+                    <div class="alert alert-success mb-3">
+                        {{ session('status') }}
+                    </div>
+                @endif
 
-            <!-- Show validation errors -->
-            <x-validation-errors class="mb-4" />
+                <!-- Validation Errors -->
+                <x-validation-errors class="mb-3" />
 
-            <!-- Forgot Password Form -->
-            <form method="POST" action="{{ route('password.email') }}">
-                @csrf
+                <!-- Forgot Password Form -->
+                <form method="POST" action="{{ route('password.email') }}">
+                    @csrf
 
-                <span>Enter your email address</span>
-                <input type="email" name="email" placeholder="yourmail@gmail.com" value="{{ old('email') }}" required>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" name="email" placeholder="yourmail@gmail.com" value="{{ old('email') }}" required>
+                    </div>
 
-                <input type="submit" class="buttom" value="Send Reset Link">
-            </form>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold rounded-3">Send Reset Link</button>
+                </form>
+            </div>
         </div>
 
-        <div class="login-image">
-            <img src="{{ asset('assets/ForgotSticker.png') }}" alt="">
+        <!-- Image Column -->
+        <div class="col-lg-5 d-none d-lg-block">
+            <img src="{{ asset('assets/ForgotSticker.png') }}" class="img-fluid" alt="Forgot Password Illustration">
         </div>
     </div>
+</section>
 </x-guest-layout>
-@section ('Footer')
-@include ('Footer')
+
+@section('Footer')
+@include('Footer')
 @endsection
