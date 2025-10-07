@@ -40,9 +40,9 @@ class Booking extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function review()
+    public function reviews()
     {
-        return $this->hasOne(Review::class);
+        return $this->hasMany(Review::class);
     }
 
     protected static function boot()
