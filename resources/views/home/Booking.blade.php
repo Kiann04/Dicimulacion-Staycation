@@ -118,65 +118,24 @@
     <h2 class="fw-bold mb-4 text-center">What Our Guests Say</h2>
 
     <div class="row g-4 justify-content-center">
-
-        <!-- ✅ Review 1 -->
+        @forelse($reviews as $review)
         <div class="col-md-6 col-lg-4">
             <div class="review-card card h-100 shadow border-0 text-center p-4 rounded-4">
-                <img src="{{ asset('assets/Matt.png') }}" class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80" alt="James">
-                <h5 class="fw-bold mb-1">James</h5>
-                <p class="text-muted small mb-3">
-                    "A truly relaxing staycation. The house had everything we needed, and the view was simply stunning. Will return!"
-                </p>
+                <img src="{{ asset($review->image) }}" class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80" alt="{{ $review->name }}">
+                <h5 class="fw-bold mb-1">{{ $review->name }}</h5>
+                <p class="text-muted small mb-3">"{{ $review->comment }}"</p>
                 <div class="text-warning">
-                    <i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i>
+                    @for ($i = 0; $i < $review->stars; $i++)
+                        <i class='bx bxs-star'></i>
+                    @endfor
                 </div>
             </div>
         </div>
-
-        <!-- ✅ Review 2 -->
-        <div class="col-md-6 col-lg-4">
-            <div class="review-card card h-100 shadow border-0 text-center p-4 rounded-4">
-                <img src="{{ asset('assets/Sarah.jpg') }}" class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80" alt="Sarah">
-                <h5 class="fw-bold mb-1">Sarah</h5>
-                <p class="text-muted small mb-3">
-                    "Host was very accommodating and quick to respond. The staycation was spotless and cozy!"
-                </p>
-                <div class="text-warning">
-                    <i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i>
-                    <i class='bx bx-star'></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- ✅ Review 3 -->
-        <div class="col-md-6 col-lg-4">
-            <div class="review-card card h-100 shadow border-0 text-center p-4 rounded-4">
-                <img src="{{ asset('assets/Alex.jpg') }}" class="rounded-circle mx-auto mb-3 shadow-sm" width="80" height="80" alt="Alex">
-                <h5 class="fw-bold mb-1">Alex</h5>
-                <p class="text-muted small mb-3">
-                    "The place exceeded our expectations. Great amenities, peaceful surroundings, and perfect for families."
-                </p>
-                <div class="text-warning">
-                    <i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i>
-                    <i class='bx bxs-star'></i>
-                    <i class='bx bxs-star-half'></i>
-                    <i class='bx bx-star'></i>
-                </div>
-            </div>
-        </div>
-
+        @empty
+        <p class="text-center text-muted">No reviews yet for this staycation.</p>
+        @endforelse
     </div>
 </section>
-
-
 
 
 <!-- FullCalendar + Price Calculation -->

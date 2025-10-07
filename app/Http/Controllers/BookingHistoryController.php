@@ -13,10 +13,14 @@ class BookingHistoryController extends Controller
 {
     // 🏠 Show booking form for selected staycation
     public function bookingForm($id)
-    {
-        $staycation = Staycation::findOrFail($id);
-        return view('home.Booking', compact('staycation'));
-    }
+{
+    $staycation = Staycation::findOrFail($id);
+
+    // Get reviews for this staycation
+    $reviews = Review::where('staycation_id', $id)->get();
+
+    return view('home.Booking', compact('staycation', 'reviews'));
+}
 
     // 📄 Step 1: Preview Booking before confirming
     public function previewBooking(Request $request, $staycation_id)
