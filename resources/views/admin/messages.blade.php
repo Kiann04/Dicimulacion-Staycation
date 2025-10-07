@@ -54,7 +54,14 @@
                             <td>#{{ $inquiry->id }}</td>
                             <td>{{ $inquiry->email }}</td>
                             <td>{{ $inquiry->created_at->format('Y-m-d') }}</td>
-                            <td>{{ ucfirst($inquiry->status) }}</td>
+                            <td>
+                                @php
+                                    $statusClass = $inquiry->status === 'read' ? 'bg-success' : 'bg-primary';
+                                @endphp
+                                <span class="badge {{ $statusClass }}">
+                                    {{ ucfirst($inquiry->status) }}
+                                </span>
+                            </td>
                             <td>
                                 <a href="{{ route('admin.view_messages', $inquiry->id) }}" class="btn btn-sm btn-info">View</a>
                                 <a href="{{ route('admin.reply_message', $inquiry->id) }}" class="btn btn-sm btn-primary">Reply</a>
