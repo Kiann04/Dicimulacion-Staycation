@@ -335,16 +335,19 @@
 </style>
 
 <!-- Testimonials -->
-<section class="container my-5" id="testimonials">
+<section class="container my-5" id="featured-reviews">
     <div class="text-center mb-5">
-        <h2 class="fw-bold">What Our Clients Say</h2>
+        <h2 class="fw-bold">Featured Reviews</h2>
+        <p class="text-muted">What our happy clients say about Dicimulacion Staycation</p>
     </div>
+
     <div class="row g-4">
-        <div class="col-md-3">
-            <div class="card h-100 shadow-sm text-center p-3">
-                <img src="../assets/Matt.png" class="rounded-circle mx-auto mb-3" width="80" alt="">
+        <!-- Review 1 -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-lg border-0 text-center p-4">
+                <img src="{{ asset('assets/Matt.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Darwin">
                 <h5 class="fw-bold">Darwin</h5>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+                <p class="text-muted small">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vitae, tempora!</p>
                 <div class="text-warning">
                     <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
                     <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
@@ -352,9 +355,37 @@
                 </div>
             </div>
         </div>
-        <!-- Repeat for other testimonials -->
+
+        <!-- Review 2 -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-lg border-0 text-center p-4">
+                <img src="{{ asset('assets/Sarah.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Sarah">
+                <h5 class="fw-bold">Sarah</h5>
+                <p class="text-muted small">Amazing staycation experience! Highly recommended for families and friends.</p>
+                <div class="text-warning">
+                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review 3 -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-lg border-0 text-center p-4">
+                <img src="{{ asset('assets/James.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="James">
+                <h5 class="fw-bold">James</h5>
+                <p class="text-muted small">Clean rooms, excellent service, and stunning views. Will come back soon!</p>
+                <div class="text-warning">
+                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
+                    <i class='bx bxs-star'></i>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
+
 
 <!-- Contact Us -->
 <section class="container my-5" id="contact">
