@@ -87,8 +87,10 @@
                             <th>Booking ID</th>
                             <th>User</th>
                             <th>Staycation</th>
+                            <th>Transaction No.</th>
                             <th>Amount Paid</th>
                             <th>Payment Status</th>
+                            <th>Message to Admin</th>
                             <th>Payment Proof</th>
                             <th>Date</th>
                         </tr>
@@ -99,19 +101,22 @@
                             <td>#{{ $booking->id }}</td>
                             <td>{{ $booking->user->name ?? 'N/A' }}</td>
                             <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
+                            <td>{{ $booking->transaction_number ?? 'N/A' }}</td>
                             <td>₱{{ number_format($booking->amount_paid, 2) }}</td>
                             <td>{{ ucfirst($booking->payment_status) }}</td>
+                            <td>{{ $booking->message_to_admin ?? '—' }}</td>
                             <td>
                                 @if($booking->payment_proof)
-                                <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" target="_blank">View Proof</a>
+                                    <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" target="_blank">View Proof</a>
+                                @else
+                                    <span class="text-muted">No proof</span>
                                 @endif
-
                             </td>
                             <td>{{ $booking->created_at->format('Y-m-d') }}</td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7">No payment proofs found</td>
+                            <td colspan="9" class="text-center">No payment proofs found</td>
                         </tr>
                         @endforelse
                     </tbody>
