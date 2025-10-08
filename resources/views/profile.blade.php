@@ -17,8 +17,8 @@
                     <h5 class="mb-0">Update Profile</h5>
                 </div>
                 <div class="card-body">
-                    @if (session('profile_success'))
-                        <div class="alert alert-success">{{ session('profie_success') }}</div>
+                    @if (session('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
                     @if($errors->profile->any())
                         <div class="alert alert-danger">
@@ -70,17 +70,7 @@
                     @if (session('password_success'))
                         <div class="alert alert-success">{{ session('password_success') }}</div>
                     @endif
-                    
-                    @if($errors->password->any())
-                        <div class="alert alert-danger">
-                            <ul class="mb-0">
-                                @foreach($errors->password->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
+                        
                     <form method="POST" action="{{ route('profile.password.update') }}">
                         @csrf
                         @method('PUT')
