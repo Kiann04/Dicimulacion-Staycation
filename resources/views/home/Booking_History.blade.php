@@ -4,7 +4,7 @@
 @include('Header')
 @endsection
 
-<main class="flex-grow-1"style="padding-top: 50px;">
+<main class="flex-grow-1"style="padding-top: 25px;">
 <div class="container my-5">
     <h3 class="fw-bold mb-4">Your Booking History</h3>
 
