@@ -85,24 +85,31 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Get all nav links inside the collapsed menu
-        const navLinks = document.querySelectorAll('.navbar-collapse .nav-link');
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const collapseEl = document.querySelector('.navbar-collapse');
+    const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
 
-        const navbarCollapse = document.getElementById('navbarNavDropdown');
-
-        navLinks.forEach(function(link) {
-            link.addEventListener('click', function () {
-                // Only collapse if the menu is currently shown
-                if (navbarCollapse.classList.contains('show')) {
-                    const bsCollapse = new bootstrap.Collapse(navbarCollapse, { toggle: true });
-                    bsCollapse.hide();
-                }
-            });
+    // Close when a link inside the menu is clicked
+    document.querySelectorAll('.navbar-collapse .nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            if (collapseEl.classList.contains('show')) {
+                bsCollapse.hide();
+            }
         });
     });
-    </script>
+
+    // Close when clicking outside the navbar (mobile only)
+    document.addEventListener('click', function(event) {
+        const isClickInside = collapseEl.contains(event.target) || 
+                              document.querySelector('.navbar-toggler').contains(event.target);
+        if (!isClickInside && collapseEl.classList.contains('show')) {
+            bsCollapse.hide();
+        }
+    });
+});
+</script>
+
 
 </body>
 </html>
