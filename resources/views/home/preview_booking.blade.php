@@ -158,33 +158,52 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
-    const paymentSelect = document.querySelector("select[name='payment_type']");
-    const totalPriceElem = document.querySelector(".total-amount");
-    const totalPrice = parseFloat("{{ $totalPrice }}");
+    document.addEventListener("DOMContentLoaded", function() {
+        const paymentSelect = document.querySelector("select[name='payment_type']");
+        const totalPriceElem = document.querySelector(".total-amount");
+        const totalPrice = parseFloat("{{ $totalPrice }}");
 
-    const gcashInfo = document.getElementById("gcashInfo");
-    const bpiInfo = document.getElementById("bpiInfo");
+        const gcashInfo = document.getElementById("gcashInfo");
+        const bpiInfo = document.getElementById("bpiInfo");
 
-    // Update total price based on payment type
-    function updatePaymentDisplay() {
-        if(paymentSelect.value === "half") {
-            const halfPrice = totalPrice / 2;
-            totalPriceElem.textContent = "Amount Due (50%): ₱" + halfPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        } else {
-            totalPriceElem.textContent = "Total Price: ₱" + totalPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        // ✅ Update total price based on payment type
+        function updatePaymentDisplay() {
+            if (paymentSelect.value === "half") {
+                const halfPrice = totalPrice / 2;
+                totalPriceElem.textContent =
+                    "Amount Due (50%): ₱" +
+                    halfPrice.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+            } else {
+                totalPriceElem.textContent =
+                    "Total Price: ₱" +
+                    totalPrice.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+            }
         }
-    }
 
-    paymentSelect.addEventListener("change", updatePaymentDisplay);
+        paymentSelect.addEventListener("change", updatePaymentDisplay);
 
-    // Toggle payment method info
-    const methodSelect = document.getElementById("paymentMethod");
-    methodSelect.addEventListener("change", function(){
-        gcashInfo.style.display = this.value === "gcash" ? "block" : "none";
-        bpiInfo.style.display = this.value === "bpi" ? "block" : "none";
+        // ✅ Toggle payment method info
+        const methodSelect = document.getElementById("paymentMethod");
+        methodSelect.addEventListener("change", function() {
+            gcashInfo.style.display = this.value === "gcash" ? "block" : "none";
+            bpiInfo.style.display = this.value === "bpi" ? "block" : "none";
+        });
+
+        // ✅ Prevent double submission
+        const bookingForm = document.querySelector("form");
+        const submitButton = bookingForm.querySelector("button[type='submit']");
+
+        bookingForm.addEventListener("submit", function(e) {
+            submitButton.disabled = true;
+            submitButton.textContent = "Submitting...";
+        });
     });
-});
 </script>
 
 @endsection
