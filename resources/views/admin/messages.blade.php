@@ -14,7 +14,7 @@
 
     @php
         // Determine which tab is active
-        $activeTab = session('tab') ?? 'inquiries';
+        $activeTab = session('tab') ?? 'payments';
     @endphp
 
     <!-- Tabs -->
@@ -128,6 +128,26 @@
 
 <!-- Bootstrap JS (required for tabs) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Save active tab in localStorage
+    const triggerTabList = document.querySelectorAll('#messagesTabs button[data-bs-toggle="tab"]');
+    triggerTabList.forEach(tabEl => {
+        tabEl.addEventListener('shown.bs.tab', function (event) {
+            localStorage.setItem('activeTab', event.target.id);
+        });
+    });
+
+    // Load last active tab on page reload
+    const activeTabId = localStorage.getItem('activeTab');
+    if (activeTabId) {
+        const tabToShow = document.getElementById(activeTabId);
+        const tab = new bootstrap.Tab(tabToShow);
+        tab.show();
+    }
+});
+</script>
+
 </div>
 </div>
 @endsection
