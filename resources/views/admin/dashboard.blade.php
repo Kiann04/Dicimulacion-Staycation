@@ -25,7 +25,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Booking ID</th>
                         <th>Staycation</th>
                         <th>Customer</th>
                         <th>Phone</th>
