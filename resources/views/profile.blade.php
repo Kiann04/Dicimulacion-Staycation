@@ -17,14 +17,15 @@
                     <h5 class="mb-0">Update Profile</h5>
                 </div>
                 <div class="card-body">
+
                     @if (session('profile_success'))
                         <div class="alert alert-success">{{ session('profile_success') }}</div>
                     @endif
 
-                    @if($errors->profile->any())
+                    @if ($errors->getBag('profile')->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">
-                                @foreach($errors->profile->all() as $error)
+                                @foreach ($errors->getBag('profile')->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
@@ -43,15 +44,15 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
                             <input type="text" name="name" id="name" 
-                                   value="{{ old('name', auth()->user()->name) }}" 
-                                   class="form-control" required>
+                                value="{{ old('name', auth()->user()->name) }}" 
+                                class="form-control" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" name="email" id="email" 
-                                   value="{{ old('email', auth()->user()->email) }}" 
-                                   class="form-control" required>
+                                value="{{ old('email', auth()->user()->email) }}" 
+                                class="form-control" required>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100">Update Profile</button>
@@ -59,6 +60,7 @@
                 </div>
             </div>
         </div>
+
 
         <!-- Change Password -->
         <div class="col-lg-6">
