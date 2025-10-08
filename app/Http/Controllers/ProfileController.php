@@ -20,11 +20,12 @@ class ProfileController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
+        // Validate with a named error bag 'profile'
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png,gif,webp', 'max:1024'],
-        ]);
+        ], [], [], 'profile'); // <-- named error bag
 
         // Handle photo upload
         if ($request->hasFile('photo')) {
@@ -36,8 +37,9 @@ class ProfileController extends Controller
         $user->email = $request->email;
         $user->save();
 
-        return redirect()->back()->with('success', 'Profile updated successfully!');
+        return redirect()->back()->with('profile_success', 'Profile updated successfully!');
     }
+
 
     /**
      * Save profile photo directly in public folder
@@ -82,13 +84,13 @@ class ProfileController extends Controller
         $request->validate([
             'current_password' => ['required', 'current_password'],
             'password' => ['required', 'confirmed', 'min:8'],
+        ], [], [], 'password'); // <-- named error bag "password"
+
+        Auth::user()->update([
+            'password' => Hash::make($request->password),
         ]);
 
-        $user = Auth::user();
-        $user->password = Hash::make($request->password);
-        $user->save();
-
-        return back()->with('password_success', 'Password updated successfully.');
+        return back()->with('password_success', 'Password updated successfully!');
     }
   
 

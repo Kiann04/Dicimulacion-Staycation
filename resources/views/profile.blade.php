@@ -20,10 +20,10 @@
                     @if (session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
-                    @if ($errors->any())
+                    @if($errors->profile->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
+                                @foreach($errors->profile->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
@@ -69,6 +69,16 @@
 
                     @if (session('password_success'))
                         <div class="alert alert-success">{{ session('password_success') }}</div>
+                    @endif
+                    
+                    @if($errors->password->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach($errors->password->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                     @endif
 
                     <form method="POST" action="{{ route('profile.password.update') }}">
