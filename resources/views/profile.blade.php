@@ -1,3 +1,4 @@
+```blade
 @extends('layouts.default')
 
 @section('Header')
@@ -16,17 +17,13 @@
                     <h5 class="mb-0">Update Profile</h5>
                 </div>
                 <div class="card-body">
-
-                    {{-- Success message --}}
-                    @if(session('profile_success'))
-                        <div class="alert alert-success">{{ session('profile_success') }}</div>
+                    @if (session('profile_success'))
+                        <div class="alert alert-success">{{ session('profie_success') }}</div>
                     @endif
-
-                    {{-- Profile error bag --}}
-                    @if($errors->getBag('profile')->any())
+                    @if($errors->profile->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">
-                                @foreach($errors->getBag('profile')->all() as $error)
+                                @foreach($errors->profile->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
@@ -39,30 +36,21 @@
 
                         <div class="mb-3">
                             <label for="photo" class="form-label">Profile Photo</label>
-                            <input type="file" name="photo" id="photo" class="form-control @error('photo','profile') is-invalid @enderror">
-                            @error('photo','profile')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
+                            <input type="file" name="photo" id="photo" class="form-control">
                         </div>
 
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
-                            <input type="text" name="name" id="name"
-                                value="{{ old('name', auth()->user()->name) }}"
-                                class="form-control @error('name','profile') is-invalid @enderror" required>
-                            @error('name','profile')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
+                            <input type="text" name="name" id="name" 
+                                   value="{{ old('name', auth()->user()->name) }}" 
+                                   class="form-control" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" name="email" id="email"
-                                value="{{ old('email', auth()->user()->email) }}"
-                                class="form-control @error('email','profile') is-invalid @enderror" required>
-                            @error('email','profile')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
+                            <input type="email" name="email" id="email" 
+                                   value="{{ old('email', auth()->user()->email) }}" 
+                                   class="form-control" required>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100">Update Profile</button>
@@ -79,16 +67,14 @@
                 </div>
                 <div class="card-body">
 
-                    {{-- Success message --}}
-                    @if(session('password_success'))
+                    @if (session('password_success'))
                         <div class="alert alert-success">{{ session('password_success') }}</div>
                     @endif
-
-                    {{-- Password error bag --}}
-                    @if($errors->getBag('password')->any())
+                    
+                    @if($errors->password->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">
-                                @foreach($errors->getBag('password')->all() as $error)
+                                @foreach($errors->password->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
@@ -101,29 +87,20 @@
 
                         <div class="mb-3">
                             <label for="current_password" class="form-label">Current Password</label>
-                            <input type="password" name="current_password" id="current_password"
-                                class="form-control @error('current_password','password') is-invalid @enderror" required>
-                            @error('current_password','password')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
+                            <input type="password" name="current_password" id="current_password" 
+                                class="form-control" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="new_password" class="form-label">New Password</label>
-                            <input type="password" name="password" id="new_password"
-                                class="form-control @error('password','password') is-invalid @enderror" required>
-                            @error('password','password')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
+                            <input type="password" name="password" id="new_password" 
+                                class="form-control" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="password_confirmation" class="form-label">Confirm New Password</label>
-                            <input type="password" name="password_confirmation" id="password_confirmation"
-                                class="form-control @error('password_confirmation','password') is-invalid @enderror" required>
-                            @error('password_confirmation','password')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
+                            <input type="password" name="password_confirmation" id="password_confirmation" 
+                                class="form-control" required>
                         </div>
 
                         <button type="submit" class="btn btn-warning w-100">Update Password</button>
@@ -131,7 +108,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
