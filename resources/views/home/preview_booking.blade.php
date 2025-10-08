@@ -47,18 +47,27 @@
         <h3 class="fw-bold mb-4 text-center">Confirm Your Booking</h3>
 
         @php
-            $start = \Carbon\Carbon::parse($startDate);
-            $end = \Carbon\Carbon::parse($endDate);
-            $nights = $end->diffInDays($start);
+            use Carbon\Carbon;
 
-            // Base room price calculation
+            $start = Carbon::parse($startDate);
+            $end = Carbon::parse($endDate);
+
+            // ✅ Prevent negative or zero nights
+            if ($end->lessThanOrEqualTo($start)) {
+                $nights = 1;
+            } else {
+                $nights = $start->diffInDays($end);
+            }
+
+            // Base price
             $totalPrice = $staycation->house_price * $nights;
 
-            // ✅ Add ₱500 per guest beyond 6
+            // ✅ ₱500 per extra guest beyond 6
             $extraGuests = max(0, $guest_number - 6);
             $extraFee = $extraGuests * 500;
             $totalPrice += $extraFee;
 
+            // Format dates
             $formattedStart = $start->format('M d, Y');
             $formattedEnd = $end->format('M d, Y');
         @endphp
