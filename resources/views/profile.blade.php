@@ -1,3 +1,4 @@
+```blade
 @extends('layouts.default')
 
 @section('Header')
@@ -16,12 +17,10 @@
                     <h5 class="mb-0">Update Profile</h5>
                 </div>
                 <div class="card-body">
-                    {{-- Success Message --}}
                     @if (session('profile_success'))
                         <div class="alert alert-success">{{ session('profile_success') }}</div>
                     @endif
 
-                    {{-- Profile Validation Errors --}}
                     @if($errors->profile->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">
@@ -69,12 +68,10 @@
                 </div>
                 <div class="card-body">
 
-                    {{-- Success Message --}}
                     @if (session('password_success'))
                         <div class="alert alert-success">{{ session('password_success') }}</div>
                     @endif
-
-                    {{-- Password Validation Errors --}}
+                    
                     @if($errors->password->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">
@@ -112,7 +109,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
