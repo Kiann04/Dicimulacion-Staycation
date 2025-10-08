@@ -76,7 +76,7 @@
             <div class="tab-pane fade {{ $activeTab == 'payments' ? 'show active' : '' }}" id="payments" role="tabpanel">
 
                 <!-- 🔍 Search Form -->
-                <form action="{{ route('admin.messagesAndPayments') }}" method="GET" class="mb-3 d-flex" role="search">
+                <form action="{{ route('admin.messages') }}" method="GET" class="mb-3 d-flex" role="search">
                     <input type="hidden" name="tab" value="payments">
                     <input type="text" name="search" class="form-control me-2" 
                         placeholder="Search by Booking ID, Name, or Transaction No."
