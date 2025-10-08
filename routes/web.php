@@ -27,6 +27,13 @@ use App\Http\Controllers\{
     ProfileController
 };
 
+Route::middleware(['auth'])->group(function () {
+    // Other profile routes...
+
+    // Profile password update
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])
+        ->name('profile.password.update');
+});
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -226,11 +233,4 @@ Route::prefix('staff')->name('staff.')->middleware(['auth'])->group(function () 
 
     // Settings
     Route::get('/settings', [StaffController::class, 'settings'])->name('settings');
-});
-Route::middleware(['auth'])->group(function () {
-    // Other profile routes...
-
-    // Profile password update
-    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])
-        ->name('profile.password.update');
 });
