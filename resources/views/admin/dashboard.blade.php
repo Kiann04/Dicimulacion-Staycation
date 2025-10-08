@@ -31,6 +31,7 @@
                         <th>Phone</th>
                         <th>Start</th>
                         <th>End</th>
+                        <th>Created At</th>
                         <th>Payment Status</th>
                         <th>Booking Status</th>
                         <th>Action</th>
@@ -46,6 +47,7 @@
                         <td>{{ $booking->phone }}</td>
                         <td>{{ $booking->start_date }}</td>
                         <td>{{ $booking->end_date }}</td>
+                        <td>{{ $booking->created_at->format('M d, Y h:i A') }}</td> {{-- ✅ show nicely --}}
 
                         {{-- Payment Dropdown --}}
                         <td>
