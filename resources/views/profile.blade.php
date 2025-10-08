@@ -18,8 +18,9 @@
                 </div>
                 <div class="card-body">
                     @if (session('profile_success'))
-                        <div class="alert alert-success">{{ session('profie_success') }}</div>
+                        <div class="alert alert-success">{{ session('profile_success') }}</div>
                     @endif
+
                     @if($errors->profile->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">
