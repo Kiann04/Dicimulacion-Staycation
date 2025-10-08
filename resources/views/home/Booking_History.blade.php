@@ -4,7 +4,7 @@
 @include('Header')
 @endsection
 
-<main class="flex-grow-1" style="padding-top: 90px;"> {{-- Adjusted padding to prevent overlap --}}
+<main class="flex-grow-1" style="padding-top: 25px;"> {{-- Adjusted padding to prevent overlap --}}
     <div class="container my-5">
         <h3 class="fw-bold mb-4 text-center text-md-start">Your Booking History</h3>
 
