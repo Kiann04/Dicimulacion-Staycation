@@ -9,17 +9,20 @@
 <div class="container py-5">
     <div class="row g-4">
 
-        <!-- Profile Update -->
+    <!-- Profile Update -->
         <div class="col-lg-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Update Profile</h5>
                 </div>
                 <div class="card-body">
+
+                    <!-- Success message -->
                     @if (session('profile_success'))
                         <div class="alert alert-success">{{ session('profile_success') }}</div>
                     @endif
 
+                    <!-- Errors for profile only -->
                     @if ($errors->getBag('profile')->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">
@@ -30,7 +33,6 @@
                         </div>
                     @endif
 
-
                     <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
@@ -38,21 +40,30 @@
                         <div class="mb-3">
                             <label for="photo" class="form-label">Profile Photo</label>
                             <input type="file" name="photo" id="photo" 
-                                class="form-control @error('photo', 'profile') is-invalid @enderror">
+                                class="form-control @error('photo','profile') is-invalid @enderror">
+                            @error('photo','profile')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
                             <input type="text" name="name" id="name" 
                                 value="{{ old('name', auth()->user()->name) }}" 
-                                class="form-control @error('name', 'profile') is-invalid @enderror" required>
+                                class="form-control @error('name','profile') is-invalid @enderror" required>
+                            @error('name','profile')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" name="email" id="email" 
                                 value="{{ old('email', auth()->user()->email) }}" 
-                                class="form-control @error('email', 'profile') is-invalid @enderror" required>
+                                class="form-control @error('email','profile') is-invalid @enderror" required>
+                            @error('email','profile')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100">Update Profile</button>
@@ -61,7 +72,6 @@
             </div>
         </div>
 
-        <!-- Change Password -->
         <!-- Change Password -->
         <div class="col-lg-6">
             <div class="card shadow-sm">
@@ -74,7 +84,7 @@
                     @if (session('password_success'))
                         <div class="alert alert-success">{{ session('password_success') }}</div>
                     @endif
-                    
+
                     <!-- Errors for password only -->
                     @if ($errors->getBag('password')->any())
                         <div class="alert alert-danger">
@@ -111,7 +121,10 @@
                         <div class="mb-3">
                             <label for="password_confirmation" class="form-label">Confirm New Password</label>
                             <input type="password" name="password_confirmation" id="password_confirmation" 
-                                class="form-control" required>
+                                class="form-control @error('password_confirmation','password') is-invalid @enderror" required>
+                            @error('password_confirmation','password')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <button type="submit" class="btn btn-warning w-100">Update Password</button>
@@ -119,7 +132,9 @@
                 </div>
             </div>
         </div>
+
     </div>
+
 </div>
 
 @section('Footer')
