@@ -46,3 +46,31 @@
 @section('Footer')
 @include('Footer')
 @endsection
+
+{{-- ✅ SweetAlert2 Script --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // ✅ Show success alert (from Fortify or your controller)
+    @if (session('status'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: "{{ session('status') }}",
+            confirmButtonColor: '#3085d6',
+        }).then(() => {
+            // optional redirect to login page after success
+            window.location.href = "{{ route('login') }}";
+        });
+    @endif
+
+    // ❌ Show error alert (validation or failure)
+    @if ($errors->any())
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            html: `{!! implode('<br>', $errors->all()) !!}`,
+            confirmButtonColor: '#d33',
+        });
+    @endif
+</script>
