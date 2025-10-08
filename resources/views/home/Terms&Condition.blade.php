@@ -8,7 +8,9 @@
   <div class="container my-5">
     <section class="terms-container">
       <h2 class="mb-4 text-center fw-bold">Terms and Conditions</h2>
-      <p class="intro text-center mb-5 text-muted">By booking with Dicimulacion Staycation, you agree to the following terms and conditions:</p>
+      <p class="intro text-center mb-5 text-muted">
+        By booking with Dicimulacion Staycation, you agree to the following terms and conditions:
+      </p>
 
       <div class="row g-4">
         <!-- Booking & Payment -->
@@ -16,8 +18,14 @@
           <div class="card shadow-sm h-100">
             <div class="card-body">
               <h5 class="card-title fw-semibold">1. Booking & Payment</h5>
-              <p class="card-text">All bookings must be confirmed with accurate guest details. Payments must be settled before the check-in date unless otherwise agreed.</p>
-              <p class="card-text"><strong>Note:</strong> If your booking is <strong>approved</strong>, you are required to pay within <strong>24 hours</strong>. Failure to do so will result in your reservation being <strong>automatically cancelled</strong>.</p>
+              <p class="card-text">
+                Bookings are only confirmed once payment has been made and verified by Dicimulacion Staycation. 
+                Guests are required to complete their payment immediately after submitting the booking form.
+              </p>
+              <p class="card-text">
+                <strong>Note:</strong> Unpaid bookings will not be considered valid and will not reserve your chosen date. 
+                Please upload your proof of payment through the booking page or send it directly to the admin for verification.
+              </p>
             </div>
           </div>
         </div>
@@ -27,8 +35,14 @@
           <div class="card shadow-sm h-100">
             <div class="card-body">
               <h5 class="card-title fw-semibold">2. Cancellation</h5>
-              <p class="card-text">Cancellations made at least 48 hours before the check-in date will be eligible for a refund. Late cancellations may be subject to fees.</p>
-              <p class="card-text"><strong>Note:</strong> Guests can only cancel their reservation if the booking status is still Pending. Once approved, cancellations are no longer possible by the guest.</p>
+              <p class="card-text">
+                Guests may request rescheduling at least 14 days before the check-in date. 
+                Cancellations are not allowed once payment has been verified.
+              </p>
+              <p class="card-text">
+                <strong>Note:</strong> In case of emergencies or unavoidable events, please contact the admin directly 
+                for possible rescheduling assistance.
+              </p>
             </div>
           </div>
         </div>
@@ -38,7 +52,15 @@
           <div class="card shadow-sm h-100">
             <div class="card-body">
               <h5 class="card-title fw-semibold">3. Guest Responsibilities</h5>
-              <p class="card-text">Guests are expected to respect the property, neighbors, and house rules. Any damages caused during the stay may result in additional charges.</p>
+              <p class="card-text">
+                Guests are expected to respect the property, neighbors, and house rules. 
+                Any damages caused during the stay may result in additional charges.
+              </p>
+              <p class="card-text">
+                <strong>Additional Guests:</strong> The maximum standard occupancy per booking is six (6) guests. 
+                An additional charge of <strong>₱500 per extra person</strong> will be applied for groups exceeding six (6) guests. 
+                This ensures proper accommodation and maintenance of facilities for all guests.
+              </p>
             </div>
           </div>
         </div>
@@ -48,7 +70,10 @@
           <div class="card shadow-sm h-100">
             <div class="card-body">
               <h5 class="card-title fw-semibold">4. Liability</h5>
-              <p class="card-text">The management is not responsible for lost or stolen belongings. Guests are encouraged to secure their valuables.</p>
+              <p class="card-text">
+                Dicimulacion Staycation is not responsible for lost or stolen belongings. 
+                Guests are advised to secure their valuables at all times.
+              </p>
             </div>
           </div>
         </div>
@@ -58,7 +83,10 @@
           <div class="card shadow-sm h-100">
             <div class="card-body">
               <h5 class="card-title fw-semibold">5. Amendments</h5>
-              <p class="card-text">Dicimulacion Staycation reserves the right to update these terms and conditions at any time.</p>
+              <p class="card-text">
+                Dicimulacion Staycation reserves the right to update these terms and conditions 
+                without prior notice. Please review them before confirming your booking.
+              </p>
             </div>
           </div>
         </div>
