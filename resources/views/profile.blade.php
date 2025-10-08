@@ -1,4 +1,3 @@
-```blade
 @extends('layouts.default')
 
 @section('Header')
@@ -20,10 +19,10 @@
                     @if (session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
-                    @if($errors->profile->any())
+                    @if ($errors->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">
-                                @foreach($errors->profile->all() as $error)
+                                @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
@@ -70,7 +69,7 @@
                     @if (session('password_success'))
                         <div class="alert alert-success">{{ session('password_success') }}</div>
                     @endif
-                        
+
                     <form method="POST" action="{{ route('profile.password.update') }}">
                         @csrf
                         @method('PUT')
