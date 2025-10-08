@@ -50,17 +50,35 @@
             $start = \Carbon\Carbon::parse($startDate);
             $end = \Carbon\Carbon::parse($endDate);
             $nights = $end->diffInDays($start);
+
+            // Base room price calculation
             $totalPrice = $staycation->house_price * $nights;
+
+            // ✅ Add ₱500 per guest beyond 6
+            $extraGuests = max(0, $guest_number - 6);
+            $extraFee = $extraGuests * 500;
+            $totalPrice += $extraFee;
+
             $formattedStart = $start->format('M d, Y');
             $formattedEnd = $end->format('M d, Y');
         @endphp
+
 
         <div class="booking-info mb-4">
             <p><strong>Staycation:</strong> {{ $staycation->house_name }}</p>
             <p><strong>Guests:</strong> {{ $guest_number }}</p>
             <p><strong>Stay Dates:</strong> {{ $formattedStart }} - {{ $formattedEnd }} ({{ $nights }} night{{ $nights>1 ? 's' : '' }})</p>
             <hr>
-            <p class="total-amount">Total Price: ₱{{ number_format($totalPrice, 2) }}</p>
+            @if($extraGuests > 0)
+                <p class="total-amount">
+                    Total Price: ₱{{ number_format($totalPrice, 2) }}
+                    <br>
+                    <small class="text-muted">(Includes ₱{{ number_format($extraFee, 2) }} extra for {{ $extraGuests }} additional guest{{ $extraGuests > 1 ? 's' : '' }})</small>
+                </p>
+            @else
+                <p class="total-amount">Total Price: ₱{{ number_format($totalPrice, 2) }}</p>
+            @endif
+
         </div>
 
         <form action="{{ route('booking.submit', $staycation->id) }}" method="POST" enctype="multipart/form-data">
