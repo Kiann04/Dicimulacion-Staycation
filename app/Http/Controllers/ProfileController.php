@@ -10,32 +10,21 @@ use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
-    /**
-     * Show profile page
-     */
     public function edit()
     {
         return view('profile'); // your Blade file
     }
 
-    /**
-     * Update user profile
-     */
     public function update(Request $request)
     {
         /** @var User $user */
         $user = Auth::user();
 
-        // Validate with named error bag 'profile'
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png,gif,webp', 'max:1024'],
-        ], [
-            'email.unique' => 'This email is already taken.',
-            'photo.mimes' => 'Photo must be an image (jpg, jpeg, png, gif, webp).',
-            'photo.max' => 'Photo must not exceed 1MB.',
-        ], [], 'profile'); // <-- named error bag
+        ]);
 
         // Handle photo upload
         if ($request->hasFile('photo')) {
@@ -47,55 +36,60 @@ class ProfileController extends Controller
         $user->email = $request->email;
         $user->save();
 
-        return redirect()->back()->with('profile_success', 'Profile updated successfully!');
+        return redirect()->back()->with('success', 'Profile updated successfully!');
     }
 
     /**
-     * Update user password
-     */
-    public function updatePassword(Request $request)
-    {
-        // Validate with named error bag 'password'
-        $request->validate([
-            'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'confirmed', 'min:8'],
-        ], [
-            'current_password.current_password' => 'Current password is incorrect.',
-            'password.min' => 'New password must be at least 8 characters.',
-            'password.confirmed' => 'Password confirmation does not match.',
-        ], [], 'password'); // <-- named error bag "password"
-
-        // Update password
-        Auth::user()->update([
-            'password' => Hash::make($request->password),
-        ]);
-
-        return redirect()->back()->with('password_success', 'Password updated successfully!');
-    }
-
-    /**
-     * Save profile photo in public folder
+     * Save profile photo directly in public folder
+     *
+     * @param User $user
+     * @param \Illuminate\Http\UploadedFile $photo
      */
     private function saveProfilePhoto(User $user, $photo)
     {
+        // Use DOCUMENT_ROOT to point directly to public_html (Hostinger)
         $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/profile_photos';
 
+        // Ensure folder exists
         if (!file_exists($destination)) {
-            mkdir($destination, 0755, true);
+            if (!mkdir($destination, 0755, true)) {
+                abort(500, 'Failed to create folder for profile photos. Check permissions.');
+            }
         }
 
+        // Delete old photo if exists
         if ($user->photo && file_exists($_SERVER['DOCUMENT_ROOT'] . '/' . $user->photo)) {
             unlink($_SERVER['DOCUMENT_ROOT'] . '/' . $user->photo);
         }
 
+        // Sanitize filename (remove spaces & special chars)
         $originalName = pathinfo($photo->getClientOriginalName(), PATHINFO_FILENAME);
         $extension = $photo->getClientOriginalExtension();
         $cleanName = preg_replace("/[^A-Za-z0-9_-]/", '_', $originalName);
         $filename = time() . '_' . $cleanName . '.' . $extension;
 
-        $photo->move($destination, $filename);
+        // Move file to uploads folder
+        if (!$photo->move($destination, $filename)) {
+            abort(500, 'Failed to save the uploaded photo. Check folder permissions.');
+        }
 
+        // Save relative path in DB (so asset() works in Blade)
         $user->photo = 'uploads/profile_photos/' . $filename;
         $user->save();
     }
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
+
+        $user = Auth::user();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return back()->with('password_success', 'Password updated successfully.');
+    }
+  
+
 }
