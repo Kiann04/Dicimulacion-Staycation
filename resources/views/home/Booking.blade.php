@@ -166,28 +166,35 @@ document.addEventListener("DOMContentLoaded", function () {
     const pricePerNight = parseFloat(document.getElementById("price-per-night").innerText);
     const form = document.querySelector("form");
     const guestInput = document.querySelector('input[name="guest_number"]');
+
     // Minimum dates
     const today = new Date().toISOString().split("T")[0];
     if (startInput) startInput.min = today;
     if (endInput) endInput.min = today;
 
-    function calculatePrice(){
-        if(startInput.value && endInput.value){
+    function calculatePrice() {
+        if (startInput.value && endInput.value) {
             const start = new Date(startInput.value);
             const end = new Date(endInput.value);
-            if(end > start){
-                const nights = Math.floor((end - start)/(1000*60*60*24));
+
+            if (end > start) {
+                const nights = Math.floor((end - start) / (1000 * 60 * 60 * 24));
                 let total = nights * pricePerNight;
 
-                // ✅ ADDED — Get number of guests and add ₱500 if more than 6
+                // ✅ UPDATED LOGIC — ₱500 per guest beyond 6
                 const guests = parseInt(guestInput.value) || 0;
                 if (guests > 6) {
-                    total += 500;
+                    const extraGuests = guests - 6;
+                    const extraFee = extraGuests * 500;
+                    total += extraFee;
+
+                    // 🟢 Include fee details in text
+                    totalPriceElem.textContent = `Total for ${nights} night${nights > 1 ? 's' : ''} (₱${extraFee.toLocaleString()} extra for ${extraGuests} additional guest${extraGuests > 1 ? 's' : ''}): ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                } else {
+                    totalPriceElem.textContent = `Total for ${nights} night${nights > 1 ? 's' : ''}: ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                 }
 
-                // 🟢 MODIFIED — show message when extra fee is applied
                 priceSummary.style.display = "block";
-                totalPriceElem.textContent = `Total for ${nights} night${nights>1?'s':''}${guests > 6 ? ' (₱500 extra for additional guests)' : ''}: ₱${total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
             } else {
                 priceSummary.style.display = "none";
             }
@@ -196,12 +203,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    startInput.addEventListener("change", function(){
+    // Date changes
+    startInput.addEventListener("change", function () {
         const arrival = new Date(this.value);
         const minDeparture = new Date(arrival);
         minDeparture.setDate(arrival.getDate() + 1);
         endInput.min = minDeparture.toISOString().split("T")[0];
-        if(endInput.value && new Date(endInput.value) < minDeparture){
+
+        if (endInput.value && new Date(endInput.value) < minDeparture) {
             endInput.value = endInput.min;
         }
         calculatePrice();
@@ -209,52 +218,50 @@ document.addEventListener("DOMContentLoaded", function () {
 
     endInput.addEventListener("change", calculatePrice);
     guestInput.addEventListener("input", calculatePrice);
-    
 
-    if(form){
-        form.addEventListener("submit", function(e){
+    // Validate dates on submit
+    if (form) {
+        form.addEventListener("submit", function (e) {
             const start = new Date(startInput.value);
             const end = new Date(endInput.value);
-            if(end <= start){
+            if (end <= start) {
                 e.preventDefault();
                 alert("Departure date must be at least one day after arrival date.");
             }
         });
     }
 
-    // FullCalendar - booked nights (exclude checkout)
+    // FullCalendar (unchanged)
     const staycationId = "{{ $staycation->id }}";
-    if(document.getElementById("calendar")){
+    if (document.getElementById("calendar")) {
         fetch(`/events/${staycationId}`)
-        .then(res => res.json())
-        .then(events => {
-            const bookedEvents = events.map(event => {
-                const start = event.start;
-                const end = new Date(event.end);
-                end.setDate(end.getDate() - 1); // exclude checkout
-                return {
-                    title: "Booked",
-                    start: start,
-                    end: end.toISOString().split("T")[0],
-                    allDay: true,
-                    display: 'background',
-                    backgroundColor: '#f56565',
-                    borderColor: '#f56565'
-                };
+            .then(res => res.json())
+            .then(events => {
+                const bookedEvents = events.map(event => {
+                    const start = event.start;
+                    const end = new Date(event.end);
+                    end.setDate(end.getDate() - 1);
+                    return {
+                        title: "Booked",
+                        start: start,
+                        end: end.toISOString().split("T")[0],
+                        allDay: true,
+                        display: "background",
+                        backgroundColor: "#f56565",
+                        borderColor: "#f56565",
+                    };
+                });
+
+                const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
+                    initialView: "dayGridMonth",
+                    height: "auto",
+                    aspectRatio: 1.4,
+                    headerToolbar: { left: "prev,next today", center: "title", right: "" },
+                    events: bookedEvents,
+                });
+                calendar.render();
             });
-            const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
-                initialView: "dayGridMonth",
-                height: "auto",
-                aspectRatio: 1.4,
-                headerToolbar: { left:'prev,next today', center:'title', right:'' },
-                events: bookedEvents
-            });
-            calendar.render();
-        });
     }
 });
 </script>
 
-@section('Footer')
-    @include('Footer')
-@endsection
