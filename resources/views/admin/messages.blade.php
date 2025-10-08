@@ -13,7 +13,7 @@
     <p class="subtext">Manage customer inquiries and booking payment proofs</p>
 
     @php
-        // Determine which tab is active
+        // Default tab set to 'payments'
         $activeTab = session('tab') ?? 'payments';
     @endphp
 
@@ -33,12 +33,17 @@
         </li>
     </ul>
 
+    <!-- Search Bar -->
+    <div class="mt-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search..." onkeyup="filterTables()">
+    </div>
+
     <!-- Tab Content -->
     <div class="tab-content mt-3" id="messagesTabsContent">
         <!-- Customer Inquiries -->
         <div class="tab-pane fade {{ $activeTab == 'inquiries' ? 'show active' : '' }}" id="inquiries" role="tabpanel">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped" id="inquiriesTable">
                     <thead class="table-light">
                         <tr>
                             <th>Message ID</th>
@@ -69,9 +74,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr>
-                            <td colspan="5">No messages found</td>
-                        </tr>
+                        <tr><td colspan="5">No messages found</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -81,7 +84,7 @@
         <!-- Booking Payment Proofs -->
         <div class="tab-pane fade {{ $activeTab == 'payments' ? 'show active' : '' }}" id="payments" role="tabpanel">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped" id="paymentsTable">
                     <thead class="table-light">
                         <tr>
                             <th>Booking ID</th>
@@ -115,9 +118,7 @@
                             <td>{{ $booking->created_at->format('Y-m-d') }}</td>
                         </tr>
                         @empty
-                        <tr>
-                            <td colspan="9" class="text-center">No payment proofs found</td>
-                        </tr>
+                        <tr><td colspan="9" class="text-center">No payment proofs found</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -126,11 +127,13 @@
     </div>
 </div>
 
-<!-- Bootstrap JS (required for tabs) -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Keep Active Tab -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Save active tab in localStorage
+    // Save active tab
     const triggerTabList = document.querySelectorAll('#messagesTabs button[data-bs-toggle="tab"]');
     triggerTabList.forEach(tabEl => {
         tabEl.addEventListener('shown.bs.tab', function (event) {
@@ -138,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Load last active tab on page reload
+    // Load last active tab
     const activeTabId = localStorage.getItem('activeTab');
     if (activeTabId) {
         const tabToShow = document.getElementById(activeTabId);
@@ -146,6 +149,18 @@ document.addEventListener('DOMContentLoaded', function () {
         tab.show();
     }
 });
+
+// Filter tables by input
+function filterTables() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const activeTab = document.querySelector('.tab-pane.show.active');
+    const rows = activeTab.querySelectorAll('tbody tr');
+
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(input) ? '' : 'none';
+    });
+}
 </script>
 
 </div>
