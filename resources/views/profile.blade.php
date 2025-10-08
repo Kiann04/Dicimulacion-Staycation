@@ -17,8 +17,8 @@
                     <h5 class="mb-0">Update Profile</h5>
                 </div>
                 <div class="card-body">
-                    @if (session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @if (session('profile_success'))
+                        <div class="alert alert-success">{{ session('profie_success') }}</div>
                     @endif
                     @if($errors->profile->any())
                         <div class="alert alert-danger">
