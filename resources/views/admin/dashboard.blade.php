@@ -50,11 +50,15 @@
                         {{-- Payment Dropdown --}}
                         <td>
                             <select class="payment-select" data-id="{{ $booking->id }}">
-                                <option value="unpaid" {{ $booking->payment_status=='unpaid'?'selected':'' }}>Unpaid</option>
-                                <option value="half_paid" {{ $booking->payment_status=='half_paid'?'selected':'' }}>Half Paid</option>
-                                <option value="paid" {{ $booking->payment_status=='paid'?'selected':'' }}>Paid</option>
+                                <option value="pending" 
+                                    {{ $booking->payment_status == 'pending' || !$booking->payment_status ? 'selected' : '' }}>
+                                    Pending
+                                </option>
+                                <option value="half_paid" {{ $booking->payment_status == 'half_paid' ? 'selected' : '' }}>Half Paid</option>
+                                <option value="paid" {{ $booking->payment_status == 'paid' ? 'selected' : '' }}>Paid</option>
                             </select>
                         </td>
+
 
                         {{-- Status --}}
                         <td>
