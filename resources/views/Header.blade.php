@@ -85,5 +85,24 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get all nav links inside the collapsed menu
+        const navLinks = document.querySelectorAll('.navbar-collapse .nav-link');
+
+        const navbarCollapse = document.getElementById('navbarNavDropdown');
+
+        navLinks.forEach(function(link) {
+            link.addEventListener('click', function () {
+                // Only collapse if the menu is currently shown
+                if (navbarCollapse.classList.contains('show')) {
+                    const bsCollapse = new bootstrap.Collapse(navbarCollapse, { toggle: true });
+                    bsCollapse.hide();
+                }
+            });
+        });
+    });
+    </script>
+
 </body>
 </html>
