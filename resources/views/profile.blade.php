@@ -66,26 +66,26 @@
                     <h5 class="mb-0">Change Password</h5>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('password.update') }}">
+                    <form method="POST" action="{{ route('profile.password.update') }}">
                         @csrf
                         @method('PUT')
 
                         <div class="mb-3">
                             <label for="current_password" class="form-label">Current Password</label>
                             <input type="password" name="current_password" id="current_password" 
-                                   class="form-control" required>
+                                class="form-control" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="new_password" class="form-label">New Password</label>
                             <input type="password" name="password" id="new_password" 
-                                   class="form-control" required>
+                                class="form-control" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="password_confirmation" class="form-label">Confirm New Password</label>
                             <input type="password" name="password_confirmation" id="password_confirmation" 
-                                   class="form-control" required>
+                                class="form-control" required>
                         </div>
 
                         <button type="submit" class="btn btn-warning w-100">Update Password</button>
