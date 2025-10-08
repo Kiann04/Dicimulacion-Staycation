@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const totalPriceElem = document.getElementById("total-price");
     const pricePerNight = parseFloat(document.getElementById("price-per-night").innerText);
     const form = document.querySelector("form");
-
+    const guestInput = document.querySelector('input[name="guest_number"]');
     // Minimum dates
     const today = new Date().toISOString().split("T")[0];
     if (startInput) startInput.min = today;
@@ -177,9 +177,17 @@ document.addEventListener("DOMContentLoaded", function () {
             const end = new Date(endInput.value);
             if(end > start){
                 const nights = Math.floor((end - start)/(1000*60*60*24));
-                const total = nights * pricePerNight;
+                let total = nights * pricePerNight;
+
+                // ✅ ADDED — Get number of guests and add ₱500 if more than 6
+                const guests = parseInt(guestInput.value) || 0;
+                if (guests > 6) {
+                    total += 500;
+                }
+
+                // 🟢 MODIFIED — show message when extra fee is applied
                 priceSummary.style.display = "block";
-                totalPriceElem.textContent = `Total for ${nights} night${nights>1?'s':''}: ₱${total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+                totalPriceElem.textContent = `Total for ${nights} night${nights>1?'s':''}${guests > 6 ? ' (₱500 extra for additional guests)' : ''}: ₱${total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
             } else {
                 priceSummary.style.display = "none";
             }
@@ -200,6 +208,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     endInput.addEventListener("change", calculatePrice);
+    guestInput.addEventListener("input", calculatePrice);
+    
 
     if(form){
         form.addEventListener("submit", function(e){
