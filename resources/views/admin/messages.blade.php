@@ -83,7 +83,7 @@
                         value="{{ request('search') }}">
                     <button class="btn btn-primary">Search</button>
                     @if(request('search'))
-                        <a href="{{ route('admin.messagesAndPayments', ['tab' => 'payments']) }}" class="btn btn-secondary ms-2">Clear</a>
+                        <a href="{{ route('admin.messages', ['tab' => 'payments']) }}" class="btn btn-secondary ms-2">Clear</a>
                     @endif
                 </form>
 
