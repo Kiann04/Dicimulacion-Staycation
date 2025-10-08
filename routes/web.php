@@ -200,7 +200,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     // Admin Messages & Payment Proofs
     Route::get('/messages-payments', [AdminController::class, 'messagesAndPayments'])
-     ->name('admin.messagesAndPayments');
+     ->name('admin.messages');
 
 
 });
