@@ -72,61 +72,66 @@
                 </table>
             </div>
         </div>
+            <!-- Booking Payment Proofs -->
+            <div class="tab-pane fade {{ $activeTab == 'payments' ? 'show active' : '' }}" id="payments" role="tabpanel">
 
-        <!-- Booking Payment Proofs -->
-        <div class="tab-pane fade {{ $activeTab == 'payments' ? 'show active' : '' }}" id="payments" role="tabpanel">
-            
-            <!-- 🔍 Search Form -->
-            <form action="{{ route('admin.messages') }}" method="GET" class="mb-3 d-flex" role="search">
-                <input type="hidden" name="tab" value="payments">
-                <input type="text" name="search" class="form-control me-2" placeholder="Search by Booking ID, Name, or Transaction No." value="{{ request('search') }}">
-                <button class="btn btn-primary">Search</button>
-                @if(request('search'))
-                    <a href="{{ route('admin.messages', ['tab' => 'payments']) }}" class="btn btn-secondary ms-2">Clear</a>
-                @endif
-            </form>
+                <!-- 🔍 Search Form -->
+                <form action="{{ route('admin.messagesAndPayments') }}" method="GET" class="mb-3 d-flex" role="search">
+                    <input type="hidden" name="tab" value="payments">
+                    <input type="text" name="search" class="form-control me-2" 
+                        placeholder="Search by Booking ID, Name, or Transaction No."
+                        value="{{ request('search') }}">
+                    <button class="btn btn-primary">Search</button>
+                    @if(request('search'))
+                        <a href="{{ route('admin.messagesAndPayments', ['tab' => 'payments']) }}" class="btn btn-secondary ms-2">Clear</a>
+                    @endif
+                </form>
 
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Booking ID</th>
-                            <th>User</th>
-                            <th>Staycation</th>
-                            <th>Transaction No.</th>
-                            <th>Amount Paid</th>
-                            <th>Payment Status</th>
-                            <th>Message to Admin</th>
-                            <th>Payment Proof</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($bookingProofs as $booking)
-                        <tr>
-                            <td>#{{ $booking->id }}</td>
-                            <td>{{ $booking->user->name ?? 'N/A' }}</td>
-                            <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
-                            <td>{{ $booking->transaction_number ?? 'N/A' }}</td>
-                            <td>₱{{ number_format($booking->amount_paid, 2) }}</td>
-                            <td>{{ ucfirst($booking->payment_status) }}</td>
-                            <td>{{ $booking->message_to_admin ?? '—' }}</td>
-                            <td>
-                                @if($booking->payment_proof)
-                                    <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" target="_blank" class="btn btn-sm btn-outline-info">View Proof</a>
-                                @else
-                                    <span class="text-muted">No proof</span>
-                                @endif
-                            </td>
-                            <td>{{ $booking->created_at->format('Y-m-d') }}</td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="9" class="text-center">No payment proofs found</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>User</th>
+                                <th>Staycation</th>
+                                <th>Transaction No.</th>
+                                <th>Amount Paid</th>
+                                <th>Payment Status</th>
+                                <th>Message to Admin</th>
+                                <th>Payment Proof</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($bookingProofs as $booking)
+                            <tr>
+                                <td>#{{ $booking->id }}</td>
+                                <td>{{ $booking->user->name ?? 'N/A' }}</td>
+                                <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
+                                <td>{{ $booking->transaction_number ?? 'N/A' }}</td>
+                                <td>₱{{ number_format($booking->amount_paid, 2) }}</td>
+                                <td>{{ ucfirst($booking->payment_status) }}</td>
+                                <td>{{ $booking->message_to_admin ?? '—' }}</td>
+                                <td>
+                                    @if($booking->payment_proof)
+                                        <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" target="_blank">View Proof</a>
+                                    @else
+                                        <span class="text-muted">No proof</span>
+                                    @endif
+                                </td>
+                                <td>{{ $booking->created_at->format('Y-m-d') }}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="9" class="text-center">No payment proofs found</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+
     </div>
 </div>
 
