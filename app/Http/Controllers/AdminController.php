@@ -404,13 +404,33 @@ class AdminController extends Controller
 
         return view('admin.messages_and_proofs', compact('inquiries', 'bookingProofs'));
     }
-    public function messagesAndPayments()
+    public function messagesAndPayments(Request $request)
     {
+        // Load all inquiries
         $inquiries = Inquiry::latest()->get();
-        $bookingProofs = Booking::whereNotNull('payment_proof')->latest()->get();
 
-        return view('admin.message', compact('inquiries', 'bookingProofs'));
+        // Handle search input
+        $search = $request->input('search');
+
+        // Load booking proofs with optional search
+        $bookingProofs = Booking::with(['user', 'staycation'])
+            ->whereNotNull('payment_proof')
+            ->when($search, function ($query, $search) {
+                $query->where('id', 'like', "%{$search}%")
+                    ->orWhere('transaction_number', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            })
+            ->latest()
+            ->get();
+
+        // Keep track of which tab is open (default = inquiries)
+        $activeTab = $request->input('tab', 'inquiries');
+
+        return view('admin.message', compact('inquiries', 'bookingProofs', 'activeTab'));
     }
+
 }
 
 
