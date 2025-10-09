@@ -36,24 +36,32 @@
         <h3 class="fw-bold mb-4 text-center">Confirm Your Booking</h3>
 
         @php
-            use Carbon\Carbon;
+        use Carbon\Carbon;
 
-            $start = Carbon::parse($startDate);
-            $end = Carbon::parse($endDate);
-            $nights = $end->lessThanOrEqualTo($start) ? 1 : $start->diffInDays($end);
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
+        $nights = $end->diffInDays($start) ?: 1;
 
-            // Base total price including extra guests
-            $baseTotal = $staycation->house_price * $nights;
-            $extraGuests = max(0, $guest_number - 6);
-            $extraFee = $extraGuests * 500;
-            $baseTotal += $extraFee;
+        // ✅ Base price (before extra guests)
+        $base_price = $staycation->house_price * $nights;
 
-            // VAT & Base Price
-            $vatAmount = round($baseTotal - ($baseTotal / 1.12), 2);
-            $basePrice = round($baseTotal - $vatAmount, 2);
+        // ✅ Extra guests
+        $extraGuests = max(0, $guest_number - 6);
+        $extraFee = $extraGuests * 500;
 
-            $formattedStart = $start->format('M d, Y');
-            $formattedEnd = $end->format('M d, Y');
+        // ✅ Total price (already includes extra guests)
+        $total_price = $base_price + $extraFee;
+
+        // ✅ VAT included in total price (12%)
+        $vat_amount = round($total_price - ($total_price / 1.12), 2);
+
+        // ✅ Amount paid based on selected payment type (half/full)
+        $amount_paid = request()->old('payment_type') === 'half'
+            ? round($total_price / 2, 2)
+            : $total_price;
+
+        // ✅ Remaining balance
+        $remaining_balance = $total_price - $amount_paid;
         @endphp
 
         <div class="booking-info mb-4">
@@ -79,6 +87,12 @@
             <input type="hidden" name="endDate" value="{{ $endDate }}">
             <input type="hidden" name="phone" value="{{ $phone ?? Auth::user()->phone ?? old('phone') }}">
             <input type="hidden" name="totalPrice" value="{{ $baseTotal }}">
+
+            <input type="hidden" name="base_price" value="{{ $base_price }}">
+            <input type="hidden" name="total_price" value="{{ $total_price }}">
+            <input type="hidden" name="vat_amount" value="{{ $vat_amount }}">
+            <input type="hidden" name="amount_paid" value="{{ $amount_paid }}">
+            <input type="hidden" name="remaining_balance" value="{{ $remaining_balance }}">
 
             <!-- Payment Option -->
             <div class="mb-3">
