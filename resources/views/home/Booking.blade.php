@@ -131,12 +131,12 @@
                         <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
                             <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
                                 <div class="icon mb-4 position-relative">
+                                    {{-- Icon: Mountain for Scenic Views --}}
                                     <i class="fas fa-mountain fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
                                 </div>
                                 <h5 class="card-title fw-bold text-dark mb-3 fs-5">Scenic Views</h5>
                                 <p class="card-text text-muted mb-0">City Skyline, Lake, and Mountain</p>
                             </div>
-                            <div class="service-overlay position-absolute top-0 left-0 w-100 h-100 d-none"></div>
                         </div>
                     </div>
                     
@@ -145,12 +145,12 @@
                         <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
                             <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
                                 <div class="icon mb-4 position-relative">
+                                    {{-- Icon: Utensils for Kitchen --}}
                                     <i class="fas fa-utensils fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
                                 </div>
                                 <h5 class="card-title fw-bold text-dark mb-3 fs-5">Fully-equipped Kitchen</h5>
                                 <p class="card-text text-muted mb-0">Dining table, Rice cooker, Refrigerator, Kettle, Stove, and Utensils</p>
                             </div>
-                            <div class="service-overlay position-absolute top-0 left-0 w-100 h-100 d-none"></div>
                         </div>
                     </div>
                     
@@ -159,12 +159,12 @@
                         <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
                             <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
                                 <div class="icon mb-4 position-relative">
+                                    {{-- Icon: Soap for Essentials --}}
                                     <i class="fas fa-soap fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
                                 </div>
                                 <h5 class="card-title fw-bold text-dark mb-3 fs-5">Essentials</h5>
                                 <p class="card-text text-muted mb-0">Towels, Bed sheets, Extra pillows, Blankets, Cleaning products, Body soap, Shampoo, and Toilet paper</p>
                             </div>
-                            <div class="service-overlay position-absolute top-0 left-0 w-100 h-100 d-none"></div>
                         </div>
                     </div>
                     
@@ -173,12 +173,12 @@
                         <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
                             <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
                                 <div class="icon mb-4 position-relative">
+                                    {{-- Icon: TV for Entertainment --}}
                                     <i class="fas fa-tv fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
                                 </div>
                                 <h5 class="card-title fw-bold text-dark mb-3 fs-5">In-room Entertainment</h5>
                                 <p class="card-text text-muted mb-0">TV, Books, Board games</p>
                             </div>
-                            <div class="service-overlay position-absolute top-0 left-0 w-100 h-100 d-none"></div>
                         </div>
                     </div>
                     
@@ -187,12 +187,12 @@
                         <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
                             <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
                                 <div class="icon mb-4 position-relative">
+                                    {{-- Icon: Tree for Outdoor --}}
                                     <i class="fas fa-tree fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
                                 </div>
                                 <h5 class="card-title fw-bold text-dark mb-3 fs-5">Outdoor Amenities</h5>
                                 <p class="card-text text-muted mb-0">Patio, BBQ Grill, Dining area</p>
                             </div>
-                            <div class="service-overlay position-absolute top-0 left-0 w-100 h-100 d-none"></div>
                         </div>
                     </div>
                     
@@ -201,12 +201,12 @@
                         <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
                             <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
                                 <div class="icon mb-4 position-relative">
+                                    {{-- Icon: Swimming Pool --}}
                                     <i class="fas fa-swimming-pool fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
                                 </div>
                                 <h5 class="card-title fw-bold text-dark mb-3 fs-5">Pool Access</h5>
                                 <p class="card-text text-muted mb-0">Enjoy refreshing swims anytime</p>
                             </div>
-                            <div class="service-overlay position-absolute top-0 left-0 w-100 h-100 d-none"></div>
                         </div>
                     </div>
                     
@@ -215,12 +215,12 @@
                         <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
                             <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
                                 <div class="icon mb-4 position-relative">
+                                    {{-- Icon: Parking --}}
                                     <i class="fas fa-parking fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
                                 </div>
                                 <h5 class="card-title fw-bold text-dark mb-3 fs-5">Free Parking</h5>
                                 <p class="card-text text-muted mb-0">On-site and street</p>
                             </div>
-                            <div class="service-overlay position-absolute top-0 left-0 w-100 h-100 d-none"></div>
                         </div>
                     </div>
                     
@@ -229,12 +229,12 @@
                         <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
                             <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
                                 <div class="icon mb-4 position-relative">
+                                    {{-- Icon: Paw for Pets --}}
                                     <i class="fas fa-paw fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
                                 </div>
                                 <h5 class="card-title fw-bold text-dark mb-3 fs-5">Pet-friendly Accommodations</h5>
                                 <p class="card-text text-muted mb-0">Bring your furry friends along</p>
                             </div>
-                            <div class="service-overlay position-absolute top-0 left-0 w-100 h-100 d-none"></div>
                         </div>
                     </div>
                     
@@ -243,12 +243,12 @@
                         <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
                             <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
                                 <div class="icon mb-4 position-relative">
+                                    {{-- Icon: Coffee for Breakfast --}}
                                     <i class="fas fa-coffee fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
                                 </div>
                                 <h5 class="card-title fw-bold text-dark mb-3 fs-5">Breakfast Provided</h5>
                                 <p class="card-text text-muted mb-0">Start your day with a complimentary meal</p>
                             </div>
-                            <div class="service-overlay position-absolute top-0 left-0 w-100 h-100 d-none"></div>
                         </div>
                     </div>
                     
@@ -257,12 +257,12 @@
                         <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
                             <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
                                 <div class="icon mb-4 position-relative">
+                                    {{-- Icon: Calendar Check for Long-term --}}
                                     <i class="fas fa-calendar-check fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
                                 </div>
                                 <h5 class="card-title fw-bold text-dark mb-3 fs-5">Long-term Stay Allowed</h5>
                                 <p class="card-text text-muted mb-0">(28+ days)</p>
                             </div>
-                            <div class="service-overlay position-absolute top-0 left-0 w-100 h-100 d-none"></div>
                         </div>
                     </div>
                     
@@ -271,12 +271,12 @@
                         <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
                             <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
                                 <div class="icon mb-4 position-relative">
+                                    {{-- Icon: Shield for Safety --}}
                                     <i class="fas fa-shield-alt fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
                                 </div>
                                 <h5 class="card-title fw-bold text-dark mb-3 fs-5">Home Safety</h5>
                                 <p class="card-text text-muted mb-0">Fire extinguisher</p>
                             </div>
-                            <div class="service-overlay position-absolute top-0 left-0 w-100 h-100 d-none"></div>
                         </div>
                     </div>
                 </div>
@@ -286,7 +286,7 @@
 </section>
 
 <style>
-/* Modern Hover Effects for Service Cards */
+/* Modern Hover Effects for Service Cards (same as before) */
 .service-card {
     cursor: pointer;
 }
