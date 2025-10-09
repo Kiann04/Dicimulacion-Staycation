@@ -18,7 +18,7 @@
         <thead>
           <tr>
             <th>ID</th><th>Staycation</th><th>Customer</th><th>Phone</th>
-            <th>Start</th><th>End</th><th>Payment</th><th>Status</th>
+            <th>Start</th><th>End</th><th>Payment</th><th>Status</th> <th>Proof of Payment</th>
           </tr>
         </thead>
         <tbody>
@@ -32,6 +32,13 @@
               <td>{{ $booking->end_date }}</td>
               <td><span class="status paid">Paid</span></td>
               <td><span class="status {{ $booking->status }}">{{ ucfirst($booking->status) }}</span></td>
+              <td>
+                                @if($booking->payment_proof)
+                                    <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" target="_blank">View Proof</a>
+                                @else
+                                    <span class="text-muted">No proof</span>
+                                @endif
+                            </td>
             </tr>
           @empty
             <tr><td colspan="8">No fully paid bookings found.</td></tr>
