@@ -51,6 +51,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::view('/terms', 'home.Terms&Condition')->name('terms');
 
+
 // =========================
 // Auth (User)
 // =========================
@@ -80,9 +81,7 @@ Route::post('/admin/login', [LoginController::class, 'adminStaffLogin'])->name('
 Route::get('/booking/{id}', [BookingHistoryController::class, 'bookingForm'])->name('booking.form');
 
 // Step 1: Preview booking (POST from Reserve button)
-Route::match(['get', 'post'], '/booking/{id}/preview', [BookingHistoryController::class, 'previewBooking'])
-    ->name('booking.preview');
-
+Route::post('/booking/{id}/preview', [BookingHistoryController::class, 'previewBooking'])->name('booking.preview');
 
 // Step 2: Submit booking request with payment proof (POST)
 Route::post('/booking/{id}/submit', [BookingHistoryController::class, 'submitRequest'])->name('booking.submit');
