@@ -138,7 +138,7 @@
 
             {{-- Message to Admin --}}
             <div class="mb-3">
-                <label class="form-label fw-semibold">Message to Admin <span class="text-muted">(Optional)</span></label>
+                <label class="form-label fw-semibold">Message to BAdmin <span class="text-muted">(Optional)</span></label>
                 <textarea name="message" class="form-control" rows="3" placeholder="Any special notes..."></textarea>
             </div>
 
