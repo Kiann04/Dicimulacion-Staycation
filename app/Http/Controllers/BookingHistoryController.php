@@ -65,93 +65,96 @@ class BookingHistoryController extends Controller
         ])->with('success', '✅ Dates are available! Please confirm your booking.');
     }
     // 📄 Step 2: Submit booking request
-    public function submitRequest(Request $request, $staycation_id)
-    {   
-        // Validate request
-        $request->validate([
-            'guest_number' => 'required|integer|min:1',
-            'startDate' => 'required|date',
-            'endDate' => 'required|date|after_or_equal:startDate',
-            'payment_type' => 'required|in:half,full',
-            'payment_method' => 'required|in:gcash,bpi',
-            'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'phone' => 'required|string|max:20',
-            'transaction_number' => 'nullable|string|max:255',
-            'message' => 'nullable|string|max:500',
-        ]);
+  public function submitRequest(Request $request, $staycation_id)
+{
+    // Validate the request
+    $request->validate([
+        'guest_number' => 'required|integer|min:1',
+        'startDate' => 'required|date',
+        'endDate' => 'required|date|after_or_equal:startDate',
+        'payment_type' => 'required|in:half,full',
+        'payment_method' => 'required|in:gcash,bpi',
+        'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        'phone' => 'required|string|max:20',
+        'transaction_number' => 'nullable|string|max:255',
+        'message' => 'nullable|string|max:500',
+    ]);
 
-        $staycation = Staycation::findOrFail($staycation_id);
+    $staycation = Staycation::findOrFail($staycation_id);
 
-        // Parse dates
-        $start = Carbon::parse($request->startDate);
-        $end = Carbon::parse($request->endDate);
+    // Parse dates safely
+    $start = Carbon::parse($request->startDate);
+    $end = Carbon::parse($request->endDate);
 
-        $nights = $end->lessThanOrEqualTo($start) ? 1 : $start->diffInDays($end);
+    // Calculate nights (minimum 1)
+    $nights = $end->greaterThan($start) ? $start->diffInDays($end) : 1;
 
-        // Base total price
-        $baseTotal = $staycation->house_price * $nights;
-        $extraGuests = max(0, $request->guest_number - 6);
-        $extraFee = $extraGuests * 500;
-        $baseTotal += $extraFee;
+    // Base price (without extra guests)
+    $basePrice = $staycation->house_price * $nights;
 
-        // VAT calculation
-        $vatAmount = round($baseTotal - ($baseTotal / 1.12), 2);
-        $basePrice = round($baseTotal - $vatAmount, 2);
+    // Extra guests beyond 6
+    $extraGuests = max(0, $request->guest_number - 6);
+    $extraFee = $extraGuests * 500;
 
-        // Payment amount & status
-        if ($request->payment_type === 'half') {
-            $amountPaid = round($baseTotal / 2, 2);
-            $paymentStatus = 'half_paid';
-        } else {
-            $amountPaid = $baseTotal;
-            $paymentStatus = 'paid';
-        }
+    // Total price (includes extra guests and VAT)
+    $totalPriceWithoutVAT = $basePrice + $extraFee;
+    $vatAmount = round($totalPriceWithoutVAT * 0.12, 2); // 12% VAT
+    $totalPrice = $totalPriceWithoutVAT + $vatAmount;
 
-        // Upload proof
-        $proofPath = null;
-        if ($request->hasFile('payment_proof')) {
-            $proofFile = $request->file('payment_proof');
-            $proofName = time().'_'.$proofFile->getClientOriginalName();
-            $proofFile->move(public_path('payment_proofs'), $proofName);
-            $proofPath = 'payment_proofs/'.$proofName;
-        }
+    // Amount paid and remaining balance
+    $amountPaid = $request->payment_type === 'half' ? round($totalPrice / 2, 2) : $totalPrice;
+    $remainingBalance = $totalPrice - $amountPaid;
 
-        // Duplicate booking check
-        $duplicate = Booking::where('staycation_id', $staycation_id)
-            ->where('start_date', $start->format('Y-m-d'))
-            ->where('end_date', $end->format('Y-m-d'))
-            ->first();
-
-        if ($duplicate) {
-            return back()->with('error', 'This staycation is already booked for the selected dates.');
-        }
-
-        // Create booking
-        Booking::create([
-            'staycation_id' => $staycation_id,
-            'user_id' => Auth::id(),
-            'name' => Auth::user()->name,
-            'email' => Auth::user()->email,
-            'phone' => $request->phone,
-            'guest_number' => $request->guest_number,
-            'start_date' => $start->format('Y-m-d'),
-            'end_date' => $end->format('Y-m-d'),
-            'price_per_day' => $staycation->house_price,
-            'base_price' => $basePrice,
-            'vat_amount' => $vatAmount,
-            'total_price' => $baseTotal,
-            'amount_paid' => $amountPaid,
-            'payment_status' => $paymentStatus,
-            'payment_method' => $request->payment_method,
-            'payment_proof' => $proofPath,
-            'transaction_number' => $request->transaction_number ?? null,
-            'message_to_admin' => $request->message ?? null,
-            'status' => 'pending',
-        ]);
-
-        return redirect()->route('BookingHistory.index')
-            ->with('success', 'Your booking has been submitted! Please wait for admin confirmation.');
+    // Upload proof of payment
+    $proofPath = null;
+    if ($request->hasFile('payment_proof')) {
+        $proofFile = $request->file('payment_proof');
+        $proofName = time() . '_' . $proofFile->getClientOriginalName();
+        $proofFile->move(public_path('payment_proofs'), $proofName);
+        $proofPath = 'payment_proofs/' . $proofName;
     }
+
+    // Duplicate booking check
+    $duplicate = Booking::where('staycation_id', $staycation_id)
+        ->where('start_date', $start->format('Y-m-d'))
+        ->where('end_date', $end->format('Y-m-d'))
+        ->first();
+
+    if ($duplicate) {
+        return back()->with('error', 'This staycation is already booked for the selected dates.');
+    }
+
+    // Create booking record
+    Booking::create([
+        'staycation_id' => $staycation_id,
+        'user_id' => Auth::id(),
+        'name' => Auth::user()->name,
+        'email' => Auth::user()->email,
+        'phone' => $request->phone,
+        'guest_number' => $request->guest_number,
+        'start_date' => $start->format('Y-m-d'),
+        'end_date' => $end->format('Y-m-d'),
+        'price_per_day' => $staycation->house_price,
+        'base_price' => $totalPriceWithoutVAT,
+        'total_price' => $totalPrice,
+        'vat_amount' => $vatAmount,
+        'amount_paid' => $amountPaid,
+        'remaining_balance' => $remainingBalance,
+        'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
+        'payment_method' => $request->payment_method,
+        'payment_proof' => $proofPath,
+        'transaction_number' => $request->transaction_number ?? null,
+        'message_to_admin' => $request->message ?? null,
+        'status' => 'pending',
+    ]);
+
+    return redirect()->route('BookingHistory.index')
+        ->with('success', 'Your booking has been submitted! Please wait for admin confirmation.');
+}
+
+
+
+
 
     // 📖 Show booking history
     public function index()
