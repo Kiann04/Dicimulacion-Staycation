@@ -13,21 +13,10 @@
         padding: 2rem;
         transition: transform 0.2s;
     }
-    .booking-card:hover {
-        transform: translateY(-5px);
-    }
-    .booking-card h3 {
-        color: #2c3e50;
-    }
-    .booking-info p {
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
-    }
-    .total-amount {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #007bff;
-    }
+    .booking-card:hover { transform: translateY(-5px); }
+    .booking-card h3 { color: #2c3e50; }
+    .booking-info p { font-size: 1rem; margin-bottom: 0.5rem; }
+    .total-amount { font-size: 1.25rem; font-weight: 700; color: #007bff; }
     .btn-modern {
         background: linear-gradient(90deg,#007bff 0%,#00c6ff 100%);
         border: none;
@@ -51,54 +40,45 @@
 
             $start = Carbon::parse($startDate);
             $end = Carbon::parse($endDate);
+            $nights = $end->lessThanOrEqualTo($start) ? 1 : $start->diffInDays($end);
 
-            // ✅ Prevent negative or zero nights
-            if ($end->lessThanOrEqualTo($start)) {
-                $nights = 1;
-            } else {
-                $nights = $start->diffInDays($end);
-            }
-
-            // Base price
-            $totalPrice = $staycation->house_price * $nights;
-
-            // ✅ ₱500 per extra guest beyond 6
+            // Base total price including extra guests
+            $baseTotal = $staycation->house_price * $nights;
             $extraGuests = max(0, $guest_number - 6);
             $extraFee = $extraGuests * 500;
-            $totalPrice += $extraFee;
+            $baseTotal += $extraFee;
 
-            // Format dates
+            // VAT & Base Price
+            $vatAmount = round($baseTotal - ($baseTotal / 1.12), 2);
+            $basePrice = round($baseTotal - $vatAmount, 2);
+
             $formattedStart = $start->format('M d, Y');
             $formattedEnd = $end->format('M d, Y');
         @endphp
-
 
         <div class="booking-info mb-4">
             <p><strong>Staycation:</strong> {{ $staycation->house_name }}</p>
             <p><strong>Guests:</strong> {{ $guest_number }}</p>
             <p><strong>Stay Dates:</strong> {{ $formattedStart }} - {{ $formattedEnd }} ({{ $nights }} night{{ $nights>1 ? 's' : '' }})</p>
             <hr>
-            @if($extraGuests > 0)
-                <p class="total-amount">
-                    Total Price: ₱{{ number_format($totalPrice, 2) }}
-                    <br>
-                    <small class="text-muted">(Includes ₱{{ number_format($extraFee, 2) }} extra for {{ $extraGuests }} additional guest{{ $extraGuests > 1 ? 's' : '' }})</small>
-                </p>
-            @else
-                <p class="total-amount">Total Price: ₱{{ number_format($totalPrice, 2) }}</p>
-            @endif
 
+            <p><strong>Base Price (without VAT):</strong> ₱{{ number_format($basePrice, 2) }}</p>
+            <p><strong>VAT (12%):</strong> ₱{{ number_format($vatAmount, 2) }}</p>
+
+            <p class="total-amount">
+                <strong>Total Price (with VAT):</strong> ₱{{ number_format($baseTotal, 2) }}
+            </p>
         </div>
 
         <form action="{{ route('booking.submit', $staycation->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            <!-- Hidden fields to pass all data -->
+            <!-- Hidden fields -->
             <input type="hidden" name="guest_number" value="{{ $guest_number }}">
             <input type="hidden" name="startDate" value="{{ $startDate }}">
             <input type="hidden" name="endDate" value="{{ $endDate }}">
             <input type="hidden" name="phone" value="{{ $phone ?? Auth::user()->phone ?? old('phone') }}">
-            <input type="hidden" name="totalPrice" value="{{ $totalPrice }}">
+            <input type="hidden" name="totalPrice" value="{{ $baseTotal }}">
 
             <!-- Payment Option -->
             <div class="mb-3">
@@ -158,54 +138,44 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const paymentSelect = document.querySelector("select[name='payment_type']");
-        const totalPriceElem = document.querySelector(".total-amount");
-        const totalPrice = parseFloat("{{ $totalPrice }}");
+document.addEventListener("DOMContentLoaded", function() {
+    const paymentSelect = document.querySelector("select[name='payment_type']");
+    const totalElem = document.querySelector(".total-amount");
+    const baseTotal = parseFloat("{{ $baseTotal }}");
 
-        const gcashInfo = document.getElementById("gcashInfo");
-        const bpiInfo = document.getElementById("bpiInfo");
+    const gcashInfo = document.getElementById("gcashInfo");
+    const bpiInfo = document.getElementById("bpiInfo");
 
-        // ✅ Update total price based on payment type
-        function updatePaymentDisplay() {
-            if (paymentSelect.value === "half") {
-                const halfPrice = totalPrice / 2;
-                totalPriceElem.textContent =
-                    "Amount Due (50%): ₱" +
-                    halfPrice.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-            } else {
-                totalPriceElem.textContent =
-                    "Total Price: ₱" +
-                    totalPrice.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-            }
+    // Update payment display dynamically
+    function updatePaymentDisplay() {
+        const halfPrice = baseTotal / 2;
+        if (paymentSelect.value === "half") {
+            totalElem.innerHTML = `
+                Amount Paid (50%): ₱${halfPrice.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+                <br><small class="text-muted">Remaining Balance: ₱${halfPrice.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</small>
+            `;
+        } else {
+            totalElem.innerHTML = `<strong>Total Price (with VAT):</strong> ₱${baseTotal.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
         }
+    }
 
-        paymentSelect.addEventListener("change", updatePaymentDisplay);
+    paymentSelect.addEventListener("change", updatePaymentDisplay);
 
-        // ✅ Toggle payment method info
-        const methodSelect = document.getElementById("paymentMethod");
-        methodSelect.addEventListener("change", function() {
-            gcashInfo.style.display = this.value === "gcash" ? "block" : "none";
-            bpiInfo.style.display = this.value === "bpi" ? "block" : "none";
-        });
-
-        // ✅ Prevent double submission
-        const bookingForm = document.querySelector("form");
-        const submitButton = bookingForm.querySelector("button[type='submit']");
-
-        bookingForm.addEventListener("submit", function(e) {
-            submitButton.disabled = true;
-            submitButton.textContent = "Submitting...";
-        });
+    // Toggle payment method info
+    document.getElementById("paymentMethod").addEventListener("change", function() {
+        gcashInfo.style.display = this.value === "gcash" ? "block" : "none";
+        bpiInfo.style.display = this.value === "bpi" ? "block" : "none";
     });
-</script>
 
+    // Prevent double submission
+    const bookingForm = document.querySelector("form");
+    const submitButton = bookingForm.querySelector("button[type='submit']");
+    bookingForm.addEventListener("submit", function() {
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting...";
+    });
+});
+</script>
 @endsection
 
 @section('Footer')
