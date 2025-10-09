@@ -221,6 +221,12 @@
 <!-- Featured Artists Section -->
 <section class="featured-artists-section py-5 my-5" id="artists">
   <div class="container text-center text-white">
+
+    <!-- Movie Scene Photo (inside section, not background) -->
+    <div class="movie-scene-wrapper mb-5">
+      <img src="{{ asset('assets/artists/movie_bg.jpg') }}" class="movie-scene-img shadow-lg rounded-4" alt="Movie Scene from Minamahal 100 Bulak Para Kay Stella">
+    </div>
+
     <h2 class="fw-bold display-6 mb-3">Artists Who Filmed Here</h2>
     <p class="text-light mb-5 fs-5">
       From the romantic film <strong>“Minamahal 100 Bulak Para Kay Stella”</strong>
@@ -228,7 +234,7 @@
     </p>
 
     <div class="row g-4 justify-content-center">
-      
+      <!-- Artist 1: Ashtine Olviga -->
       <div class="col-sm-6 col-md-5 col-lg-4">
         <div class="artist-card card bg-transparent border-0 rounded-4 overflow-hidden h-100">
           <div class="artist-img-wrapper">
@@ -242,7 +248,7 @@
         </div>
       </div>
 
-      <!-- Artist 1: Andres Muhlach -->
+      <!-- Artist 2: Andres Muhlach -->
       <div class="col-sm-6 col-md-5 col-lg-4">
         <div class="artist-card card bg-transparent border-0 rounded-4 overflow-hidden h-100">
           <div class="artist-img-wrapper">
@@ -255,24 +261,22 @@
           </div>
         </div>
       </div>
-
-
     </div>
   </div>
 </section>
 
 <!-- Artist Section Styling -->
 <style>
-/* Background setup */
+/* Keep the cinematic background */
 .featured-artists-section {
   position: relative;
-  background: url('{{ asset('assets/artists/movie_bg.jpg') }}') center center / cover no-repeat;
+  background: url('{{ asset('assets/artists/film_bg.jpg') }}') center center / cover no-repeat;
   background-attachment: fixed;
   overflow: hidden;
   border-radius: 0;
 }
 
-/* Overlay */
+/* Dark overlay to make text readable */
 .featured-artists-section::before {
   content: "";
   position: absolute;
@@ -281,13 +285,30 @@
   z-index: 1;
 }
 
-/* Content layering */
+/* Ensure content is above overlay */
 .featured-artists-section .container {
   position: relative;
   z-index: 2;
 }
 
-/* Artist image container (centering fix) */
+/* Inside section photo (your uploaded one) */
+.movie-scene-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.movie-scene-img {
+  width: 100%;
+  border: 4px solid #0d6efd;
+  border-radius: 15px;
+  object-fit: cover;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+.movie-scene-img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(13, 110, 253, 0.5);
+}
+
+/* Artist image cards */
 .artist-img-wrapper {
   height: 360px;
   display: flex;
@@ -296,20 +317,17 @@
   overflow: hidden;
   background-color: #000;
 }
-
-/* Artist image */
 .artist-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
   border-bottom: 3px solid #0d6efd;
+  transition: transform 0.5s ease;
 }
 .artist-img:hover {
   transform: scale(1.05);
 }
 
-/* Artist card styling */
 .artist-card {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(8px);
@@ -321,6 +339,7 @@
   box-shadow: 0 1rem 2rem rgba(0,0,0,0.4);
 }
 </style>
+
 
 
 <!-- Info Cards -->
