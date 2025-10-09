@@ -49,8 +49,8 @@
         @php
             use Carbon\Carbon;
 
-            $start = Carbon::parse($startDate);
-            $end = Carbon::parse($endDate);
+            $start = Carbon::parse($start_date);
+            $end = Carbon::parse($end_date);
 
             // Prevent zero or negative nights
             $nights = $end->lessThanOrEqualTo($start) ? 1 : $start->diffInDays($end);
