@@ -319,23 +319,42 @@
   transform: translateY(-5px);
   box-shadow: 0 1rem 2rem rgba(0,0,0,0.4);
 }
+/* Responsive fix for Ashtine's image (focus on left side) */
 .artist-card img[alt="Ashtine Olviga"] {
   object-position: left center !important;
 }
 
-/* Tablet view */
+/* Responsive fix for Andres Muhlach's image (focus on center-right if needed) */
+.artist-card img[alt="Andres Muhlach"] {
+  object-position: center center !important;
+}
+
+/* Tablet view (≤768px) */
 @media (max-width: 768px) {
   .artist-card img[alt="Ashtine Olviga"] {
     height: 300px;
     object-position: 20% center !important;
   }
+
+  .artist-card img[alt="Andres Muhlach"] {
+    height: 300px;
+    object-position: center center !important;
+  }
 }
 
-/* Mobile view (320px and below) */
+/* Mobile view (≤320px) */
 @media (max-width: 320px) {
   .artist-card img[alt="Ashtine Olviga"] {
     height: 250px;
-    object-position: 15% center !important; /* Focus more on her side */
+    object-position: 15% center !important;
+  }
+
+  .artist-card img[alt="Andres Muhlach"] {
+    height: 250px;
+    object-position: 45% center !important; /* adjust slightly right for balance */
+  }
+}
+
 </style>
 
 
