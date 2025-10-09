@@ -66,8 +66,8 @@ class BookingHistoryController extends Controller
     }
     // 📄 Step 2: Submit booking request
     public function submitRequest(Request $request, $staycation_id)
-    {
-        // Validate the request
+    {   
+        // Validate request
         $request->validate([
             'guest_number' => 'required|integer|min:1',
             'startDate' => 'required|date',
@@ -86,40 +86,37 @@ class BookingHistoryController extends Controller
         $start = Carbon::parse($request->startDate);
         $end = Carbon::parse($request->endDate);
 
-        // Minimum 1 night
         $nights = $end->lessThanOrEqualTo($start) ? 1 : $start->diffInDays($end);
 
-        // Base price = price per night * nights + extra guest fee
-        $basePrice = $staycation->house_price * $nights;
+        // Base total price
+        $baseTotal = $staycation->house_price * $nights;
         $extraGuests = max(0, $request->guest_number - 6);
         $extraFee = $extraGuests * 500;
-        $basePrice += $extraFee;
+        $baseTotal += $extraFee;
 
-        // VAT = 12% of base price
-        $vatAmount = round($basePrice * 0.12, 2);
+        // VAT calculation
+        $vatAmount = round($baseTotal - ($baseTotal / 1.12), 2);
+        $basePrice = round($baseTotal - $vatAmount, 2);
 
-        // Total price = base + VAT
-        $totalPrice = round($basePrice + $vatAmount, 2);
-
-        // Amount paid and payment status
+        // Payment amount & status
         if ($request->payment_type === 'half') {
-            $amountPaid = round($totalPrice / 2, 2);
+            $amountPaid = round($baseTotal / 2, 2);
             $paymentStatus = 'half_paid';
         } else {
-            $amountPaid = $totalPrice;
+            $amountPaid = $baseTotal;
             $paymentStatus = 'paid';
         }
 
-        // Upload payment proof
+        // Upload proof
         $proofPath = null;
         if ($request->hasFile('payment_proof')) {
             $proofFile = $request->file('payment_proof');
-            $proofName = time() . '_' . $proofFile->getClientOriginalName();
+            $proofName = time().'_'.$proofFile->getClientOriginalName();
             $proofFile->move(public_path('payment_proofs'), $proofName);
-            $proofPath = 'payment_proofs/' . $proofName;
+            $proofPath = 'payment_proofs/'.$proofName;
         }
 
-        // Check duplicate booking
+        // Duplicate booking check
         $duplicate = Booking::where('staycation_id', $staycation_id)
             ->where('start_date', $start->format('Y-m-d'))
             ->where('end_date', $end->format('Y-m-d'))
@@ -129,7 +126,7 @@ class BookingHistoryController extends Controller
             return back()->with('error', 'This staycation is already booked for the selected dates.');
         }
 
-        // Create booking record
+        // Create booking
         Booking::create([
             'staycation_id' => $staycation_id,
             'user_id' => Auth::id(),
@@ -142,7 +139,7 @@ class BookingHistoryController extends Controller
             'price_per_day' => $staycation->house_price,
             'base_price' => $basePrice,
             'vat_amount' => $vatAmount,
-            'total_price' => $totalPrice,
+            'total_price' => $baseTotal,
             'amount_paid' => $amountPaid,
             'payment_status' => $paymentStatus,
             'payment_method' => $request->payment_method,
@@ -155,10 +152,6 @@ class BookingHistoryController extends Controller
         return redirect()->route('BookingHistory.index')
             ->with('success', 'Your booking has been submitted! Please wait for admin confirmation.');
     }
-
-
-
-
 
     // 📖 Show booking history
     public function index()
