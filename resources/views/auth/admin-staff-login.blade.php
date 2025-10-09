@@ -1,4 +1,4 @@
-```blade
+
 @extends('layouts.default')
 
 @section('Header')
