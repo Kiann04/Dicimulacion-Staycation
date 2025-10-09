@@ -14,30 +14,47 @@
         h2 {
             text-align: center;
             color: #2c3e50;
+            margin-bottom: 20px;
         }
         .receipt {
             background: #fff;
             border-radius: 8px;
-            padding: 20px 30px;
+            padding: 30px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            max-width: 600px;
+            max-width: 700px;
             margin: 20px auto;
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 15px;
         }
-        li {
-            margin-bottom: 8px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 6px;
+        th, td {
+            text-align: left;
+            padding: 10px 8px;
         }
-        strong {
-            color: #2c3e50;
+        th {
+            background-color: #2980b9;
+            color: #fff;
+        }
+        tr:nth-child(even) td {
+            background-color: #f2f2f2;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #27ae60;
+        }
+        .remaining {
+            font-weight: bold;
+            color: #c0392b;
         }
         p {
             margin-bottom: 10px;
+        }
+        .footer {
+            font-size: 12px;
+            color: #777;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -46,22 +63,77 @@
         <h2>Payment Receipt</h2>
 
         <p>Dear {{ $booking->user->name ?? $booking->name }},</p>
-
         <p>We have received your payment for your booking. Below are your booking details:</p>
 
-        <ul>
-            <li><strong>Booking ID:</strong> {{ $booking->id }}</li>
-            <li><strong>Staycation:</strong> {{ $booking->staycation->house_name ?? 'N/A' }}</li>
-            <li><strong>Amount Paid:</strong> ₱{{ number_format($booking->amount_paid ?? 0, 2) }}</li>
-            <li><strong>Status:</strong> {{ ucfirst($booking->payment_status) }}</li>
-            <li><strong>Payment Date:</strong> {{ $booking->updated_at ? $booking->updated_at->format('M d, Y h:i A') : 'N/A' }}</li>
-            <li><strong>Arrival Date:</strong> {{ \Carbon\Carbon::parse($booking->start_date)->format('M d, Y') }}</li>
-            <li><strong>Departure Date:</strong> {{ \Carbon\Carbon::parse($booking->end_date)->format('M d, Y') }}</li>
-        </ul>
+        @php
+            $total = $booking->total_price ?? 0;
+            $vat = $booking->vat_amount ?? 0;
+            $base = round($total - $vat, 2);
+            $remaining = round($total - ($booking->amount_paid ?? 0), 2);
+        @endphp
+
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Amount</th>
+            </tr>
+            <tr>
+                <td>Booking ID</td>
+                <td>{{ $booking->id }}</td>
+            </tr>
+            <tr>
+                <td>Staycation</td>
+                <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td>Arrival Date</td>
+                <td>{{ \Carbon\Carbon::parse($booking->start_date)->format('M d, Y') }}</td>
+            </tr>
+            <tr>
+                <td>Departure Date</td>
+                <td>{{ \Carbon\Carbon::parse($booking->end_date)->format('M d, Y') }}</td>
+            </tr>
+            <tr>
+                <td>Base Price (without VAT)</td>
+                <td>₱{{ number_format($base, 2) }}</td>
+            </tr>
+            <tr>
+                <td>VAT (12%)</td>
+                <td>₱{{ number_format($vat, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Total (with VAT)</td>
+                <td>₱{{ number_format($total, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Amount Paid {{ $booking->payment_status === 'half_paid' ? '(Half Payment)' : '' }}</td>
+                <td class="highlight">₱{{ number_format($booking->amount_paid ?? 0, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Remaining Balance</td>
+                <td class="remaining">₱{{ number_format($remaining, 2) }}</td>
+            </tr>
+            <tr>
+                <td>Payment Status</td>
+                <td>{{ ucfirst(str_replace('_', ' ', $booking->payment_status)) }}</td>
+            </tr>
+            <tr>
+                <td>Payment Method</td>
+                <td>{{ ucfirst($booking->payment_method ?? 'N/A') }}</td>
+            </tr>
+            <tr>
+                <td>Transaction Number</td>
+                <td>{{ $booking->transaction_number ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td>Payment Date</td>
+                <td>{{ $booking->updated_at ? $booking->updated_at->format('M d, Y h:i A') : 'N/A' }}</td>
+            </tr>
+        </table>
 
         <p>Thank you for choosing us! We’re looking forward to hosting you. 😊</p>
 
-        <p style="margin-top: 20px; font-size: 12px; color: #777;">
+        <p class="footer">
             This is an automated message. Please do not reply directly to this email.
         </p>
     </div>
