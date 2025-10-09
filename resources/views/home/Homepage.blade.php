@@ -218,6 +218,95 @@
 }
 </style>
 
+<!-- Featured Artists Section -->
+<section class="featured-artists-section py-5 my-5" id="artists">
+  <div class="container text-center text-white">
+    <h2 class="fw-bold display-6 mb-3">Artists Who Filmed Here</h2>
+    <p class="text-light mb-5 fs-5">
+      From the romantic film <strong>“Minamahal 100 Bulak Para Kay Stella”</strong>
+      — filmed at our beautiful staycation property.
+    </p>
+
+    <div class="row g-4 justify-content-center">
+      <!-- Artist 1: Andres Muhlach -->
+      <div class="col-sm-6 col-md-5 col-lg-4">
+        <div class="artist-card card bg-transparent border-0 rounded-4 overflow-hidden h-100">
+          <img src="{{ asset('assets/artists/andres_muhlach.jpg') }}" class="card-img-top artist-img" alt="Andres Muhlach">
+          <div class="card-body text-center">
+            <h5 class="fw-bold text-white mb-1">Andres Muhlach</h5>
+            <p class="text-light small mb-1">Actor</p>
+            <p class="fw-semibold small text-primary mb-0">“Minamahal 100 Bulak Para Kay Stella”</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Artist 2: Ashtine Olviga -->
+      <div class="col-sm-6 col-md-5 col-lg-4">
+        <div class="artist-card card bg-transparent border-0 rounded-4 overflow-hidden h-100">
+          <img src="{{ asset('assets/artists/ashtine_olviga.jpg') }}" class="card-img-top artist-img" alt="Ashtine Olviga">
+          <div class="card-body text-center">
+            <h5 class="fw-bold text-white mb-1">Ashtine Olviga</h5>
+            <p class="text-light small mb-1">Singer & Actress</p>
+            <p class="fw-semibold small text-primary mb-0">“Minamahal 100 Bulak Para Kay Stella”</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Artist Section Styling -->
+<style>
+/* Background setup */
+.featured-artists-section {
+  position: relative;
+  background: url('{{ asset('assets/artists/movie_bg.jpg') }}') center center / cover no-repeat;
+  background-attachment: fixed;
+  overflow: hidden;
+  border-radius: 0;
+}
+
+/* Overlay */
+.featured-artists-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+
+/* Content layering */
+.featured-artists-section .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* Artist image */
+.artist-img {
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  border-bottom: 3px solid #0d6efd;
+}
+.artist-img:hover {
+  transform: scale(1.05);
+}
+
+/* Artist card */
+.artist-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+.artist-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 1rem 2rem rgba(0,0,0,0.4);
+}
+</style>
+
+
 <!-- Info Cards -->
 <section class="container my-5 text-center" id="sales">
     <div class="row g-4">
