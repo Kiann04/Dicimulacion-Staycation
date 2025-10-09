@@ -77,17 +77,19 @@ Route::post('/admin/login', [LoginController::class, 'adminStaffLogin'])->name('
 // PUBLIC BOOKING ROUTES
 // =========================
 
-// Step 0: Show booking form
+// Booking form
 Route::get('/booking/{id}', [BookingHistoryController::class, 'bookingForm'])->name('booking.form');
 
-// Step 1: Preview booking (POST from Reserve button)
-Route::post('/booking/{id}/preview', [BookingHistoryController::class, 'previewBooking'])->name('booking.preview');
+// Preview booking
+Route::post('/booking/{id}/preview', [BookingHistoryController::class, 'previewBookingPost'])->name('booking.preview.post');
+Route::get('/booking/{id}/preview', [BookingHistoryController::class, 'previewBookingGet'])->name('booking.preview.get');
 
-// Step 2: Submit booking request with payment proof (POST)
+// Submit booking
 Route::post('/booking/{id}/submit', [BookingHistoryController::class, 'submitRequest'])->name('booking.submit');
 
-// Booking history for logged-in user
+// Booking history
 Route::get('/booking/history', [BookingHistoryController::class, 'index'])->name('BookingHistory.index');
+
 
 // Cancel a booking
 Route::delete('/booking/{id}/cancel', [BookingHistoryController::class, 'cancel'])->name('BookingHistory.cancel');

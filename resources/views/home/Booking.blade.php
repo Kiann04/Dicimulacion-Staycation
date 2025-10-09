@@ -21,7 +21,7 @@
             <div class="alert alert-danger">{!! nl2br(e(session('message'))) !!}</div>
           @endif
 
-          <form action="{{ route('booking.preview', $staycation->id) }}" method="POST">
+          <form action="{{ route('booking.preview.post', $staycation->id) }}" method="POST">
             @csrf
 
             <div class="mb-3">

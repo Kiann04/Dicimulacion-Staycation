@@ -6,25 +6,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Staycation;
 use App\Models\Booking;
-use Carbon\Carbon;
 use App\Models\Review;
-
+use Carbon\Carbon;
 
 class BookingHistoryController extends Controller
 {
-    // 🏠 Show booking form for selected staycation
+    // 🏠 Step 0: Show booking form
     public function bookingForm($id)
-{
-    $staycation = Staycation::findOrFail($id);
+    {
+        $staycation = Staycation::findOrFail($id);
+        $reviews = Review::where('staycation_id', $id)->get();
 
-    // Get reviews for this staycation
-    $reviews = Review::where('staycation_id', $id)->get();
+        return view('home.Booking', compact('staycation', 'reviews'));
+    }
 
-    return view('home.Booking', compact('staycation', 'reviews'));
-}
-
-    // 📄 Step 1: Preview Booking before confirming
-    public function previewBooking(Request $request, $staycation_id)
+    // 📝 Step 1: Preview booking — POST
+    public function previewBookingPost(Request $request, $staycation_id)
     {
         $staycation = Staycation::findOrFail($staycation_id);
 
@@ -39,32 +36,61 @@ class BookingHistoryController extends Controller
         $startDate = Carbon::parse($request->startDate);
         $endDate = Carbon::parse($request->endDate);
 
-        // 🧩 Fix overlap logic (allow check-in on same day another booking checks out)
+        // 🧭 Overlap check
         $hasOverlap = Booking::where('staycation_id', $staycation->id)
             ->where(function ($query) use ($startDate, $endDate) {
                 $query->where('start_date', '<', $endDate)
-                    ->where('end_date', '>', $startDate);
+                      ->where('end_date', '>', $startDate);
             })
             ->exists();
 
         if ($hasOverlap) {
-            return back()->with('message', "⚠️ The selected dates overlap with an existing booking. Please choose another range.");
+            return back()->with('message', '⚠️ The selected dates overlap with an existing booking. Please choose another range.');
         }
 
         $nights = $startDate->diffInDays($endDate);
         $totalPrice = $nights * $staycation->house_price;
 
+        // 🧠 Store preview data in session
+        session([
+            'preview' => [
+                'staycation_id' => $staycation_id,
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'guest_number' => $request->guest_number,
+                'startDate' => $request->startDate,
+                'endDate' => $request->endDate,
+                'totalPrice' => $totalPrice,
+            ]
+        ]);
+
+        return redirect()->route('booking.preview.get', $staycation_id);
+    }
+
+    // 👀 Step 1 (GET): Show preview page
+    public function previewBookingGet($staycation_id)
+    {
+        $staycation = Staycation::findOrFail($staycation_id);
+        $preview = session('preview');
+
+        // Redirect if user tries to access preview without posting data
+        if (!$preview || $preview['staycation_id'] != $staycation_id) {
+            return redirect()->route('booking.form', $staycation_id)
+                             ->with('message', '⚠️ Please fill out the booking form first.');
+        }
+
         return view('home.preview_booking', [
             'staycation' => $staycation,
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'guest_number' => $request->guest_number,
-            'startDate' => $request->startDate,
-            'endDate' => $request->endDate,
-            'totalPrice' => $totalPrice,
-        ])->with('success', '✅ Dates are available! Please confirm your booking.');
+            'name' => $preview['name'],
+            'phone' => $preview['phone'],
+            'guest_number' => $preview['guest_number'],
+            'startDate' => $preview['startDate'],
+            'endDate' => $preview['endDate'],
+            'totalPrice' => $preview['totalPrice'],
+        ]);
     }
-    // 📄 Step 2: Submit booking request
+
+    // 📩 Step 2: Submit booking request
     public function submitRequest(Request $request, $staycation_id)
     {
         $request->validate([
@@ -101,15 +127,15 @@ class BookingHistoryController extends Controller
             $proofPath = 'payment_proofs/'.$proofName;
         }
 
-        // 🔐 Overlap duplicate booking check
+        // 🛡 Prevent double booking
         $duplicate = Booking::where('staycation_id', $staycation_id)
             ->where(function ($query) use ($start, $end) {
                 $query->whereBetween('start_date', [$start, $end])
-                    ->orWhereBetween('end_date', [$start, $end])
-                    ->orWhere(function ($q) use ($start, $end) {
-                        $q->where('start_date', '<=', $start)
+                      ->orWhereBetween('end_date', [$start, $end])
+                      ->orWhere(function ($q) use ($start, $end) {
+                          $q->where('start_date', '<=', $start)
                             ->where('end_date', '>=', $end);
-                    });
+                      });
             })
             ->whereIn('status', ['pending', 'approved'])
             ->first();
@@ -138,21 +164,24 @@ class BookingHistoryController extends Controller
             'status' => 'pending',
         ]);
 
+        // Clear preview session after successful booking
+        session()->forget('preview');
+
         return redirect()->route('BookingHistory.index')
             ->with('success', 'Your booking has been submitted! Please wait for admin confirmation.');
     }
 
-
-
-
-    // 📖 Show booking history
+    // 📖 Booking History
     public function index()
     {
-        $bookings = Booking::where('user_id', Auth::id())->orderBy('start_date', 'desc')->get();
+        $bookings = Booking::where('user_id', Auth::id())
+            ->orderBy('start_date', 'desc')
+            ->get();
+
         return view('home.Booking_History', compact('bookings'));
     }
 
-    // ❌ Cancel pending booking
+    // ❌ Cancel Booking
     public function cancel($id)
     {
         $booking = Booking::where('id', $id)
@@ -165,19 +194,23 @@ class BookingHistoryController extends Controller
         return redirect()->route('BookingHistory.index')
             ->with('success', 'Booking cancelled successfully.');
     }
+
+    // 💰 Admin Side: Paid Bookings
     public function showPaid()
     {
         $bookings = Booking::where('payment_status', 'paid')->latest()->get();
-        $staycations = Staycation::all(); // ✅ added
+        $staycations = Staycation::all();
         return view('admin.paid_bookings', compact('bookings', 'staycations'))->with('filter', 'Paid Bookings');
     }
 
+    // 💵 Admin Side: Half Paid
     public function showHalfPaid()
     {
         $bookings = Booking::where('payment_status', 'half_paid')->latest()->get();
-        $staycations = Staycation::all(); // ✅ added
+        $staycations = Staycation::all();
         return view('admin.half_paid_bookings', compact('bookings', 'staycations'))->with('filter', 'Half-Paid Bookings');
     }
+
     public function markAsPaid($id)
     {
         $booking = Booking::findOrFail($id);
@@ -190,8 +223,4 @@ class BookingHistoryController extends Controller
             'id' => $booking->id,
         ]);
     }
-
-
-
-
 }
