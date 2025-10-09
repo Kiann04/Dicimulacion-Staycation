@@ -264,12 +264,15 @@
 <style>
 /* Background setup */
 .featured-artists-section {
-  position: relative;
-  background: url('{{ asset('assets/artists/movie_bg.jpg') }}') center center / cover no-repeat;
-  background-attachment: fixed;
-  overflow: hidden;
-  border-radius: 0;
+  background-image: url('assets/yourbackground.jpg'); /* your image path */
+  background-size: contain; /* show full image */
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-color: #000; /* fallback background */
+  padding-top: 100px;
+  padding-bottom: 100px;
 }
+
 
 /* Overlay */
 .featured-artists-section::before {
