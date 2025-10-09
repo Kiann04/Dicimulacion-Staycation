@@ -65,7 +65,7 @@ class BookingHistoryController extends Controller
         ])->with('success', '✅ Dates are available! Please confirm your booking.');
     }
     // 📄 Step 2: Submit booking request
-  public function submitRequest(Request $request, $staycation_id)
+ public function submitRequest(Request $request, $staycation_id)
 {
     // Validate the request
     $request->validate([
@@ -82,39 +82,43 @@ class BookingHistoryController extends Controller
 
     $staycation = Staycation::findOrFail($staycation_id);
 
-    // Parse dates safely
+    // Parse dates
     $start = Carbon::parse($request->startDate);
     $end = Carbon::parse($request->endDate);
 
-    // Calculate nights (minimum 1)
-    $nights = $end->greaterThan($start) ? $start->diffInDays($end) : 1;
+    // Calculate nights
+    $nights = $end->lessThanOrEqualTo($start) ? 1 : $start->diffInDays($end);
 
-    // Base price (without extra guests)
-    $basePrice = $staycation->house_price * $nights;
+    // Base total price
+    $totalPrice = $staycation->house_price * $nights;
 
-    // Extra guests beyond 6
+    // Extra guests fee
     $extraGuests = max(0, $request->guest_number - 6);
     $extraFee = $extraGuests * 500;
+    $totalPrice += $extraFee;
 
-    // Total price (includes extra guests and VAT)
-    $totalPriceWithoutVAT = $basePrice + $extraFee;
-    $vatAmount = round($totalPriceWithoutVAT * 0.12, 2); // 12% VAT
-    $totalPrice = $totalPriceWithoutVAT + $vatAmount;
+    // Calculate VAT and base price
+    $vatAmount = round($totalPrice - ($totalPrice / 1.12), 2);
+    $basePrice = round($totalPrice - $vatAmount, 2);
 
-    // Amount paid and remaining balance
-    $amountPaid = $request->payment_type === 'half' ? round($totalPrice / 2, 2) : $totalPrice;
-    $remainingBalance = $totalPrice - $amountPaid;
+    // Determine amount paid
+    $amountPaid = $request->payment_type === 'half' 
+        ? round($totalPrice / 2, 2) 
+        : $totalPrice;
+
+    // Remaining balance
+    $remainingBalance = round($totalPrice - $amountPaid, 2);
 
     // Upload proof of payment
     $proofPath = null;
     if ($request->hasFile('payment_proof')) {
         $proofFile = $request->file('payment_proof');
-        $proofName = time() . '_' . $proofFile->getClientOriginalName();
+        $proofName = time().'_'.$proofFile->getClientOriginalName();
         $proofFile->move(public_path('payment_proofs'), $proofName);
-        $proofPath = 'payment_proofs/' . $proofName;
+        $proofPath = 'payment_proofs/'.$proofName;
     }
 
-    // Duplicate booking check
+    // Check for duplicate bookings
     $duplicate = Booking::where('staycation_id', $staycation_id)
         ->where('start_date', $start->format('Y-m-d'))
         ->where('end_date', $end->format('Y-m-d'))
@@ -124,7 +128,10 @@ class BookingHistoryController extends Controller
         return back()->with('error', 'This staycation is already booked for the selected dates.');
     }
 
-    // Create booking record
+    // Determine payment status
+    $paymentStatus = $request->payment_type === 'half' ? 'half_paid' : 'paid';
+
+    // Create booking
     Booking::create([
         'staycation_id' => $staycation_id,
         'user_id' => Auth::id(),
@@ -135,12 +142,12 @@ class BookingHistoryController extends Controller
         'start_date' => $start->format('Y-m-d'),
         'end_date' => $end->format('Y-m-d'),
         'price_per_day' => $staycation->house_price,
-        'base_price' => $totalPriceWithoutVAT,
         'total_price' => $totalPrice,
+        'base_price' => $basePrice,
         'vat_amount' => $vatAmount,
         'amount_paid' => $amountPaid,
         'remaining_balance' => $remainingBalance,
-        'payment_status' => $request->payment_type === 'half' ? 'half_paid' : 'paid',
+        'payment_status' => $paymentStatus,
         'payment_method' => $request->payment_method,
         'payment_proof' => $proofPath,
         'transaction_number' => $request->transaction_number ?? null,
@@ -151,6 +158,7 @@ class BookingHistoryController extends Controller
     return redirect()->route('BookingHistory.index')
         ->with('success', 'Your booking has been submitted! Please wait for admin confirmation.');
 }
+
 
 
 
