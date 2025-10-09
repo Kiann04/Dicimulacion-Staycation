@@ -319,6 +319,23 @@
   transform: translateY(-5px);
   box-shadow: 0 1rem 2rem rgba(0,0,0,0.4);
 }
+.artist-card img[alt="Ashtine Olviga"] {
+  object-position: left center !important;
+}
+
+/* Tablet view */
+@media (max-width: 768px) {
+  .artist-card img[alt="Ashtine Olviga"] {
+    height: 300px;
+    object-position: 20% center !important;
+  }
+}
+
+/* Mobile view (320px and below) */
+@media (max-width: 320px) {
+  .artist-card img[alt="Ashtine Olviga"] {
+    height: 250px;
+    object-position: 15% center !important; /* Focus more on her side */
 </style>
 
 
