@@ -228,7 +228,6 @@
     </p>
 
     <div class="row g-4 justify-content-center">
-      
       <div class="col-sm-6 col-md-5 col-lg-4">
         <div class="artist-card card bg-transparent border-0 rounded-4 overflow-hidden h-100">
           <div class="artist-img-wrapper">
