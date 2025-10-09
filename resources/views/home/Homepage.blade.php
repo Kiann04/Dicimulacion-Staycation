@@ -338,7 +338,7 @@
 
   .artist-card img[alt="Andres Muhlach"] {
     height: 300px;
-    object-position: center center !important;
+    object-position: 20% center !important;
   }
 }
 
@@ -351,7 +351,7 @@
 
   .artist-card img[alt="Andres Muhlach"] {
     height: 250px;
-    object-position: 45% center !important; /* adjust slightly right for balance */
+    object-position: 15% center !important; /* adjust slightly right for balance */
   }
 }
 
