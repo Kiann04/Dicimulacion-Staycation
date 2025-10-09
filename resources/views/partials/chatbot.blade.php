@@ -45,15 +45,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // FAQ database
     const faq = [
-        { keywords: ["checkin", "check-in", "arrival","check in"], reply: "Check-in time is 2:00 PM." },
+        // Booking & Stay Details
+        { keywords: ["checkin", "check-in", "arrival", "check in"], reply: "Check-in time is 2:00 PM." },
         { keywords: ["checkout", "check-out", "departure"], reply: "Check-out time is 12:00 PM." },
-        { keywords: ["standard room", "price standard"], reply: "Standard Room costs ₱2,500 per night." },
-        { keywords: ["family suite", "price family"], reply: "Family Suite costs ₱4,500 per night." },
-        { keywords: ["amenities", "facility", "services"], reply: "We offer Free WiFi, Pool, Kitchen, Parking, and Netflix." },
-        { keywords: ["location", "where", "address"], reply: "We are located in Falcons Court, Village East Avenue, Angono, 1930 Rizal." },
-        { keywords: ["contact", "phone", "number"], reply: "You can call us at 0912-345-6789." },
-        { keywords: ["dicimulacion", "about staycation"], reply: "Dicimulacion Staycation is a premier retreat destination for relaxation." }
-    ];
+        { keywords: ["early checkin", "early check-in"], reply: "Early arrivals are allowed, and we offer complimentary coffee with snacks while waiting." },
+        { keywords: ["late checkout", "overtime stay"], reply: "Late check-out may result in additional charges." },
+        { keywords: ["additional guest", "extra person", "extra guest"], reply: "An additional ₱500 per extra person will be charged." },
+        { keywords: ["walk in", "walkin"], reply: "Walk-in guests are allowed, but it’s best to book in advance to secure your preferred stay." },
+
+        // Room Information & Prices
+        { keywords: ["standard room", "price standard"], reply: "Standard Room costs ₱6,000 per night." },
+        { keywords: ["family suite", "price family"], reply: "Family Suite costs ₱6,000 per night." },
+        { keywords: ["room available", "availability", "available rooms"], reply: "We have 8 uniquely designed rooms, each with different views and styles." },
+
+        // Amenities
+        { keywords: ["amenities", "facility", "services"], reply: "We offer Free WiFi, Swimming Pool, Kitchen, BBQ Area, Parking, Netflix, and Pet-Friendly accommodations." },
+        { keywords: ["pool", "swimming", "pool access"], reply: "The pool is shared among every three units, and guests can enjoy it during their stay." },
+        { keywords: ["breakfast", "food", "meal"], reply: "Breakfast is provided to all guests." },
+        { keywords: ["pet", "dog", "cat"], reply: "Yes, we are a pet-friendly staycation!" },
+
+        // Booking & Payments
+        { keywords: ["booking", "reserve", "reservation"], reply: "You can book directly through our website by selecting your preferred room and dates." },
+        { keywords: ["payment", "gcash", "bank transfer", "pay"], reply: "We accept payments via GCash, Maya, and bank transfer. A 50% down payment is required to secure your booking." },
+        { keywords: ["receipt", "invoice", "official receipt"], reply: "We issue official receipts for all confirmed bookings and payments." },
+
+        // Policies
+        { keywords: ["cancellation", "cancel", "refund"], reply: "Cancellations are not allowed, but you may reschedule your booking at least 14 days before your stay." },
+        { keywords: ["policy", "rules", "terms"], reply: "Guests are expected to follow check-in/out schedules and maintain cleanliness. Damages will be charged accordingly." },
+
+        // Location & Contact
+        { keywords: ["location", "where", "address"], reply: "We are located at Falcons Court, Village East Avenue, Angono, 1930 Rizal, Philippines." },
+        { keywords: ["contact", "phone", "number"], reply: "You can reach us at 0912-345-6789 or via our website’s Contact Us section." },
+
+        // About
+        { keywords: ["dicimulacion", "about staycation", "who"], reply: "Dicimulacion Staycation is a peaceful retreat owned by Mr. Edgar Fuentes Dicimulacion, offering comfort, relaxation, and scenic views." },
+        { keywords: ["owner", "edgar", "host"], reply: "Our host, Mr. Edgar Fuentes Dicimulacion, is a Computer Engineer with 7 years of hosting experience and a 4.78-star guest rating." },
+
+        // System Assistance
+        { keywords: ["login", "account", "sign in"], reply: "To access your account, click Log In on our homepage and enter your registered email and password." },
+        { keywords: ["signup", "register", "create account"], reply: "Click Sign Up to create an account. Fill in your full name, email, phone number, and password to get started." },
+        { keywords: ["forgot password", "reset password"], reply: "You can reset your password via the 'Forgot Password' option. A verification link will be sent to your email." },
+        ];
+
 
     // Show/Hide chatbot
     chatbotBtn.addEventListener("click", () => chatbotContainer.classList.toggle("hidden"));
