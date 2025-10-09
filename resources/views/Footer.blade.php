@@ -12,7 +12,6 @@
                 <h5>Quick Links</h5>
                 <ul class="list-unstyled">
                     <li><a href="{{ url('/terms') }}" class="text-light text-decoration-none">Terms and Conditions</a></li>
-                    <li><a href="#" class="text-light text-decoration-none">Privacy</a></li>
                 </ul>
             </div>
 
@@ -22,10 +21,10 @@
                 <p><a href="tel:+639176476826" class="text-light text-decoration-none">(0917) 647 6826</a></p>
                 <p><a href="mailto:Dicimulacion@gmail.com" class="text-light text-decoration-none">Dicimulacion@gmail.com</a></p>
                 <div class="d-flex gap-3">
-                    <a href="https://www.facebook.com/taricacafestaycation" target="_blank" class="text-light fs-4">
+                    <a href="https://www.facebook.com/dicimulacionlakecitymountainview" target="_blank" class="text-light fs-4">
                         <i class='bx bxl-facebook-circle'></i>
                     </a>
-                    <a href="https://www.instagram.com/tarica.scs?igsh=MW96OXRzbm1meWE0YQ==" target="_blank" class="text-light fs-4">
+                    <a href="https://www.instagram.com/dicimulacionstaycation/" target="_blank" class="text-light fs-4">
                         <i class='bx bxl-instagram-alt'></i>
                     </a>
                 </div>
