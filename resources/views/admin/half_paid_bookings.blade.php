@@ -11,10 +11,16 @@
     <header>
       <h1>Half-Paid Bookings</h1>
       <p class="subtext">List of all bookings with partial payment.</p>
+
+      <!-- 🔍 Added: Search Bar -->
+      <div class="search-bar mt-3">
+        <input type="text" id="bookingSearch" placeholder="Search booking..." 
+               class="form-control" style="max-width: 300px;">
+      </div>
     </header>
 
-    <section class="table-container">
-      <table class="booking-table">
+    <section class="table-container mt-4">
+      <table id="bookingsTable" class="booking-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -25,6 +31,7 @@
             <th>End</th>
             <th>Payment</th>
             <th>Status</th>
+            <th>Proof of Payment</th> <!-- 🆕 Added column -->
             <th>Action</th>
           </tr>
         </thead>
@@ -39,6 +46,17 @@
               <td>{{ $booking->end_date }}</td>
               <td><span class="status half-paid">Half Paid</span></td>
               <td><span class="status {{ $booking->status }}">{{ ucfirst($booking->status) }}</span></td>
+              
+              <!-- 🆕 Added: Proof of Payment -->
+              <td>
+                @if($booking->payment_proof)
+                  <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" 
+                     target="_blank">View Proof</a>
+                @else
+                  <span class="text-muted">No proof</span>
+                @endif
+              </td>
+
               <td>
                 <form action="{{ route('admin.bookings.updatePayment', $booking->id) }}" method="POST" class="paid-form">
                   @csrf
@@ -49,7 +67,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="9" class="empty-text">No half-paid bookings found.</td>
+              <td colspan="10" class="empty-text">No half-paid bookings found.</td>
             </tr>
           @endforelse
         </tbody>
@@ -62,6 +80,7 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+// ✅ SweetAlert Confirmation
 document.addEventListener("DOMContentLoaded", function() {
   const buttons = document.querySelectorAll(".mark-paid-btn");
 
@@ -84,13 +103,24 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     });
   });
+
+  // 🔍 Instant Search Filter
+  const searchInput = document.getElementById("bookingSearch");
+  const rows = document.querySelectorAll("#bookingsTable tbody tr");
+
+  searchInput.addEventListener("keyup", function() {
+    const searchValue = this.value.toLowerCase();
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(searchValue) ? "" : "none";
+    });
+  });
 });
 </script>
 @endpush
 
 @push('styles')
 <style>
-
 .status {
   padding: 5px 10px;
   border-radius: 6px;
@@ -133,6 +163,19 @@ document.addEventListener("DOMContentLoaded", function() {
   text-align: center;
   color: #999;
   padding: 20px 0;
+}
+
+.search-bar input {
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: #28a745;
+  box-shadow: 0 0 3px rgba(40, 167, 69, 0.5);
 }
 </style>
 @endpush
