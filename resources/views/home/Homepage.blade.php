@@ -338,7 +338,7 @@
 
   .artist-card img[alt="Andres Muhlach"] {
     height: 300px;
-    object-position: 20% center !important;
+    object-position: 80% center !important;
   }
 }
 
