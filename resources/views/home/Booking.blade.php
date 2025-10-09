@@ -167,11 +167,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form");
     const guestInput = document.querySelector('input[name="guest_number"]');
 
-    // Minimum dates
-    const today = new Date().toISOString().split("T")[0];
+    // ✅ Create a live Philippine time display for debugging
+    const timeDisplay = document.createElement("div");
+    timeDisplay.style = "margin-bottom: 15px; font-weight: 600; color: #1e293b;";
+    timeDisplay.id = "ph-time-display";
+    document.body.prepend(timeDisplay);
+
+    function updatePHTime() {
+        const nowPH = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
+        timeDisplay.innerHTML = "🇵🇭 Current Philippine Time: " + nowPH;
+    }
+    updatePHTime();
+    setInterval(updatePHTime, 1000);
+
+    // ✅ Force timezone to Asia/Manila for all date operations
+    const nowInPH = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
+    const today = new Date(nowInPH).toISOString().split("T")[0];
+
+    // Set minimum selectable dates
     if (startInput) startInput.min = today;
     if (endInput) endInput.min = today;
 
+    // 🧮 Price calculation
     function calculatePrice() {
         if (startInput.value && endInput.value) {
             const start = new Date(startInput.value);
@@ -181,17 +198,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 const nights = Math.floor((end - start) / (1000 * 60 * 60 * 24));
                 let total = nights * pricePerNight;
 
-                // ✅ UPDATED LOGIC — ₱500 per guest beyond 6
                 const guests = parseInt(guestInput.value) || 0;
                 if (guests > 6) {
                     const extraGuests = guests - 6;
                     const extraFee = extraGuests * 500;
                     total += extraFee;
-
-                    // 🟢 Include fee details in text
-                    totalPriceElem.textContent = `Total for ${nights} night${nights > 1 ? 's' : ''} (₱${extraFee.toLocaleString()} extra for ${extraGuests} additional guest${extraGuests > 1 ? 's' : ''}): ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    totalPriceElem.textContent = `Total for ${nights} night${nights > 1 ? 's' : ''} (₱${extraFee.toLocaleString()} extra for ${extraGuests} guest${extraGuests > 1 ? 's' : ''}): ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
                 } else {
-                    totalPriceElem.textContent = `Total for ${nights} night${nights > 1 ? 's' : ''}: ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    totalPriceElem.textContent = `Total for ${nights} night${nights > 1 ? 's' : ''}: ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
                 }
 
                 priceSummary.style.display = "block";
@@ -203,7 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Date changes
+    // Handle date changes
     startInput.addEventListener("change", function () {
         const arrival = new Date(this.value);
         const minDeparture = new Date(arrival);
@@ -219,7 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
     endInput.addEventListener("change", calculatePrice);
     guestInput.addEventListener("input", calculatePrice);
 
-    // Validate dates on submit
+    // Validate on submit
     if (form) {
         form.addEventListener("submit", function (e) {
             const start = new Date(startInput.value);
@@ -231,20 +245,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // FullCalendar (unchanged)
+    // 🗓️ FullCalendar with PH timezone
     const staycationId = "{{ $staycation->id }}";
     if (document.getElementById("calendar")) {
         fetch(`/events/${staycationId}`)
             .then(res => res.json())
             .then(events => {
                 const bookedEvents = events.map(event => {
-                    const start = event.start;
-                    const end = new Date(event.end);
-                    end.setDate(end.getDate() - 1);
+                    const startPH = new Date(new Date(event.start).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+                    const endPH = new Date(new Date(event.end).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+                    endPH.setDate(endPH.getDate() - 1);
+
                     return {
                         title: "Booked",
-                        start: start,
-                        end: end.toISOString().split("T")[0],
+                        start: startPH.toISOString().split("T")[0],
+                        end: endPH.toISOString().split("T")[0],
                         allDay: true,
                         display: "background",
                         backgroundColor: "#f56565",
@@ -256,14 +271,25 @@ document.addEventListener("DOMContentLoaded", function () {
                     initialView: "dayGridMonth",
                     height: "auto",
                     aspectRatio: 1.4,
-                    headerToolbar: { left: "prev,next today", center: "title", right: "" },
-                    events: bookedEvents,
+                    headerToolbar: {
+                        left: "prev,next today",
+                        center: "title",
+                        right: ""
+                    },
+                    timeZone: "Asia/Manila",
+                    events: bookedEvents
                 });
                 calendar.render();
             });
     }
+
+    // 🧭 Debugging console logs
+    console.log("Local device time:", new Date());
+    console.log("Philippine time:", new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
 });
 </script>
+
+
 
 @section('Footer')
 @include('Footer')
