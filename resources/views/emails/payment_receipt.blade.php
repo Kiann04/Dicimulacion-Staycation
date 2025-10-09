@@ -30,8 +30,8 @@
 
     <ul>    
         <li><strong>Booking ID:</strong> {{ $booking->id }}</li>
-        <li><strong>Staycation:</strong> {{ $booking->staycation->name ?? '' }}</li>
-        <li><strong>Amount Paid:</strong> ₱{{ number_format($booking->total_price, 2) }}</li>
+        <li><strong>Staycation:</strong> {{ $booking->staycation->house_name ?? '' }}</li>
+        <li><strong>Amount Paid:</strong> ₱{{ number_format($booking->amount_paid, 2) }}</li>
         <li><strong>Status:</strong> {{ ucfirst($booking->payment_status) }}</li>
         <li><strong>Date:</strong> {{ $booking->updated_at->format('M d, Y h:i A') }}</li>
     </ul>
