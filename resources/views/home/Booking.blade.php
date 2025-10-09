@@ -86,23 +86,43 @@
     </div>
 
     <!-- Image Carousel -->
-    <div class="col-lg-6">
-      <div id="staycationCarousel" class="carousel slide shadow-sm rounded overflow-hidden" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          @foreach(['House1.png','House2.png','House3.png','House5.png'] as $i => $img)
-            <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
-              <img src="{{ asset('assets/'.$img) }}" class="d-block w-100 rounded" alt="Staycation Image">
+    <!-- Image Carousel -->
+        <div class="col-lg-6">
+        <div id="staycationCarousel" class="carousel slide shadow-sm rounded overflow-hidden" data-bs-ride="carousel">
+            <div class="carousel-inner">
+
+            @php
+                // Combine main image and gallery images
+                $images = collect([$staycation->house_image]);
+                if (isset($staycation->images) && $staycation->images->isNotEmpty()) {
+                    $images = $images->merge($staycation->images->pluck('image_path'));
+                }
+            @endphp
+
+            @foreach($images as $i => $img)
+                <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
+                <img 
+                    src="{{ asset('storage/' . $img) }}" 
+                    class="d-block w-100 rounded" 
+                    alt="Staycation Image {{ $i + 1 }}"
+                    style="height: 400px; object-fit: cover;">
+                </div>
+            @endforeach
+
             </div>
-          @endforeach
+
+            <!-- Controls -->
+            @if($images->count() > 1)
+            <button class="carousel-control-prev" type="button" data-bs-target="#staycationCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon bg-dark rounded-circle p-2"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#staycationCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon bg-dark rounded-circle p-2"></span>
+            </button>
+            @endif
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#staycationCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#staycationCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon"></span>
-        </button>
-      </div>
-    </div>
+        </div>
+
 
   </div>
 </section>
