@@ -25,7 +25,7 @@
                         <th>Staycation</th>
                         <th>Dates</th>
                         <th>Guests</th>
-                        <th>Total</th>
+                        <th>Amount Paid</th>
                         <th>Status</th>
                         <th>Review</th>
                     </tr>
