@@ -228,10 +228,13 @@
     </p>
 
     <div class="row g-4 justify-content-center">
+
       <!-- Artist 1: Andres Muhlach -->
       <div class="col-sm-6 col-md-5 col-lg-4">
         <div class="artist-card card bg-transparent border-0 rounded-4 overflow-hidden h-100">
-          <img src="{{ asset('assets/artists/andres_muhlach.jpg') }}" class="card-img-top artist-img" alt="Andres Muhlach">
+          <div class="artist-img-wrapper">
+            <img src="{{ asset('assets/artists/andres_muhlach.jpg') }}" class="artist-img" alt="Andres Muhlach">
+          </div>
           <div class="card-body text-center">
             <h5 class="fw-bold text-white mb-1">Andres Muhlach</h5>
             <p class="text-light small mb-1">Actor</p>
@@ -243,7 +246,9 @@
       <!-- Artist 2: Ashtine Olviga -->
       <div class="col-sm-6 col-md-5 col-lg-4">
         <div class="artist-card card bg-transparent border-0 rounded-4 overflow-hidden h-100">
-          <img src="{{ asset('assets/artists/ashtine_olviga.jpg') }}" class="card-img-top artist-img" alt="Ashtine Olviga">
+          <div class="artist-img-wrapper">
+            <img src="{{ asset('assets/artists/ashtine_olviga.jpg') }}" class="artist-img" alt="Ashtine Olviga">
+          </div>
           <div class="card-body text-center">
             <h5 class="fw-bold text-white mb-1">Ashtine Olviga</h5>
             <p class="text-light small mb-1">Singer & Actress</p>
@@ -251,6 +256,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -281,10 +287,20 @@
   z-index: 2;
 }
 
+/* Artist image container (centering fix) */
+.artist-img-wrapper {
+  height: 360px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #000;
+}
+
 /* Artist image */
 .artist-img {
   width: 100%;
-  height: 360px;
+  height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
   border-bottom: 3px solid #0d6efd;
@@ -293,7 +309,7 @@
   transform: scale(1.05);
 }
 
-/* Artist card */
+/* Artist card styling */
 .artist-card {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(8px);
