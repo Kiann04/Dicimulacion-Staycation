@@ -119,7 +119,7 @@
             <div class="col-lg-10">
                 <div class="text-center mb-5">
                     <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill mb-3">Amenities & Services</span>
-                    <h2 class="display-4 fw-bold text-dark mb-3">Kinds of Service Offered</h2>
+                    <h2 class="fw-bold mb-5 text-center display-6">Kinds of Service Offered</h2>
                     <p class="lead text-muted fs-5">
                         {{ $staycation->house_name }} offers the following services and amenities to ensure a complete staycation experience.
                     </p>
