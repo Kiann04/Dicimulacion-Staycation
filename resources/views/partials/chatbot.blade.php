@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // FAQ database
     const faq = [
-        { keywords: ["checkin", "check-in", "arrival"], reply: "Check-in time is 8:00 PM." },
+        { keywords: ["checkin", "check-in", "arrival"], reply: "Check-in time is 2:00 PM." },
         { keywords: ["checkout", "check-out", "departure"], reply: "Check-out time is 12:00 PM." },
         { keywords: ["standard room", "price standard"], reply: "Standard Room costs ₱2,500 per night." },
         { keywords: ["family suite", "price family"], reply: "Family Suite costs ₱4,500 per night." },
