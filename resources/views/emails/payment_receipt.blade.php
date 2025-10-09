@@ -55,6 +55,7 @@
             font-size: 12px;
             color: #777;
             margin-top: 20px;
+            text-align: center;
         }
     </style>
 </head>
@@ -63,23 +64,24 @@
         <h2>Payment Receipt</h2>
 
         <p>Dear {{ $booking->user->name ?? $booking->name }},</p>
-        <p>We have received your payment for your booking. Below are your booking details:</p>
+        <p>We have received your payment for your staycation booking. Below are your booking details:</p>
 
         @php
             $total = $booking->total_price ?? 0;
             $vat = $booking->vat_amount ?? 0;
             $base = round($total - $vat, 2);
             $remaining = round($total - ($booking->amount_paid ?? 0), 2);
+            $receiptNumber = $booking->receipt_number ?? 'R-' . now()->format('Y') . '-' . str_pad($booking->id, 6, '0', STR_PAD_LEFT);
         @endphp
 
         <table>
             <tr>
                 <th>Item</th>
-                <th>Amount</th>
+                <th>Details</th>
             </tr>
             <tr>
-                <td>Booking ID</td>
-                <td>{{ $booking->id }}</td>
+                <td>Receipt Number</td>
+                <td>{{ $receiptNumber }}</td>
             </tr>
             <tr>
                 <td>Staycation</td>
