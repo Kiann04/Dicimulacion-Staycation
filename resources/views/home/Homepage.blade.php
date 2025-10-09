@@ -228,6 +228,19 @@
     </p>
 
     <div class="row g-4 justify-content-center">
+      
+      <div class="col-sm-6 col-md-5 col-lg-4">
+        <div class="artist-card card bg-transparent border-0 rounded-4 overflow-hidden h-100">
+          <div class="artist-img-wrapper">
+            <img src="{{ asset('assets/artists/ashtine_olviga.jpg') }}" class="artist-img" alt="Ashtine Olviga">
+          </div>
+          <div class="card-body text-center">
+            <h5 class="fw-bold text-white mb-1">Ashtine Olviga</h5>
+            <p class="text-light small mb-1">Singer & Actress</p>
+            <p class="fw-semibold small text-primary mb-0">“Minamahal 100 Bulak Para Kay Stella”</p>
+          </div>
+        </div>
+      </div>
 
       <!-- Artist 1: Andres Muhlach -->
       <div class="col-sm-6 col-md-5 col-lg-4">
@@ -243,19 +256,6 @@
         </div>
       </div>
 
-      <!-- Artist 2: Ashtine Olviga -->
-      <div class="col-sm-6 col-md-5 col-lg-4">
-        <div class="artist-card card bg-transparent border-0 rounded-4 overflow-hidden h-100">
-          <div class="artist-img-wrapper">
-            <img src="{{ asset('assets/artists/ashtine_olviga.jpg') }}" class="artist-img" alt="Ashtine Olviga">
-          </div>
-          <div class="card-body text-center">
-            <h5 class="fw-bold text-white mb-1">Ashtine Olviga</h5>
-            <p class="text-light small mb-1">Singer & Actress</p>
-            <p class="fw-semibold small text-primary mb-0">“Minamahal 100 Bulak Para Kay Stella”</p>
-          </div>
-        </div>
-      </div>
 
     </div>
   </div>
