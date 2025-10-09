@@ -85,10 +85,11 @@
       </div>
     </div>
 
+
     <!-- Image Carousel -->
-    <!-- Image Carousel -->
+        <!-- Image Carousel -->
         <div class="col-lg-6">
-        <div id="staycationCarousel" class="carousel slide shadow-sm rounded overflow-hidden" data-bs-ride="carousel">
+        <div id="staycationCarousel" class="carousel slide carousel-fade shadow-sm rounded overflow-hidden" data-bs-ride="carousel" data-bs-interval="3000">
             <div class="carousel-inner">
 
             @php
@@ -105,7 +106,7 @@
                     src="{{ asset('storage/' . $img) }}" 
                     class="d-block w-100 rounded" 
                     alt="Staycation Image {{ $i + 1 }}"
-                    style="height: 400px; object-fit: cover;">
+                    style="height: 420px; object-fit: cover;">
                 </div>
             @endforeach
 
@@ -120,8 +121,18 @@
                 <span class="carousel-control-next-icon bg-dark rounded-circle p-2"></span>
             </button>
             @endif
+
+            <!-- Optional indicators (small dots below images) -->
+            @if($images->count() > 1)
+            <div class="carousel-indicators mb-0">
+                @foreach($images as $i => $img)
+                <button type="button" data-bs-target="#staycationCarousel" data-bs-slide-to="{{ $i }}" class="{{ $i === 0 ? 'active' : '' }}" aria-current="{{ $i === 0 ? 'true' : 'false' }}"></button>
+                @endforeach
+            </div>
+            @endif
         </div>
         </div>
+
 
 
   </div>
