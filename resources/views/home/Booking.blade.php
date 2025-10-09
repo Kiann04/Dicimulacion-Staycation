@@ -112,6 +112,166 @@
     <h2 class="fw-bold">Availability</h2>
     <div id="calendar"></div>
 </div>
+{{-- Services Section --}}
+<section class="services-section py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="text-center mb-5">
+                    <h2 class="display-4 fw-bold text-primary mb-3">Kinds of Service Offered</h2>
+                    <p class="lead text-muted">
+                        {{ $staycation->house_name }} offers the following services and amenities to ensure a complete staycation experience.
+                    </p>
+                </div>
+                
+                <div class="row g-4">
+                    {{-- Scenic Views --}}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon mb-3">
+                                    <i class="fas fa-mountain fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Scenic Views</h5>
+                                <p class="card-text text-muted">City Skyline, Lake, and Mountain</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- Fully-equipped Kitchen --}}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon mb-3">
+                                    <i class="fas fa-utensils fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Fully-equipped Kitchen</h5>
+                                <p class="card-text text-muted">Dining table, Rice cooker, Refrigerator, Kettle, Stove, and Utensils</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- Essentials --}}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon mb-3">
+                                    <i class="fas fa-soap fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Essentials</h5>
+                                <p class="card-text text-muted">Towels, Bed sheets, Extra pillows, Blankets, Cleaning products, Body soap, Shampoo, and Toilet paper</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- In-room Entertainment --}}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon mb-3">
+                                    <i class="fas fa-tv fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">In-room Entertainment</h5>
+                                <p class="card-text text-muted">TV, Books, Board games</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- Outdoor Amenities --}}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon mb-3">
+                                    <i class="fas fa-tree fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Outdoor Amenities</h5>
+                                <p class="card-text text-muted">Patio, BBQ Grill, Dining area</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- Pool Access --}}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon mb-3">
+                                    <i class="fas fa-swimming-pool fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Pool Access</h5>
+                                <p class="card-text text-muted">Enjoy refreshing swims anytime</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- Free Parking --}}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon mb-3">
+                                    <i class="fas fa-parking fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Free Parking</h5>
+                                <p class="card-text text-muted">On-site and street</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- Pet-friendly accommodations --}}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon mb-3">
+                                    <i class="fas fa-paw fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Pet-friendly Accommodations</h5>
+                                <p class="card-text text-muted">Bring your furry friends along</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- Breakfast provided --}}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon mb-3">
+                                    <i class="fas fa-coffee fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Breakfast Provided</h5>
+                                <p class="card-text text-muted">Start your day with a complimentary meal</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- Long-term stay allowed --}}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon mb-3">
+                                    <i class="fas fa-calendar-check fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Long-term Stay Allowed</h5>
+                                <p class="card-text text-muted">(28+ days)</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- Home Safety --}}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="icon mb-3">
+                                    <i class="fas fa-shield-alt fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Home Safety</h5>
+                                <p class="card-text text-muted">Fire extinguisher</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- Reviews Section -->
 <section class="container my-5" id="reviews">
