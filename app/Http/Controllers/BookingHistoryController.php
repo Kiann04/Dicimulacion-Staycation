@@ -6,88 +6,96 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Staycation;
 use App\Models\Booking;
-use App\Models\Review;
 use Carbon\Carbon;
 
 class BookingHistoryController extends Controller
 {
-    /**
-     * 🏠 Show booking form for a selected staycation
-     */
-    public function bookingForm($id)
-    {
+    // Show booking form
+    public function bookingForm($id, Request $request)
+    {   
         $staycation = Staycation::findOrFail($id);
-        $reviews = Review::where('staycation_id', $id)->get();
 
-        return view('home.RequestToBook', compact('staycation', 'reviews'));
+        // Optional: get defaults from request or set fallback
+        $guest_number = $request->guest_number ?? 1;
+        $startDate = $request->startDate ?? now()->format('Y-m-d');
+        $endDate = $request->endDate ?? now()->addDay()->format('Y-m-d');
+        $phone = Auth::user()->phone ?? '';
+
+        return view('home.RequestToBook', compact(
+            'staycation',
+            'guest_number',
+            'startDate',
+            'endDate',
+            'phone'
+        ));
     }
 
-    /**
-     * 📄 Submit booking request directly (no preview page)
-     */
+
+    // Submit booking request
     public function submitRequest(Request $request, $staycation_id)
     {
-        $staycation = Staycation::findOrFail($staycation_id);
-
-        // ✅ Validation
         $request->validate([
             'guest_number' => 'required|integer|min:1',
             'startDate' => 'required|date',
             'endDate' => 'required|date|after_or_equal:startDate',
+            'phone' => 'required|string|max:20',
             'payment_type' => 'required|in:half,full',
             'payment_method' => 'required|in:gcash,bpi',
             'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'phone' => 'required|string|max:20',
             'transaction_number' => 'nullable|string|max:255',
             'message' => 'nullable|string|max:500',
         ]);
 
+        $staycation = Staycation::findOrFail($staycation_id);
+
         $startDate = Carbon::parse($request->startDate);
         $endDate = Carbon::parse($request->endDate);
 
-        // 🧩 Prevent overlapping bookings
-        $hasOverlap = Booking::where('staycation_id', $staycation_id)
-            ->where(function ($query) use ($startDate, $endDate) {
-                $query->where('start_date', '<', $endDate)
-                    ->where('end_date', '>', $startDate);
-            })
-            ->exists();
+        $guest_number = (int)$request->guest_number;
 
-        if ($hasOverlap) {
-            return back()->with('error', '⚠️ The selected dates overlap with an existing booking. Please choose another range.');
-        }
-
-        // 🏨 Calculate total price
+        // Calculate nights (minimum 1)
         $nights = max(1, $startDate->diffInDays($endDate));
+
+        // Base price
         $totalPrice = $staycation->house_price * $nights;
 
-        // Extra guests beyond 6 = ₱500 each
-        $extraGuests = max(0, $request->guest_number - 6);
+        // Extra guests beyond 6
+        $extraGuests = max(0, $guest_number - 6);
         $extraFee = $extraGuests * 500;
         $totalPrice += $extraFee;
 
-        // Half or full payment amount
+        // Amount to pay depending on payment_type
         $amountPaid = $request->payment_type === 'half'
             ? round($totalPrice / 2, 2)
             : $totalPrice;
 
-        // 📸 Upload payment proof
+        // Upload proof of payment
         $proofPath = null;
         if ($request->hasFile('payment_proof')) {
-            $proofFile = $request->file('payment_proof');
-            $proofName = time() . '_' . $proofFile->getClientOriginalName();
-            $proofFile->move(public_path('payment_proofs'), $proofName);
-            $proofPath = 'payment_proofs/' . $proofName;
+            $file = $request->file('payment_proof');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('payment_proofs'), $filename);
+            $proofPath = 'payment_proofs/' . $filename;
         }
 
-        // ✅ Create booking record
+        // Prevent duplicate booking for same staycation & dates
+        $duplicate = Booking::where('staycation_id', $staycation_id)
+            ->where('start_date', $startDate->format('Y-m-d'))
+            ->where('end_date', $endDate->format('Y-m-d'))
+            ->first();
+
+        if ($duplicate) {
+            return back()->with('error', 'This staycation is already booked for the selected dates.');
+        }
+
+        // Create booking
         Booking::create([
             'staycation_id' => $staycation_id,
             'user_id' => Auth::id(),
             'name' => Auth::user()->name,
             'email' => Auth::user()->email,
             'phone' => $request->phone,
-            'guest_number' => $request->guest_number,
+            'guest_number' => $guest_number,
             'start_date' => $startDate->format('Y-m-d'),
             'end_date' => $endDate->format('Y-m-d'),
             'price_per_day' => $staycation->house_price,
@@ -96,18 +104,15 @@ class BookingHistoryController extends Controller
             'payment_status' => 'unpaid',
             'payment_method' => $request->payment_method,
             'payment_proof' => $proofPath,
-            'transaction_number' => $request->transaction_number ?? null,
-            'message_to_admin' => $request->message ?? null,
-            'status' => 'pending',
+            'transaction_number' => $request->transaction_number,
+            'message_to_admin' => $request->message,
+            'status' => 'waiting',
         ]);
 
         return redirect()->route('BookingHistory.index')
-            ->with('success', '✅ Your booking has been submitted! Please wait for admin confirmation.');
+            ->with('success', 'Your booking request has been submitted! Please wait for admin confirmation.');
     }
 
-    /**
-     * 📖 Show user's booking history
-     */
     public function index()
     {
         $bookings = Booking::where('user_id', Auth::id())
