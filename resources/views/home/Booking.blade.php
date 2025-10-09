@@ -88,12 +88,12 @@
 
     <!-- Image Carousel -->
         <!-- Image Carousel -->
+        <!-- Image Carousel -->
         <div class="col-lg-6">
         <div id="staycationCarousel" class="carousel slide carousel-fade shadow-sm rounded overflow-hidden" data-bs-ride="carousel" data-bs-interval="3000">
             <div class="carousel-inner">
-
             @php
-                // Combine main image and gallery images
+                // Combine main image + gallery
                 $images = collect([$staycation->house_image]);
                 if (isset($staycation->images) && $staycation->images->isNotEmpty()) {
                     $images = $images->merge($staycation->images->pluck('image_path'));
@@ -109,10 +109,8 @@
                     style="height: 420px; object-fit: cover;">
                 </div>
             @endforeach
-
             </div>
 
-            <!-- Controls -->
             @if($images->count() > 1)
             <button class="carousel-control-prev" type="button" data-bs-target="#staycationCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon bg-dark rounded-circle p-2"></span>
@@ -121,17 +119,37 @@
                 <span class="carousel-control-next-icon bg-dark rounded-circle p-2"></span>
             </button>
             @endif
+        </div>
 
-            <!-- Optional indicators (small dots below images) -->
-            @if($images->count() > 1)
-            <div class="carousel-indicators mb-0">
-                @foreach($images as $i => $img)
-                <button type="button" data-bs-target="#staycationCarousel" data-bs-slide-to="{{ $i }}" class="{{ $i === 0 ? 'active' : '' }}" aria-current="{{ $i === 0 ? 'true' : 'false' }}"></button>
-                @endforeach
+        <!-- "Show All Photos" Button -->
+        <div class="text-center mt-3">
+            <button type="button" class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#photoModal">
+            <i class="bi bi-images me-2"></i> Show All Photos
+            </button>
+        </div>
+        </div>
+
+        <!-- Modal: Show All Photos -->
+        <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 overflow-hidden">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="photoModalLabel">{{ $staycation->house_name }} - All Photos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            @endif
+            <div class="modal-body bg-light">
+                <div class="row g-3">
+                @foreach($images as $img)
+                    <div class="col-md-4 col-lg-3">
+                    <img src="{{ asset('storage/' . $img) }}" class="img-fluid rounded shadow-sm" alt="Gallery Photo">
+                    </div>
+                @endforeach
+                </div>
+            </div>
+            </div>
         </div>
         </div>
+
 
 
 
