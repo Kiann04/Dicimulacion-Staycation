@@ -42,7 +42,7 @@
                                 {{ \Carbon\Carbon::parse($b->end_date)->format('M d, Y') }}
                             </td>
                             <td>{{ $b->guest_number }}</td>
-                            <td>₱{{ number_format($b->total_price, 2) }}</td>
+                            <td>₱{{ number_format($b->amount_paid, 2) }}</td>
                             <td>
                                 <span class="badge 
                                     @if($b->status === 'completed') bg-success
