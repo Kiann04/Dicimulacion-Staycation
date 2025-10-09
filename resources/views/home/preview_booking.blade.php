@@ -38,74 +38,71 @@
         @php
             use Carbon\Carbon;
 
-            // ✅ Parse submitted dates
+            // Parse dates and calculate nights (minimum 1)
             $start = Carbon::parse($startDate);
             $end = Carbon::parse($endDate);
-            $formattedStart = $start->format('M d, Y');   // ✅ Fixed undefined variable
-            $formattedEnd = $end->format('M d, Y');
+            $nights = max(1, $end->diffInDays($start));
 
-            // ✅ Calculate nights (minimum 1)
-            $nights = $end->diffInDays($start) ?: 1;
-
-            // ✅ Base price (before extra guests)
+            // Base price without extra guests
             $base_price = $staycation->house_price * $nights;
 
-            // ✅ Extra guests fee
+            // Extra guests (only > 6)
             $extraGuests = max(0, $guest_number - 6);
-            $extraFee = $extraGuests * 500;
+            $extraFee = $extraGuests > 0 ? $extraGuests * 500 : 0;
 
-            // ✅ Total price (base + extra)
+            // Total price including extra guest fee
             $total_price = $base_price + $extraFee;
 
-            // ✅ VAT (12%) included in total price
+            // VAT (12%)
             $vat_amount = round($total_price - ($total_price / 1.12), 2);
 
-            // ✅ Amount paid depending on payment type
-            $amount_paid = old('payment_type') === 'half'
-                ? round($total_price / 2, 2)
+            // Amount paid based on selected payment type (half/full)
+            $amount_paid = request()->old('payment_type') === 'half' 
+                ? round($total_price / 2, 2) 
                 : $total_price;
 
-            // ✅ Remaining balance
-            $remaining_balance = round($total_price - $amount_paid, 2);
-        @endphp
+            // Remaining balance
+            $remaining_balance = $total_price - $amount_paid;
 
-        <div class="booking-info mb-4">
-            <p><strong>Staycation:</strong> {{ $staycation->house_name }}</p>
-            <p><strong>Guests:</strong> {{ $guest_number }}</p>
-            <p><strong>Stay Dates:</strong> {{ $formattedStart }} - {{ $formattedEnd }} ({{ $nights }} night{{ $nights>1 ? 's' : '' }})</p>
-            <hr>
+            // Format dates for display
+            $formattedStart = $start->format('M d, Y');
+            $formattedEnd = $end->format('M d, Y');
+            @endphp
 
-            <p><strong>Base Price:</strong> ₱{{ number_format($base_price, 2) }}</p>
+            <div class="booking-info mb-4">
+                <p><strong>Staycation:</strong> {{ $staycation->house_name }}</p>
+                <p><strong>Guests:</strong> {{ $guest_number }}</p>
+                <p><strong>Stay Dates:</strong> {{ $formattedStart }} - {{ $formattedEnd }} ({{ $nights }} night{{ $nights > 1 ? 's' : '' }})</p>
+                <hr>
 
-            {{-- ✅ Only show extra guest fee if extra guests exist --}}
-            @if($extraGuests > 0)
-                <p><strong>Extra Guests Fee:</strong> ₱{{ number_format($extraFee, 2) }} ({{ $extraGuests }} extra guest{{ $extraGuests>1?'s':'' }})</p>
-            @endif
+                <p><strong>Base Price (without VAT):</strong> ₱{{ number_format($base_price, 2) }}</p>
 
-            <p><strong>VAT (12%):</strong> ₱{{ number_format($vat_amount, 2) }}</p>
+                @if($extraFee > 0)
+                    <p><strong>Extra Guests Fee:</strong> ₱{{ number_format($extraFee, 2) }} ({{ $extraGuests }} extra guest{{ $extraGuests > 1 ? 's' : '' }})</p>
+                @endif
 
-            <p class="total-amount">
-                <strong>Total Price (with VAT):</strong> ₱{{ number_format($total_price, 2) }}
-                <br>
-                <small class="text-muted">Amount Paid: ₱{{ number_format($amount_paid,2) }}, Remaining Balance: ₱{{ number_format($remaining_balance,2) }}</small>
-            </p>
-        </div>
+                <p><strong>VAT (12%):</strong> ₱{{ number_format($vat_amount, 2) }}</p>
 
+                <p class="total-amount">
+                    <strong>Total Price (with VAT):</strong> ₱{{ number_format($total_price, 2) }}
+                </p>
 
-        <form action="{{ route('booking.submit', $staycation->id) }}" method="POST" enctype="multipart/form-data">
-            @csrf
+                @if(request()->old('payment_type') === 'half')
+                    <p><strong>Amount Paid (50%):</strong> ₱{{ number_format($amount_paid, 2) }}</p>
+                    <p><strong>Remaining Balance:</strong> ₱{{ number_format($remaining_balance, 2) }}</p>
+                @endif
+            </div>
 
-            <!-- Hidden fields -->
+            <!-- Hidden inputs for submission -->
             <input type="hidden" name="guest_number" value="{{ $guest_number }}">
             <input type="hidden" name="startDate" value="{{ $startDate }}">
             <input type="hidden" name="endDate" value="{{ $endDate }}">
-            <input type="hidden" name="phone" value="{{ $phone ?? Auth::user()->phone ?? old('phone') }}">
             <input type="hidden" name="base_price" value="{{ $base_price }}">
-            <input type="hidden" name="extra_fee" value="{{ $extraFee }}">
             <input type="hidden" name="total_price" value="{{ $total_price }}">
             <input type="hidden" name="vat_amount" value="{{ $vat_amount }}">
             <input type="hidden" name="amount_paid" value="{{ $amount_paid }}">
             <input type="hidden" name="remaining_balance" value="{{ $remaining_balance }}">
+
 
             <!-- Payment Option -->
             <div class="mb-3">
