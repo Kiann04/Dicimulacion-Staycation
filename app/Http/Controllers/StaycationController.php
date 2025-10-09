@@ -24,19 +24,18 @@ class StaycationController extends Controller
             'house_description' => 'required|string',
             'house_price' => 'required|numeric|min:0',
             'house_image' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+            'house_images.*' => 'image|mimes:jpg,png,jpeg|max:2048', // for gallery
             'house_location' => 'required|string|max:255',
             'house_availability' => 'required|string',
         ]);
 
-        // ✅ Save image directly to public/storage/staycations (works on Hostinger)
+        // ✅ Save main image
         $imageName = time() . '.' . $request->house_image->extension();
         $request->house_image->move(public_path('storage/staycations'), $imageName);
-
-        // ✅ Store only the relative path (so Blade can use asset('storage/' . $image))
         $imagePath = 'staycations/' . $imageName;
 
-        // ✅ Create the staycation record
-        Staycation::create([
+        // ✅ Create staycation record
+        $staycation = Staycation::create([
             'house_name' => $validated['house_name'],
             'house_description' => $validated['house_description'],
             'house_price' => $validated['house_price'],
@@ -45,9 +44,20 @@ class StaycationController extends Controller
             'house_availability' => $validated['house_availability'],
         ]);
 
+        // ✅ Save multiple gallery images
+        if ($request->hasFile('house_images')) {
+            foreach ($request->file('house_images') as $image) {
+                $galleryName = time() . '-' . uniqid() . '.' . $image->extension();
+                $image->move(public_path('storage/staycations/gallery'), $galleryName);
+
+                $staycation->images()->create([
+                    'image_path' => 'staycations/gallery/' . $galleryName,
+                ]);
+            }
+        }
+
         return redirect()->back()->with('success', 'Staycation house added successfully!');
     }
-
 
     // ✅ Show single staycation details + all reviews for that staycation
     public function showStaycation($id)

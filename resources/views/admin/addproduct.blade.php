@@ -33,8 +33,14 @@
           </div>
 
           <div class="form-group">
-            <label for="house-image">Upload Image</label>
+            <label for="house-image">Main Image</label>
             <input type="file" id="house-image" name="house_image" accept="image/*" required>
+          </div>
+
+          <div class="form-group">
+            <label for="house-images">Gallery Images (optional)</label>
+            <input type="file" id="house-images" name="house_images[]" accept="image/*" multiple>
+            <small class="text-muted">You can select multiple images at once.</small>
           </div>
 
           <div class="form-group">
