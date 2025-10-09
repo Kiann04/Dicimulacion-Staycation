@@ -50,9 +50,6 @@ Route::middleware(['auth'])->group(function () {
 // =========================
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::view('/terms', 'home.Terms&Condition')->name('terms');
-Route::get('/terms', function () {
-return view('Terms&Condition'); // or 'terms' if your file is named terms.blade.php
-})->name('terms');
 
 // =========================
 // Auth (User)
