@@ -26,6 +26,7 @@
             $extraFee = $extraGuests > 0 ? $extraGuests * 500 : 0;
             $total_price = $base_price + $extraFee;
             $vat_amount = round($total_price - ($total_price / 1.12), 2);
+            $base_price = round($total_price - $vat_amount, 2);
             $amount_paid = request()->old('payment_type') === 'half' ? round($total_price/2,2) : $total_price;
             $remaining_balance = $total_price - $amount_paid;
             $formattedStart = $start->format('M d, Y');
@@ -55,14 +56,19 @@
             <input type="hidden" name="startDate" value="{{ $startDate }}">
             <input type="hidden" name="endDate" value="{{ $endDate }}">
             <input type="hidden" name="phone" value="{{ $phone ?? Auth::user()->phone ?? old('phone') }}">
+            <input type="hidden" name="base_price" value="{{ $base_price }}">
+            <input type="hidden" name="total_price" id="total_price_input" value="{{ $total_price }}">
+            <input type="hidden" name="vat_amount" value="{{ $vat_amount }}">
+            <input type="hidden" name="amount_paid" id="amount_paid_input" value="{{ $amount_paid }}">
+            <input type="hidden" name="remaining_balance" id="remaining_balance_input" value="{{ $remaining_balance }}">
 
             <!-- Payment Option -->
             <div class="mb-3">
                 <label class="form-label fw-semibold">Payment Option</label>
-                <select name="payment_type" class="form-select" required>
+                <select name="payment_type" id="payment_type" class="form-select" required>
                     <option value="">Select option</option>
-                    <option value="half">Half Payment (50%)</option>
-                    <option value="full">Full Payment</option>
+                    <option value="half" {{ request()->old('payment_type')==='half'?'selected':'' }}>Half Payment (50%)</option>
+                    <option value="full" {{ request()->old('payment_type')==='full'?'selected':'' }}>Full Payment</option>
                 </select>
             </div>
 
@@ -108,21 +114,31 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function(){
-    const paymentSelect = document.querySelector("select[name='payment_type']");
+    const paymentSelect = document.getElementById("payment_type");
     const totalElem = document.querySelector(".total-amount");
-    const totalPrice = parseFloat("{{ $total_price }}");
+    const totalPriceInput = document.getElementById("total_price_input");
+    const amountPaidInput = document.getElementById("amount_paid_input");
+    const remainingBalanceInput = document.getElementById("remaining_balance_input");
+    const totalPrice = parseFloat(totalPriceInput.value);
+
     const gcashInfo = document.getElementById("gcashInfo");
     const bpiInfo = document.getElementById("bpiInfo");
 
-    paymentSelect.addEventListener("change", function(){
-        if(this.value==='half'){
+    function updatePaymentDisplay(){
+        if(paymentSelect.value==='half'){
             const half = totalPrice/2;
             totalElem.innerHTML = `Amount Paid (50%): ₱${half.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
             <br><small class="text-muted">Remaining Balance: ₱${half.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</small>`;
+            amountPaidInput.value = half;
+            remainingBalanceInput.value = half;
         } else {
             totalElem.innerHTML = `<strong>Total Price:</strong> ₱${totalPrice.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+            amountPaidInput.value = totalPrice;
+            remainingBalanceInput.value = 0;
         }
-    });
+    }
+
+    paymentSelect.addEventListener("change", updatePaymentDisplay);
 
     document.getElementById("paymentMethod").addEventListener("change", function(){
         gcashInfo.style.display = this.value==='gcash'?'block':'none';
