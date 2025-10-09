@@ -8,23 +8,19 @@
 <body class="admin-dashboard">
 <div class="content-wrapper">
   <div class="main-content">
-    <header class="d-flex justify-content-between align-items-center">
-      <div>
-        <h1>Fully Paid Bookings</h1>
-        <p class="subtext">List of all fully paid staycation bookings.</p>
-      </div>
+    <header>
+      <h1>Fully Paid Bookings</h1>
+      <p class="subtext">List of all fully paid staycation bookings.</p>
 
-      <!-- 🔍 Added: Search Form -->
-      <form action="{{ route('admin.fullyPaid') }}" method="GET" class="d-flex align-items-center" style="gap:10px;">
-        <input type="text" name="search" value="{{ request('search') }}" 
-               placeholder="Search booking..." 
-               class="form-control" style="min-width: 220px;">
-        <button type="submit" class="btn btn-primary">Search</button>
-      </form>
+      <!-- 🔍 Added: Search Bar -->
+      <div class="search-bar mt-3">
+        <input type="text" id="bookingSearch" placeholder="Search booking..." 
+               class="form-control" style="max-width: 300px;">
+      </div>
     </header>
 
     <section class="table-container mt-4">
-      <table>
+      <table id="bookingsTable">
         <thead>
           <tr>
             <th>ID</th><th>Staycation</th><th>Customer</th><th>Phone</th>
@@ -58,4 +54,17 @@
     </section>
   </div>
 </div>
+
+<!-- 🔍 Added: Instant Table Search Script -->
+<script>
+document.getElementById('bookingSearch').addEventListener('keyup', function() {
+  const searchValue = this.value.toLowerCase();
+  const rows = document.querySelectorAll('#bookingsTable tbody tr');
+
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(searchValue) ? '' : 'none';
+  });
+});
+</script>
 @endsection
