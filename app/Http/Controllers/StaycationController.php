@@ -28,8 +28,14 @@ class StaycationController extends Controller
             'house_availability' => 'required|string',
         ]);
 
-        $imagePath = $request->file('house_image')->store('staycations', 'public');
+        // ✅ Save image directly to public/storage/staycations (works on Hostinger)
+        $imageName = time() . '.' . $request->house_image->extension();
+        $request->house_image->move(public_path('storage/staycations'), $imageName);
 
+        // ✅ Store only the relative path (so Blade can use asset('storage/' . $image))
+        $imagePath = 'staycations/' . $imageName;
+
+        // ✅ Create the staycation record
         Staycation::create([
             'house_name' => $validated['house_name'],
             'house_description' => $validated['house_description'],
@@ -41,6 +47,7 @@ class StaycationController extends Controller
 
         return redirect()->back()->with('success', 'Staycation house added successfully!');
     }
+
 
     // ✅ Show single staycation details + all reviews for that staycation
     public function showStaycation($id)
