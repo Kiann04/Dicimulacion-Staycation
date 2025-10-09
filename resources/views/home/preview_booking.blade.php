@@ -76,7 +76,12 @@
             <hr>
 
             <p><strong>Base Price:</strong> ₱{{ number_format($base_price, 2) }}</p>
-            <p><strong>Extra Guests Fee:</strong> ₱{{ number_format($extraFee, 2) }} @if($extraGuests>0) ({{ $extraGuests }} extra guest{{ $extraGuests>1?'s':'' }}) @endif</p>
+
+            {{-- ✅ Only show extra guest fee if extra guests exist --}}
+            @if($extraGuests > 0)
+                <p><strong>Extra Guests Fee:</strong> ₱{{ number_format($extraFee, 2) }} ({{ $extraGuests }} extra guest{{ $extraGuests>1?'s':'' }})</p>
+            @endif
+
             <p><strong>VAT (12%):</strong> ₱{{ number_format($vat_amount, 2) }}</p>
 
             <p class="total-amount">
@@ -85,6 +90,7 @@
                 <small class="text-muted">Amount Paid: ₱{{ number_format($amount_paid,2) }}, Remaining Balance: ₱{{ number_format($remaining_balance,2) }}</small>
             </p>
         </div>
+
 
         <form action="{{ route('booking.submit', $staycation->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
