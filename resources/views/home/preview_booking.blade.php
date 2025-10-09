@@ -36,32 +36,37 @@
         <h3 class="fw-bold mb-4 text-center">Confirm Your Booking</h3>
 
         @php
-        use Carbon\Carbon;
+            use Carbon\Carbon;
 
-        $start = Carbon::parse($startDate);
-        $end = Carbon::parse($endDate);
-        $nights = $end->diffInDays($start) ?: 1;
+            // ✅ Parse submitted dates
+            $start = Carbon::parse($startDate);
+            $end = Carbon::parse($endDate);
+            $formattedStart = $start->format('M d, Y');   // ✅ Fixed undefined variable
+            $formattedEnd = $end->format('M d, Y');
 
-        // ✅ Base price (before extra guests)
-        $base_price = $staycation->house_price * $nights;
+            // ✅ Calculate nights (minimum 1)
+            $nights = $end->diffInDays($start) ?: 1;
 
-        // ✅ Extra guests
-        $extraGuests = max(0, $guest_number - 6);
-        $extraFee = $extraGuests * 500;
+            // ✅ Base price (before extra guests)
+            $base_price = $staycation->house_price * $nights;
 
-        // ✅ Total price (already includes extra guests)
-        $total_price = $base_price + $extraFee;
+            // ✅ Extra guests fee
+            $extraGuests = max(0, $guest_number - 6);
+            $extraFee = $extraGuests * 500;
 
-        // ✅ VAT included in total price (12%)
-        $vat_amount = round($total_price - ($total_price / 1.12), 2);
+            // ✅ Total price (base + extra)
+            $total_price = $base_price + $extraFee;
 
-        // ✅ Amount paid based on selected payment type (half/full)
-        $amount_paid = request()->old('payment_type') === 'half'
-            ? round($total_price / 2, 2)
-            : $total_price;
+            // ✅ VAT (12%) included in total price
+            $vat_amount = round($total_price - ($total_price / 1.12), 2);
 
-        // ✅ Remaining balance
-        $remaining_balance = $total_price - $amount_paid;
+            // ✅ Amount paid depending on payment type
+            $amount_paid = old('payment_type') === 'half'
+                ? round($total_price / 2, 2)
+                : $total_price;
+
+            // ✅ Remaining balance
+            $remaining_balance = round($total_price - $amount_paid, 2);
         @endphp
 
         <div class="booking-info mb-4">
@@ -70,11 +75,14 @@
             <p><strong>Stay Dates:</strong> {{ $formattedStart }} - {{ $formattedEnd }} ({{ $nights }} night{{ $nights>1 ? 's' : '' }})</p>
             <hr>
 
-            <p><strong>Base Price (without VAT):</strong> ₱{{ number_format($basePrice, 2) }}</p>
-            <p><strong>VAT (12%):</strong> ₱{{ number_format($vatAmount, 2) }}</p>
+            <p><strong>Base Price:</strong> ₱{{ number_format($base_price, 2) }}</p>
+            <p><strong>Extra Guests Fee:</strong> ₱{{ number_format($extraFee, 2) }} @if($extraGuests>0) ({{ $extraGuests }} extra guest{{ $extraGuests>1?'s':'' }}) @endif</p>
+            <p><strong>VAT (12%):</strong> ₱{{ number_format($vat_amount, 2) }}</p>
 
             <p class="total-amount">
-                <strong>Total Price (with VAT):</strong> ₱{{ number_format($baseTotal, 2) }}
+                <strong>Total Price (with VAT):</strong> ₱{{ number_format($total_price, 2) }}
+                <br>
+                <small class="text-muted">Amount Paid: ₱{{ number_format($amount_paid,2) }}, Remaining Balance: ₱{{ number_format($remaining_balance,2) }}</small>
             </p>
         </div>
 
@@ -86,9 +94,8 @@
             <input type="hidden" name="startDate" value="{{ $startDate }}">
             <input type="hidden" name="endDate" value="{{ $endDate }}">
             <input type="hidden" name="phone" value="{{ $phone ?? Auth::user()->phone ?? old('phone') }}">
-            <input type="hidden" name="totalPrice" value="{{ $baseTotal }}">
-
             <input type="hidden" name="base_price" value="{{ $base_price }}">
+            <input type="hidden" name="extra_fee" value="{{ $extraFee }}">
             <input type="hidden" name="total_price" value="{{ $total_price }}">
             <input type="hidden" name="vat_amount" value="{{ $vat_amount }}">
             <input type="hidden" name="amount_paid" value="{{ $amount_paid }}">
@@ -114,33 +121,29 @@
                 </select>
             </div>
 
-            <!-- GCash Info -->
+            <!-- GCash / BPI info -->
             <div id="gcashInfo" class="p-3 bg-light border rounded mb-3" style="display:none;">
                 <h6 class="fw-semibold text-primary">GCash Information</h6>
                 <p><strong>Account Name:</strong> Dicimulacion Staycation</p>
                 <p><strong>GCash Number:</strong> 0917-123-4567</p>
             </div>
-
-            <!-- BPI Info -->
             <div id="bpiInfo" class="p-3 bg-light border rounded mb-3" style="display:none;">
                 <h6 class="fw-semibold text-primary">BPI Bank Information</h6>
                 <p><strong>Account Name:</strong> Dicimulacion Staycation</p>
                 <p><strong>Account Number:</strong> 1234-5678-90</p>
             </div>
 
-            <!-- Upload Proof of Payment -->
+            <!-- Upload Proof -->
             <div class="mb-3">
                 <label class="form-label fw-semibold">Upload Proof of Payment</label>
                 <input type="file" name="payment_proof" class="form-control" accept="image/*" required>
             </div>
 
-            <!-- Optional: Transaction number -->
+            <!-- Optional transaction / message -->
             <div class="mb-3">
                 <label class="form-label fw-semibold">Transaction Number (Optional)</label>
                 <input type="text" name="transaction_number" class="form-control" placeholder="Enter transaction number">
             </div>
-
-            <!-- Optional: Message to admin -->
             <div class="mb-3">
                 <label class="form-label fw-semibold">Message to Admin (Optional)</label>
                 <textarea name="message" class="form-control" rows="3" placeholder="Any special requests or notes"></textarea>
@@ -155,21 +158,21 @@
 document.addEventListener("DOMContentLoaded", function() {
     const paymentSelect = document.querySelector("select[name='payment_type']");
     const totalElem = document.querySelector(".total-amount");
-    const baseTotal = parseFloat("{{ $baseTotal }}");
+    const totalPrice = parseFloat("{{ $total_price }}");
 
     const gcashInfo = document.getElementById("gcashInfo");
     const bpiInfo = document.getElementById("bpiInfo");
 
-    // Update payment display dynamically
+    // Update payment dynamically
     function updatePaymentDisplay() {
-        const halfPrice = baseTotal / 2;
-        if (paymentSelect.value === "half") {
+        if(paymentSelect.value === 'half'){
+            const half = totalPrice/2;
             totalElem.innerHTML = `
-                Amount Paid (50%): ₱${halfPrice.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
-                <br><small class="text-muted">Remaining Balance: ₱${halfPrice.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</small>
+                Amount Paid (50%): ₱${half.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+                <br><small class="text-muted">Remaining Balance: ₱${half.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</small>
             `;
         } else {
-            totalElem.innerHTML = `<strong>Total Price (with VAT):</strong> ₱${baseTotal.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+            totalElem.innerHTML = `<strong>Total Price (with VAT):</strong> ₱${totalPrice.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
         }
     }
 
@@ -179,14 +182,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("paymentMethod").addEventListener("change", function() {
         gcashInfo.style.display = this.value === "gcash" ? "block" : "none";
         bpiInfo.style.display = this.value === "bpi" ? "block" : "none";
-    });
-
-    // Prevent double submission
-    const bookingForm = document.querySelector("form");
-    const submitButton = bookingForm.querySelector("button[type='submit']");
-    bookingForm.addEventListener("submit", function() {
-        submitButton.disabled = true;
-        submitButton.textContent = "Submitting...";
     });
 });
 </script>
