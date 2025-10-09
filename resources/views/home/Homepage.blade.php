@@ -326,7 +326,7 @@
 
 /* Responsive fix for Andres Muhlach's image (focus on center-right if needed) */
 .artist-card img[alt="Andres Muhlach"] {
-  object-position: center center !important;
+  object-position: left center !important;
 }
 
 /* Tablet view (≤768px) */
