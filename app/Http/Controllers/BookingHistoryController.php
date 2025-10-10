@@ -80,6 +80,8 @@ class BookingHistoryController extends Controller
             'message' => 'nullable|string|max:500',
         ]);
 
+        dd($request->guest_number);
+
         $staycation = Staycation::findOrFail($staycation_id);
 
         // Parse dates safely
