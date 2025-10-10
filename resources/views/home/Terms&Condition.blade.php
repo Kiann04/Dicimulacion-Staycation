@@ -14,18 +14,24 @@
 
       <div class="row g-4">
         <!-- Booking & Payment -->
-        <div class="col-12 col-md-6">
-          <div class="card shadow-sm h-100">
-            <div class="card-body">
-              <h5 class="card-title fw-semibold">1. Booking & Payment</h5>
-              <p class="card-text">
-                Bookings are only confirmed once payment has been made and verified by Dicimulacion Staycation. 
-                Guests are required to complete their payment immediately after submitting the booking form.
-              </p>
-              <p class="card-text">
-                <strong>Note:</strong> Unpaid bookings will not be considered valid and will not reserve your chosen date. 
-                Please upload your proof of payment through the booking page or send it directly to the admin for verification.
-              </p>
+          <div class="col-12 col-md-6">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <h5 class="card-title fw-semibold">1. Booking & Payment</h5>
+                <p class="card-text">
+                  Bookings are only confirmed once payment has been made and verified by Dicimulacion Staycation. 
+                  Guests are required to complete their payment immediately after submitting the booking form.
+                </p>
+                <p class="card-text">
+                  <strong>Note:</strong> Unpaid bookings will not be considered valid and will not reserve your chosen date. 
+                  Please upload your proof of payment through the booking page or send it directly to the admin for verification.
+                </p>
+                <p class="card-text">
+                  <strong>Important:</strong> The amount shown on your online receipt reflects only payments made through the 
+                  online booking system. Any additional payments (e.g., bank transfer or on-site payment) are not reflected online. 
+                  Please keep your official receipt as proof of full payment.
+                </p>
+              </div>
             </div>
           </div>
         </div>
