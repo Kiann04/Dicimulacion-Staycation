@@ -97,6 +97,12 @@
                 <td>Total (with VAT)</td>
                 <td>₱{{ number_format($total, 2) }}</td>
             </tr>
+            @php
+                $displayPaid = $booking->payment_status === 'paid' 
+                    ? $booking->total_price 
+                    : $booking->amount_paid;
+                $remaining = $booking->total_price - $displayPaid;
+            @endphp
             <tr>
                 <td>Amount Paid {{ $booking->payment_status === 'half_paid' ? '(Half Payment)' : '' }}</td>
                 <td class="highlight">₱{{ number_format($booking->amount_paid ?? 0, 2) }}</td>
