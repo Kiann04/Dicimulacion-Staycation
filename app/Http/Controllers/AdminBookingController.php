@@ -77,6 +77,7 @@ public function updatePayment(Request $request, $id)
 
     switch ($paymentStatus) {
         case 'paid':
+        case 'half_paid': // Include half_paid here
             $booking->status = 'confirmed';
 
             // Send payment receipt email
@@ -86,19 +87,8 @@ public function updatePayment(Request $request, $id)
 
             AuditLog::create([
                 'user_id'    => Auth::id(),
-                'action'     => 'Payment Received',
-                'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as Paid.",
-                'ip_address' => request()->ip(),
-            ]);
-            break;
-
-        case 'half_paid':
-            $booking->status = 'pending';
-
-            AuditLog::create([
-                'user_id'    => Auth::id(),
-                'action'     => 'Partial Payment',
-                'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as Half Paid.",
+                'action'     => $paymentStatus === 'paid' ? 'Payment Received' : 'Partial Payment',
+                'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as " . ucfirst(str_replace('_', ' ', $paymentStatus)) . ".",
                 'ip_address' => request()->ip(),
             ]);
             break;
@@ -123,5 +113,4 @@ public function updatePayment(Request $request, $id)
 
     return redirect()->back()->with('success', 'Payment status updated successfully!');
 }
-
 }
