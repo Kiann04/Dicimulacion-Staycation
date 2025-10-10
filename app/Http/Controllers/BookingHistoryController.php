@@ -95,7 +95,8 @@ class BookingHistoryController extends Controller
 
         // Compute base price
         $totalPrice = $staycation->house_price * $nights;
-
+        
+        
         // Add ₱500 per guest beyond 6
         $extraGuests = max(0, $request->guest_number - 6);
         $extraFee = $extraGuests * 500;
@@ -104,7 +105,11 @@ class BookingHistoryController extends Controller
         $amountPaid = $request->payment_type === 'half'
             ? round($totalPrice / 2, 2)
             : $totalPrice;
-
+        \Log::info('Guest Number: ' . $request->guest_number);
+        \Log::info('Base Price: ' . ($staycation->house_price * $nights));
+        \Log::info('Extra Guests: ' . $extraGuests);
+        \Log::info('Extra Fee: ' . $extraFee);
+        \Log::info('Final Total Price: ' . $totalPrice);
         // Upload proof of payment
         $proofPath = null;
         if ($request->hasFile('payment_proof')) {
