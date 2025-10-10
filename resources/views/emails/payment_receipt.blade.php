@@ -130,6 +130,11 @@
         </table>
 
         <p>Thank you for choosing us! We’re looking forward to hosting you. 😊</p>
+        <p style="font-size: 12px; color: #555; margin-top: 10px;">
+        <strong>Note:</strong> The amount shown above reflects only payments made through the online booking system. 
+            If you have settled additional amounts through other payment methods (e.g., bank or on-site), 
+            please keep your official receipt as proof of full payment.
+        </p>
 
         <p class="footer">
             This is an automated message. Please do not reply directly to this email.
