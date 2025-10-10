@@ -48,7 +48,6 @@
 </style>
 <body class="admin-dashboard">
 <div class="content-wrapper">
-<div class="update-booking-container">
     <div class="update-booking-card">
         <h2>✏️ Update Booking</h2>
 
