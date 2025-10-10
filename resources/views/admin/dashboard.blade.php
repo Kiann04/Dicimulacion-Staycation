@@ -45,8 +45,8 @@
                         <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
                         <td>{{ $booking->name }}</td>
                         <td>{{ $booking->phone }}</td>
-                        <td>{{ $booking->start_date->format('M d, Y h:i A') }}</td>
-                        <td>{{ $booking->end_date->format('M d, Y h:i A') }}</td>
+                        <td>{{ $booking->formatted_start_date }}</td>
+                        <td>{{ $booking->formatted_end_date }}</td>
                         <td>{{ $booking->created_at->format('M d, Y h:i A') }}</td> {{-- ✅ show nicely --}}
 
                         {{-- Payment Dropdown --}}

@@ -29,6 +29,10 @@ class Booking extends Model
         'transaction_number',
         'message_to_admin'
     ];
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+    ];
 
     public function staycation()
     {
@@ -43,5 +47,14 @@ class Booking extends Model
     public function review()
     {
         return $this->hasOne(Review::class);
+    }
+    public function getFormattedStartDateAttribute()
+    {
+        return $this->start_date->timezone('Asia/Manila')->format('M d, Y h:i A');
+    }
+
+    public function getFormattedEndDateAttribute()
+    {
+        return $this->end_date->timezone('Asia/Manila')->format('M d, Y h:i A');
     }
 }
