@@ -44,7 +44,7 @@
 
       <!-- Slide 3 -->
       <div class="carousel-item">
-        <div class="hero-slide" style="background-image: url('{{ asset('assets/Citylight.jpg') }}');">
+        <div class="hero-slide" style="background-image: url('{{ asset('assets/forest.jpg') }}');">
           <div class="hero-overlay"></div>
           <div class="hero-content text-center text-white fade-in">
             <h1 class="fw-bold display-4">Unwind in Beautiful Places</h1>
