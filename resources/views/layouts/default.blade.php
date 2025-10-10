@@ -10,8 +10,8 @@
 
     {{-- Boxicons --}}
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-p1CtL+Gv4O0kOx+z+XxZQ1XJfUGTTk9kTk+GvZp3o/8ZbM9uHn6j6ZB7N5Vl1G9hMXaQZqQHfZx9M3Xc8P8PRA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <style>
         /* Ensure the footer sticks to the bottom */
