@@ -168,78 +168,98 @@
         </div>
 
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
-            <!-- Amenity Card -->
+            <!-- Scenic Views -->
             <div class="col text-center">
                 <div class="amenity-card p-3 rounded shadow-sm transition-hover">
                     <i class="fas fa-mountain fa-2x text-primary mb-2"></i>
-                    <div>Scenic Views</div>
+                    <div class="fw-bold">Scenic Views</div>
+                    <div class="text-muted small">City skyline, lake, and mountains</div>
                 </div>
             </div>
+            <!-- Kitchen -->
             <div class="col text-center">
                 <div class="amenity-card p-3 rounded shadow-sm transition-hover">
                     <i class="fas fa-utensils fa-2x text-primary mb-2"></i>
-                    <div>Kitchen</div>
+                    <div class="fw-bold">Kitchen</div>
+                    <div class="text-muted small">Dining table, stove, refrigerator</div>
                 </div>
             </div>
+            <!-- Essentials -->
             <div class="col text-center">
                 <div class="amenity-card p-3 rounded shadow-sm transition-hover">
                     <i class="fas fa-soap fa-2x text-primary mb-2"></i>
-                    <div>Essentials</div>
+                    <div class="fw-bold">Essentials</div>
+                    <div class="text-muted small">Towels, bed sheets, toiletries</div>
                 </div>
             </div>
+            <!-- In-room Entertainment -->
             <div class="col text-center">
                 <div class="amenity-card p-3 rounded shadow-sm transition-hover">
                     <i class="fas fa-tv fa-2x text-primary mb-2"></i>
-                    <div>In-room Entertainment</div>
+                    <div class="fw-bold">In-room Entertainment</div>
+                    <div class="text-muted small">TV, books, board games</div>
                 </div>
             </div>
+            <!-- Outdoor Amenities -->
             <div class="col text-center">
                 <div class="amenity-card p-3 rounded shadow-sm transition-hover">
                     <i class="fas fa-tree fa-2x text-primary mb-2"></i>
-                    <div>Outdoor Amenities</div>
+                    <div class="fw-bold">Outdoor Amenities</div>
+                    <div class="text-muted small">Patio, BBQ grill, dining area</div>
                 </div>
             </div>
+            <!-- Pool Access -->
             <div class="col text-center">
                 <div class="amenity-card p-3 rounded shadow-sm transition-hover">
                     <i class="fas fa-swimming-pool fa-2x text-primary mb-2"></i>
-                    <div>Pool Access</div>
+                    <div class="fw-bold">Pool Access</div>
+                    <div class="text-muted small">Refresh anytime</div>
                 </div>
             </div>
+            <!-- Free Parking -->
             <div class="col text-center">
                 <div class="amenity-card p-3 rounded shadow-sm transition-hover">
                     <i class="fas fa-parking fa-2x text-primary mb-2"></i>
-                    <div>Free Parking</div>
+                    <div class="fw-bold">Free Parking</div>
+                    <div class="text-muted small">On-site & street</div>
                 </div>
             </div>
+            <!-- Pet-friendly -->
             <div class="col text-center">
                 <div class="amenity-card p-3 rounded shadow-sm transition-hover">
                     <i class="fas fa-paw fa-2x text-primary mb-2"></i>
-                    <div>Pet-friendly</div>
+                    <div class="fw-bold">Pet-friendly</div>
+                    <div class="text-muted small">Bring your furry friends</div>
                 </div>
             </div>
+            <!-- Breakfast Provided -->
             <div class="col text-center">
                 <div class="amenity-card p-3 rounded shadow-sm transition-hover">
                     <i class="fas fa-coffee fa-2x text-primary mb-2"></i>
-                    <div>Breakfast Provided</div>
+                    <div class="fw-bold">Breakfast Provided</div>
+                    <div class="text-muted small">Complimentary morning meal</div>
                 </div>
             </div>
+            <!-- Long-term Stay -->
             <div class="col text-center">
                 <div class="amenity-card p-3 rounded shadow-sm transition-hover">
                     <i class="fas fa-calendar-check fa-2x text-primary mb-2"></i>
-                    <div>Long-term Stay</div>
+                    <div class="fw-bold">Long-term Stay</div>
+                    <div class="text-muted small">(28+ days)</div>
                 </div>
             </div>
+            <!-- Home Safety -->
             <div class="col text-center">
                 <div class="amenity-card p-3 rounded shadow-sm transition-hover">
                     <i class="fas fa-shield-alt fa-2x text-primary mb-2"></i>
-                    <div>Home Safety</div>
+                    <div class="fw-bold">Home Safety</div>
+                    <div class="text-muted small">Fire extinguisher</div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Add this CSS to your stylesheet or inside a <style> tag -->
 <style>
 .amenity-card {
     background: #fff;
@@ -256,6 +276,7 @@
     transform: scale(1.2);
 }
 </style>
+
 
 
 <style>
