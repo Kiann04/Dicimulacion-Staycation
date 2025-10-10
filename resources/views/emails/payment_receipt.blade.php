@@ -68,8 +68,6 @@
 
         @php
             $total = $booking->total_price ?? 0;
-            $vat = $booking->vat_amount ?? 0;
-            $base = round($total - $vat, 2);
             $remaining = round($total - ($booking->amount_paid ?? 0), 2);
             $receiptNumber = $booking->receipt_number ?? 'R-' . now()->format('Y') . '-' . str_pad($booking->id, 6, '0', STR_PAD_LEFT);
         @endphp
@@ -94,14 +92,6 @@
             <tr>
                 <td>Departure Date</td>
                 <td>{{ \Carbon\Carbon::parse($booking->end_date)->format('M d, Y') }}</td>
-            </tr>
-            <tr>
-                <td>Base Price (without VAT)</td>
-                <td>₱{{ number_format($base, 2) }}</td>
-            </tr>
-            <tr>
-                <td>VAT (12%)</td>
-                <td>₱{{ number_format($vat, 2) }}</td>
             </tr>
             <tr>
                 <td>Total (with VAT)</td>
