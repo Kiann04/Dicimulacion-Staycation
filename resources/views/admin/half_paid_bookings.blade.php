@@ -58,7 +58,7 @@
               </td>
 
               <td>
-                <form action="{{ route('admin.paid_bookings', $booking->id) }}" method="POST" class="paid-form">
+                <form action="{{ route('admin.bookings.updatePayment', $booking->id) }}" method="POST" class="paid-form">
                   @csrf
                   <input type="hidden" name="payment_status" value="paid">
                   <button type="button" class="action-btn mark-paid-btn">Mark as Paid</button>
