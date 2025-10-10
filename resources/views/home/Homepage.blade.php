@@ -168,7 +168,7 @@
       <!-- Mini Icons / Stats -->
       <div class="row mt-4 text-center">
         <div class="col">
-          <h3 class="fw-bold">8 Homes</h3>
+          <h3 class="fw-bold">Our Homes</h3>
           <p class="text-muted mb-0">Perfectly placed for city and nature escapes</p>
         </div>
         <div class="col">
