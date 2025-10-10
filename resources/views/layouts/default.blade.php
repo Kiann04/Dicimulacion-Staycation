@@ -11,9 +11,6 @@
     {{-- Boxicons --}}
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
-    {{-- Custom Styles --}}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-
     <style>
         /* Ensure the footer sticks to the bottom */
         body {
