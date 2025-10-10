@@ -191,6 +191,7 @@ class BookingHistoryController extends Controller
     {
         $booking = Booking::findOrFail($id);
         $booking->payment_status = 'paid';
+        $booking->amount_paid = $booking->total_price;
         $booking->save();
 
         return response()->json([
