@@ -161,81 +161,101 @@
 {{-- Modern Services Section --}}
 <section class="services-section py-5 bg-light">
     <div class="container">
-        <div class="text-center mb-4">
-            <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill mb-2">Amenities & Services</span>
-            <h2 class="fw-bold mb-3 display-6">What this place offers</h2>
-            <p class="text-muted fs-5">{{ $staycation->house_name }} offers the following amenities for a comfortable stay.</p>
+        <div class="text-center mb-5">
+            <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill mb-3">Amenities & Services</span>
+            <h2 class="fw-bold mb-4">What this place offers</h2>
+            <p class="text-muted fs-5">{{ $staycation->house_name }} provides the following amenities for a comfortable stay.</p>
         </div>
 
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
-            {{-- Scenic Views --}}
-            <div class="col d-flex align-items-center gap-2" title="City Skyline, Lake, and Mountain views">
-                <i class="fas fa-mountain fa-lg text-primary"></i>
-                <span>Scenic Views</span>
+            <!-- Amenity Card -->
+            <div class="col text-center">
+                <div class="amenity-card p-3 rounded shadow-sm transition-hover">
+                    <i class="fas fa-mountain fa-2x text-primary mb-2"></i>
+                    <div>Scenic Views</div>
+                </div>
             </div>
-
-            {{-- Fully-equipped Kitchen --}}
-            <div class="col d-flex align-items-center gap-2" title="Dining table, Rice cooker, Refrigerator, Kettle, Stove, Utensils">
-                <i class="fas fa-utensils fa-lg text-primary"></i>
-                <span>Kitchen</span>
+            <div class="col text-center">
+                <div class="amenity-card p-3 rounded shadow-sm transition-hover">
+                    <i class="fas fa-utensils fa-2x text-primary mb-2"></i>
+                    <div>Kitchen</div>
+                </div>
             </div>
-
-            {{-- Essentials --}}
-            <div class="col d-flex align-items-center gap-2" title="Towels, Bed sheets, Extra pillows, Blankets, Soap, Shampoo, Toilet paper">
-                <i class="fas fa-soap fa-lg text-primary"></i>
-                <span>Essentials</span>
+            <div class="col text-center">
+                <div class="amenity-card p-3 rounded shadow-sm transition-hover">
+                    <i class="fas fa-soap fa-2x text-primary mb-2"></i>
+                    <div>Essentials</div>
+                </div>
             </div>
-
-            {{-- In-room Entertainment --}}
-            <div class="col d-flex align-items-center gap-2" title="TV, Books, Board games">
-                <i class="fas fa-tv fa-lg text-primary"></i>
-                <span>Entertainment</span>
+            <div class="col text-center">
+                <div class="amenity-card p-3 rounded shadow-sm transition-hover">
+                    <i class="fas fa-tv fa-2x text-primary mb-2"></i>
+                    <div>In-room Entertainment</div>
+                </div>
             </div>
-
-            {{-- Outdoor Amenities --}}
-            <div class="col d-flex align-items-center gap-2" title="Patio, BBQ Grill, Dining area">
-                <i class="fas fa-tree fa-lg text-primary"></i>
-                <span>Outdoor</span>
+            <div class="col text-center">
+                <div class="amenity-card p-3 rounded shadow-sm transition-hover">
+                    <i class="fas fa-tree fa-2x text-primary mb-2"></i>
+                    <div>Outdoor Amenities</div>
+                </div>
             </div>
-
-            {{-- Pool Access --}}
-            <div class="col d-flex align-items-center gap-2" title="Enjoy refreshing swims anytime">
-                <i class="fas fa-swimming-pool fa-lg text-primary"></i>
-                <span>Pool</span>
+            <div class="col text-center">
+                <div class="amenity-card p-3 rounded shadow-sm transition-hover">
+                    <i class="fas fa-swimming-pool fa-2x text-primary mb-2"></i>
+                    <div>Pool Access</div>
+                </div>
             </div>
-
-            {{-- Free Parking --}}
-            <div class="col d-flex align-items-center gap-2" title="On-site and street parking available">
-                <i class="fas fa-parking fa-lg text-primary"></i>
-                <span>Parking</span>
+            <div class="col text-center">
+                <div class="amenity-card p-3 rounded shadow-sm transition-hover">
+                    <i class="fas fa-parking fa-2x text-primary mb-2"></i>
+                    <div>Free Parking</div>
+                </div>
             </div>
-
-            {{-- Pet-friendly --}}
-            <div class="col d-flex align-items-center gap-2" title="Bring your furry friends along">
-                <i class="fas fa-paw fa-lg text-primary"></i>
-                <span>Pet-friendly</span>
+            <div class="col text-center">
+                <div class="amenity-card p-3 rounded shadow-sm transition-hover">
+                    <i class="fas fa-paw fa-2x text-primary mb-2"></i>
+                    <div>Pet-friendly</div>
+                </div>
             </div>
-
-            {{-- Breakfast Provided --}}
-            <div class="col d-flex align-items-center gap-2" title="Start your day with a complimentary meal">
-                <i class="fas fa-coffee fa-lg text-primary"></i>
-                <span>Breakfast</span>
+            <div class="col text-center">
+                <div class="amenity-card p-3 rounded shadow-sm transition-hover">
+                    <i class="fas fa-coffee fa-2x text-primary mb-2"></i>
+                    <div>Breakfast Provided</div>
+                </div>
             </div>
-
-            {{-- Long-term Stay --}}
-            <div class="col d-flex align-items-center gap-2" title="Allowed for 28+ days">
-                <i class="fas fa-calendar-check fa-lg text-primary"></i>
-                <span>Long-term Stay</span>
+            <div class="col text-center">
+                <div class="amenity-card p-3 rounded shadow-sm transition-hover">
+                    <i class="fas fa-calendar-check fa-2x text-primary mb-2"></i>
+                    <div>Long-term Stay</div>
+                </div>
             </div>
-
-            {{-- Home Safety --}}
-            <div class="col d-flex align-items-center gap-2" title="Fire extinguisher available">
-                <i class="fas fa-shield-alt fa-lg text-primary"></i>
-                <span>Safety</span>
+            <div class="col text-center">
+                <div class="amenity-card p-3 rounded shadow-sm transition-hover">
+                    <i class="fas fa-shield-alt fa-2x text-primary mb-2"></i>
+                    <div>Home Safety</div>
+                </div>
             </div>
         </div>
     </div>
 </section>
+
+<!-- Add this CSS to your stylesheet or inside a <style> tag -->
+<style>
+.amenity-card {
+    background: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.amenity-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+.transition-hover i {
+    transition: transform 0.3s ease;
+}
+.transition-hover:hover i {
+    transform: scale(1.2);
+}
+</style>
 
 
 <style>
