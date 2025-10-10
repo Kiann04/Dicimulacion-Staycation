@@ -99,9 +99,7 @@ class BookingHistoryController extends Controller
         // Add ₱500 per guest beyond 6
         $extraGuests = max(0, $request->guest_number - 6);
         $extraFee = $extraGuests * 500;
-        $totalPrice += $extraFee;
-        dd($staycation->house_price, $nights, $extraGuests, $extraFee, $totalPrice);
-
+        $totalPrice += $extraFee; 
         // Apply half or full payment
         $amountPaid = $request->payment_type === 'half'
             ? round($totalPrice / 2, 2)
