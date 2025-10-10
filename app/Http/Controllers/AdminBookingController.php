@@ -65,22 +65,21 @@ class AdminBookingController extends Controller
 
 
     // ✅ Update payment status
-public function updatePayment(Request $request, $id)
-{
-    $booking = Booking::with('user', 'staycation')->findOrFail($id);
-    $paymentStatus = strtolower($request->input('payment_status'));
+    public function updatePayment(Request $request, $id)
+    {
+        $booking = Booking::with('user', 'staycation')->findOrFail($id);
+        $paymentStatus = strtolower($request->input('payment_status'));
 
-    $booking->payment_status = $paymentStatus;
+        $booking->payment_status = $paymentStatus;
 
-    // Define email recipient (user email or fallback)
-    $recipient = $booking->user->email ?? $booking->email;
+        // Define email recipient
+        $recipient = $booking->user->email ?? $booking->email;
 
-    switch ($paymentStatus) {
-        case 'paid':
-        case 'half_paid': // Include half_paid here
+        // Both 'paid' and 'half_paid' should trigger the same email and confirm the booking
+        if (in_array($paymentStatus, ['paid', 'half_paid'])) {
             $booking->status = 'confirmed';
 
-            // Send payment receipt email
+            // Send email (same template for paid and half_paid)
             if (!empty($recipient)) {
                 Mail::to($recipient)->send(new PaymentReceiptMail($booking));
             }
@@ -91,9 +90,7 @@ public function updatePayment(Request $request, $id)
                 'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as " . ucfirst(str_replace('_', ' ', $paymentStatus)) . ".",
                 'ip_address' => request()->ip(),
             ]);
-            break;
-
-        case 'unpaid':
+        } elseif ($paymentStatus === 'unpaid') {
             $booking->status = 'cancelled';
 
             AuditLog::create([
@@ -102,15 +99,13 @@ public function updatePayment(Request $request, $id)
                 'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as Unpaid.",
                 'ip_address' => request()->ip(),
             ]);
-            break;
-
-        default:
+        } else {
             $booking->status = 'approved';
-            break;
+        }
+
+        $booking->save();
+
+        return redirect()->back()->with('success', 'Payment status updated successfully!');
     }
 
-    $booking->save();
-
-    return redirect()->back()->with('success', 'Payment status updated successfully!');
-}
 }
