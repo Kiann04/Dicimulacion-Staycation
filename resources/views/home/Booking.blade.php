@@ -85,9 +85,6 @@
       </div>
     </div>
 
-
-    <!-- Image Carousel -->
-        <!-- Image Carousel -->
         <!-- Image Carousel -->
         <div class="col-lg-6">
         <div id="staycationCarousel" class="carousel slide carousel-fade shadow-sm rounded overflow-hidden" data-bs-ride="carousel" data-bs-interval="3000">
@@ -162,177 +159,84 @@
     <div id="calendar"></div>
 </div>
 {{-- Modern Services Section --}}
-<section class="services-section py-5 bg-gradient" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);">
+<section class="services-section py-5 bg-light">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="text-center mb-5">
-                    <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill mb-3">Amenities & Services</span>
-                    <h2 class="fw-bold mb-5 text-center display-6">Kinds of Service Offered</h2>
-                    <p class="lead text-muted fs-5">
-                        {{ $staycation->house_name }} offers the following services and amenities to ensure a complete staycation experience.
-                    </p>
-                </div>
-                
-                <div class="row g-4">
-                    {{-- Scenic Views --}}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
-                            <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
-                                <div class="icon mb-4 position-relative">
-                                    {{-- Icon: Mountain for Scenic Views --}}
-                                    <i class="fas fa-mountain fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark mb-3 fs-5">Scenic Views</h5>
-                                <p class="card-text text-muted mb-0">City Skyline, Lake, and Mountain</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {{-- Fully-equipped Kitchen --}}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
-                            <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
-                                <div class="icon mb-4 position-relative">
-                                    {{-- Icon: Utensils for Kitchen --}}
-                                    <i class="fas fa-utensils fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark mb-3 fs-5">Fully-equipped Kitchen</h5>
-                                <p class="card-text text-muted mb-0">Dining table, Rice cooker, Refrigerator, Kettle, Stove, and Utensils</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {{-- Essentials --}}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
-                            <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
-                                <div class="icon mb-4 position-relative">
-                                    {{-- Icon: Soap for Essentials --}}
-                                    <i class="fas fa-soap fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark mb-3 fs-5">Essentials</h5>
-                                <p class="card-text text-muted mb-0">Towels, Bed sheets, Extra pillows, Blankets, Cleaning products, Body soap, Shampoo, and Toilet paper</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {{-- In-room Entertainment --}}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
-                            <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
-                                <div class="icon mb-4 position-relative">
-                                    {{-- Icon: TV for Entertainment --}}
-                                    <i class="fas fa-tv fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark mb-3 fs-5">In-room Entertainment</h5>
-                                <p class="card-text text-muted mb-0">TV, Books, Board games</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {{-- Outdoor Amenities --}}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
-                            <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
-                                <div class="icon mb-4 position-relative">
-                                    {{-- Icon: Tree for Outdoor --}}
-                                    <i class="fas fa-tree fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark mb-3 fs-5">Outdoor Amenities</h5>
-                                <p class="card-text text-muted mb-0">Patio, BBQ Grill, Dining area</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {{-- Pool Access --}}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
-                            <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
-                                <div class="icon mb-4 position-relative">
-                                    {{-- Icon: Swimming Pool --}}
-                                    <i class="fas fa-swimming-pool fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark mb-3 fs-5">Pool Access</h5>
-                                <p class="card-text text-muted mb-0">Enjoy refreshing swims anytime</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {{-- Free Parking --}}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
-                            <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
-                                <div class="icon mb-4 position-relative">
-                                    {{-- Icon: Parking --}}
-                                    <i class="fas fa-parking fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark mb-3 fs-5">Free Parking</h5>
-                                <p class="card-text text-muted mb-0">On-site and street</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {{-- Pet-friendly accommodations --}}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
-                            <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
-                                <div class="icon mb-4 position-relative">
-                                    {{-- Icon: Paw for Pets --}}
-                                    <i class="fas fa-paw fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark mb-3 fs-5">Pet-friendly Accommodations</h5>
-                                <p class="card-text text-muted mb-0">Bring your furry friends along</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {{-- Breakfast provided --}}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
-                            <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
-                                <div class="icon mb-4 position-relative">
-                                    {{-- Icon: Coffee for Breakfast --}}
-                                    <i class="fas fa-coffee fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark mb-3 fs-5">Breakfast Provided</h5>
-                                <p class="card-text text-muted mb-0">Start your day with a complimentary meal</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {{-- Long-term stay allowed --}}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
-                            <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
-                                <div class="icon mb-4 position-relative">
-                                    {{-- Icon: Calendar Check for Long-term --}}
-                                    <i class="fas fa-calendar-check fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark mb-3 fs-5">Long-term Stay Allowed</h5>
-                                <p class="card-text text-muted mb-0">(28+ days)</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {{-- Home Safety --}}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="service-card h-100 position-relative overflow-hidden rounded-4 shadow-lg border-0 transition-all" style="transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
-                            <div class="card-body text-center p-5 d-flex flex-column justify-content-center align-items-center">
-                                <div class="icon mb-4 position-relative">
-                                    {{-- Icon: Shield for Safety --}}
-                                    <i class="fas fa-shield-alt fa-4x text-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                </div>
-                                <h5 class="card-title fw-bold text-dark mb-3 fs-5">Home Safety</h5>
-                                <p class="card-text text-muted mb-0">Fire extinguisher</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="text-center mb-4">
+            <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill mb-2">Amenities & Services</span>
+            <h2 class="fw-bold mb-3 display-6">What this place offers</h2>
+            <p class="text-muted fs-5">{{ $staycation->house_name }} offers the following amenities for a comfortable stay.</p>
+        </div>
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+            {{-- Scenic Views --}}
+            <div class="col d-flex align-items-center gap-2" title="City Skyline, Lake, and Mountain views">
+                <i class="fas fa-mountain fa-lg text-primary"></i>
+                <span>Scenic Views</span>
+            </div>
+
+            {{-- Fully-equipped Kitchen --}}
+            <div class="col d-flex align-items-center gap-2" title="Dining table, Rice cooker, Refrigerator, Kettle, Stove, Utensils">
+                <i class="fas fa-utensils fa-lg text-primary"></i>
+                <span>Kitchen</span>
+            </div>
+
+            {{-- Essentials --}}
+            <div class="col d-flex align-items-center gap-2" title="Towels, Bed sheets, Extra pillows, Blankets, Soap, Shampoo, Toilet paper">
+                <i class="fas fa-soap fa-lg text-primary"></i>
+                <span>Essentials</span>
+            </div>
+
+            {{-- In-room Entertainment --}}
+            <div class="col d-flex align-items-center gap-2" title="TV, Books, Board games">
+                <i class="fas fa-tv fa-lg text-primary"></i>
+                <span>Entertainment</span>
+            </div>
+
+            {{-- Outdoor Amenities --}}
+            <div class="col d-flex align-items-center gap-2" title="Patio, BBQ Grill, Dining area">
+                <i class="fas fa-tree fa-lg text-primary"></i>
+                <span>Outdoor</span>
+            </div>
+
+            {{-- Pool Access --}}
+            <div class="col d-flex align-items-center gap-2" title="Enjoy refreshing swims anytime">
+                <i class="fas fa-swimming-pool fa-lg text-primary"></i>
+                <span>Pool</span>
+            </div>
+
+            {{-- Free Parking --}}
+            <div class="col d-flex align-items-center gap-2" title="On-site and street parking available">
+                <i class="fas fa-parking fa-lg text-primary"></i>
+                <span>Parking</span>
+            </div>
+
+            {{-- Pet-friendly --}}
+            <div class="col d-flex align-items-center gap-2" title="Bring your furry friends along">
+                <i class="fas fa-paw fa-lg text-primary"></i>
+                <span>Pet-friendly</span>
+            </div>
+
+            {{-- Breakfast Provided --}}
+            <div class="col d-flex align-items-center gap-2" title="Start your day with a complimentary meal">
+                <i class="fas fa-coffee fa-lg text-primary"></i>
+                <span>Breakfast</span>
+            </div>
+
+            {{-- Long-term Stay --}}
+            <div class="col d-flex align-items-center gap-2" title="Allowed for 28+ days">
+                <i class="fas fa-calendar-check fa-lg text-primary"></i>
+                <span>Long-term Stay</span>
+            </div>
+
+            {{-- Home Safety --}}
+            <div class="col d-flex align-items-center gap-2" title="Fire extinguisher available">
+                <i class="fas fa-shield-alt fa-lg text-primary"></i>
+                <span>Safety</span>
             </div>
         </div>
     </div>
 </section>
+
 
 <style>
 /* Modern Hover Effects for Service Cards (same as before) */
