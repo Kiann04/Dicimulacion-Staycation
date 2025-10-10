@@ -50,11 +50,11 @@ class Booking extends Model
     }
     public function getFormattedStartDateAttribute()
     {
-        return $this->start_date->timezone('Asia/Manila')->format('M d, Y h:i A');
+        return $this->start_date->timezone('Asia/Manila')->format('M d, Y');
     }
 
     public function getFormattedEndDateAttribute()
     {
-        return $this->end_date->timezone('Asia/Manila')->format('M d, Y h:i A');
+        return $this->end_date->timezone('Asia/Manila')->format('M d, Y');
     }
 }
