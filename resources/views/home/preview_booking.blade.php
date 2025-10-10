@@ -67,9 +67,6 @@
             $extraFee = $extraGuests * 500;
             $totalPrice += $extraFee;
 
-            $vat = round($basePrice * 0.12, 2);
-            $totalPrice = round($basePrice + $vat, 2);
-
             // Format dates
             $formattedStart = $start->format('M d, Y');
             $formattedEnd = $end->format('M d, Y');
