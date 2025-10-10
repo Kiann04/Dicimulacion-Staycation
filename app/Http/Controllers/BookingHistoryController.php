@@ -103,7 +103,6 @@ class BookingHistoryController extends Controller
         $totalPrice += $extraFee; 
         // Apply half or full payment
 
-        dd($totalPrice, $extraGuests, $extraFee, $request->guest_number);
 
         $amountPaid = $request->payment_type === 'half'
             ? round($totalPrice / 2, 2)
