@@ -102,14 +102,13 @@ class BookingHistoryController extends Controller
         $extraFee = $extraGuests * 500;
         $totalPrice += $extraFee; 
         // Apply half or full payment
+
+        dd($totalPrice, $extraGuests, $extraFee, $request->guest_number);
+
         $amountPaid = $request->payment_type === 'half'
             ? round($totalPrice / 2, 2)
             : $totalPrice;
-        \Log::info('Guest Number: ' . $request->guest_number);
-        \Log::info('Base Price: ' . ($staycation->house_price * $nights));
-        \Log::info('Extra Guests: ' . $extraGuests);
-        \Log::info('Extra Fee: ' . $extraFee);
-        \Log::info('Final Total Price: ' . $totalPrice);
+        
         // Upload proof of payment
         $proofPath = null;
         if ($request->hasFile('payment_proof')) {
