@@ -86,7 +86,13 @@ class AdminController extends Controller
 
         $monthlyRevenue = Booking::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
-            ->sum('total_price');
+            ->sum(DB::raw("
+            CASE 
+                WHEN payment_status = 'paid' THEN total_price
+                WHEN payment_status = 'half_paid' THEN total_price / 2
+                ELSE 0
+            END
+        "));
 
         $newUsers = User::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
