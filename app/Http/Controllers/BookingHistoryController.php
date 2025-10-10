@@ -80,8 +80,6 @@ class BookingHistoryController extends Controller
             'message' => 'nullable|string|max:500',
         ]);
 
-        dd($request->guest_number);
-
         $staycation = Staycation::findOrFail($staycation_id);
 
         // Parse dates safely
@@ -102,6 +100,7 @@ class BookingHistoryController extends Controller
         $extraGuests = max(0, $request->guest_number - 6);
         $extraFee = $extraGuests * 500;
         $totalPrice += $extraFee;
+        dd($staycation->house_price, $nights, $extraGuests, $extraFee, $totalPrice);
 
         // Apply half or full payment
         $amountPaid = $request->payment_type === 'half'
