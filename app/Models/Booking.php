@@ -44,16 +44,4 @@ class Booking extends Model
     {
         return $this->hasOne(Review::class);
     }
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saving(function ($booking) {
-            if ($booking->staycation) {
-                $nights = Carbon::parse($booking->start_date)
-                    ->diffInDays(Carbon::parse($booking->end_date));
-                $booking->total_price = $nights * $booking->staycation->house_price;
-            }
-        });
-    }
 }
