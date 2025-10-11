@@ -4,7 +4,6 @@
 @endsection
 <section class="container my-5 pt-5">
   <div class="row g-4 align-items-start">
-
     <!-- Booking Form -->
     <div class="col-lg-6">
       <div class="card shadow-sm border-0">
