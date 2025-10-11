@@ -75,9 +75,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const collapseEl = document.querySelector('.navbar-collapse');
     if (!collapseEl) return;
 
-    collapseEl.querySelectorAll('.nav-link').forEach(link => {
+    // Only target main links, not dropdown toggles or dropdown items
+    collapseEl.querySelectorAll('.navbar-nav > .nav-item > .nav-link').forEach(link => {
         link.addEventListener('click', () => {
-            // Only collapse if visible (mobile)
             if (window.getComputedStyle(collapseEl).display !== 'none') {
                 const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
                 bsCollapse.hide();
