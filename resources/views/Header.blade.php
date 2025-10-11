@@ -1,4 +1,3 @@
-<!-- Header: Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
     <div class="container">
         <!-- Brand / Logo -->
@@ -70,17 +69,20 @@
     </div>
 </nav>
 
-<!-- Optional JS: Close mobile menu when link is clicked -->
-@push('scripts')
+{{-- Optional JS: collapse menu on mobile when clicking a link --}}
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll('.navbar-collapse .nav-link').forEach(link => {
+    const collapseEl = document.querySelector('.navbar-collapse');
+    if (!collapseEl) return;
+
+    collapseEl.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
-            const collapseEl = document.querySelector('.navbar-collapse');
-            const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
-            if (collapseEl.classList.contains('show')) bsCollapse.hide();
+            // Only collapse if visible (mobile)
+            if (window.getComputedStyle(collapseEl).display !== 'none') {
+                const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
+                bsCollapse.hide();
+            }
         });
     });
 });
 </script>
-@endpush
