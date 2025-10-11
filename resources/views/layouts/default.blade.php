@@ -10,22 +10,19 @@
 
     {{-- Boxicons --}}
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <style>
-        /* Ensure the footer sticks to the bottom */
         body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
         main {
-            flex: 1; /* grow to fill available space */
+            flex: 1;
         }
         footer {
             background: #f8f9fa;
-            
         }
     </style>
 
@@ -37,12 +34,12 @@
         @yield('Header')
     </header>
 
-    <!-- Sidebar (optional) -->
+    <!-- Sidebar -->
     <aside>
         @yield('Aside')
     </aside>
 
-    <!-- Main Content -->
+    <!-- Main -->
     <main>
         @yield('content')
     </main>
@@ -54,36 +51,24 @@
 
     {{-- Bootstrap JS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    {{-- Mobile Navbar Toggle Script --}}
+
+    {{-- Optional: close mobile menu on link click --}}
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function() {
         const collapseEl = document.querySelector('.navbar-collapse');
-        const toggler = document.querySelector('.navbar-toggler');
 
-        if (!collapseEl || !toggler) return;
+        if (!collapseEl) return;
 
-        const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
-
-        // Close menu when a link inside navbar is clicked
         collapseEl.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => {
-                if (collapseEl.classList.contains('show')) {
+                // Only collapse if the menu is visible (mobile)
+                if (window.getComputedStyle(collapseEl).display !== 'none') {
+                    const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
                     bsCollapse.hide();
                 }
             });
         });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', function(event) {
-            // Ignore clicks inside navbar or toggler
-            if (!collapseEl.contains(event.target) && !toggler.contains(event.target)) {
-                if (collapseEl.classList.contains('show')) {
-                    bsCollapse.hide();
-                }
-            }
-        });
     });
-
     </script>
 
     @stack('scripts')
