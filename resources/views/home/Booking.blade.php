@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 @extends('layouts.default')
 @section('Header')
     @include('Header')
