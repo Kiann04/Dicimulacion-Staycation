@@ -57,27 +57,32 @@
     {{-- Mobile Navbar Toggle Script --}}
     <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Fix mobile collapse (you already have this)
         const collapseEl = document.querySelector('.navbar-collapse');
-        if (!collapseEl) return;
+        if (collapseEl) {
+            const toggler = document.querySelector('.navbar-toggler');
+            const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
 
-        const toggler = document.querySelector('.navbar-toggler');
-        const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
+            collapseEl.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (collapseEl.classList.contains('show')) bsCollapse.hide();
+                });
+            });
 
-        // Close menu when a link is clicked
-        collapseEl.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                if (collapseEl.classList.contains('show')) {
+            document.addEventListener('click', function(event) {
+                const isClickInside = collapseEl.contains(event.target) || toggler.contains(event.target);
+                if (!isClickInside && collapseEl.classList.contains('show')) {
                     bsCollapse.hide();
                 }
             });
-        });
+        }
 
-        // Close menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const isClickInside = collapseEl.contains(event.target) || toggler.contains(event.target);
-            if (!isClickInside && collapseEl.classList.contains('show')) {
-                bsCollapse.hide();
-            }
+        // ✅ Ensure dropdowns work even if inside collapse
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function (e) {
+                e.stopPropagation(); // Prevent collapse from closing dropdown
+            });
         });
     });
     </script>
