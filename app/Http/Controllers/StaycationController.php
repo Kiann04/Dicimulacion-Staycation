@@ -59,6 +59,7 @@ class StaycationController extends Controller
         return redirect()->back()->with('success', 'Staycation house added successfully!');
     }
 
+
     // ✅ Show single staycation details + all reviews for that staycation
     public function showStaycation($id)
     {   
