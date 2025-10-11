@@ -56,14 +56,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     {{-- Mobile Navbar Toggle Script --}}
     <script>
-    document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function() {
         const collapseEl = document.querySelector('.navbar-collapse');
-        if (!collapseEl) return;
-
         const toggler = document.querySelector('.navbar-toggler');
+
+        if (!collapseEl || !toggler) return;
+
         const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
 
-        // Close menu when a link is clicked
+        // Close menu when a link inside navbar is clicked
         collapseEl.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => {
                 if (collapseEl.classList.contains('show')) {
@@ -74,12 +75,15 @@
 
         // Close menu when clicking outside
         document.addEventListener('click', function(event) {
-            const isClickInside = collapseEl.contains(event.target) || toggler.contains(event.target);
-            if (!isClickInside && collapseEl.classList.contains('show')) {
-                bsCollapse.hide();
+            // Ignore clicks inside navbar or toggler
+            if (!collapseEl.contains(event.target) && !toggler.contains(event.target)) {
+                if (collapseEl.classList.contains('show')) {
+                    bsCollapse.hide();
+                }
             }
         });
     });
+
     </script>
 
     @stack('scripts')
