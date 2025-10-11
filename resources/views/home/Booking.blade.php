@@ -22,65 +22,65 @@
           @endif
 
           <form action="{{ route('booking.preview', $staycation->id) }}" method="POST">
-            @csrf
+                @csrf
 
-            <div class="mb-3">
-              <label class="form-label">Full Name</label>
-              <input type="text" name="name" class="form-control" placeholder="Name" required
-                value="{{ old('name', Auth::user()->name ?? '') }}">
-            </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Name" required
+                        value="{{ old('name', Auth::user()->name ?? '') }}">
+                </div>
 
-            <div class="mb-3">
-              <label class="form-label">Contact Number</label>
-              <input type="tel" name="phone" class="form-control" placeholder="9123456789" required
-                pattern="[0-9]{10}" title="Enter a valid 10-digit Philippine phone number"
-                value="{{ old('phone', Auth::user()->phone ?? '') }}">
-            </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Contact Number</label>
+                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="9123456789" required
+                        pattern="[0-9]{10}" title="Enter a valid 10-digit Philippine phone number"
+                        value="{{ old('phone', Auth::user()->phone ?? '') }}">
+                </div>
 
-            <div class="mb-3">
-              <label class="form-label">Guests</label>
-              <input type="number" name="guest_number" class="form-control" placeholder="Guest/s" required
-                value="{{ old('guest_number') }}">
-            </div>
+                <div class="mb-3">
+                    <label for="guest_number" class="form-label">Guests</label>
+                    <input type="number" id="guest_number" name="guest_number" class="form-control" placeholder="Guest/s" required
+                        value="{{ old('guest_number') }}">
+                </div>
 
-            <div class="row g-3 mb-3">
-              <div class="col-md-6">
-                <label class="form-label">Date of Arrival</label>
-                <input type="date" name="startDate" id="startDate" class="form-control" required
-                  value="{{ old('startDate') }}">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Date of Departure</label>
-                <input type="date" name="endDate" id="endDate" class="form-control" required
-                  value="{{ old('endDate') }}">
-              </div>
-            </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="startDate" class="form-label">Date of Arrival</label>
+                        <input type="date" id="startDate" name="startDate" class="form-control" required
+                            value="{{ old('startDate') }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="endDate" class="form-label">Date of Departure</label>
+                        <input type="date" id="endDate" name="endDate" class="form-control" required
+                            value="{{ old('endDate') }}">
+                    </div>
+                </div>
 
-            <!-- Price Summary -->
-            <div id="price-summary" class="border-top pt-3 mb-3" style="display:none;">
-              <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
-              <p id="total-price" class="fw-bold text-success"></p>
-            </div>
+                <!-- Price Summary -->
+                <div id="price-summary" class="border-top pt-3 mb-3" style="display:none;">
+                    <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
+                    <p id="total-price" class="fw-bold text-success"></p>
+                </div>
 
-            <!-- Terms -->
-            <div class="form-check mb-3">
-              <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
-              <label class="form-check-label" for="terms">
-                I agree to the <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a>
-              </label>
-            </div>
+                <!-- Terms -->
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+                    <label class="form-check-label" for="terms">
+                        I agree to the <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a>
+                    </label>
+                </div>
 
-            <!-- Submit -->
-            @auth
-              <button type="submit" class="btn btn-primary w-100 fw-semibold">
-                Preview Booking
-              </button>
-            @else
-              <a href="{{ route('login') }}" class="btn btn-secondary w-100 disabled">
-                Please log in to reserve
-              </a>
-            @endauth
-          </form>
+                <!-- Submit -->
+                @auth
+                    <button type="submit" class="btn btn-primary w-100 fw-semibold">
+                        Preview Booking
+                    </button>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-secondary w-100 disabled">
+                        Please log in to reserve
+                    </a>
+                @endauth
+            </form>
         </div>
       </div>
     </div>
