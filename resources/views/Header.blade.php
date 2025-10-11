@@ -75,8 +75,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const collapseEl = document.querySelector('.navbar-collapse');
     if (!collapseEl) return;
 
-    // Only target main links, not dropdown toggles or dropdown items
-    collapseEl.querySelectorAll('.navbar-nav > .nav-item > .nav-link').forEach(link => {
+    // Only target top-level nav-links that are NOT dropdown toggles
+    collapseEl.querySelectorAll('.navbar-nav > .nav-item > .nav-link:not(.dropdown-toggle)').forEach(link => {
         link.addEventListener('click', () => {
             if (window.getComputedStyle(collapseEl).display !== 'none') {
                 const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
@@ -85,4 +85,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
 </script>
