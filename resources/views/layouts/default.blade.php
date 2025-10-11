@@ -67,7 +67,7 @@
     {{-- Mobile Navbar Toggle Script --}}
     <script>
     document.addEventLis<script>
-document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function() {
     const navbar = document.querySelector('.navbar');
     const toggler = navbar.querySelector('.navbar-toggler');
     const collapseEl = navbar.querySelector('.navbar-collapse');
