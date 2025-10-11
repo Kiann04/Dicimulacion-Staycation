@@ -75,15 +75,30 @@ document.addEventListener("DOMContentLoaded", function() {
     const collapseEl = document.querySelector('.navbar-collapse');
     if (!collapseEl) return;
 
-    // Only target top-level nav-links that are NOT dropdown toggles
+    const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
+
+    // Collapse only top-level links that are NOT dropdown toggles
     collapseEl.querySelectorAll('.navbar-nav > .nav-item > .nav-link:not(.dropdown-toggle)').forEach(link => {
         link.addEventListener('click', () => {
             if (window.getComputedStyle(collapseEl).display !== 'none') {
-                const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
                 bsCollapse.hide();
             }
         });
     });
-});
 
+    // Make dropdown toggles work inside collapsed navbar
+    collapseEl.querySelectorAll('.dropdown-toggle').forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault(); // prevent navigation
+            const dropdown = bootstrap.Dropdown.getOrCreateInstance(this);
+            dropdown.toggle(); // toggle dropdown
+        });
+    });
+
+    // Prevent menu from collapsing when clicking inside dropdown menu
+    collapseEl.querySelectorAll('.dropdown-menu').forEach(menu => {
+        menu.addEventListener('click', e => e.stopPropagation());
+    });
+});
 </script>
+
