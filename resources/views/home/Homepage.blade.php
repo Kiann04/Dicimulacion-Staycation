@@ -544,6 +544,14 @@
     aspect-ratio: 1/1; /* Forces it to stay square even if the source image isn't */
     border: 3px solid #f8f9fa; /* optional light border */
 }
+/* Prevent slick carousel overflow */
+.reviews-slider {
+  overflow-x: hidden !important;
+}
+.slick-track {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
 </style>
 
 <!-- Slick CSS -->
