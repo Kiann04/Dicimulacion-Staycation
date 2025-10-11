@@ -164,7 +164,7 @@ Route::middleware(['auth'])->group(function () {
 // =========================
 // Admin Routes
 // =========================
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth','admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/customers', [AdminController::class, 'customers'])->name('customers');
     Route::get('/analytics', [AdminController::class, 'analytics'])->name('analytics');
