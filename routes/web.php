@@ -221,7 +221,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth','admin'])->group(func
 
 // =========================
 // Staff Routes
-Route::prefix('staff')->name('staff.')->middleware(['auth'])->group(function () {
+Route::prefix('staff')->name('staff.')->middleware(['auth','staff'])->group(function () {
     Route::get('/dashboard', [StaffController::class, 'dashboard'])->name('dashboard');
 
     // Customers
