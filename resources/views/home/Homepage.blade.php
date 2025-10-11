@@ -265,7 +265,6 @@
 .featured-artists-section {
   position: relative;
   background: url('{{ asset('assets/artists/movie_bg.jpg') }}') center center / cover no-repeat;
-  background-attachment: fixed;
   overflow: hidden;
   border-radius: 0;
 }
