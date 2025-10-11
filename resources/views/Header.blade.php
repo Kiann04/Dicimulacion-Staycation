@@ -14,18 +14,10 @@
         <!-- Navbar Items -->
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ms-auto align-items-lg-center">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('home') }}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('home') }}#about">About Us</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('home') }}#properties">Houses</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('home') }}#contact">Contact Us</a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('home') }}#about">About Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('home') }}#properties">Houses</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('home') }}#contact">Contact Us</a></li>
 
                 @guest
                     @if (!Route::is('login') && !Route::is('register'))
@@ -69,21 +61,23 @@
     </div>
 </nav>
 
-{{-- Optional JS: collapse menu on mobile when clicking a link --}}
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const collapseEl = document.querySelector('.navbar-collapse');
-    if (!collapseEl) return;
+    const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
 
-    // Only target top-level nav-links that are NOT dropdown toggles
+    // Collapse only normal top-level links (not dropdowns)
     collapseEl.querySelectorAll('.navbar-nav > .nav-item > .nav-link:not(.dropdown-toggle)').forEach(link => {
         link.addEventListener('click', () => {
             if (window.getComputedStyle(collapseEl).display !== 'none') {
-                const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
                 bsCollapse.hide();
             }
         });
     });
-});
 
+    // Optional: prevent closing dropdown when clicking inside
+    collapseEl.querySelectorAll('.dropdown-menu').forEach(menu => {
+        menu.addEventListener('click', e => e.stopPropagation());
+    });
+});
 </script>
