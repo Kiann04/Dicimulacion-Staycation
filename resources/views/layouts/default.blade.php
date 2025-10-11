@@ -25,7 +25,17 @@
         }
         footer {
             background: #f8f9fa;
-            
+        }
+
+        /* ✅ Fix: Prevent right white space from navbar collapse */
+        html, body {
+            overflow-x: hidden !important;
+        }
+
+        .navbar,
+        .navbar-collapse {
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
         }
     </style>
 
