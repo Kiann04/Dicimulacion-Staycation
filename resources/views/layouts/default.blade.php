@@ -56,36 +56,35 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     {{-- Mobile Navbar Toggle Script --}}
     <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Fix mobile collapse (you already have this)
-        const collapseEl = document.querySelector('.navbar-collapse');
-        if (collapseEl) {
-            const toggler = document.querySelector('.navbar-toggler');
-            const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
+    document.addEventLis<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.querySelector('.navbar');
+    const toggler = navbar.querySelector('.navbar-toggler');
+    const collapseEl = navbar.querySelector('.navbar-collapse');
+    const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseEl);
 
-            collapseEl.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    if (collapseEl.classList.contains('show')) bsCollapse.hide();
-                });
-            });
-
-            document.addEventListener('click', function(event) {
-                const isClickInside = collapseEl.contains(event.target) || toggler.contains(event.target);
-                if (!isClickInside && collapseEl.classList.contains('show')) {
-                    bsCollapse.hide();
-                }
-            });
-        }
-
-        // ✅ Ensure dropdowns work even if inside collapse
-        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-        dropdownToggles.forEach(toggle => {
-            toggle.addEventListener('click', function (e) {
-                e.stopPropagation(); // Prevent collapse from closing dropdown
-            });
+    // ✅ Close menu when a link (non-dropdown) is clicked
+    collapseEl.querySelectorAll('.nav-link:not(.dropdown-toggle)').forEach(link => {
+        link.addEventListener('click', () => {
+            if (collapseEl.classList.contains('show')) bsCollapse.hide();
         });
     });
-    </script>
+
+    // ✅ Prevent dropdown clicks from closing the menu
+    collapseEl.querySelectorAll('.dropdown-toggle').forEach(dropdown => {
+        dropdown.addEventListener('click', e => e.stopPropagation());
+    });
+
+    // ✅ Close menu when clicking outside (only when open)
+    document.addEventListener('click', function(e) {
+        const isClickInside = navbar.contains(e.target);
+        if (!isClickInside && collapseEl.classList.contains('show')) {
+            bsCollapse.hide();
+        }
+    });
+});
+</script>
+
 
     @stack('scripts')
 </body>
