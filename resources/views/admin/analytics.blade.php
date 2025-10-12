@@ -113,22 +113,18 @@
             <!-- Summary Cards -->
             <section class="analytics-cards">
                 <div class="analytics-card">
-                    <i class="fa-solid fa-calendar-check analytics-icon"></i>
                     <h3>Monthly Bookings</h3>
                     <p>{{ $monthlyBookings }}</p>
                 </div>
                 <div class="analytics-card">
-                    <i class="fa-solid fa-peso-sign analytics-icon"></i>
                     <h3>Monthly Revenue</h3>
                     <p>₱{{ number_format($monthlyRevenue, 2) }}</p>
                 </div>
                 <div class="analytics-card">
-                    <i class="fa-solid fa-user-plus analytics-icon"></i>
                     <h3>New Users</h3>
                     <p>{{ $newUsers }}</p>
                 </div>
                 <div class="analytics-card">
-                    <i class="fa-solid fa-chart-line analytics-icon"></i>
                     <h3>Average Occupancy</h3>
                     <p>{{ $averageOccupancy ?? '85%' }}</p>
                 </div>
