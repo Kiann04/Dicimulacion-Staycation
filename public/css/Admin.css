@@ -676,7 +676,7 @@ button:disabled {
 /* Medium screens (Tablet & small laptops) */
 @media (max-width: 1024px) {
 
-  cards {
+  .cards {
     flex-direction: column;
   }
 
