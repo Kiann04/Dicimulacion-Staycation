@@ -48,9 +48,9 @@
     </header>
 
     <!-- Sidebar (optional) -->
-    
+    <aside>
         @yield('Aside')
-    
+    </aside>
 
     <!-- Main Content -->
     <main>
