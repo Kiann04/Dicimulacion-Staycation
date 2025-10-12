@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { keywords: ["breakfast", "food", "meal"], reply: "Breakfast is provided to all guests." },
         { keywords: ["pet", "dog", "cat"], reply: "Yes, we are a pet-friendly staycation!" },
         { keywords: ["booking", "reserve", "reservation"], reply: "You can book directly through our website by selecting your preferred room and dates." },
-        { keywords: ["payment", "gcash", "bank transfer", "pay"], reply: "We accept payments via GCash, Maya, and bank transfer. A 50% down payment is required to secure your booking." },
+        { keywords: ["payment", "gcash", "bank transfer", "pay"], reply: "We accept payments via GCash and bank transfer. A 50% down payment is required to secure your booking." },
         { keywords: ["receipt", "invoice", "official receipt"], reply: "We issue official receipts for all confirmed bookings and payments." },
         { keywords: ["cancellation", "cancel", "refund"], reply: "Cancellations are not allowed, but you may reschedule your booking at least 14 days before your stay." },
         { keywords: ["policy", "rules", "terms"], reply: "Guests are expected to follow check-in/out schedules and maintain cleanliness. Damages will be charged accordingly." },
