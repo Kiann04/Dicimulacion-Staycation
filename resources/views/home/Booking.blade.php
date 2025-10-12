@@ -76,11 +76,14 @@
 
                 <!-- Terms -->
                 <div class="form-check mb-3">
-                    <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
-                    <label class="form-check-label" for="terms">
-                        I agree to the <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a>
+                    <input type="checkbox" class="form-check-input" id="terms_privacy" name="terms_privacy" required>
+                    <label class="form-check-label" for="terms_privacy">
+                        I agree to the 
+                        <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a> and 
+                        <a href="{{ url('/privacy') }}" target="_blank">Privacy Policy</a>
                     </label>
                 </div>
+
 
                 <!-- Submit -->
                 @auth
