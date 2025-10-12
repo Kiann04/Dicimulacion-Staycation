@@ -264,16 +264,13 @@
 /* Background setup */
 .featured-artists-section {
   position: relative;
-  background-image: url('{{ asset('assets/artists/movie_bg.jpg') }}');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center 0px;
+  background: url('{{ asset('assets/artists/movie_bg.jpg') }}') center center / cover no-repeat fixed;
   overflow: hidden;
   border-radius: 0;
   min-height: 700px;
-  transition: background-position 0.05s linear;
 }
 
+/* Overlay */
 .featured-artists-section::before {
   content: "";
   position: absolute;
@@ -358,24 +355,6 @@
 }
 
 </style>
-<script>
-document.addEventListener("scroll", function() {
-  const section = document.querySelector(".featured-artists-section");
-  if (!section) return;
-
-  // Scroll position
-  const scrollTop = window.scrollY;
-  const offsetTop = section.offsetTop;
-  const sectionHeight = section.offsetHeight;
-
-  // Only move while section is visible in viewport
-  if (scrollTop + window.innerHeight > offsetTop && scrollTop < offsetTop + sectionHeight) {
-    const distance = scrollTop - offsetTop;
-    const moveY = distance * 0.4; // lower number = slower movement
-    section.style.backgroundPosition = `center ${moveY}px`;
-  }
-});
-</script>
 
 
 <!-- Info Cards -->
@@ -512,7 +491,7 @@ document.addEventListener("scroll", function() {
     <div class="reviews-slider">
         <!-- Review Cards -->
         <div class="review-card card h-100 shadow border-0 text-center p-4">
-            <img src="{{ asset('assets/bc4aeb512c762d89c6b3e51ff84e3fe78bf32c3b.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Darwin">
+            <img src="{{ asset('assets/Matt.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Darwin">
             <h5 class="fw-bold">Darwin</h5>
             <p class="text-muted small">"The staycation was perfect! The house was clean, spacious, and the view was breathtaking. Highly recommend!"</p>
             <div class="text-warning">
