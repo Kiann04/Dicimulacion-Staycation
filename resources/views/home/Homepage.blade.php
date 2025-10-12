@@ -490,7 +490,7 @@
     <div class="reviews-slider">
         <!-- Review Cards -->
         <div class="review-card card h-100 shadow border-0 text-center p-4">
-            <img src="{{ asset('assets/Matt.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Darwin">
+            <img src="{{ asset('assets/bc4aeb512c762d89c6b3e51ff84e3fe78bf32c3b.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Darwin">
             <h5 class="fw-bold">Darwin</h5>
             <p class="text-muted small">"The staycation was perfect! The house was clean, spacious, and the view was breathtaking. Highly recommend!"</p>
             <div class="text-warning">
