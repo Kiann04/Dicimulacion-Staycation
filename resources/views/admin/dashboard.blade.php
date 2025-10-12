@@ -5,25 +5,53 @@
 @endsection
 
 @section('content')
-<body class="admin-dashboard">
-<div class="content-wrapper">
-    <div class="main-content">
-        <header>
-            <h1>Admin Dashboard</h1>
-        </header>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="fw-bold">Admin Dashboard</h1>
+            <p class="text-muted">Manage your staycation bookings, customers, and reports here.</p>
+        </div>
+    </div>
 
-        <!-- Cards -->
-        <section class="cards">
-            <div class="card"><h3>Total Users</h3><p>{{ $totalUsers }}</p></div>
-            <div class="card"><h3>Total Bookings</h3><p>{{ $totalBookings }}</p></div>
-            <div class="card"><h3>Revenue</h3><p>₱{{ number_format($totalRevenue, 2) }}</p></div>
-        </section>
+    <!-- Cards -->
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Total Users</h5>
+                    <h2 class="fw-bold">{{ $totalUsers }}</h2>
+                </div>
+            </div>
+        </div>
 
-        <!-- Unpaid Bookings Table -->
-        <section class="table-container">
-            <h2>Unpaid Bookings</h2>
-            <table>
-                <thead>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Total Bookings</h5>
+                    <h2 class="fw-bold">{{ $totalBookings }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Revenue</h5>
+                    <h2 class="fw-bold">₱{{ number_format($totalRevenue, 2) }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unpaid Bookings Table -->
+    <div class="card mt-5 shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Unpaid Bookings</h5>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-light">
                     <tr>
                         <th>Booking ID</th>
                         <th>Staycation</th>
@@ -47,52 +75,47 @@
                         <td>{{ $booking->phone }}</td>
                         <td>{{ $booking->formatted_start_date }}</td>
                         <td>{{ $booking->formatted_end_date }}</td>
-                        <td>{{ $booking->created_at->format('M d, Y h:i A') }}</td> {{-- ✅ show nicely --}}
-
-                        {{-- Payment Dropdown --}}
+                        <td>{{ $booking->created_at->format('M d, Y h:i A') }}</td>
                         <td>
-                            <select class="payment-select" data-id="{{ $booking->id }}">
-                                <option value="pending" 
-                                    {{ $booking->payment_status == 'pending' || !$booking->payment_status ? 'selected' : '' }}>
-                                    Pending
-                                </option>
+                            <select class="form-select form-select-sm payment-select" data-id="{{ $booking->id }}">
+                                <option value="pending" {{ $booking->payment_status == 'pending' || !$booking->payment_status ? 'selected' : '' }}>Pending</option>
                                 <option value="half_paid" {{ $booking->payment_status == 'half_paid' ? 'selected' : '' }}>Half Paid</option>
                                 <option value="paid" {{ $booking->payment_status == 'paid' ? 'selected' : '' }}>Paid</option>
                             </select>
                         </td>
-
-
-                        {{-- Status --}}
                         <td>
-                            <span class="status {{ $booking->status }}">{{ ucfirst($booking->status) }}</span>
+                            <span class="badge
+                                @if($booking->status == 'approved') bg-success
+                                @elseif($booking->status == 'pending') bg-warning text-dark
+                                @else bg-danger @endif
+                            ">{{ ucfirst($booking->status) }}</span>
                         </td>
-
-                        {{-- Delete Button --}}
                         <td>
                             <form action="{{ route('admin.bookings.delete', $booking->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this unpaid booking?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
                             </form>
                         </td>
                     </tr>
                     @endif
                 @empty
-                    <tr><td colspan="9">No unpaid bookings found</td></tr>
+                    <tr><td colspan="10" class="text-center text-muted py-3">No unpaid bookings found</td></tr>
                 @endforelse
                 </tbody>
             </table>
+        </div>
+    </div>
 
-            <!-- View Paid & Half Paid Button -->
-            <div class="text-center mt-4">
-                <a href="{{ route('admin.settings') }}" class="btn btn-primary px-4 py-2" style="border-radius: 8px;">
-                    View Paid & Half Paid Bookings
-                </a>
-            </div>
-        </section>
+    <!-- View Paid & Half Paid Button -->
+    <div class="text-center mt-4">
+        <a href="{{ route('admin.settings') }}" class="btn btn-primary px-4 py-2 rounded-3">
+            View Paid & Half Paid Bookings
+        </a>
     </div>
 </div>
-</body>
 @endsection
 
 @push('scripts')
@@ -127,17 +150,15 @@ $(document).ready(function() {
                         showConfirmButton: false
                     });
 
-                    const statusEl = $(`#booking-${id} .status`);
-
+                    const statusEl = $(`#booking-${id} .badge`);
                     if (status === 'paid') {
-                        statusEl.text('Confirmed').attr('class', 'status approved');
+                        statusEl.text('Confirmed').attr('class', 'badge bg-success');
                     } else if (status === 'half_paid') {
-                        statusEl.text('Partially Paid').attr('class', 'status pending');
+                        statusEl.text('Partially Paid').attr('class', 'badge bg-warning text-dark');
                     } else {
-                        statusEl.text('Cancelled').attr('class', 'status declined');
+                        statusEl.text('Cancelled').attr('class', 'badge bg-danger');
                         $(`#booking-${id}`).fadeOut(500);
                     }
-
                 }).fail(function(xhr) {
                     Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
                 });
