@@ -43,15 +43,30 @@
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <label for="startDate" class="form-label">Date of Arrival</label>
-                        <input type="date" id="startDate" name="startDate" class="form-control" required
+                        <input 
+                            type="date" 
+                            id="startDate" 
+                            name="startDate" 
+                            class="form-control" 
+                            required
+                            min="{{ now()->toDateString() }}" 
+                            max="2026-12-31"
                             value="{{ old('startDate') }}">
                     </div>
                     <div class="col-md-6">
-                        <label for="endDate" class="form-label">Date of Departure</label>
-                        <input type="date" id="endDate" name="endDate" class="form-control" required
+                        <label for="endDate" class="form-label">Date of Departure</label>   
+                        <input 
+                            type="date" 
+                            id="endDate" 
+                            name="endDate" 
+                            class="form-control" 
+                            required
+                            min="{{ now()->toDateString() }}" 
+                            max="2026-12-31"
                             value="{{ old('endDate') }}">
                     </div>
                 </div>
+
 
                 <!-- Price Summary -->
                 <div id="price-summary" class="border-top pt-3 mb-3" style="display:none;">
@@ -458,11 +473,27 @@ document.addEventListener("DOMContentLoaded", function () {
         form.addEventListener("submit", function (e) {
             const start = new Date(startInput.value);
             const end = new Date(endInput.value);
+            const today = new Date();
+            const endLimit = new Date("2026-12-31");
+
+            // Normalize time to midnight for accurate comparison
+            today.setHours(0, 0, 0, 0);
+
+            // Check if end date is after start date
             if (end <= start) {
                 e.preventDefault();
                 alert("Departure date must be at least one day after arrival date.");
+                return;
+            }
+
+            // Check if dates are within allowed range (today → Dec 31, 2026)
+            if (start < today || end > endLimit) {
+                e.preventDefault();
+                alert("Bookings are only allowed from today up to December 31, 2026.");
+                return;
             }
         });
+
     }
 
     // 🗓️ FullCalendar with PH timezone
