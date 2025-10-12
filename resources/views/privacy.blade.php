@@ -1,4 +1,7 @@
 @extends('layouts.default')
+@section('Header')
+    @include('Header')
+@endsection
 
 @section('content')
 <!-- Privacy Policy Section -->
@@ -67,4 +70,7 @@
     </div>
   </div>
 </section>
+@endsection
+@section('Footer')
+@include('Footer')
 @endsection
