@@ -264,11 +264,17 @@
 /* Background setup */
 .featured-artists-section {
   position: relative;
-  background: url('{{ asset('assets/artists/movie_bg.jpg') }}') center center / cover no-repeat;
+  background-image: url('{{ asset('assets/artists/movie_bg.jpg') }}');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
   overflow: hidden;
   border-radius: 0;
+  min-height: 600px;
   transition: background-position 0.1s ease-out;
 }
+
+
 
 /* Overlay */
 .featured-artists-section::before {
@@ -355,6 +361,14 @@
 }
 
 </style>
+<script>
+document.addEventListener("scroll", function() {
+  const section = document.querySelector(".featured-artists-section");
+  const scrollPosition = window.scrollY * 0.4; // adjust for slower/faster effect
+  section.style.backgroundPosition = `center ${scrollPosition}px`;
+});
+</script>
+
 
 
 <!-- Info Cards -->
@@ -421,13 +435,6 @@
         box-shadow: 0 1rem 2rem rgba(0,0,0,0.15) !important;
     }
 </style>
-<script>
-document.addEventListener("scroll", function() {
-  const section = document.querySelector(".featured-artists-section");
-  const scrollPosition = window.scrollY * 0.4; // adjust for slower/faster effect
-  section.style.backgroundPosition = `center ${scrollPosition}px`;
-});
-</script>
 
 
 <!-- Properties -->
