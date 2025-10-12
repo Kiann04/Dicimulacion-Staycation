@@ -274,8 +274,6 @@
   transition: background-position 0.1s ease-out;
 }
 
-
-
 /* Overlay */
 .featured-artists-section::before {
   content: "";
@@ -361,15 +359,6 @@
 }
 
 </style>
-<script>
-document.addEventListener("scroll", function() {
-  const section = document.querySelector(".featured-artists-section");
-  const scrollPosition = window.scrollY * 0.4; // adjust for slower/faster effect
-  section.style.backgroundPosition = `center ${scrollPosition}px`;
-});
-</script>
-
-
 
 <!-- Info Cards -->
 <section class="container my-5 text-center" id="sales">
@@ -647,7 +636,14 @@ $(document).ready(function(){
         <button type="submit" class="btn btn-primary w-100">Send</button>
     </form>
 </section>
-
+<script>
+document.addEventListener("scroll", function() {
+  const section = document.querySelector(".featured-artists-section");
+  if (!section) return;
+  const scrollPosition = window.scrollY * 0.4;
+  section.style.backgroundPosition = `center ${scrollPosition}px`;
+});
+</script>
 @include('partials.chatbot')
 
 @endsection
