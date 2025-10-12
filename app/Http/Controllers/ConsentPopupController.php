@@ -9,8 +9,9 @@ class ConsentPopupController extends Controller
 {
     public function save(Request $request)
     {
-        $choice = $request->input('choice', 'reject'); // default to reject if not sent
-        Cookie::queue('user_consent', $choice, 525600); // 1 year in minutes
+        $choice = $request->input('choice', 'reject'); // default reject
+        // Save cookie for 1 year (525600 minutes)
+        Cookie::queue('user_consent', $choice, 525600);
 
         return response()->json(['message' => 'Consent saved', 'choice' => $choice]);
     }

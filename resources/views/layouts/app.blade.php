@@ -16,6 +16,7 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="font-sans antialiased">
+
     <x-banner />
 
     <div class="min-h-screen bg-gray-100">
@@ -37,19 +38,23 @@
     </div>
 
     @stack('modals')
-
     @livewireScripts
 
+    @php
+        use Illuminate\Support\Facades\Cookie;
+    @endphp
+
     <!-- Consent Popup -->
-    @if(!Cookie::get('user_consent'))
-    <div x-data="{ open: true }" x-show="open" x-transition:enter="transition transform ease-out duration-500"
+    @if(!Cookie::get('user_consent') || Cookie::get('user_consent') == '')
+    <div x-data="{ open: true }" x-show="open" x-cloak
+         x-transition:enter="transition transform ease-out duration-500"
          x-transition:enter-start="translate-y-full opacity-0"
          x-transition:enter-end="translate-y-0 opacity-100"
          x-transition:leave="transition transform ease-in duration-300"
          x-transition:leave-start="translate-y-0 opacity-100"
          x-transition:leave-end="translate-y-full opacity-0"
-         x-cloak
          class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white border shadow-lg rounded-xl p-6 max-w-md w-full z-50">
+        
         <h5 class="text-lg font-semibold mb-2">We Use Cookies</h5>
         <p class="text-gray-600 mb-4 text-sm">
             Essential cookies are required for site operation. Optional cookies improve your experience.
@@ -77,11 +82,14 @@
                 },
                 body: JSON.stringify({ choice })
             }).then(() => {
-                // Hide the popup smoothly
                 const popup = document.querySelector('[x-data]');
-                popup.__x.$data.open = false;
+                if(popup) {
+                    popup.__x.$data.open = false;
+                    // Remove from DOM after animation
+                    popup.addEventListener('transitionend', () => popup.remove());
+                }
 
-                // Load optional tracking if accepted
+                // Load optional tracking only if accepted
                 if(choice === 'accept') {
                     const script = document.createElement('script');
                     script.src = "https://www.googletagmanager.com/analytics.js";
@@ -93,7 +101,7 @@
         function acceptAll() { setConsent('accept'); }
         function rejectAll() { setConsent('reject'); }
 
-        // Load tracking if already accepted
+        // Load optional tracking if already accepted
         document.addEventListener('DOMContentLoaded', () => {
             const consent = "{{ Cookie::get('user_consent') }}";
             if(consent === 'accept') {
@@ -103,5 +111,6 @@
             }
         });
     </script>
+
 </body>
 </html>
