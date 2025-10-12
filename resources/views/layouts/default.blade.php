@@ -35,7 +35,7 @@
         .navbar,
         .navbar-collapse {
             max-width: 100vw !important;
-            overflow-x: hidden !important;
+            overflow-x: visible !important;
         }
     </style>
 
