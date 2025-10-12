@@ -50,8 +50,8 @@
 
       <h4 class="fw-semibold mt-4 mb-3">6. Your Rights</h4>
       <p>
-        You have the right to access, update, or request deletion of your personal data. 
-        You may contact us anytime to exercise these rights.
+        You have the right to access or update your personal data.
+        If you wish to request account deletion or data removal, please contact us directly through our official email.
       </p>
 
       <h4 class="fw-semibold mt-4 mb-3">7. Contact Us</h4>
