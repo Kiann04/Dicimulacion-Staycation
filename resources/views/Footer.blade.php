@@ -12,6 +12,7 @@
                 <h5>Quick Links</h5>
                 <ul class="list-unstyled">
                     <li><a href="{{ url('/terms') }}" class="text-light text-decoration-none">Terms and Conditions</a></li>
+                    <li><a href="{{ route('privacy') }}" class="text-light text-decoration-none">Privacy Policy</a></li>
                 </ul>
             </div>
 
