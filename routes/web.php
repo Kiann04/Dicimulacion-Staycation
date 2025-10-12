@@ -244,3 +244,6 @@ Route::prefix('staff')->name('staff.')->middleware(['auth','staff'])->group(func
     // Settings
     Route::get('/settings', [StaffController::class, 'settings'])->name('settings');
 });
+use App\Http\Controllers\ConsentPopupController;
+
+Route::post('/save-consent', [ConsentPopupController::class, 'save'])->name('save.consent');
