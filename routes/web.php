@@ -17,6 +17,9 @@ Route::get('/terms', function () {
 return view('Terms&Condition'); // or 'terms' if your file is named terms.blade.php
 })->name('terms');
 
+Route::get('/privacy', function () {
+    return view('privacy');
+})->name('privacy');
 use App\Http\Controllers\{
     LoginController,
     AdminController,
