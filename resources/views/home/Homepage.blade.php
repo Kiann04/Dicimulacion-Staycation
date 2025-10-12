@@ -216,7 +216,8 @@
   padding-bottom: 1rem;
 }
 </style>
-<!-- 🎬 Featured Artists Section -->
+
+<!-- Featured Artists Section -->
 <section class="featured-artists-section py-5 my-5" id="artists">
   <div class="container text-center text-white">
     <h2 class="fw-bold display-6 mb-3">Artists Who Filmed Here</h2>
@@ -226,7 +227,6 @@
     </p>
 
     <div class="row g-4 justify-content-center">
-      <!-- Ashtine -->
       <div class="col-sm-6 col-md-5 col-lg-4">
         <div class="artist-card card bg-transparent border-0 rounded-4 overflow-hidden h-100">
           <div class="artist-img-wrapper">
@@ -240,7 +240,7 @@
         </div>
       </div>
 
-      <!-- Andres -->
+      <!-- Artist 1: Andres Muhlach -->
       <div class="col-sm-6 col-md-5 col-lg-4">
         <div class="artist-card card bg-transparent border-0 rounded-4 overflow-hidden h-100">
           <div class="artist-img-wrapper">
@@ -253,26 +253,27 @@
           </div>
         </div>
       </div>
+
+
     </div>
   </div>
 </section>
 
-<!-- 🎨 Styles -->
+<!-- Artist Section Styling -->
 <style>
+/* Background setup */
 .featured-artists-section {
   position: relative;
   background-image: url('{{ asset('assets/artists/movie_bg.jpg') }}');
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: center 0px;
   overflow: hidden;
   border-radius: 0;
   min-height: 700px;
-  will-change: transform;
-  transition: transform 0.05s ease-out;
+  transition: background-position 0.05s linear;
 }
 
-/* dark overlay */
 .featured-artists-section::before {
   content: "";
   position: absolute;
@@ -281,13 +282,13 @@
   z-index: 1;
 }
 
-/* content */
+/* Content layering */
 .featured-artists-section .container {
   position: relative;
   z-index: 2;
 }
 
-/* cards */
+/* Artist image container (centering fix) */
 .artist-img-wrapper {
   height: 360px;
   display: flex;
@@ -297,6 +298,7 @@
   background-color: #000;
 }
 
+/* Artist image */
 .artist-img {
   width: 100%;
   height: 100%;
@@ -308,6 +310,7 @@
   transform: scale(1.05);
 }
 
+/* Artist card styling */
 .artist-card {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(8px);
@@ -316,48 +319,60 @@
 }
 .artist-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1rem 2rem rgba(0,0,0,0.4);
+}
+/* Responsive fix for Ashtine's image (focus on left side) */
+.artist-card img[alt="Ashtine Olviga"] {
+  object-position: left center !important;
 }
 
-/* responsive image focus */
-.artist-card img[alt="Ashtine Olviga"] { object-position: left center !important; }
-.artist-card img[alt="Andres Muhlach"] { object-position: right center !important; }
+/* Responsive fix for Andres Muhlach's image (focus on center-right if needed) */
+.artist-card img[alt="Andres Muhlach"] {
+  object-position: right center !important;
+}
 
-/* tablets */
+/* Tablet view (≤768px) */
 @media (max-width: 768px) {
-  .artist-card img[alt="Ashtine Olviga"],
+  .artist-card img[alt="Ashtine Olviga"] {
+    height: 300px;
+    object-position: 20% center !important;
+  }
+
   .artist-card img[alt="Andres Muhlach"] {
     height: 300px;
-    object-position: center center !important;
+    object-position: 80% center !important;
   }
 }
 
-/* phones */
+/* Mobile view (≤320px) */
 @media (max-width: 320px) {
-  .artist-card img[alt="Ashtine Olviga"],
-  .artist-card img[alt="Andres Muhlach"] {
+  .artist-card img[alt="Ashtine Olviga"] {
     height: 250px;
     object-position: 15% center !important;
   }
-}
-</style>
 
-<!-- 🎥 Parallax Script -->
+  .artist-card img[alt="Andres Muhlach"] {
+    height: 250px;
+    object-position: 15% center !important; /* adjust slightly right for balance */
+  }
+}
+
+</style>
 <script>
-document.addEventListener("scroll", function () {
+document.addEventListener("scroll", function() {
   const section = document.querySelector(".featured-artists-section");
   if (!section) return;
 
-  const rect = section.getBoundingClientRect();
-  const scrollY = window.scrollY || window.pageYOffset;
+  // Scroll position
+  const scrollTop = window.scrollY;
   const offsetTop = section.offsetTop;
-  const moveY = (scrollY - offsetTop) * 0.3; // lower = smoother, higher = faster
+  const sectionHeight = section.offsetHeight;
 
-  if (rect.top < window.innerHeight && rect.bottom > 0) {
-    // translate background for cinematic effect
+  // Only move while section is visible in viewport
+  if (scrollTop + window.innerHeight > offsetTop && scrollTop < offsetTop + sectionHeight) {
+    const distance = scrollTop - offsetTop;
+    const moveY = distance * 0.4; // lower number = slower movement
     section.style.backgroundPosition = `center ${moveY}px`;
-    // optional slight zoom while scrolling
-    section.style.transform = `scale(${1 + moveY / 10000})`;
   }
 });
 </script>
