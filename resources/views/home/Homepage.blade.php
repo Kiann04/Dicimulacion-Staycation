@@ -267,14 +267,13 @@
   background-image: url('{{ asset('assets/artists/movie_bg.jpg') }}');
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center 0;
+  background-position: center 0px;
   overflow: hidden;
   border-radius: 0;
-  min-height: 600px; /* ensure tall enough to see movement */
-  transition: background-position 0.1s linear;
+  min-height: 700px;
+  transition: background-position 0.05s linear;
 }
 
-/* Overlay */
 .featured-artists-section::before {
   content: "";
   position: absolute;
@@ -359,6 +358,25 @@
 }
 
 </style>
+<script>
+document.addEventListener("scroll", function() {
+  const section = document.querySelector(".featured-artists-section");
+  if (!section) return;
+
+  // Scroll position
+  const scrollTop = window.scrollY;
+  const offsetTop = section.offsetTop;
+  const sectionHeight = section.offsetHeight;
+
+  // Only move while section is visible in viewport
+  if (scrollTop + window.innerHeight > offsetTop && scrollTop < offsetTop + sectionHeight) {
+    const distance = scrollTop - offsetTop;
+    const moveY = distance * 0.4; // lower number = slower movement
+    section.style.backgroundPosition = `center ${moveY}px`;
+  }
+});
+</script>
+
 
 <!-- Info Cards -->
 <section class="container my-5 text-center" id="sales">
@@ -636,24 +654,6 @@ $(document).ready(function(){
         <button type="submit" class="btn btn-primary w-100">Send</button>
     </form>
 </section>
-<script>
-  document.addEventListener("scroll", function() {
-    const section = document.querySelector(".featured-artists-section");
-    if (!section) return;
-
-    // Scroll position
-    const scrollTop = window.scrollY;
-    const offsetTop = section.offsetTop;
-    const sectionHeight = section.offsetHeight;
-
-    // Only move while section is visible in viewport
-    if (scrollTop + window.innerHeight > offsetTop && scrollTop < offsetTop + sectionHeight) {
-      const distance = scrollTop - offsetTop;
-      const moveY = distance * 0.4; // lower number = slower movement
-      section.style.backgroundPosition = `center ${moveY}px`;
-    }
-  });
-</script>
 
 @include('partials.chatbot')
 
