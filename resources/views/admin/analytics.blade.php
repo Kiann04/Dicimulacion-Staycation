@@ -107,7 +107,7 @@
         <div class="main-content">
             <header>
                 <h1>📊 Analytics Dashboard</h1>
-                <p class="subtext">Monitor booking trends and system performance</p>
+                <p class="subtext">Monitor booking trends </p>
             </header>
 
             <!-- Summary Cards -->
