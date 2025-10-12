@@ -267,11 +267,11 @@
   background-image: url('{{ asset('assets/artists/movie_bg.jpg') }}');
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: center 0;
   overflow: hidden;
   border-radius: 0;
-  min-height: 600px;
-  transition: background-position 0.1s ease-out;
+  min-height: 600px; /* ensure tall enough to see movement */
+  transition: background-position 0.1s linear;
 }
 
 /* Overlay */
@@ -637,13 +637,24 @@ $(document).ready(function(){
     </form>
 </section>
 <script>
-document.addEventListener("scroll", function() {
-  const section = document.querySelector(".featured-artists-section");
-  if (!section) return;
-  const scrollPosition = window.scrollY * 0.4;
-  section.style.backgroundPosition = `center ${scrollPosition}px`;
-});
+  document.addEventListener("scroll", function() {
+    const section = document.querySelector(".featured-artists-section");
+    if (!section) return;
+
+    // Scroll position
+    const scrollTop = window.scrollY;
+    const offsetTop = section.offsetTop;
+    const sectionHeight = section.offsetHeight;
+
+    // Only move while section is visible in viewport
+    if (scrollTop + window.innerHeight > offsetTop && scrollTop < offsetTop + sectionHeight) {
+      const distance = scrollTop - offsetTop;
+      const moveY = distance * 0.4; // lower number = slower movement
+      section.style.backgroundPosition = `center ${moveY}px`;
+    }
+  });
 </script>
+
 @include('partials.chatbot')
 
 @endsection
