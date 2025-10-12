@@ -23,8 +23,8 @@ class StaycationController extends Controller
             'house_name' => 'required|string|max:255',
             'house_description' => 'required|string',
             'house_price' => 'required|numeric|min:0',
-            'house_image' => 'required|image|mimes:jpg,png,jpeg|max:2048',
-            'house_images.*' => 'image|mimes:jpg,png,jpeg|max:2048', // for gallery
+            'house_image' => 'required|image|mimes:jpg,png,jpeg|max:5120',
+            'house_images.*' => 'image|mimes:jpg,png,jpeg|max:5120', // for gallery
             'house_location' => 'required|string|max:255',
             'house_availability' => 'required|string',
         ]);
