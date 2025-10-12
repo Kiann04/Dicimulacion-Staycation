@@ -9,7 +9,7 @@
   <div class="container mt-4">
     <div class="text-center mb-5">
       <h1 class="fw-bold">Privacy Policy</h1>
-      <p class="text-muted">Effective Date: October 12, 2025</p>
+      <p class="text-muted">Effective Date: October 11, 2025</p>
     </div>
 
     <div class="card shadow-sm border-0 p-4">
@@ -94,7 +94,7 @@
       </ul>
 
       <p class="text-muted mt-4 mb-0">
-        Last updated: October 12, 2025
+        Last updated: October 11, 2025
       </p>
     </div>
   </div>
