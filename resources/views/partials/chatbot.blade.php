@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 appendMessage(faqReply, "bot");
             }, 700); // 700ms delay
         } else {
-            appendMessage("Sorry, I don't know the answer to that.", "bot");
+            appendMessage("I can answer questions about our staycation. Please ask me anything you want to know!", "bot");
         }
     }
 
