@@ -130,7 +130,13 @@ class AdminController extends Controller
                 $month = Carbon::now()->subMonths($i);
                 return Booking::whereMonth('created_at', $month->month)
                     ->whereYear('created_at', $month->year)
-                    ->sum('total_price');
+                    ->sum(DB::raw("
+                    CASE 
+                        WHEN payment_status = 'paid' THEN total_price
+                        WHEN payment_status = 'half_paid' THEN total_price / 2
+                        ELSE 0
+                    END
+                "));
             })
             ->reverse()
             ->values();
