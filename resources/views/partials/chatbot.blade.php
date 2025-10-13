@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { keywords: ["checkout", "departure"], reply: "Check-out time is 12:00 PM." },
     { keywords: ["pool", "swimming"], reply: "Our pool is shared among every three units and open daily." },
     { keywords: ["payment", "gcash"], reply: "We accept GCash or bank transfer. 50% downpayment secures your booking." },
-    { keywords: ["location", "address"], reply: "We are at Falcons Court, Village East Avenue, Angono, Rizal." },
+    { keywords: ["location", "address","located"], reply: "We are at Falcons Court, Village East Avenue, Angono, Rizal." },
     { keywords: ["amenities"], reply: "We offer WiFi, Kitchen, BBQ, Parking, Netflix, Pool, and Pet-Friendly rooms." },
     { keywords: ["booking", "reserve"], reply: "You can book directly on our website via the Booking page." }
   ];
