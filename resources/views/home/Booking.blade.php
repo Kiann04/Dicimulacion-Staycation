@@ -161,10 +161,6 @@
             </div>
         </div>
         </div>
-
-
-
-
   </div>
 </section>
 
@@ -457,7 +453,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form");
     const guestInput = document.querySelector('input[name="guest_number"]');
 
-    // ✅ Create a live Philippine time display for debugging
+    // ✅ Philippine Time Display
     const timeDisplay = document.createElement("div");
     timeDisplay.style = "margin-bottom: 15px; font-weight: 600; color: #1e293b;";
     timeDisplay.id = "ph-time-display";
@@ -470,7 +466,7 @@ document.addEventListener("DOMContentLoaded", function () {
     updatePHTime();
     setInterval(updatePHTime, 1000);
 
-    // ✅ Force timezone to Asia/Manila for all date operations
+    // ✅ Force timezone to Asia/Manila
     const nowInPH = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
     const today = new Date(nowInPH).toISOString().split("T")[0];
 
@@ -478,7 +474,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (startInput) startInput.min = today;
     if (endInput) endInput.min = today;
 
-    // 🧮 Price calculation
+    // 🧮 Price Calculation
     function calculatePrice() {
         if (startInput.value && endInput.value) {
             const start = new Date(startInput.value);
@@ -493,9 +489,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     const extraGuests = guests - 6;
                     const extraFee = extraGuests * 500;
                     total += extraFee;
-                    totalPriceElem.textContent = `Total for ${nights} night${nights > 1 ? 's' : ''} (₱${extraFee.toLocaleString()} extra for ${extraGuests} guest${extraGuests > 1 ? 's' : ''}): ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+                    totalPriceElem.textContent =
+                        `Total for ${nights} night${nights > 1 ? 's' : ''} (₱${extraFee.toLocaleString()} extra for ${extraGuests} guest${extraGuests > 1 ? 's' : ''}): ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
                 } else {
-                    totalPriceElem.textContent = `Total for ${nights} night${nights > 1 ? 's' : ''}: ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+                    totalPriceElem.textContent =
+                        `Total for ${nights} night${nights > 1 ? 's' : ''}: ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
                 }
 
                 priceSummary.style.display = "block";
@@ -507,7 +505,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Handle date changes
+    // Date change listeners
     startInput.addEventListener("change", function () {
         const arrival = new Date(this.value);
         const minDeparture = new Date(arrival);
@@ -523,32 +521,27 @@ document.addEventListener("DOMContentLoaded", function () {
     endInput.addEventListener("change", calculatePrice);
     guestInput.addEventListener("input", calculatePrice);
 
-    // Validate on submit
+    // Validate before submit
     if (form) {
         form.addEventListener("submit", function (e) {
             const start = new Date(startInput.value);
             const end = new Date(endInput.value);
             const today = new Date();
             const endLimit = new Date("2026-12-31");
-
-            // Normalize time to midnight for accurate comparison
             today.setHours(0, 0, 0, 0);
 
-            // Check if end date is after start date
             if (end <= start) {
                 e.preventDefault();
                 alert("Departure date must be at least one day after arrival date.");
                 return;
             }
 
-            // Check if dates are within allowed range (today → Dec 31, 2026)
             if (start < today || end > endLimit) {
                 e.preventDefault();
                 alert("Bookings are only allowed from today up to December 31, 2026.");
                 return;
             }
         });
-
     }
 
     // 🗓️ FullCalendar with PH timezone
@@ -557,21 +550,28 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch(`/events/${staycationId}`)
             .then(res => res.json())
             .then(events => {
-                const bookedEvents = events.map(event => {
-                    const startPH = new Date(new Date(event.start).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
-                    const endPH = new Date(new Date(event.end).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
-                    endPH.setDate(endPH.getDate() - 1);
+                // Filter out past bookings 🔥
+                const todayPH = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
+                const todayDate = new Date(todayPH);
+                todayDate.setHours(0, 0, 0, 0);
 
-                    return {
-                        title: "Booked",
-                        start: startPH.toISOString().split("T")[0],
-                        end: endPH.toISOString().split("T")[0],
-                        allDay: true,
-                        display: "background",
-                        backgroundColor: "#f56565",
-                        borderColor: "#f56565",
-                    };
-                });
+                const bookedEvents = events
+                    .map(event => {
+                        const startPH = new Date(new Date(event.start).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+                        const endPH = new Date(new Date(event.end).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+                        endPH.setDate(endPH.getDate() - 1);
+
+                        return {
+                            title: "Booked",
+                            start: startPH.toISOString().split("T")[0],
+                            end: endPH.toISOString().split("T")[0],
+                            allDay: true,
+                            display: "background",
+                            backgroundColor: "#f56565",
+                            borderColor: "#f56565",
+                        };
+                    })
+                    .filter(event => new Date(event.end) >= todayDate); // ⛔ hide past bookings
 
                 const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
                     initialView: "dayGridMonth",
@@ -583,17 +583,46 @@ document.addEventListener("DOMContentLoaded", function () {
                         right: ""
                     },
                     timeZone: "Asia/Manila",
-                    events: bookedEvents
+                    events: bookedEvents,
+
+                    // 🩶 Grey out past dates
+                    dayCellDidMount: function (info) {
+                        const today = new Date();
+                        const cellDate = new Date(info.date);
+                        today.setHours(0, 0, 0, 0);
+                        cellDate.setHours(0, 0, 0, 0);
+
+                        if (cellDate < today) {
+                            info.el.style.backgroundColor = "#e9ecef"; // light grey
+                            info.el.style.opacity = "0.7";
+                        }
+                    },
+
+                    // 🚫 Disable clicks on past dates
+                    dateClick: function (info) {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        const clickedDate = new Date(info.date);
+                        clickedDate.setHours(0, 0, 0, 0);
+
+                        if (clickedDate < today) {
+                            return; // ignore clicks on past dates
+                        }
+
+                        console.log("Future date clicked:", clickedDate);
+                    }
                 });
+
                 calendar.render();
             });
     }
 
-    // 🧭 Debugging console logs
+    // 🧭 Debugging logs
     console.log("Local device time:", new Date());
     console.log("Philippine time:", new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
 });
 </script>
+
 
 
 
