@@ -19,7 +19,7 @@
                 @csrf
                 <div class="form-group mb-3">
                     <label for="report_year">Year:</label>
-                    <input type="number" id="report_year" name="report_year" min="2000" max="{{ date('Y') }}" value="{{ date('Y') }}" required>
+                    <input type="number" id="report_year" name="report_year" min="2025" max="{{ date('Y') }}" value="{{ date('Y') }}" required>
                 </div>
 
                 <input type="hidden" name="report_type" value="Annual">
