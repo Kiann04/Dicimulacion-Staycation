@@ -9,6 +9,7 @@
         background-color: #f7f8fa;
         font-family: 'Poppins', sans-serif;
         color: #333;
+        padding-top:
     }
     header { margin-bottom: 30px; }
     header h1 { font-weight: 700; color: #1e1e2f; }
@@ -22,14 +23,6 @@
         gap: 20px;
         margin-bottom: 30px;
     }
-    .content-wrapper{
-    padding-top: 0;  /* removes padding at the top */
-    padding-right: 30px;  /* keep side padding if needed */
-    padding-bottom: 30px; /* keep bottom padding if needed */
-    padding-left: 30px;   /* keep left padding if needed */
-    }
-
-    
     .chart-section {
         background: #fff;
         border-radius: 16px;

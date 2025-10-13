@@ -127,9 +127,6 @@ body.admin-dashboard {
 
 
 /* Adjust if body has login styles overriding layout */
-body.admin-dashboard .content-wrapper { /* Match sidebar width */
-  padding: 30px;
-}
 
 /* Override background if needed */
 body.admin-dashboard .main-content {
