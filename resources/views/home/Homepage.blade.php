@@ -146,7 +146,7 @@
 
     <!-- Text Side -->
     <div class="col-lg-6 fade-in-up">
-      <h5 class="text-primary fw-semibold mb-2">About Us</h5>
+      <h5 class="text-primary fw-semibold mb-2">Our Story</h5>
       <h2 class="fw-bold display-6 mb-4">
         We Provide The Best <br> Place For You
       </h2>
