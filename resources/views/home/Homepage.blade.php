@@ -475,65 +475,6 @@
     }
 </style>
 
-
-<!-- Properties -->
-<section class="container my-5" id="properties">
-    <div class="text-center mb-5">
-        <span class="badge bg-primary-subtle text-primary px-3 py-2">Recent</span>
-        <h2 class="fw-bold mt-3">Our Featured Houses</h2>
-        <p class="text-muted mx-auto" style="max-width: 600px;">
-            Our houses are warm, quiet, and thoughtfully minimal. With clean design and all the essentials, 
-            they offer the perfect setting for restful, easygoing stays.
-        </p>
-    </div>
-    <div class="row g-4">
-        @foreach($staycations as $staycation)
-            @if($staycation->house_availability === 'available')
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden hover-shadow transition">
-                        <div class="position-relative">
-                            <img src="{{ asset('storage/' . $staycation->house_image) }}" 
-                                 class="card-img-top rounded-top-4" 
-                                 alt="{{ $staycation->house_name }}"
-                                 style="height: 230px; object-fit: cover;">
-                            <span class="badge bg-success position-absolute top-0 end-0 m-3 px-3 py-2">
-                                Available
-                            </span>
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-bold">{{ $staycation->house_name }}</h5>
-                            <p class="text-muted small mb-2">
-                                <i class="bi bi-geo-alt-fill text-primary"></i> {{ $staycation->house_location }}
-                            </p>
-                            <p class="flex-grow-1">{{ $staycation->house_description }}</p>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <h6 class="fw-bold text-primary mb-0">
-                                    {{ number_format($staycation->house_price, 2) }} PHP
-                                </h6>
-                                <a href="{{ url('booking', $staycation->id) }}" 
-                                   class="btn btn-outline-primary rounded-pill px-4">
-                                    Book Now
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
-        @endforeach
-    </div>
-</section>
-
-<!-- Extra styling -->
-<style>
-    .hover-shadow:hover {
-        box-shadow: 0 0.8rem 1.5rem rgba(0, 0, 0, 0.15) !important;
-        transform: translateY(-4px);
-        transition: all 0.3s ease-in-out;
-    }
-    .transition {
-        transition: all 0.3s ease-in-out;
-    }
-</style>
 <!-- Testimonials Carousel -->
 <section class="container my-5" id="featured-reviews">
     <div class="text-center mb-5">

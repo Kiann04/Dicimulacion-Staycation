@@ -22,7 +22,7 @@
                     <div class="mb-3">
                         <label for="email" class="form-label fw-semibold">Email Address</label>
                         <input type="email" name="email" id="email" class="form-control" 
-                               placeholder="yourmail@gmail.com" required>
+                                required>
                         @error('email')
                             <p class="text-danger small">{{ $message }}</p>
                         @enderror
@@ -32,7 +32,7 @@
                     <div class="mb-3">
                         <label for="password" class="form-label fw-semibold">Password</label>
                         <input type="password" name="password" id="password" class="form-control" 
-                               placeholder="Password" required>
+                                required>
                         @error('password')
                             <p class="text-danger small">{{ $message }}</p>
                         @enderror
@@ -58,6 +58,3 @@
     </section>
 </x-guest-layout>
 
-@section('Footer')
-    @include('Footer')
-@endsection
