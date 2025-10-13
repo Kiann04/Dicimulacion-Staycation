@@ -36,9 +36,10 @@
                             required 
                             pattern="[0-9]{10}" 
                             title="Enter a valid 10-digit Philippine phone number (e.g. 9123456789)"
-                            value="{{ old('phone', Auth::user()->phone ? ltrim(Auth::user()->phone, '+63') : '') }}">
+                            value="{{ old('phone', Auth::user()?->phone ? ltrim(Auth::user()?->phone, '+63') : '') }}">
                     </div>
                 </div>
+
 
 
                 <div class="mb-3">
