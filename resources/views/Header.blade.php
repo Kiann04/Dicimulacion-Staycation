@@ -19,10 +19,10 @@
                         <a class="nav-link" href="{{ route('home') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('home') }}#about">About Us</a>
+                        <a class="nav-link" href="{{ route('home') }}#properties">Houses</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('home') }}#properties">Houses</a>
+                        <a class="nav-link" href="{{ route('home') }}#about">About Us</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('home') }}#contact">Contact Us</a>
