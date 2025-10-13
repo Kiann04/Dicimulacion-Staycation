@@ -20,7 +20,6 @@
     <nav class="menu">
       <a href="{{ route('admin.dashboard') }}"><i class="fa-solid fa-gauge"></i> Dashboard</a>
       <a href="{{ route('admin.customers') }}"><i class="fa-solid fa-user"></i> Customer</a>
-      <a href="{{ route('admin.analytics') }}"><i class="fa-solid fa-chart-line"></i> Analytics</a>
       <a href="{{ route('admin.messages') }}"><i class="fa-solid fa-envelope"></i> Messages</a>
       <a href="{{ route('admin.bookings') }}"><i class="fa-solid fa-calendar-check"></i> Bookings</a>
       <a href="{{ route('admin.reports') }}"><i class="fa-solid fa-file-alt"></i> Reports</a>
