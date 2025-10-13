@@ -1,11 +1,10 @@
 @extends('layouts.default')
-
+@include('admin.partials.analytics')
 @section('Aside')
     @include('Aside')
 @endsection
 
 @section('content')
-@include('admin.partials.analytics')
 <body class="admin-dashboard">
     <div class="content-wrapper">
         <div class="main-content">
