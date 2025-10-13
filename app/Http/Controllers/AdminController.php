@@ -23,17 +23,15 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
-        // Automatically mark completed bookings
+        // ✅ 1. Automatically mark completed bookings
         Booking::whereDate('end_date', '<', Carbon::today())
             ->where('status', '!=', 'completed')
             ->update(['status' => 'completed']);
 
-        // Stats
+        // ✅ 2. Overall Stats
         $totalUsers    = User::count();
         $totalBookings = Booking::count();
-
-        // ✅ Updated Revenue Logic (Full + Half Paid)
-        $totalRevenue = Booking::sum(DB::raw("
+        $totalRevenue  = Booking::sum(DB::raw("
             CASE 
                 WHEN payment_status = 'paid' THEN total_price
                 WHEN payment_status = 'half_paid' THEN total_price / 2
@@ -41,18 +39,89 @@ class AdminController extends Controller
             END
         "));
 
-        // Only show unpaid bookings on dashboard
         $bookings = Booking::where('payment_status', 'unpaid')
             ->latest()
             ->take(10)
             ->get();
 
-        return view('admin.dashboard', compact(
-            'totalUsers',
-            'totalBookings',
-            'totalRevenue',
-            'bookings'
-        ));
+        // ✅ 3. Monthly Analytics
+        $currentMonth = Carbon::now()->month;
+        $currentYear  = Carbon::now()->year;
+
+        $monthlyBookings = Booking::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->count();
+
+        $monthlyRevenue = Booking::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->sum(DB::raw("
+                CASE 
+                    WHEN payment_status = 'paid' THEN total_price
+                    WHEN payment_status = 'half_paid' THEN total_price / 2
+                    ELSE 0
+                END
+            "));
+
+        $newUsers = User::whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->count();
+
+        $totalDays = now()->daysInMonth;
+        $bookedDays = Booking::whereMonth('start_date', $currentMonth)
+            ->whereYear('start_date', $currentYear)
+            ->get()
+            ->sum(function ($b) {
+                return Carbon::parse($b->start_date)->diffInDays(Carbon::parse($b->end_date));
+            });
+
+        $averageOccupancy = round(($bookedDays / ($totalDays * 1)) * 100) . '%';
+
+        // ✅ 4. Chart Data (last 6 months)
+        $months = collect(range(0, 5))
+            ->map(fn($i) => Carbon::now()->subMonths($i)->format('M'))
+            ->reverse()
+            ->values();
+
+        $totals = collect(range(0, 5))
+            ->map(function ($i) {
+                $month = Carbon::now()->subMonths($i);
+                return Booking::whereMonth('created_at', $month->month)
+                    ->whereYear('created_at', $month->year)
+                    ->count();
+            })
+            ->reverse()
+            ->values();
+
+        $revenues = collect(range(0, 5))
+            ->map(function ($i) {
+                $month = Carbon::now()->subMonths($i);
+                return Booking::whereMonth('created_at', $month->month)
+                    ->whereYear('created_at', $month->year)
+                    ->sum(DB::raw("
+                        CASE 
+                            WHEN payment_status = 'paid' THEN total_price
+                            WHEN payment_status = 'half_paid' THEN total_price / 2
+                            ELSE 0
+                        END
+                    "));
+            })
+            ->reverse()
+            ->values();
+
+        // ✅ 5. Return Single View with all data
+        return view('admin.dashboard', [
+            'totalUsers'        => $totalUsers,
+            'totalBookings'     => $totalBookings,
+            'totalRevenue'      => $totalRevenue,
+            'bookings'          => $bookings,
+            'monthlyBookings'   => $monthlyBookings,
+            'monthlyRevenue'    => $monthlyRevenue,
+            'newUsers'          => $newUsers,
+            'averageOccupancy'  => $averageOccupancy,
+            'months'            => $months,
+            'totals'            => $totals,
+            'revenues'          => $revenues,
+        ]);
     }
 
     

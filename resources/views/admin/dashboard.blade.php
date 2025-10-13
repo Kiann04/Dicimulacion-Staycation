@@ -6,19 +6,9 @@
 
 @section('content')
 <body class="admin-dashboard">
-<div class="content-wrapper">
-    <div class="main-content">
-        <header>
-            <h1>Admin Dashboard</h1>
-        </header>
-
-        <!-- Cards -->
-        <section class="cards">
-            <div class="card"><h3>Total Users</h3><p>{{ $totalUsers }}</p></div>
-            <div class="card"><h3>Total Bookings</h3><p>{{ $totalBookings }}</p></div>
-            <div class="card"><h3>Revenue</h3><p>₱{{ number_format($totalRevenue, 2) }}</p></div>
-        </section>
-
+        @include('admin.partials.analytics')
+    <div class="content-wrapper">
+        <div class="main-content">
         <!-- Unpaid Bookings Table -->
         <section class="table-container">
             <h2>Unpaid Bookings</h2>
