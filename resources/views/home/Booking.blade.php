@@ -355,6 +355,57 @@
 <section class="container my-5" id="reviews">
     <h2 class="fw-bold mb-5 text-center display-6">What Our Guests Say</h2>
 
+    <!-- Rating Summary -->
+    @if($totalReviews > 0)
+    <div class="text-center mb-5">
+        <h3 class="fw-bold mb-2">
+            {{ $averageRating }}
+            <span class="ms-1">
+                @php
+                    $fullStars = floor($averageRating);
+                    $halfStar = ($averageRating - $fullStars) >= 0.5 ? 1 : 0;
+                    $emptyStars = 5 - ($fullStars + $halfStar);
+                @endphp
+
+                {{-- Full stars --}}
+                @for ($i = 0; $i < $fullStars; $i++)
+                    <i class='bx bxs-star text-warning fs-4'></i>
+                @endfor
+
+                {{-- Half star --}}
+                @if ($halfStar)
+                    <i class='bx bxs-star-half text-warning fs-4'></i>
+                @endif
+
+                {{-- Empty stars --}}
+                @for ($i = 0; $i < $emptyStars; $i++)
+                    <i class='bx bx-star text-warning fs-4'></i>
+                @endfor
+            </span>
+        </h3>
+
+        <p class="text-muted mb-4">Average Rating from {{ $totalReviews }} Review{{ $totalReviews == 1 ? '' : 's' }}</p>
+
+        <div class="mx-auto" style="max-width: 300px;">
+            @foreach ([5,4,3,2,1] as $star)
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                    <div class="d-flex align-items-center">
+                        <span class="me-2">{{ $star }}</span>
+                        <i class='bx bxs-star text-warning'></i>
+                    </div>
+                    <div class="progress flex-grow-1 mx-2" style="height: 8px;">
+                        <div class="progress-bar bg-warning" role="progressbar" 
+                            style="width: {{ $totalReviews > 0 ? ($starCounts[$star] / $totalReviews) * 100 : 0 }}%;">
+                        </div>
+                    </div>
+                    <span>{{ $starCounts[$star] }}</span>
+                </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+    <!-- Individual Reviews -->
     <div class="row g-4 justify-content-center">
         @forelse($reviews as $review)
         <div class="col-sm-12 col-md-6 col-lg-4">
@@ -391,6 +442,7 @@
         @endforelse
     </div>
 </section>
+
 
 
 <!-- FullCalendar + Price Calculation -->
