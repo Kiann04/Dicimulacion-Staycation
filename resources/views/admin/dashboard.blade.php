@@ -6,7 +6,6 @@
 
 @section('content')
 @include('admin.partials.analytics')
-<body class="admin-dashboard">
     <div class="content-wrapper">
         <div class="main-content">
         <!-- Unpaid Bookings Table -->
