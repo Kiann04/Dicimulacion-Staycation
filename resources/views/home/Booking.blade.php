@@ -585,28 +585,34 @@ document.addEventListener("DOMContentLoaded", function () {
                     timeZone: "Asia/Manila",
                     events: bookedEvents,
 
+                    // ✅ Restrict navigation (no past months)
+                    validRange: {
+                        start: todayDate.toISOString().split("T")[0],
+                        end: "2026-12-31" // Optional: limit max future booking range
+                    },
+
                     // 🩶 Grey out past dates
                     dayCellDidMount: function (info) {
-                        const today = new Date();
                         const cellDate = new Date(info.date);
+                        const today = new Date();
                         today.setHours(0, 0, 0, 0);
                         cellDate.setHours(0, 0, 0, 0);
 
                         if (cellDate < today) {
-                            info.el.style.backgroundColor = "#e9ecef"; // light grey
+                            info.el.style.backgroundColor = "#e9ecef";
                             info.el.style.opacity = "0.7";
                         }
                     },
 
                     // 🚫 Disable clicks on past dates
                     dateClick: function (info) {
+                        const clickedDate = new Date(info.date);
                         const today = new Date();
                         today.setHours(0, 0, 0, 0);
-                        const clickedDate = new Date(info.date);
                         clickedDate.setHours(0, 0, 0, 0);
 
                         if (clickedDate < today) {
-                            return; // ignore clicks on past dates
+                            return; // Ignore past date clicks
                         }
 
                         console.log("Future date clicked:", clickedDate);
