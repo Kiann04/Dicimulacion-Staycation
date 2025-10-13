@@ -1,10 +1,6 @@
 
 @extends('layouts.default')
 
-@section('Header')
-    @include('Header')
-@endsection
-
 <x-guest-layout>
     <!-- Bootstrap Login Section -->
     <section class="container d-flex align-items-center justify-content-center" style="min-height: 80vh;">
