@@ -45,8 +45,13 @@
 
         <!-- Image Section -->
         <div class="col-md-6 d-none d-md-block p-0">
-            <img src="{{ asset('assets/HomeSticker.png') }}" alt="Authentication Illustration" class="img-fluid h-100 w-100 object-fit-cover">
+            <div class="h-100 w-100">
+                <img src="{{ asset('assets/HomeSticker.png') }}" 
+                    alt="Authentication Illustration" 
+                    class="img-fluid h-100 w-100 object-fit-cover rounded-end">
+            </div>
         </div>
+
     </div>
 </div>
 @endsection
