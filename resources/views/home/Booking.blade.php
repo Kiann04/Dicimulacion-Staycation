@@ -29,10 +29,17 @@
 
                 <div class="mb-3">
                     <label for="phone" class="form-label">Contact Number</label>
-                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="9123456789" required
-                        pattern="[0-9]{10}" title="Enter a valid 10-digit Philippine phone number"
-                        value="{{ old('phone', Auth::user()->phone ?? '') }}">
+                    <div class="input-group">
+                        <span class="input-group-text">+63</span>
+                        <input type="tel" id="phone" name="phone" class="form-control" 
+                            placeholder="9123456789" 
+                            required 
+                            pattern="[0-9]{10}" 
+                            title="Enter a valid 10-digit Philippine phone number (e.g. 9123456789)"
+                            value="{{ old('phone', Auth::user()->phone ? ltrim(Auth::user()->phone, '+63') : '') }}">
+                    </div>
                 </div>
+
 
                 <div class="mb-3">
                     <label for="guest_number" class="form-label">Guests</label>
