@@ -5,8 +5,8 @@
 @endsection
 
 @section('content')
+@include('admin.partials.analytics')
 <body class="admin-dashboard">
-        @include('admin.partials.analytics')
     <div class="content-wrapper">
         <div class="main-content">
         <!-- Unpaid Bookings Table -->
