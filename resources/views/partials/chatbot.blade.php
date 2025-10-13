@@ -12,17 +12,11 @@
     class="card position-fixed shadow-lg hidden"
     style="bottom: 90px; right: 20px; width: 360px; height: 520px; border-radius: 20px; overflow: hidden; z-index: 1050;">
 
-    <!-- Header -->
+    <!-- Header (No Logo) -->
     <div class="bg-primary text-white px-3 py-2 d-flex align-items-center justify-content-between">
-      <div class="d-flex align-items-center gap-2">
-        <div class="bg-white rounded-circle" style="width: 35px; height: 35px;">
-          <img src="https://cdn-icons-png.flaticon.com/512/891/891399.png" alt="Logo"
-               style="width: 35px; height: 35px; border-radius: 50%;">
-        </div>
-        <div>
-          <h6 class="mb-0 fw-bold">Dicimulation Staycation</h6>
-          <small>Online</small>
-        </div>
+      <div>
+        <h6 class="mb-0 fw-bold">Dicimulation Staycation</h6>
+        <small>Online</small>
       </div>
       <button id="CloseChatBot" class="btn btn-light btn-sm rounded-circle">
         <i class="bi bi-x-lg"></i>
@@ -31,7 +25,6 @@
 
     <!-- Messages Area -->
     <div id="messages" class="p-3 overflow-auto" style="height: 340px; background-color: #f0f2f5;">
-      <!-- Chat messages appear here -->
       <div class="text-center text-muted small mt-2">Start a conversation</div>
     </div>
 
