@@ -22,6 +22,14 @@
         gap: 20px;
         margin-bottom: 30px;
     }
+    .content-wrapper{
+    padding-top: 0;  /* removes padding at the top */
+    padding-right: 30px;  /* keep side padding if needed */
+    padding-bottom: 30px; /* keep bottom padding if needed */
+    padding-left: 30px;   /* keep left padding if needed */
+    }
+
+    
     .chart-section {
         background: #fff;
         border-radius: 16px;
