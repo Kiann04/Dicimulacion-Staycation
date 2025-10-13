@@ -233,7 +233,12 @@ Route::prefix('admin')
 
 // =========================
 // Staff Routes
-Route::prefix('staff')->name('staff.')->middleware(['auth','staff'])->group(function () {
+Route::prefix('staff')->name('staff.')->middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+    'staff'
+])->group(function () {
     Route::get('/dashboard', [StaffController::class, 'dashboard'])->name('dashboard');
 
     // Customers
