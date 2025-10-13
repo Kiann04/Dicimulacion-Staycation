@@ -81,10 +81,10 @@
             <label>Guest Number</label>
             <input type="number" name="guest_number" value="{{ old('guest_number', $booking->guest_number) }}" required>
 
-            <label>Check-In Date</label>
+            <label>Arrival Date</label>
             <input type="date" name="start_date" value="{{ old('start_date', $booking->start_date) }}" required>
 
-            <label>Check-Out Date</label>
+            <label>Departure Date</label>
             <input type="date" name="end_date" value="{{ old('end_date', $booking->end_date) }}" required>
 
             <div class="form-actions">

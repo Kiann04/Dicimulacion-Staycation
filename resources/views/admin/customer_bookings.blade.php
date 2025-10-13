@@ -20,8 +20,8 @@
             <th>Booking ID</th>
             <th>Staycation</th>
             <th>Guests</th>
-            <th>Check-in</th>
-            <th>Check-out</th>
+            <th>Arrival date</th>
+            <th>Departure date<th>
             <th>Status</th>
           </tr>
         </thead>
