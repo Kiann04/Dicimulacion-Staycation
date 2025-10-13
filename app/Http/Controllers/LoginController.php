@@ -54,32 +54,47 @@ class LoginController extends Controller
     }
 
     public function adminStaffLogin(Request $request)
-{
-    $credentials = $request->only('email', 'password');
+    {
+        $credentials = $request->only('email', 'password');
 
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
 
-        // Allow only admin or staff
-        if (in_array(Auth::user()->usertype, ['admin', 'staff'])) {
-            if (Auth::user()->usertype === 'admin') {
+            // ✅ Allow only Admin or Staff
+            if (!in_array($user->usertype, ['admin', 'staff'])) {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Only Admin or Staff can log in here.',
+                ]);
+            }
+
+            // ✅ If user has 2FA enabled
+            if ($user->two_factor_secret) {
+                Auth::logout();
+
+                // Store user ID in session for 2FA verification
+                $request->session()->put('login.id', $user->id);
+
+                // Redirect to Fortify's built-in 2FA challenge page
+                return redirect()->route('two-factor.login');
+            }
+
+            // ✅ If no 2FA, go to correct dashboard
+            $request->session()->regenerate();
+
+            if ($user->usertype === 'admin') {
                 return redirect()->route('admin.dashboard');
-            } elseif (Auth::user()->usertype === 'staff') {
+            } elseif ($user->usertype === 'staff') {
                 return redirect()->route('staff.dashboard');
             }
         }
 
-        // If not admin/staff → logout immediately
-        Auth::logout();
+        // ❌ Invalid login
         return back()->withErrors([
-            'email' => 'Only Admin/Staff can login here.'
-        ]);
+            'email' => 'Invalid login details.',
+        ])->onlyInput('email');
     }
 
-    return back()->withErrors([
-        'email' => 'Invalid login details.'
-    ])->onlyInput('email');
-}
 
 
     // ==========================
