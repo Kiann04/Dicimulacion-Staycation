@@ -48,7 +48,7 @@
       </table>
     </div>
 
-    <a href="{{ route('admin.customers') }}" 
+    <a href="{{ route('staff.customers') }}" 
        style="display:inline-block; margin-top:15px; padding:8px 14px; background:#6c757d; color:white; border-radius:5px; text-decoration:none;">
        ← Back to Customers
     </a>
