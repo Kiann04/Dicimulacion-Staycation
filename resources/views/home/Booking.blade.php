@@ -43,7 +43,10 @@
 
                 <div class="mb-3">
                     <label for="guest_number" class="form-label">Guests</label>
-                    <input type="number" id="guest_number" name="guest_number" class="form-control" placeholder="Guest/s" required
+                    <input type="number" id="guest_number" name="guest_number" class="form-control" 
+                        placeholder="Guest/s" 
+                        required 
+                        min="1"
                         value="{{ old('guest_number') }}">
                 </div>
 
