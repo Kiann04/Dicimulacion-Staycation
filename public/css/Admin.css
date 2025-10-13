@@ -127,6 +127,12 @@ body.admin-dashboard {
 
 
 /* Adjust if body has login styles overriding layout */
+body.admin-dashboard .content-wrapper { /* Match sidebar width */
+    padding-top: 0;  /* removes padding at the top */
+    padding-right: 30px;  /* keep side padding if needed */
+    padding-bottom: 30px; /* keep bottom padding if needed */
+    padding-left: 30px;
+}
 
 /* Override background if needed */
 body.admin-dashboard .main-content {
