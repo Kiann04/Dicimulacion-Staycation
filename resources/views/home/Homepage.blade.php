@@ -131,92 +131,6 @@
 }
 </style>
 
-
-<!-- Modern About Us Section -->
-<section class="container my-5 py-5" id="about">
-  <div class="row align-items-center g-5">
-    
-    <!-- Image Side -->
-    <div class="col-lg-6">
-      <div class="about-img-wrapper position-relative rounded-4 overflow-hidden shadow-lg">
-        <img src="{{ asset('assets/AboutUs.jpg') }}" class="img-fluid" alt="About Us">
-        <div class="overlay"></div>
-      </div>
-    </div>
-
-    <!-- Text Side -->
-    <div class="col-lg-6 fade-in-up">
-      <h5 class="text-primary fw-semibold mb-2">Our Story</h5>
-      <h2 class="fw-bold display-6 mb-4">
-        We Provide The Best <br> Place For You
-      </h2>
-      <p class="text-muted fs-5 mb-3">
-        We’re a family-owned staycation business with eight homes, each perfectly placed to enjoy either breathtaking city views or peaceful nature escapes.
-      </p>
-      <p class="text-muted fs-5 mb-3">
-        Whether you’re looking to recharge under the stars, or relax in the calm of nature, our homes are designed to make you feel right at home.
-      </p>
-      <p class="text-muted fs-5 mb-3">
-        Each property is thoughtfully prepared by our family to ensure comfort, style, and unforgettable memories.
-      </p>
-
-      <!-- Mini Icons / Stats -->
-      <div class="row mt-4 text-center">
-        <div class="col">
-          <h3 class="fw-bold">Our Homes</h3>
-          <p class="text-muted mb-0">Perfectly placed for city and nature escapes</p>
-        </div>
-        <div class="col">
-          <h3 class="fw-bold">Family-Owned</h3>
-          <p class="text-muted mb-0">Personalized care in every stay</p>
-        </div>
-        <div class="col">
-          <h3 class="fw-bold">Excellent Feedback</h3>
-          <p class="text-muted mb-0">Happy guests all over the world</p>
-        </div>
-      </div> <!-- Close mini-icons row -->
-    </div> <!-- Close text column -->
-    
-  </div> <!-- Close main row -->
-</section>
-
-<!-- Modern Styling -->
-<style>
-/* Image wrapper */
-.about-img-wrapper {
-  position: relative;
-  height: 100%;
-}
-.about-img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform .5s ease;
-}
-.about-img-wrapper:hover img {
-  transform: scale(1.05);
-}
-.about-img-wrapper .overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.35), rgba(0,0,0,0));
-}
-
-/* Fade-in animation */
-.fade-in-up {
-  animation: fadeInUp 1.2s ease-in-out;
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Adjust spacing for text-only layout */
-#about .col-lg-6.fade-in-up {
-  padding-bottom: 1rem;
-}
-</style>
-
 <!-- Featured Artists Section -->
 <section class="featured-artists-section py-5 my-5" id="artists">
   <div class="container text-center text-white">
@@ -355,8 +269,147 @@
 }
 
 </style>
+<section class="container my-5" id="properties">
+    <div class="text-center mb-5">
+        <span class="badge bg-primary-subtle text-primary px-3 py-2">Recent</span>
+        <h2 class="fw-bold mt-3">Our Featured Houses</h2>
+        <p class="text-muted mx-auto" style="max-width: 600px;">
+            Our houses are warm, quiet, and thoughtfully minimal. With clean design and all the essentials, 
+            they offer the perfect setting for restful, easygoing stays.
+        </p>
+    </div>
+    <div class="row g-4">
+        @foreach($staycations as $staycation)
+            @if($staycation->house_availability === 'available')
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden hover-shadow transition">
+                        <div class="position-relative">
+                            <img src="{{ asset('storage/' . $staycation->house_image) }}" 
+                                 class="card-img-top rounded-top-4" 
+                                 alt="{{ $staycation->house_name }}"
+                                 style="height: 230px; object-fit: cover;">
+                            <span class="badge bg-success position-absolute top-0 end-0 m-3 px-3 py-2">
+                                Available
+                            </span>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold">{{ $staycation->house_name }}</h5>
+                            <p class="text-muted small mb-2">
+                                <i class="bi bi-geo-alt-fill text-primary"></i> {{ $staycation->house_location }}
+                            </p>
+                            <p class="flex-grow-1">{{ $staycation->house_description }}</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <h6 class="fw-bold text-primary mb-0">
+                                    {{ number_format($staycation->house_price, 2) }} PHP
+                                </h6>
+                                <a href="{{ url('booking', $staycation->id) }}" 
+                                   class="btn btn-outline-primary rounded-pill px-4">
+                                    Book Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        @endforeach
+    </div>
+</section>
 
+<!-- Extra styling -->
+<style>
+    .hover-shadow:hover {
+        box-shadow: 0 0.8rem 1.5rem rgba(0, 0, 0, 0.15) !important;
+        transform: translateY(-4px);
+        transition: all 0.3s ease-in-out;
+    }
+    .transition {
+        transition: all 0.3s ease-in-out;
+    }
+</style>
+<!-- Modern About Us Section -->
+<section class="container my-5 py-5" id="about">
+  <div class="row align-items-center g-5">
+    
+    <!-- Image Side -->
+    <div class="col-lg-6">
+      <div class="about-img-wrapper position-relative rounded-4 overflow-hidden shadow-lg">
+        <img src="{{ asset('assets/AboutUs.jpg') }}" class="img-fluid" alt="About Us">
+        <div class="overlay"></div>
+      </div>
+    </div>
 
+    <!-- Text Side -->
+    <div class="col-lg-6 fade-in-up">
+      <h5 class="text-primary fw-semibold mb-2">Our Story</h5>
+      <h2 class="fw-bold display-6 mb-4">
+        We Provide The Best <br> Place For You
+      </h2>
+      <p class="text-muted fs-5 mb-3">
+        We’re a family-owned staycation business with eight homes, each perfectly placed to enjoy either breathtaking city views or peaceful nature escapes.
+      </p>
+      <p class="text-muted fs-5 mb-3">
+        Whether you’re looking to recharge under the stars, or relax in the calm of nature, our homes are designed to make you feel right at home.
+      </p>
+      <p class="text-muted fs-5 mb-3">
+        Each property is thoughtfully prepared by our family to ensure comfort, style, and unforgettable memories.
+      </p>
+
+      <!-- Mini Icons / Stats -->
+      <div class="row mt-4 text-center">
+        <div class="col">
+          <h3 class="fw-bold">Our Homes</h3>
+          <p class="text-muted mb-0">Perfectly placed for city and nature escapes</p>
+        </div>
+        <div class="col">
+          <h3 class="fw-bold">Family-Owned</h3>
+          <p class="text-muted mb-0">Personalized care in every stay</p>
+        </div>
+        <div class="col">
+          <h3 class="fw-bold">Excellent Feedback</h3>
+          <p class="text-muted mb-0">Happy guests all over the world</p>
+        </div>
+      </div> <!-- Close mini-icons row -->
+    </div> <!-- Close text column -->
+    
+  </div> <!-- Close main row -->
+</section>
+
+<!-- Modern Styling -->
+<style>
+/* Image wrapper */
+.about-img-wrapper {
+  position: relative;
+  height: 100%;
+}
+.about-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+.about-img-wrapper:hover img {
+  transform: scale(1.05);
+}
+.about-img-wrapper .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.35), rgba(0,0,0,0));
+}
+
+/* Fade-in animation */
+.fade-in-up {
+  animation: fadeInUp 1.2s ease-in-out;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Adjust spacing for text-only layout */
+#about .col-lg-6.fade-in-up {
+  padding-bottom: 1rem;
+}
+</style>
 <!-- Info Cards -->
 <section class="container my-5 text-center" id="sales">
     <div class="row g-4">
