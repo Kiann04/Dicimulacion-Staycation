@@ -180,6 +180,92 @@
     </div>
 </div>
 </body>
+<style>
+        body.admin-dashboard {
+            background-color: #f7f8fa;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+        }
+
+        .content-wrapper {
+            padding: 30px;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-weight: 700;
+            color: #1e1e2f;
+        }
+
+        header .subtext {
+            color: #666;
+        }
+
+        /* --- Analytics Cards --- */
+        .analytics-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .analytics-card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            position: relative;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .analytics-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .analytics-card p {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin: 10px 0 0;
+        }
+
+        .analytics-icon {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 2rem;
+            opacity: 0.15;
+        }
+
+        /* --- Chart Sections --- */
+        .charts-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-section {
+            background: #fff;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .chart-section h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+    </style>
 @endsection
 
 @push('scripts')
