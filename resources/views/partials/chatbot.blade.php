@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // FAQ responses
   const faq = [
-    { keywords: ["checkin", "arrival"], reply: "Check-in time is 2:00 PM." },
+    { keywords: ["checkin", "arrival","check-in","check in"], reply: "Check-in time is 2:00 PM." },
     { keywords: ["checkout", "departure"], reply: "Check-out time is 12:00 PM." },
     { keywords: ["pool", "swimming"], reply: "Our pool is shared among every three units and open daily." },
     { keywords: ["payment", "gcash"], reply: "We accept GCash or bank transfer. 50% downpayment secures your booking." },
