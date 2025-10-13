@@ -19,6 +19,93 @@
             <div class="card"><h3>Revenue</h3><p>₱{{ number_format($totalRevenue, 2) }}</p></div>
         </section>
 
+            </style>
+                <section class="analytics-cards">
+                                <div class="analytics-card">
+                                    <h3>Monthly Bookings</h3>
+                                    <p>{{ $monthlyBookings }}</p>
+                                </div>
+                                <div class="analytics-card">
+                                    <h3>Monthly Revenue</h3>
+                                    <p>₱{{ number_format($monthlyRevenue, 2) }}</p>
+                                </div>
+                                <div class="analytics-card">
+                                    <h3>New Users</h3>
+                                    <p>{{ $newUsers }}</p>
+                                </div>
+                                <div class="analytics-card">
+                                    <h3>Average Occupancy</h3>
+                                    <p>{{ $averageOccupancy ?? '85%' }}</p>
+                                </div>
+                            </section>
+
+                            <!-- Chart: Bookings -->
+                            <section class="charts-wrapper">
+                                <div class="chart-section">
+                                    <h2>📅 Booking Trends</h2>
+                                    <canvas id="bookingChart" height="100"></canvas>
+                                </div>
+
+                                <div class="chart-section">
+                                    <h2>💰 Revenue Growth</h2>
+                                    <canvas id="revenueChart" height="100"></canvas>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+
+                    <script>
+                        const months = @json($months);
+                        const bookingData = @json($totals);
+                        const revenueData = @json($revenues ?? []);
+
+                        // Bookings Chart
+                        new Chart(document.getElementById('bookingChart'), {
+                            type: 'line',
+                            data: {
+                                labels: months,
+                                datasets: [{
+                                    label: 'Bookings',
+                                    data: bookingData,
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    tension: 0.4,
+                                    fill: true,
+                                    borderWidth: 2,
+                                    pointRadius: 4,
+                                    pointBackgroundColor: '#1abc9c'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: { beginAtZero: true }
+                                }
+                            }
+                        });
+
+                        // Revenue Chart
+                        new Chart(document.getElementById('revenueChart'), {
+                            type: 'bar',
+                            data: {
+                                labels: months,
+                                datasets: [{
+                                    label: 'Revenue (₱)',
+                                    data: revenueData,
+                                    backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                                    borderColor: 'rgba(255, 159, 64, 1)',
+                                    borderWidth: 1,
+                                    borderRadius: 10,
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: { beginAtZero: true }
+                                }
+                            }
+                        });
+                    </script>
         <!-- Unpaid Bookings Table -->
         <section class="table-container">
             <h2>Unpaid Bookings</h2>
