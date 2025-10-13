@@ -42,7 +42,6 @@
         color: #333;
     }
 </style>
-<body class="admin-dashboard">
 <div class="content-wrapper">
     <div class="main-content">
         <header>
