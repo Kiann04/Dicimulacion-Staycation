@@ -58,7 +58,7 @@ class HomeController extends Controller
         $request->validate([
             'email' => 'required|email',
             'message' => 'required|string',
-            'attachment' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:5120'
+            'attachment' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2000'
         ]);
 
         $data = [
