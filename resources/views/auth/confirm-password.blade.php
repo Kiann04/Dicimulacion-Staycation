@@ -1,46 +1,45 @@
-@extends ('layouts.default');
+@extends('layouts.default')
 
-@section ('Header')
-@include ('Header')
+@section('Header')
+    @include('Header')
 @endsection
+
 <x-guest-layout>
-    <link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <div class="login container">
-        <div class="login-container">
-            <h2>Log In to Continue</h2> 
-            <p>Log in with your data that you entered<br>during your registration</p>
+    <div class="container d-flex align-items-center justify-content-center min-vh-100">
+        <div class="row shadow-lg rounded-4 overflow-hidden bg-white" style="max-width: 900px; width: 100%;">
 
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
+            <!-- Left side (form) -->
+            <div class="col-md-6 p-5 d-flex flex-column justify-content-center">
+                <h2 class="fw-bold mb-3">Confirm Password 🔐</h2>
+                <p class="text-muted mb-4">
+                    This is a secure area of the application. Please confirm your password before continuing.
+                </p>
 
-                <span>Enter your email address</span>
-                <input type="email" name="email" placeholder="yourmail@gmail.com" required>
-                    @error('email')
-                        <p class="error">{{ $message }}</p>
-                    @enderror
-                <span>Enter your password</span>
-                <input type="password" name="password" placeholder="Password" required>
-                    @error('password')
-                        <p class="error">{{ $message }}</p>
-                    @enderror
-                <input type="submit" value="Log In" class="buttom">
+                <form method="POST" action="{{ route('password.confirm') }}">
+                    @csrf
 
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}">Forget Password?</a>
-                @endif
-            </form>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input id="password" type="password" name="password" class="form-control" placeholder="••••••••" required autofocus>
+                        @error('password')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-            @if (Route::has('register'))
-                <a href="{{ route('register') }}" class="btn">Sign up now</a>
-            @endif
-        </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2">Confirm Password</button>
+                </form>
+            </div>
 
-        <div class="login-image">
-            <img src="{{ asset('assets/HomeSticker.png') }}" alt="">
+            <!-- Right side (image) -->
+            <div class="col-md-6 d-none d-md-flex bg-light align-items-center justify-content-center">
+                <img src="{{ asset('assets/HomeSticker.png') }}" class="img-fluid p-4" alt="Staycation">
+            </div>
         </div>
     </div>
 </x-guest-layout>
-@section ('Footer')
-@include ('Footer')
+
+@section('Footer')
+    @include('Footer')
 @endsection

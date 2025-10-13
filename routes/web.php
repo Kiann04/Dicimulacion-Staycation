@@ -247,3 +247,9 @@ Route::prefix('staff')->name('staff.')->middleware(['auth','staff'])->group(func
 use App\Http\Controllers\ConsentPopupController;
 
 Route::post('/save-consent', [ConsentPopupController::class, 'save'])->name('save.consent');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/test-2fa', function () {
+        return view('test-2fa');
+    })->name('test-2fa');
+});

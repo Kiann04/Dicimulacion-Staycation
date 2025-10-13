@@ -29,6 +29,19 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // ✅ Step 5 — Tell Fortify which Blade views to use
+        Fortify::loginView(function () {
+            return view('auth.login');  // your existing login view
+        });
+
+        Fortify::twoFactorChallengeView(function () {
+            return view('auth.two-factor-challenge');  // this is the page when 2FA is required
+        });
+
+        Fortify::registerView(function () {
+            return view('auth.register'); // optional if you have registration
+        });
+
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);

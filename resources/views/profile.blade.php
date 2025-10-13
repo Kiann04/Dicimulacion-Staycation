@@ -5,6 +5,7 @@
 @endsection
 
 <link rel="stylesheet" href="{{ asset('Css/home.css') }}">
+
 <main style="margin-top: 30px;">
 <div class="container py-5">
     <div class="row g-4">
@@ -65,7 +66,6 @@
                     <h5 class="mb-0">Change Password</h5>
                 </div>
                 <div class="card-body">
-
                     @if (session('password_success'))
                         <div class="alert alert-success">{{ session('password_success') }}</div>
                     @endif
@@ -97,9 +97,54 @@
                 </div>
             </div>
         </div>
+
+        <!-- Two-Factor Authentication -->
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Two-Factor Authentication</h5>
+                </div>
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success">{{ session('status') }}</div>
+                    @endif
+
+                    @if (auth()->user()->two_factor_secret)
+                        <p>✅ 2FA is currently <strong>ENABLED</strong> for your account.</p>
+
+                        <div class="mb-3">
+                            <h6>Scan this QR Code with your Authenticator App:</h6>
+                            <div>{!! auth()->user()->twoFactorQrCodeSvg() !!}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <h6>Recovery Codes:</h6>
+                            <ul class="list-group">
+                                @foreach (json_decode(decrypt(auth()->user()->two_factor_recovery_codes), true) as $code)
+                                    <li class="list-group-item">{{ $code }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+
+                        <form method="POST" action="{{ url('user/two-factor-authentication') }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger w-100">Disable 2FA</button>
+                        </form>
+                    @else
+                        <p>❌ 2FA is currently <strong>DISABLED</strong> for your account.</p>
+                        <form method="POST" action="{{ url('user/two-factor-authentication') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-success w-100">Enable 2FA</button>
+                        </form>
+                    @endif
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </main>
+
 @section('Footer')
     @include('Footer')
 @endsection

@@ -17,17 +17,33 @@ class LoginController extends Controller
 
     public function userLogin(Request $request)
     {
-    $credentials = $request->only('email', 'password');
+        $credentials = $request->only('email', 'password');
 
-    // Only allow login if usertype is user
-    if (Auth::attempt(array_merge($credentials, ['usertype' => 'user']))) {
-        $request->session()->regenerate();
-        return redirect()->route('home');
-    }
+        if (Auth::attempt(array_merge($credentials, ['usertype' => 'user']))) {
+            $user = Auth::user();
+
+            // ✅ If the user has 2FA enabled
+            if ($user->two_factor_secret) {
+                // Log out temporarily
+                Auth::logout();
+
+                // Store the user ID in session for later verification
+                $request->session()->put('login.id', $user->id);
+
+                // Redirect to Fortify's 2FA challenge page
+                return redirect()->route('two-factor.login');
+            }
+
+            // If no 2FA, proceed to home
+            $request->session()->regenerate();
+            return redirect()->route('home');
+        }
+
         return back()->withErrors([
             'email' => 'Invalid login details.'
         ])->onlyInput('email');
     }
+
 
     // ==========================
     // ADMIN + STAFF LOGIN (/admin/login)

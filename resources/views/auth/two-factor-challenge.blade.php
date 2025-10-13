@@ -1,58 +1,43 @@
-<x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
+@extends ('layouts.default')
 
-        <div x-data="{ recovery: false }">
-            <div class="mb-4 text-sm text-gray-600" x-show="! recovery">
-                {{ __('Please confirm access to your account by entering the authentication code provided by your authenticator application.') }}
+@section ('Header')
+@include ('Header')
+@endsection
+
+<link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
+
+<div class="login container">
+    <div class="login-container">
+        <h2>Two-Factor Authentication</h2>
+        <p>Enter the 6-digit code from your authenticator app or use a recovery code.</p>
+
+        @if ($errors->any())
+            <div class="alert alert-danger" style="color:red;">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
+        @endif
 
-            <div class="mb-4 text-sm text-gray-600" x-cloak x-show="recovery">
-                {{ __('Please confirm access to your account by entering one of your emergency recovery codes.') }}
-            </div>
+        <form method="POST" action="{{ route('two-factor.login') }}">
+            @csrf
+            <span>Authentication Code</span>
+            <input type="text" name="code" placeholder="123456" autofocus>
 
-            <x-validation-errors class="mb-4" />
+            <span>Or Recovery Code</span>
+            <input type="text" name="recovery_code" placeholder="Recovery code">
 
-            <form method="POST" action="{{ route('two-factor.login') }}">
-                @csrf
+            <input type="submit" value="Verify" class="buttom">
+        </form>
+    </div>
 
-                <div class="mt-4" x-show="! recovery">
-                    <x-label for="code" value="{{ __('Code') }}" />
-                    <x-input id="code" class="block mt-1 w-full" type="text" inputmode="numeric" name="code" autofocus x-ref="code" autocomplete="one-time-code" />
-                </div>
+    <div class="login-image">
+        <img src="{{ asset('assets/HomeSticker.png') }}" alt="">
+    </div>
+</div>
 
-                <div class="mt-4" x-cloak x-show="recovery">
-                    <x-label for="recovery_code" value="{{ __('Recovery Code') }}" />
-                    <x-input id="recovery_code" class="block mt-1 w-full" type="text" name="recovery_code" x-ref="recovery_code" autocomplete="one-time-code" />
-                </div>
-
-                <div class="flex items-center justify-end mt-4">
-                    <button type="button" class="text-sm text-gray-600 hover:text-gray-900 underline cursor-pointer"
-                                    x-show="! recovery"
-                                    x-on:click="
-                                        recovery = true;
-                                        $nextTick(() => { $refs.recovery_code.focus() })
-                                    ">
-                        {{ __('Use a recovery code') }}
-                    </button>
-
-                    <button type="button" class="text-sm text-gray-600 hover:text-gray-900 underline cursor-pointer"
-                                    x-cloak
-                                    x-show="recovery"
-                                    x-on:click="
-                                        recovery = false;
-                                        $nextTick(() => { $refs.code.focus() })
-                                    ">
-                        {{ __('Use an authentication code') }}
-                    </button>
-
-                    <x-button class="ms-4">
-                        {{ __('Log in') }}
-                    </x-button>
-                </div>
-            </form>
-        </div>
-    </x-authentication-card>
-</x-guest-layout>
+@section ('Footer')
+@include ('Footer')
+@endsection
