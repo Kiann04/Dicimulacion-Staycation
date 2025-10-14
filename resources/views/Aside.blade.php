@@ -16,7 +16,7 @@
   <!-- ✅ Sidebar -->
   <aside class="sidebar">
     <button class="close-btn" onclick="closeSidebar()">✖</button>
-    <div class="logo">STAYCATION</div>
+    <div class="logo">DICIMULACION</div>
     <nav class="menu">
       <a href="{{ route('admin.dashboard') }}"><i class="fa-solid fa-gauge"></i> Dashboard</a>
       <a href="{{ route('admin.customers') }}"><i class="fa-solid fa-user"></i> Customer</a>
