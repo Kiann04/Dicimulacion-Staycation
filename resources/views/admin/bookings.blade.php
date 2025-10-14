@@ -19,10 +19,16 @@
         <div class="house-grid" style="display:flex; gap:20px; flex-wrap:wrap;">
           @forelse($staycations as $staycation)
             <div class="house-card" style="background:#fff; padding:15px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); width:220px; text-align:center;">
+  
+            <!-- Image container forcing landscape -->
+            <div class="house-image" style="width:100%; height:150px; overflow:hidden; border-radius:8px; margin-bottom:10px;">
               <img src="{{ asset('storage/' . $staycation->house_image) }}" 
-                  alt="{{ $staycation->house_name }}" style="width:100%; border-radius:8px;" />
-              <div class="house-info" style="margin-top:10px;">
-                <h3>{{ $staycation->house_name }}</h3>
+                  alt="{{ $staycation->house_name }}" 
+                  style="width:100%; height:100%; object-fit:cover; object-position:center;">
+            </div>
+
+            <div class="house-info" style="margin-top:10px;">
+              <h3>{{ $staycation->house_name }}</h3>
 
                 <!-- Availability Button -->
                 <form action="{{ route('admin.toggle_availability', $staycation->id) }}" method="POST" style="margin:10px 0;">
