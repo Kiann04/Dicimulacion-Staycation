@@ -269,7 +269,7 @@
 }
 
 </style>
-<section class="container my-5" id="properties">
+<section class="container my-5" id="properties" style="scroll-margin-top: 100px;">
     <div class="text-center mb-5">
         <span class="badge bg-primary-subtle text-primary px-3 py-2">Recent</span>
         <h2 class="fw-bold mt-3">Our Featured Houses</h2>
@@ -328,6 +328,7 @@
 </style>
 <!-- Modern About Us Section -->
 <section class="container my-5 py-5" id="about" style="scroll-margin-top: 100px;">
+
   <div class="row align-items-center g-5">
     
     <!-- Image Side -->
@@ -609,7 +610,7 @@ $(document).ready(function(){
 
 
 <!-- Contact Us -->
-<section class="container my-5" id="contact">
+<section class="container my-5" id="contact" style="scroll-margin-top: 100px;">
     <div class="text-center mb-4">
         <h2 class="fw-bold">Have a Question?<br>Contact Us</h2>
     </div>
