@@ -611,47 +611,49 @@ $(document).ready(function(){
 <!-- Contact Us -->
 <section class="container my-5" id="contact">
     <div class="text-center mb-4">
-        <h2 class="fw-bold">Have a Question? <br> Contact Us</h2>
+        <h2 class="fw-bold">Have a Question?<br>Contact Us</h2>
     </div>
 
-    {{-- ✅ show success message --}}
+    {{-- ✅ Success Message --}}
     @if(session('success'))
-        <div class="alert alert-success text-center">
+        <div class="alert alert-success text-center shadow-sm rounded-3">
             {{ session('success') }}
         </div>
     @endif
 
-    {{-- ✅ show validation error --}}
+    {{-- ✅ Validation Errors --}}
     @if($errors->any())
-        <div class="alert alert-danger text-center">
+        <div class="alert alert-danger text-center shadow-sm rounded-3">
             {{ $errors->first() }}
         </div>
     @endif
 
-    <form class="mx-auto" style="max-width: 600px;" method="POST" action="{{ route('contact.send') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('contact.send') }}" enctype="multipart/form-data" class="mx-auto shadow-sm p-4 rounded-4 bg-white" style="max-width: 600px;">
         @csrf
 
         <div class="mb-3">
-            <input type="email" class="form-control" name="email" placeholder="Your Email" required>
+            <input type="email" name="email" class="form-control" placeholder="Your Email" required>
         </div>
 
         <div class="mb-3">
-            <textarea class="form-control" name="message" rows="4" placeholder="Write your message here..." required></textarea>
+            <textarea name="message" class="form-control" rows="4" placeholder="Write your message here..." required></textarea>
         </div>
 
         <div class="mb-3">
-            <input type="file" class="form-control" name="attachment" accept="image/*">
+            <input type="file" name="attachment" class="form-control" accept="image/*">
         </div>
 
-        {{-- ✅ Google reCAPTCHA widget --}}
-        <div class="mb-3 text-center">
+        {{-- ✅ Google reCAPTCHA --}}
+        <div class="mb-4 text-center">
             {!! NoCaptcha::display() !!}
             @error('g-recaptcha-response')
-                <small class="text-danger d-block">{{ $message }}</small>
+                <small class="text-danger d-block mt-2">{{ $message }}</small>
             @enderror
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">Send</button>
+        <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+            Send
+        </button>
     </form>
 
     {{-- ✅ Load reCAPTCHA JavaScript --}}
