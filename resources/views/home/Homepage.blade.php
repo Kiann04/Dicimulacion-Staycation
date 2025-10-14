@@ -327,7 +327,7 @@
     }
 </style>
 <!-- Modern About Us Section -->
-<section class="container my-5 py-5" id="about">
+<section class="container my-5 py-5" id="about" style="scroll-margin-top: 100px;">
   <div class="row align-items-center g-5">
     
     <!-- Image Side -->
