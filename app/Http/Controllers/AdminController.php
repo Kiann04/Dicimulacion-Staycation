@@ -139,10 +139,13 @@ class AdminController extends Controller
                     ->orWhere('email', 'like', "%{$search}%");
                 });
             })
-            ->get();
-
+            ->orderBy('name', 'asc') // optional, sort by name
+            ->paginate(10) // show 10 customers per page
+            ->withQueryString(); // keep search term in URL
+        
         return view('admin.customers', compact('customers', 'search'));
     }
+
 
     
     
