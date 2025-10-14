@@ -43,9 +43,9 @@
         </div>
 
         <div class="setting-card">
-          <h3>Manual Booking</h3>
-          <p>Add a booking manually for walk-in customers who didn’t book online.</p>
-          <a href="{{ route('home') }}" class="settings-btn">Add Booking</a>
+          <h3>Admin User Portal</h3>
+          <p>Access your user-side dashboard to manage bookings and account security.</p>
+          <a href="{{ route('home') }}" class="settings-btn">Open Portal</a>
         </div>
 
         <div class="setting-card">
