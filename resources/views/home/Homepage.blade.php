@@ -613,20 +613,37 @@ $(document).ready(function(){
     <div class="text-center mb-4">
         <h2 class="fw-bold">Have a Question? <br> Contact Us</h2>
     </div>
+
     <form class="mx-auto" style="max-width: 600px;" method="POST" action="{{ route('contact.send') }}" enctype="multipart/form-data">
         @csrf
+
         <div class="mb-3">
             <input type="email" class="form-control" name="email" placeholder="Your Email" required>
         </div>
+
         <div class="mb-3">
             <textarea class="form-control" name="message" rows="4" placeholder="Write your message here..." required></textarea>
         </div>
+
         <div class="mb-3">
             <input type="file" class="form-control" name="attachment" accept="image/*">
         </div>
+
+        {{-- ✅ Google reCAPTCHA --}}
+        <div class="mb-3 text-center">
+            {!! NoCaptcha::display() !!}
+            @if ($errors->has('g-recaptcha-response'))
+                <small class="text-danger d-block">{{ $errors->first('g-recaptcha-response') }}</small>
+            @endif
+        </div>
+
         <button type="submit" class="btn btn-primary w-100">Send</button>
     </form>
+
+    {{-- ✅ Load the reCAPTCHA JavaScript --}}
+    {!! NoCaptcha::renderJs() !!}
 </section>
+
 
 @include('partials.chatbot')
 

@@ -58,7 +58,8 @@ class HomeController extends Controller
         $request->validate([
             'email' => 'required|email',
             'message' => 'required|string',
-            'attachment' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2000'
+            'attachment' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2000',
+            'g-recaptcha-response' => 'required|captcha', // ✅ reCAPTCHA validation
         ]);
 
         $data = [
@@ -79,6 +80,7 @@ class HomeController extends Controller
 
         return back()->with('success', 'Your message has been sent!');
     }
+
     public function privacy()
     {
         return view('privacy');
