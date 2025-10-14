@@ -78,7 +78,7 @@ class HomeController extends Controller
 
         DB::table('inquiries')->insert($data);
 
-        return back()->with('success', 'Your message has been sent!');
+        return redirect()->to(url()->previous() . '#contact')->with('success', 'Your message has been sent!');
     }
 
     public function privacy()
