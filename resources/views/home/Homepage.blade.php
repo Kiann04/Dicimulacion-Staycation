@@ -614,6 +614,20 @@ $(document).ready(function(){
         <h2 class="fw-bold">Have a Question? <br> Contact Us</h2>
     </div>
 
+    {{-- ✅ show success message --}}
+    @if(session('success'))
+        <div class="alert alert-success text-center">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    {{-- ✅ show validation error --}}
+    @if($errors->any())
+        <div class="alert alert-danger text-center">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
     <form class="mx-auto" style="max-width: 600px;" method="POST" action="{{ route('contact.send') }}" enctype="multipart/form-data">
         @csrf
 
@@ -629,18 +643,18 @@ $(document).ready(function(){
             <input type="file" class="form-control" name="attachment" accept="image/*">
         </div>
 
-        {{-- ✅ Google reCAPTCHA --}}
+        {{-- ✅ Google reCAPTCHA widget --}}
         <div class="mb-3 text-center">
             {!! NoCaptcha::display() !!}
-            @if ($errors->has('g-recaptcha-response'))
-                <small class="text-danger d-block">{{ $errors->first('g-recaptcha-response') }}</small>
-            @endif
+            @error('g-recaptcha-response')
+                <small class="text-danger d-block">{{ $message }}</small>
+            @enderror
         </div>
 
         <button type="submit" class="btn btn-primary w-100">Send</button>
     </form>
 
-    {{-- ✅ Load the reCAPTCHA JavaScript --}}
+    {{-- ✅ Load reCAPTCHA JavaScript --}}
     {!! NoCaptcha::renderJs() !!}
 </section>
 
