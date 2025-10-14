@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+<body class="admin-dashboard">
 <div class="content-wrapper">
     <div class="main-content">
         <header>
