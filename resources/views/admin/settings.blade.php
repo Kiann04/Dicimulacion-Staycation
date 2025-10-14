@@ -43,9 +43,9 @@
         </div>
 
         <div class="setting-card">
-          <h3>General Settings</h3>
-          <p>Configure site-wide settings like business name, contact information, and more.</p>
-          <a href="{{ route('home') }}" class="settings-btn">Configure</a>
+          <h3>Manual Booking</h3>
+          <p>Add a booking manually for walk-in customers who didn’t book online.</p>
+          <a href="{{ route('home') }}" class="settings-btn">Add Booking</a>
         </div>
 
         <div class="setting-card">
