@@ -158,20 +158,6 @@
       </header>
 
       <section class="settings-sections">
-        
-        <!-- Booking History -->
-        <div class="setting-card">
-          <h3><i class="fa-solid fa-receipt"></i> Booking History</h3>
-          <p>View and manage all bookings based on their payment status.</p>
-          <div class="settings-btn-group">
-            <a href="{{ route('admin.bookings.paid') }}" class="paid-btn">
-              <i class="fa-solid fa-check-circle"></i> View Paid
-            </a>
-            <a href="{{ route('admin.bookings.half_paid') }}" class="half-paid-btn">
-              <i class="fa-solid fa-hourglass-half"></i> Half Paid
-            </a>
-          </div>
-        </div>
 
         <!-- Admin User Portal -->
         <div class="setting-card">
