@@ -67,6 +67,8 @@ class AdminController extends Controller
             ->count();
 
         $totalDays = now()->daysInMonth;
+        $totalStaycations = Staycation::count();
+
         $bookedDays = Booking::whereMonth('start_date', $currentMonth)
             ->whereYear('start_date', $currentYear)
             ->get()
@@ -74,7 +76,8 @@ class AdminController extends Controller
                 return Carbon::parse($b->start_date)->diffInDays(Carbon::parse($b->end_date));
             });
 
-        $averageOccupancy = round(($bookedDays / ($totalDays * 1)) * 100) . '%';
+        $averageOccupancy = $totalStaycations > 0
+        ? round(($bookedDays / ($totalDays * $totalStaycations)) * 100) . '%': '0%';
 
         // ✅ 4. Chart Data (last 6 months)
         $months = collect(range(0, 5))
