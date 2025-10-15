@@ -639,7 +639,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
+@include('partials.chatbot')
 @section('Footer')
 @include('Footer')
 @endsection
