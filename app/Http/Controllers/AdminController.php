@@ -228,20 +228,19 @@ class AdminController extends Controller
     }
 
     public function messages()
-{
-    // Customer inquiries (existing)
-    $inquiries = Inquiry::latest()->get();
+    {
+        // Customer inquiries (paginated)
+        $inquiries = Inquiry::latest()->paginate(10); // 10 per page
 
-    // Booking payment proofs (pending bookings with uploaded proof)
-    $bookingProofs = Booking::with('user', 'staycation')
-                        ->where('status', 'pending')
-                        ->whereNotNull('payment_proof')
-                        ->latest()
-                        ->get();
+        // Booking payment proofs (paginated)
+        $bookingProofs = Booking::with('user', 'staycation')
+                            ->where('status', 'pending')
+                            ->whereNotNull('payment_proof')
+                            ->latest()
+                            ->paginate(10); // 10 per page
 
-    return view('admin.messages', compact('inquiries', 'bookingProofs'));
-}
-
+        return view('admin.messages', compact('inquiries', 'bookingProofs'));
+    }
 
     // View a specific inquiry
     public function viewMessage($id)
