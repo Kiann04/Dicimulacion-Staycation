@@ -24,7 +24,7 @@
       <a href="{{ route('admin.bookings') }}"><i class="fa-solid fa-calendar-check"></i> Bookings</a>
       <a href="{{ route('admin.reports') }}"><i class="fa-solid fa-file-alt"></i> Reports</a>
       <a href="{{ route('admin.settings') }}"><i class="fa-solid fa-cog"></i> Settings</a>
-      <a href="{{ route('admin.addproduct') }}"><i class="fa-solid fa-plus"></i> Add Product</a>
+      <a href="{{ route('admin.addproduct') }}"><i class="fa-solid fa-plus"></i> Add Houses</a>
       <!-- Logout -->
       <a href="#" id="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Log out</a>
     </nav>
