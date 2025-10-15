@@ -476,13 +476,17 @@ document.addEventListener("DOMContentLoaded", function () {
     updatePHTime();
     setInterval(updatePHTime, 1000);
 
-    // ✅ Force timezone to Asia/Manila
-    const nowInPH = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
-    const today = new Date(nowInPH).toISOString().split("T")[0];
+    // ✅ Correct Philippine Time Handling
+    const nowPHDate = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
 
-    // Set minimum selectable dates
-    if (startInput) startInput.min = today;
-    if (endInput) endInput.min = today;
+    // Disallow same-day booking → allow from tomorrow
+    const tomorrow = new Date(nowPHDate);
+    tomorrow.setDate(nowPHDate.getDate() + 1);
+
+    const tomorrowStr = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, "0")}-${String(tomorrow.getDate()).padStart(2, "0")}`;
+
+    if (startInput) startInput.min = tomorrowStr;
+    if (endInput) endInput.min = tomorrowStr;
 
     // 🧮 Price Calculation
     function calculatePrice() {
@@ -515,7 +519,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Date change listeners
+    // 📅 Date change listeners
     startInput.addEventListener("change", function () {
         const arrival = new Date(this.value);
         const minDeparture = new Date(arrival);
@@ -531,14 +535,24 @@ document.addEventListener("DOMContentLoaded", function () {
     endInput.addEventListener("change", calculatePrice);
     guestInput.addEventListener("input", calculatePrice);
 
-    // Validate before submit
+    // ✅ Validate before submit
     if (form) {
         form.addEventListener("submit", function (e) {
             const start = new Date(startInput.value);
             const end = new Date(endInput.value);
-            const today = new Date();
+            const todayPH = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
             const endLimit = new Date("2026-12-31");
-            today.setHours(0, 0, 0, 0);
+            todayPH.setHours(0, 0, 0, 0);
+
+            // Disallow same-day booking (arrival must be at least 1 day after today)
+            const minArrival = new Date(todayPH);
+            minArrival.setDate(todayPH.getDate() + 1);
+
+            if (start < minArrival) {
+                e.preventDefault();
+                alert("Bookings must start at least one day after today (no same-day booking).");
+                return;
+            }
 
             if (end <= start) {
                 e.preventDefault();
@@ -546,9 +560,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            if (start < today || end > endLimit) {
+            if (end > endLimit) {
                 e.preventDefault();
-                alert("Bookings are only allowed from today up to December 31, 2026.");
+                alert("Bookings are only allowed up to December 31, 2026.");
                 return;
             }
         });
@@ -556,11 +570,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 🗓️ FullCalendar with PH timezone
     const staycationId = "{{ $staycation->id }}";
-    if (document.getElementById("calendar")) {
+    const calendarEl = document.getElementById("calendar");
+
+    if (calendarEl) {
         fetch(`/events/${staycationId}`)
             .then(res => res.json())
             .then(events => {
-                // Filter out past bookings 🔥
                 const todayPH = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
                 const todayDate = new Date(todayPH);
                 todayDate.setHours(0, 0, 0, 0);
@@ -578,12 +593,12 @@ document.addEventListener("DOMContentLoaded", function () {
                             allDay: true,
                             display: "background",
                             backgroundColor: "#f56565",
-                            borderColor: "#f56565",
+                            borderColor: "#f56565"
                         };
                     })
-                    .filter(event => new Date(event.end) >= todayDate); // ⛔ hide past bookings
+                    .filter(event => new Date(event.end) >= todayDate);
 
-                const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
+                const calendar = new FullCalendar.Calendar(calendarEl, {
                     initialView: "dayGridMonth",
                     height: "auto",
                     aspectRatio: 1.4,
@@ -595,49 +610,33 @@ document.addEventListener("DOMContentLoaded", function () {
                     timeZone: "Asia/Manila",
                     events: bookedEvents,
 
-                    // ✅ Restrict navigation (no past months)
                     validRange: {
-                        start: todayDate.toISOString().split("T")[0],
-                        end: "2026-12-31" // Optional: limit max future booking range
+                        start: tomorrowStr, // disallow today
+                        end: "2026-12-31"
                     },
 
-                    // 🩶 Grey out past dates
+                    // 🩶 Grey out past + today's date
                     dayCellDidMount: function (info) {
                         const cellDate = new Date(info.date);
                         const today = new Date();
                         today.setHours(0, 0, 0, 0);
                         cellDate.setHours(0, 0, 0, 0);
 
-                        if (cellDate < today) {
+                        // Disable today and past dates
+                        if (cellDate <= today) {
                             info.el.style.backgroundColor = "#e9ecef";
-                            info.el.style.opacity = "0.7";
+                            info.el.style.opacity = "0.6";
                         }
-                    },
-
-                    // 🚫 Disable clicks on past dates
-                    dateClick: function (info) {
-                        const clickedDate = new Date(info.date);
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        clickedDate.setHours(0, 0, 0, 0);
-
-                        if (clickedDate < today) {
-                            return; // Ignore past date clicks
-                        }
-
-                        console.log("Future date clicked:", clickedDate);
                     }
                 });
 
                 calendar.render();
-            });
+            })
+            .catch(err => console.error("Calendar error:", err));
     }
-
-    // 🧭 Debugging logs
-    console.log("Local device time:", new Date());
-    console.log("Philippine time:", new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
 });
 </script>
+
 
 
 
