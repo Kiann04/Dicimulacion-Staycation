@@ -54,7 +54,7 @@
             </div>
             <div class="analytics-card">
                 <h3>Total Revenue</h3>
-                <p>{{ $totalRevenue }}</p>
+                <p>₱{{ number_format($totalRevenue, 2) }}</p>
             </div>
             <div class="analytics-card">
                 <h3>Average Occupancy</h3>

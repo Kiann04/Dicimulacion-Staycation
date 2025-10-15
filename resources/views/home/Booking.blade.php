@@ -39,9 +39,6 @@
                             value="{{ old('phone', Auth::user()?->phone ? ltrim(Auth::user()?->phone, '+63') : '') }}">
                     </div>
                 </div>
-
-
-
                 <div class="mb-3">
                     <label for="guest_number" class="form-label">Guests</label>
                     <input type="number" id="guest_number" name="guest_number" class="form-control" 
