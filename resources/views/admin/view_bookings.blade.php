@@ -10,7 +10,7 @@
       <header>
         <h1>Booking History 
             @isset($staycation_id)
-                for Staycation {{ $staycation_id }}
+                for Staycation {{ $staycation->house_name }}
             @endisset
         </h1>
         <p class="subtext">Here are all your past and current staycation bookings</p>
