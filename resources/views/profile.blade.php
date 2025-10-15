@@ -138,6 +138,24 @@
                             <button type="submit" class="btn btn-success w-100">Enable 2FA</button>
                         </form>
                     @endif
+
+                    <!-- Instructions -->
+                    <div class="mt-4">
+                        <h6>How to Use 2FA:</h6>
+                        <ol>
+                            @if(!auth()->user()->two_factor_secret)
+                                <li>Click <strong>Enable 2FA</strong> to set up.</li>
+                                <li>Scan the QR code with your Authenticator App.</li>
+                                <li>Save the recovery codes in a safe place.</li>
+                                <li>Next time you log in, you’ll be asked for the 6-digit code.</li>
+                            @else
+                                <li>Scan the QR code in your Authenticator App if you haven’t already.</li>
+                                <li>Use the 6-digit code from the app when logging in.</li>
+                                <li>Save the recovery codes for backup access.</li>
+                                <li>Click <strong>Disable 2FA</strong> if you want to turn it off.</li>
+                            @endif
+                        </ol>
+                    </div>
                 </div>
             </div>
         </div>
