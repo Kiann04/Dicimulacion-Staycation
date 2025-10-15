@@ -53,8 +53,8 @@
                 <p>₱{{ number_format($monthlyRevenue, 2) }}</p>
             </div>
             <div class="analytics-card">
-                <h3>New Users</h3>
-                <p>{{ $newUsers }}</p>
+                <h3>Total Revenue</h3>
+                <p>{{ $totalRevenue }}</p>
             </div>
             <div class="analytics-card">
                 <h3>Average Occupancy</h3>
