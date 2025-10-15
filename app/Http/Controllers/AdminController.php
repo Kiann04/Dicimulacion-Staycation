@@ -380,13 +380,19 @@ class AdminController extends Controller
         return response()->json($events);
     }
     public function view_staycation_bookings($staycation_id)
-    {
-        $bookings = Booking::where('staycation_id', $staycation_id)
-                           ->orderByDesc('id')
-                           ->get();
+{
+    // Get the bookings for the specific staycation
+    $bookings = Booking::where('staycation_id', $staycation_id)
+                       ->orderByDesc('id')
+                       ->get();
 
-        return view('admin.view_bookings', compact('bookings', 'staycation_id'));
-    }
+    // Get the staycation details, including the house name
+    $staycation = Staycation::find($staycation_id);
+    $staycation_house_name = $staycation ? $staycation->housename : 'Unknown House Name'; // Fallback if staycation is not found
+
+    return view('admin.view_bookings', compact('bookings', 'staycation_house_name', 'staycation_id'));
+}
+
     public function editBooking($id)
     {
         $booking = Booking::findOrFail($id);
