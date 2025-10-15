@@ -57,20 +57,49 @@ document.addEventListener("DOMContentLoaded", () => {
   const messages = document.getElementById("messages");
   const faqButtons = document.getElementById("faqButtons");
 
-  // FAQ responses
-  const faq = [
-    { keywords: ["checkin", "arrival","check-in","check in"], reply: "Check-in time is 2:00 PM." },
-    { keywords: ["checkout", "departure"], reply: "Check-out time is 12:00 PM." },
-    { keywords: ["pool", "swimming"], reply: "Our pool is shared among every three units and open daily." },
-    { keywords: ["payment", "gcash"], reply: "We accept GCash or bank transfer. 50% downpayment secures your booking." },
-    { keywords: ["location", "address","located"], reply: "We are at Falcons Court, Village East Avenue, Angono, Rizal." },
-    { keywords: ["amenities"], reply: "We offer WiFi, Kitchen, BBQ, Parking, Netflix, Pool, and Pet-Friendly rooms." },
-    { keywords: ["booking", "reserve"], reply: "You can book directly on our website via the Booking page." }
+  // Random greetings when chatbot opens
+  const greetings = [
+    "Hi there! 👋 How can I help you today?",
+    "Hello! 😊 Planning a staycation? Ask me anything!",
+    "Welcome to Dicimulacion Staycation! 🏡 How may I assist?",
+    "Good day! ☀️ Need help with booking or checking availability?"
   ];
 
   // Show/Hide chatbot
-  chatbotBtn.addEventListener("click", () => chatbotContainer.classList.toggle("hidden"));
+  chatbotBtn.addEventListener("click", () => {
+    chatbotContainer.classList.toggle("hidden");
+    if (!chatbotContainer.classList.contains("hidden")) {
+      appendMessage(greetings[Math.floor(Math.random() * greetings.length)], "bot");
+    }
+  });
   closeBtn.addEventListener("click", () => chatbotContainer.classList.add("hidden"));
+
+  // Extended FAQ responses
+  const faq = [
+    { keywords: ["checkin", "arrival","check-in","check in"], reply: "Check-in time is 2:00 PM ⏰" },
+    { keywords: ["checkout", "departure","check-out"], reply: "Check-out time is 12:00 PM 🕛" },
+    { keywords: ["pool", "swimming"], reply: "🏊 Our pool is shared among every three units and open daily from 8 AM to 10 PM." },
+    { keywords: ["payment", "gcash", "maya", "bank", "card"], reply: "💳 We accept GCash, Maya, debit, or credit card payments. A 50% downpayment confirms your booking." },
+    { keywords: ["location", "address","where"], reply: "📍 We’re located at Falcons Court, Village East Avenue, Angono, Rizal." },
+    { keywords: ["amenities","wifi","internet"], reply: "🏡 Amenities include WiFi, Kitchen, BBQ grill, Netflix, Parking, Pool access, and Pet-friendly rooms!" },
+    { keywords: ["breakfast","food"], reply: "☕ Yes, breakfast is provided! Early arrivals also get complimentary coffee and snacks." },
+    { keywords: ["pets","dog","cat"], reply: "🐾 Yes! We’re pet-friendly — no extra charge for your furry friends!" },
+    { keywords: ["parking","car"], reply: "🚗 Free parking is available on-site and on the street." },
+    { keywords: ["reschedule","cancel","move date"], reply: "🔁 Cancellations aren’t allowed, but you can reschedule your stay at least 14 days before your booked date." },
+    { keywords: ["owner","host"], reply: "👨‍💼 The owner is Mr. Edgar Fuentes Dicimulacion — a Computer Engineer with 7 years of hosting experience." },
+    { keywords: ["wifi password","internet password"], reply: "📶 WiFi details will be given upon check-in for security reasons." },
+    { keywords: ["booking","reserve"], reply: "📝 You can book directly on our website via the Booking page." },
+  ];
+
+  // AI-like smart responses
+  const aiResponses = [
+    { keywords: ["hi", "hello", "hey"], reply: ["Hi there!", "Hello! 😊", "Hey! How’s your day going?"] },
+    { keywords: ["good morning"], reply: ["Good morning! ☀️ Ready to book your perfect stay?", "Morning! Hope you have a great day ahead."] },
+    { keywords: ["good evening"], reply: ["Good evening! 🌙 Looking for a relaxing stay tonight?", "Evening! How may I assist?"] },
+    { keywords: ["thank", "thanks"], reply: ["You're welcome! 😊", "Anytime!", "Glad I could help!"] },
+    { keywords: ["bye", "goodbye"], reply: ["Goodbye! 👋 Hope to see you at Dicimulacion Staycation soon!", "Take care! 😊"] },
+    { keywords: ["price", "rate"], reply: ["💰 Rates vary per house — please check our ‘Houses’ section for exact pricing."] },
+  ];
 
   // Append messages
   function appendMessage(text, sender) {
@@ -98,14 +127,42 @@ document.addEventListener("DOMContentLoaded", () => {
     messages.scrollTop = messages.scrollHeight;
   }
 
-  // Check FAQ
-  function checkFAQ(message) {
+  // Typing animation
+  function showTyping() {
+    const typing = document.createElement("div");
+    typing.id = "typing";
+    typing.classList.add("text-muted", "small", "fst-italic", "ms-2");
+    typing.textContent = "Dicimulacion is typing...";
+    messages.appendChild(typing);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function hideTyping() {
+    const typing = document.getElementById("typing");
+    if (typing) typing.remove();
+  }
+
+  // Find best response
+  function findResponse(message) {
     message = message.toLowerCase();
+
+    // AI-like replies first
+    for (let set of aiResponses) {
+      for (let keyword of set.keywords) {
+        if (message.includes(keyword)) {
+          const randomReply = set.reply[Math.floor(Math.random() * set.reply.length)];
+          return randomReply;
+        }
+      }
+    }
+
+    // Then FAQs
     for (let item of faq) {
       for (let keyword of item.keywords) {
         if (message.includes(keyword)) return item.reply;
       }
     }
+
     return null;
   }
 
@@ -117,28 +174,24 @@ document.addEventListener("DOMContentLoaded", () => {
     appendMessage(msg, "user");
     input.value = "";
 
-    const reply = checkFAQ(msg);
-    const typing = document.createElement("div");
-    typing.classList.add("text-muted", "small", "fst-italic", "ms-2");
-    typing.textContent = "Dicimulation is typing...";
-    messages.appendChild(typing);
-    messages.scrollTop = messages.scrollHeight;
-
+    showTyping();
     setTimeout(() => {
-      typing.remove();
-      appendMessage(reply || "Sorry, I can only answer staycation-related questions 😊", "bot");
-    }, 700);
+      hideTyping();
+      const reply = findResponse(msg);
+      appendMessage(reply || "🤖 I’m not sure about that, but I can answer staycation-related questions!", "bot");
+    }, 800);
   }
 
   sendBtn.addEventListener("click", () => sendMessage());
   input.addEventListener("keypress", e => e.key === "Enter" && sendMessage());
 
-  // FAQ Quick Buttons
+  // Quick FAQ Buttons
   const quick = [
     "What time is check-in?",
     "Do you have a pool?",
-    "What are your payment options?",
-    "Where are you located?"
+    "Are pets allowed?",
+    "Where are you located?",
+    "What are your payment options?"
   ];
   quick.forEach(q => {
     const b = document.createElement("button");
@@ -149,6 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
+
 
 <!-- Style -->
 <style>
