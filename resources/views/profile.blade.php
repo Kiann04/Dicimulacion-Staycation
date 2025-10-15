@@ -99,66 +99,82 @@
         </div>
 
         <!-- Two-Factor Authentication -->
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Two-Factor Authentication</h5>
+        <!-- Two-Factor Authentication -->
+<div class="col-12">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-success text-white rounded-top-4">
+            <h5 class="mb-0">Two-Factor Authentication</h5>
+        </div>
+        <div class="card-body">
+            @if (session('status'))
+                <div class="alert alert-success">{{ session('status') }}</div>
+            @endif
+
+            @if (auth()->user()->two_factor_secret)
+                <div class="d-flex align-items-center mb-4">
+                    <i class="bi bi-check-circle-fill text-success fs-3 me-2"></i>
+                    <p class="mb-0 fw-bold">2FA is currently ENABLED for your account.</p>
                 </div>
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">{{ session('status') }}</div>
-                    @endif
 
-                    @if (auth()->user()->two_factor_secret)
-                        <p>✅ 2FA is currently <strong>ENABLED</strong> for your account.</p>
+                <div class="row g-4 mb-4">
+                    <!-- QR Code -->
+                    <div class="col-md-6 text-center">
+                        <h6 class="fw-semibold">Scan this QR Code:</h6>
+                        <div class="my-2">{!! auth()->user()->twoFactorQrCodeSvg() !!}</div>
+                        <small class="text-muted">Use your Authenticator App</small>
+                    </div>
 
-                        <div class="mb-3">
-                            <h6>Scan this QR Code with your Authenticator App:</h6>
-                            <div>{!! auth()->user()->twoFactorQrCodeSvg() !!}</div>
+                    <!-- Recovery Codes -->
+                    <div class="col-md-6">
+                        <h6 class="fw-semibold">Recovery Codes:</h6>
+                        <div class="d-grid gap-2">
+                            @foreach (json_decode(decrypt(auth()->user()->two_factor_recovery_codes), true) as $code)
+                                <input type="text" class="form-control text-center" value="{{ $code }}" readonly>
+                            @endforeach
                         </div>
-
-                        <div class="mb-3">
-                            <h6>Recovery Codes:</h6>
-                            <ul class="list-group">
-                                @foreach (json_decode(decrypt(auth()->user()->two_factor_recovery_codes), true) as $code)
-                                    <li class="list-group-item">{{ $code }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-
-                        <form method="POST" action="{{ url('user/two-factor-authentication') }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger w-100">Disable 2FA</button>
-                        </form>
-                    @else
-                        <p>❌ 2FA is currently <strong>DISABLED</strong> for your account.</p>
-                        <form method="POST" action="{{ url('user/two-factor-authentication') }}">
-                            @csrf
-                            <button type="submit" class="btn btn-success w-100">Enable 2FA</button>
-                        </form>
-                    @endif
-
-                    <!-- Instructions -->
-                    <div class="mt-4">
-                        <h6>How to Use 2FA:</h6>
-                        <ol>
-                            @if(!auth()->user()->two_factor_secret)
-                                <li>Click <strong>Enable 2FA</strong> to set up.</li>
-                                <li>Scan the QR code with your Authenticator App.</li>
-                                <li>Save the recovery codes in a safe place.</li>
-                                <li>Next time you log in, you’ll be asked for the 6-digit code.</li>
-                            @else
-                                <li>Scan the QR code in your Authenticator App if you haven’t already.</li>
-                                <li>Use the 6-digit code from the app when logging in.</li>
-                                <li>Save the recovery codes for backup access.</li>
-                                <li>Click <strong>Disable 2FA</strong> if you want to turn it off.</li>
-                            @endif
-                        </ol>
+                        <small class="text-muted">Keep these safe for backup</small>
                     </div>
                 </div>
+
+                <form method="POST" action="{{ url('user/two-factor-authentication') }}">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger w-100 fw-bold">Disable 2FA</button>
+                </form>
+
+            @else
+                <div class="d-flex align-items-center mb-4">
+                    <i class="bi bi-x-circle-fill text-danger fs-3 me-2"></i>
+                    <p class="mb-0 fw-bold">2FA is currently DISABLED for your account.</p>
+                </div>
+
+                <form method="POST" action="{{ url('user/two-factor-authentication') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-success w-100 fw-bold">Enable 2FA</button>
+                </form>
+            @endif
+
+            <!-- Instructions -->
+            <div class="mt-4 p-3 bg-light rounded-3">
+                <h6 class="fw-semibold">How to Use 2FA:</h6>
+                <ol class="mb-0 ps-3">
+                    @if(!auth()->user()->two_factor_secret)
+                        <li>Click <strong>Enable 2FA</strong> to set up.</li>
+                        <li>Scan the QR code with your Authenticator App.</li>
+                        <li>Save the recovery codes in a safe place.</li>
+                        <li>Next time you log in, you’ll be asked for the 6-digit code.</li>
+                    @else
+                        <li>Scan the QR code in your Authenticator App if you haven’t already.</li>
+                        <li>Use the 6-digit code from the app when logging in.</li>
+                        <li>Save the recovery codes for backup access.</li>
+                        <li>Click <strong>Disable 2FA</strong> if you want to turn it off.</li>
+                    @endif
+                </ol>
             </div>
         </div>
+    </div>
+</div>
+
     </div>
 </div>
 </main>
