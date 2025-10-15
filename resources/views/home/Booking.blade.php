@@ -481,14 +481,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const today = new Date(nowInPH).toISOString().split("T")[0];
 
     // Set minimum selectable dates
-    // Set minimum selectable dates (⛔ block same-day booking)
-    const tomorrow = new Date(nowPHDate);
-    tomorrow.setDate(nowPHDate.getDate() + 1);
-    const tomorrowStr = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, "0")}-${String(tomorrow.getDate()).padStart(2, "0")}`;
-
-    if (startInput) startInput.min = tomorrowStr;
-    if (endInput) endInput.min = tomorrowStr;
-
+    if (startInput) startInput.min = today;
+    if (endInput) endInput.min = today;
 
     // 🧮 Price Calculation
     function calculatePrice() {
