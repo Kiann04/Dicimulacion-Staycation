@@ -3,38 +3,6 @@
 <!-- FontAwesome & Chart.js -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-    body.admin-dashboard {
-        background-color: #f7f8fa;
-        font-family: 'Poppins', sans-serif;
-        color: #333;
-        padding-top:
-    }
-    header { margin-bottom: 30px; }
-    header h1 { font-weight: 700; color: #1e1e2f; }
-    header .subtext { color: #666; }
-
-
-    /* --- Chart Sections --- */
-    .charts-wrapper {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
-    }
-    .chart-section {
-        background: #fff;
-        border-radius: 16px;
-        padding: 25px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    }
-    .chart-section h2 {
-        font-size: 1.3rem;
-        margin-bottom: 15px;
-        color: #333;
-    }
-</style>
 <div class="content-wrapper">
     <div class="main-content">
         <header>
