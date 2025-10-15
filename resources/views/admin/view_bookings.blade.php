@@ -8,11 +8,14 @@
   <div class="content-wrapper">
     <div class="main-content">
       <header>
-        <h1>Booking History 
-            @isset($staycation_id)
-                for {{ $staycation_house_name }}
-            @endisset
-        </h1>
+     <h1>Booking History for 
+          @if ($bookings->isNotEmpty()) 
+              {{ $bookings->first()->staycation->housename }}
+          @else 
+              No bookings found
+          @endif
+      </h1>
+
         <p class="subtext">Here are all your past and current staycation bookings</p>
       </header>
 
