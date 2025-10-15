@@ -890,9 +890,6 @@ transition: 0.4s all linear;
     opacity: 1;
 }
 
-.ChatbotContainer.hidden {
-    display: none;
-}
 
 .info{
     display: grid;
