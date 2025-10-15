@@ -448,6 +448,7 @@
 </section>
 
 
+@include('partials.chatbot')
 
 <!-- FullCalendar + Price Calculation -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
@@ -639,7 +640,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-@include('partials.chatbot')
 @section('Footer')
 @include('Footer')
 @endsection
