@@ -75,7 +75,7 @@
 
             <!-- View Paid & Half Paid Button -->
             <div class="text-center mt-4">
-                <a href="{{ route('admin.bookings') }}" class="btn btn-primary px-4 py-2" style="border-radius: 8px;">
+                <a href="{{ route('admin.bookings') }}#history" class="btn btn-primary px-4 py-2" style="border-radius: 8px;">
                     View Paid & Half Paid Bookings
                 </a>
             </div>

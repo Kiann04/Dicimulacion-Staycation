@@ -104,7 +104,7 @@
                 $remaining = $booking->total_price - $displayPaid;
             @endphp
             <tr>
-                <td>Amount Paid {{ $booking->payment_status === 'half_paid' ? '(Half Payment)' : '' }}</td>
+                <td>Downpayment {{ $booking->payment_status === 'half_paid' ? '(Half Payment)' : '' }}</td>
                 <td class="highlight">₱{{ number_format($booking->amount_paid ?? 0, 2) }}</td>
             </tr>
             <tr>

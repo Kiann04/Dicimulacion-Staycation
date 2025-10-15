@@ -71,7 +71,7 @@
       </section>
 
       <!-- 📋 Booking History Section -->
-      <section class="booking-history my-5">
+      <section class="booking-history my-5" id="history">
         <div class="setting-card" style="background:#fff; border-radius:12px; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
           <h3 style="font-size:1.3rem;"><i class="fa-solid fa-receipt"></i> Booking History</h3>
           <p style="color:#6b7280;">View and manage all bookings based on their payment status.</p>
