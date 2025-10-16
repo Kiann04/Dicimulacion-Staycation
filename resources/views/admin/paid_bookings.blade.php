@@ -24,7 +24,7 @@
         <thead>
           <tr>
             <th>ID</th><th>Staycation</th><th>Customer</th><th>Phone</th>
-            <th>Start</th><th>End</th><th>Payment</th><th>Status</th><th>Proof of Payment</th>
+            <th>Arrival</th><th>Departure</th><th>Payment</th><th>Status</th><th>Proof of Payment</th>
           </tr>
         </thead>
         <tbody>
