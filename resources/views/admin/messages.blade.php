@@ -40,6 +40,7 @@
 
     <!-- Tab Content -->
     <div class="tab-content mt-3" id="messagesTabsContent">
+
         <!-- Customer Inquiries -->
         <div class="tab-pane fade {{ $activeTab == 'inquiries' ? 'show active' : '' }}" id="inquiries" role="tabpanel">
             <div class="table-responsive">
@@ -74,11 +75,18 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="5">No messages found</td></tr>
+                        <tr><td colspan="5" class="text-center text-muted">No messages found</td></tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination for inquiries -->
+            @if($inquiries->hasPages())
+                <div class="d-flex justify-content-end">
+                    {{ $inquiries->links() }}
+                </div>
+            @endif
         </div>
 
         <!-- Booking Payment Proofs -->
@@ -110,7 +118,7 @@
                             <td>{{ $booking->message_to_admin ?? '—' }}</td>
                             <td>
                                 @if($booking->payment_proof)
-                                    <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" target="_blank">View Proof</a>
+                                    <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" target="_blank" class="btn btn-sm btn-outline-primary">View Proof</a>
                                 @else
                                     <span class="text-muted">No proof</span>
                                 @endif
@@ -118,11 +126,18 @@
                             <td>{{ $booking->created_at->format('Y-m-d') }}</td>
                         </tr>
                         @empty
-                        <tr><td colspan="9" class="text-center">No payment proofs found</td></tr>
+                        <tr><td colspan="9" class="text-center text-muted">No payment proofs found</td></tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination for payment proofs -->
+            @if($bookingProofs->hasPages())
+                <div class="d-flex justify-content-end">
+                    {{ $bookingProofs->links() }}
+                </div>
+            @endif
         </div>
     </div>
 </div>
