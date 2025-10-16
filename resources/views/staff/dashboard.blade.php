@@ -1,66 +1,80 @@
-@extends('layouts.app')
+@extends('layouts.default')
 
-@section('content')
-<section class="table-container my-4">
-    <h2>Recent Bookings</h2>
+@section('title', 'Staff Dashboard')
+@section('body-class', 'staff-dashboard')
 
-    <!-- 🔍 Search Bar -->
-    <input 
-        type="text" 
-        id="bookingSearch" 
-        placeholder="Search bookings..." 
-        style="margin-bottom: 10px; padding: 6px; width: 250px; border-radius: 4px; border: 1px solid #ccc;">
-
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Booking ID</th>
-                    <th>House Name</th>
-                    <th>Customer Name</th>
-                    <th>Phone</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Payment</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody id="bookingTable">
-                @forelse($bookings as $booking)
-                    <tr>
-                        <td>{{ $booking->id }}</td>
-                        <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
-                        <td>{{ $booking->name }}</td>
-                        <td>{{ $booking->phone }}</td>
-                        <td>{{ \Carbon\Carbon::parse($booking->start_date)->format('M d, Y') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($booking->end_date)->format('M d, Y') }}</td>
-                        <td><span class="status half-paid">Half Paid</span></td>
-                        <td>
-                            <span class="status {{ strtolower($booking->status) }}">
-                                {{ ucfirst($booking->status) }}
-                            </span>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="8" class="text-center">No bookings found</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</section>
-
-<!-- 🔸 JavaScript Search Function -->
-<script>
-    document.getElementById('bookingSearch').addEventListener('keyup', function () {
-        let filter = this.value.toLowerCase();
-        let rows = document.querySelectorAll('#bookingTable tr');
-
-        rows.forEach(row => {
-            let text = row.textContent.toLowerCase();
-            row.style.display = text.includes(filter) ? '' : 'none';
-        });
-    });
-</script>
+{{-- Staff-specific Sidebar --}}
+@section('Aside')
+    @include('staff.StaffSidebar')
 @endsection
+
+<body class="admin-dashboard">
+  <!-- Main Content -->
+  <div class="content-wrapper">
+    <div class="main-content">
+        <header>
+            <h1>Staff Dashboard</h1>
+            <p class="subtext">View recent bookings and customer information</p>
+        </header>
+
+        <!-- 🔍 Search Bar -->
+        <div class="mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search bookings..." onkeyup="filterTable()">
+        </div>
+
+        <!-- Recent Bookings Table -->
+        <section class="table-container">
+            <h2>Recent Bookings</h2>
+            <div>
+                <table id="bookingsTable" class="table table-bordered table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Staycation ID</th>
+                            <th>Customer</th>
+                            <th>Phone</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($bookings as $booking)
+                            <tr>
+                                <td>{{ $booking->id }}</td>
+                                <td>{{ $booking->staycation_id }}</td>
+                                <td>{{ $booking->name }}</td>
+                                <td>{{ $booking->phone }}</td>
+                                <td>{{ $booking->start_date->format('M d, Y') }}</td>
+                                <td>{{ $booking->end_date->format('M d, Y') }}</td>
+                                <td>
+                                    <span class="status {{ strtolower($booking->status) }}">
+                                        {{ ucfirst($booking->status) }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">No bookings found</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- ✅ Simple table filter -->
+<script>
+function filterTable() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const table = document.getElementById('bookingsTable');
+    const rows = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < rows.length; i++) { // skip the header
+        const rowText = rows[i].textContent.toLowerCase();
+        rows[i].style.display = rowText.includes(input) ? '' : 'none';
+    }
+}
+</script>
