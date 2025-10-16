@@ -19,7 +19,7 @@
                         <th>Staycation</th>
                         <th>Customer</th>
                         <th>Phone</th>
-                        <th>Arival</th>
+                        <th>Arrival</th>
                         <th>Departure</th>
                         <th>Created At</th>
                         <th>Payment Status</th>
