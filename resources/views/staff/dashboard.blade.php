@@ -17,12 +17,17 @@
             <p class="subtext">View recent bookings and customer information</p>
         </header>
 
+        <!-- 🔍 Search Bar -->
+        <div class="mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search bookings..." onkeyup="filterTable()">
+        </div>
+
         <!-- Recent Bookings Table -->
         <section class="table-container">
             <h2>Recent Bookings</h2>
             <div>
-                <table>
-                    <thead>
+                <table id="bookingsTable" class="table table-bordered table-striped">
+                    <thead class="table-light">
                         <tr>
                             <th>Booking ID</th>
                             <th>Staycation ID</th>
@@ -50,7 +55,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7">No bookings found</td>
+                                <td colspan="7" class="text-center text-muted">No bookings found</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -59,3 +64,17 @@
         </section>
     </div>
 </div>
+
+<!-- ✅ Simple table filter -->
+<script>
+function filterTable() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const table = document.getElementById('bookingsTable');
+    const rows = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < rows.length; i++) { // skip the header
+        const rowText = rows[i].textContent.toLowerCase();
+        rows[i].style.display = rowText.includes(input) ? '' : 'none';
+    }
+}
+</script>
