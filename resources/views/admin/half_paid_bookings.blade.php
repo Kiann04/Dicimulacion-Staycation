@@ -42,8 +42,8 @@
               <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
               <td>{{ $booking->name }}</td>
               <td>{{ $booking->phone }}</td>
-              <td>{{ $booking->start_date }}</td>
-              <td>{{ $booking->end_date }}</td>
+              <td>{{ $booking->start_date->format('M d, Y') }}</td>
+              <td>{{ $booking->end_date->format('M d, Y') }}</td>
               <td><span class="status half-paid">Half Paid</span></td>
               <td><span class="status {{ $booking->status }}">{{ ucfirst($booking->status) }}</span></td>
               
