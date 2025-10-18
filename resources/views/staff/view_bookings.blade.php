@@ -38,7 +38,11 @@
                             <td>{{ $booking->guest_number }}</td>
                             <td>{{ $booking->start_date }}</td>
                             <td>{{ $booking->end_date }}</td>
-                            <td>{{ ucfirst($booking->status) }}</td>
+                            <td>
+                                <span class="status-badge {{ strtolower($booking->status) }}">
+                                    {{ ucfirst($booking->status) }}
+                                </span>
+                            </td>
                         </tr>
                     @empty
                         <tr>
