@@ -14,13 +14,30 @@ use App\Models\AuditLog;
 
 class StaffController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
-        $totalBookings = Booking::count();
-        $bookings      = Booking::latest()->take(10)->get();
+        $search = $request->input('search');
 
-        return view('staff.dashboard', compact('totalBookings', 'bookings'));
+        // Search bookings by guest name, email, or staycation name
+        $bookings = Booking::with(['user', 'staycation'])
+            ->when($search, function ($query, $search) {
+                $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+                })
+                ->orWhereHas('staycation', function ($q) use ($search) {
+                    $q->where('house_name', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->take(10)
+            ->get();
+
+        $totalBookings = Booking::count();
+
+        return view('staff.dashboard', compact('totalBookings', 'bookings', 'search'));
     }
+
 
     public function customers(Request $request)
     {
