@@ -30,7 +30,6 @@ class StaffController extends Controller
                 });
             })
             ->latest()
-            ->take(10)
             ->get();
 
         $totalBookings = Booking::count();
