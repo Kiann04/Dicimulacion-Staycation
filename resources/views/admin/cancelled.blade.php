@@ -18,7 +18,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Staycation ID</th>
+                    <th>Staycation</th>
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Total Price</th>
@@ -32,7 +32,7 @@
                     <tr>
                         <td>{{ $booking->id }}</td>
                         <td>{{ $booking->name }}</td>
-                        <td>{{ $booking->staycation_id }}</td>
+                        <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
                         <td>{{ $booking->formatted_start_date }}</td>
                         <td>{{ $booking->formatted_end_date }}</td>
                         <td>₱{{ number_format($booking->total_price, 2) }}</td>
