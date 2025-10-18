@@ -16,7 +16,7 @@
             <h1>Staff Dashboard</h1>
             <p class="subtext">View recent bookings and customer information</p>
         </header>
-        <form method="GET" action="{{ route('staff.customers') }}" style="margin-bottom: 15px;">
+        <form method="GET" action="{{ route('staff.dashboard') }}" style="margin-bottom: 15px;">
             <input type="text" name="search" placeholder="Search by name or email"
                    value="{{ request('search') }}" style="padding: 6px;">
             <button type="submit" style="padding: 6px 12px;">Search</button>
