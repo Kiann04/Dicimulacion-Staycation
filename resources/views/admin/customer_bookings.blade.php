@@ -33,11 +33,12 @@
               <td>{{ $booking->guest_number }}</td>
               <td data-label="Arrival Date">{{ $booking->start_date }}</td>
               <td data-label="Leaving Date">{{ $booking->end_date }}</td>
-              <td>
-                <span class="status">
-                  {{ ucfirst($booking->status) }}
+              <td data-label="Status">
+                <span class="status-badge {{ strtolower($booking->status) }}">
+                    {{ ucfirst($booking->status) }}
                 </span>
               </td>
+
             </tr>
           @empty
             <tr>
