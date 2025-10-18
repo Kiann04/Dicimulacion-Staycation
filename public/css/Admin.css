@@ -492,18 +492,7 @@ tr:hover {
 .system-status {
   margin-top: 40px;
 }
-/* Keep badges readable & responsive */
-.status-badge {
-  display: inline-block;
-  padding: 6px 14px;
-  border-radius: 25px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #fff;
-  white-space: nowrap;  /* prevents text wrap inside badge */
-  text-align: center;
-  min-width: 90px;
-}
+
 .status-card {
   background-color: #fff;
   border-radius: 8px;
