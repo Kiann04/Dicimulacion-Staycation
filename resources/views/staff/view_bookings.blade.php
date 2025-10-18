@@ -25,7 +25,7 @@
                         <th>Phone</th>
                         <th>Guest Number</th>
                         <th>Arrival Date</th>
-                        <th>Leaving Date</th>
+                        <th>Departure Date</th>
                         <th>Status</th>
                     </tr>
                 </thead>
