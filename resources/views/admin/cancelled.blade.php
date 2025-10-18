@@ -1,7 +1,11 @@
 @extends('layouts.default')
-
+@section('Aside')
+    @include('Aside')
+@endsection
 @section('content')
-<div class="container mt-4">
+<body class="admin-dashboard">
+  <div class="content-wrapper">
+    <div class="main-content">
     <h3>Cancelled Bookings</h3>
 
     @if (session('success'))
