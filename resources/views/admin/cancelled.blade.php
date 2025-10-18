@@ -24,7 +24,7 @@
                     <th>Total Price</th>
                     <th>Payment Status</th>
                     <th>Cancelled At</th>
-                    <th>Cancelled By</th>
+                    <th>Proof of Payment</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,7 +38,14 @@
                         <td>₱{{ number_format($booking->total_price, 2) }}</td>
                         <td>{{ ucfirst($booking->payment_status) }}</td>
                         <td>{{ \Carbon\Carbon::parse($booking->deleted_at)->format('M d, Y h:i A') }}</td>
-                        <td>{{ $booking->action_by ?? 'N/A' }}</td>
+                        <td>
+                            @if($booking->payment_proof)
+                            <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" 
+                                target="_blank">View Proof</a>
+                            @else
+                            <span class="text-muted">No proof</span>
+                            @endif
+                        </td>
                     </tr>
                 @empty
                     <tr>
