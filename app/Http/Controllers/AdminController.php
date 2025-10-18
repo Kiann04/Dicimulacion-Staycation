@@ -17,6 +17,7 @@ use App\Mail\BookingDeclined;
 use App\Models\AuditLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\BookingHistory;
 
 
 class AdminController extends Controller
@@ -477,17 +478,31 @@ class AdminController extends Controller
             return response()->json(['error' => 'Only unpaid bookings can be deleted.'], 403);
         }
 
-        $booking->delete();
+        // ✅ Record deleted booking in history
+        BookingHistory::create([
+            'booking_id'     => $booking->id,
+            'user_id'        => $booking->user_id,
+            'staycation_id'  => $booking->staycation_id,
+            'status'         => 'deleted',
+            'payment_status' => $booking->payment_status,
+            'deleted_by'     => Auth::id(),
+            'deleted_at'     => now(),
+        ]);
 
+        // ✅ Audit log
         AuditLog::create([
             'user_id'    => Auth::id(),
             'action'     => 'Booking Deleted',
-            'description'=> "Booking ID: {$booking->id} deleted by admin.",
+            'description'=> "Booking ID: {$booking->id} recorded in booking_history and deleted.",
             'ip_address' => request()->ip(),
         ]);
 
-        return response()->json(['success' => 'Unpaid booking deleted successfully!']);
+        // ✅ Delete booking
+        $booking->delete();
+
+        return response()->json(['success' => 'Booking deleted and recorded in history.']);
     }
+
     public function viewMessagesAndProofs()
     {
         // Load inquiries
