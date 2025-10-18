@@ -1,5 +1,7 @@
 @extends('layouts.default')
-
+@section('Aside')
+    @include('Aside')
+@endsection
 @section('content')
 <div class="container my-5">
     <h2><i class="fa-solid fa-ban text-danger"></i> Cancelled Bookings</h2>
@@ -41,3 +43,4 @@
     </table>
 </div>
 @endsection
+/
