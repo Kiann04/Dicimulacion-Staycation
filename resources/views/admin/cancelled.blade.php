@@ -21,17 +21,17 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($cancelledBookings as $booking)
+            @forelse($cancelledBookings as $booking_history)
             <tr>
-                <td>{{ $booking->id }}</td>
-                <td>{{ $booking->name }}</td>
-                <td>{{ $booking->staycation->name ?? 'N/A' }}</td>
-                <td>{{ $booking->start_date->format('M d, Y') }} - {{ $booking->end_date->format('M d, Y') }}</td>
-                <td>₱{{ number_format($booking->total_price, 2) }}</td>
+                <td>{{ $booking_history->id }}</td>
+                <td>{{ $booking_history->name }}</td>
+                <td>{{ $booking_history->staycation->name ?? 'N/A' }}</td>
+                <td>{{ $booking_history->start_date->format('M d, Y') }} - {{ $booking_history->end_date->format('M d, Y') }}</td>
+                <td>₱{{ number_format($booking_history->total_price, 2) }}</td>
                 <td><span class="badge bg-danger">Cancelled</span></td>
                 <td>
-                    @if($booking->payment_proof)
-                        <a href="{{ asset('storage/' . $booking->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary">View Proof</a>
+                    @if($booking_history->payment_proof)
+                        <a href="{{ asset('storage/' . $booking_history->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary">View Proof</a>
                     @else
                         <span>No proof</span>
                     @endif
