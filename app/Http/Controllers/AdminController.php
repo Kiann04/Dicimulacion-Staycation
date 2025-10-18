@@ -545,6 +545,13 @@ class AdminController extends Controller
 
         return view('admin.message', compact('inquiries', 'bookingProofs', 'activeTab'));
     }
+    public function showCancelledBookings()
+    {
+        $cancelledBookings = Booking::where('status', 'cancelled')->get();
+
+        return view('admin.cancelled', compact('cancelledBookings'));
+    }
+
 
 }
 

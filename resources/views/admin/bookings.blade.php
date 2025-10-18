@@ -72,22 +72,29 @@
 
       <!-- 📋 Booking History Section -->
       <section class="booking-history my-5" id="history">
-        <div class="setting-card" style="background:#fff; border-radius:12px; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
-          <h3 style="font-size:1.3rem;"><i class="fa-solid fa-receipt"></i> Booking History</h3>
-          <p style="color:#6b7280;">View and manage all bookings based on their payment status.</p>
-          
-          <div class="settings-btn-group" style="display:flex; gap:15px; margin-top:10px;">
-            <a href="{{ route('admin.bookings.paid') }}" class="paid-btn" 
-               style="background:#28a745; color:#fff; padding:10px 15px; border-radius:6px; text-decoration:none; font-weight:600;">
-              <i class="fa-solid fa-check-circle"></i> View Paid
-            </a>
-            <a href="{{ route('admin.bookings.half_paid') }}" class="half-paid-btn" 
-               style="background:#ffc107; color:#000; padding:10px 15px; border-radius:6px; text-decoration:none; font-weight:600;">
-              <i class="fa-solid fa-hourglass-half"></i> Half Paid
-            </a>
+          <div class="setting-card" style="background:#fff; border-radius:12px; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+              <h3 style="font-size:1.3rem;"><i class="fa-solid fa-receipt"></i> Booking History</h3>
+              <p style="color:#6b7280;">View and manage all bookings based on their payment status.</p>
+
+              <div class="settings-btn-group" style="display:flex; flex-wrap:wrap; gap:15px; margin-top:10px;">
+                  <a href="{{ route('admin.bookings.paid') }}" class="paid-btn" 
+                    style="background:#28a745; color:#fff; padding:10px 15px; border-radius:6px; text-decoration:none; font-weight:600;">
+                      <i class="fa-solid fa-check-circle"></i> View Paid
+                  </a>
+
+                  <a href="{{ route('admin.bookings.half_paid') }}" class="half-paid-btn" 
+                    style="background:#ffc107; color:#000; padding:10px 15px; border-radius:6px; text-decoration:none; font-weight:600;">
+                      <i class="fa-solid fa-hourglass-half"></i> Half Paid
+                  </a>
+
+                  <a href="{{ route('admin.bookings.cancelled') }}" class="cancelled-btn" 
+                    style="background:#dc3545; color:#fff; padding:10px 15px; border-radius:6px; text-decoration:none; font-weight:600;">
+                      <i class="fa-solid fa-ban"></i> Cancelled
+                  </a>
+              </div>
           </div>
-        </div>
       </section>
+
     </div>
   </div>
 </body>
