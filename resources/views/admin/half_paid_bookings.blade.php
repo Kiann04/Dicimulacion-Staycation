@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 .status.half-paid {
   background: #fff3cd;
-  color: #856404;
+  color: #000000;
 }
 
 .status.paid {
