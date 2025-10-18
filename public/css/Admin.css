@@ -612,7 +612,7 @@ button:disabled {
 
 /* Specific status colors */
 .status.completed {
-    background-color: #28a745; /* green */
+    background-color: #ff44ef; /* violet */
     color: rgb(0, 0, 0);
 }
 
