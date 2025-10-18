@@ -478,29 +478,31 @@ class AdminController extends Controller
             return response()->json(['error' => 'Only unpaid bookings can be deleted.'], 403);
         }
 
-        // ✅ Record deleted booking in history
-        BookingHistory::create([
+        // ✅ Save to booking_history before deleting
+        DB::table('booking_history')->insert([
             'booking_id'     => $booking->id,
             'user_id'        => $booking->user_id,
+            'name'           => $booking->name,
             'staycation_id'  => $booking->staycation_id,
-            'status'         => 'deleted',
+            'start_date'     => $booking->start_date,
+            'end_date'       => $booking->end_date,
+            'total_price'    => $booking->total_price,
             'payment_status' => $booking->payment_status,
-            'deleted_by'     => Auth::id(),
+            'action_by'      => Auth::check() ? Auth::user()->name : 'Admin',
             'deleted_at'     => now(),
         ]);
 
-        // ✅ Audit log
+        // Delete the booking
+        $booking->delete();
+
         AuditLog::create([
             'user_id'    => Auth::id(),
             'action'     => 'Booking Deleted',
-            'description'=> "Booking ID: {$booking->id} recorded in booking_history and deleted.",
+            'description'=> "Booking ID: {$booking->id} deleted by admin.",
             'ip_address' => request()->ip(),
         ]);
 
-        // ✅ Delete booking
-        $booking->delete();
-
-        return response()->json(['success' => 'Booking deleted and recorded in history.']);
+        return response()->json(['success' => 'Unpaid booking deleted successfully!']);
     }
 
     public function viewMessagesAndProofs()

@@ -57,4 +57,9 @@ class Booking extends Model
     {
         return $this->end_date->timezone('Asia/Manila')->format('M d, Y');
     }
+    public function history()
+    {
+        return $this->hasOne(BookingHistory::class, 'booking_id');
+    }
+
 }

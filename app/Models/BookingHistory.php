@@ -3,20 +3,26 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class BookingHistory extends Model
 {
-    protected $table = 'booking_history'; // ✅ exact table name
+    use HasFactory;
+
+    protected $table = 'booking_history';
 
     protected $fillable = [
         'booking_id',
         'user_id',
+        'name',
         'staycation_id',
-        'status',
+        'start_date',
+        'end_date',
+        'total_price',
         'payment_status',
-        'deleted_by',
         'deleted_at',
+        'action_by',
     ];
 
-    public $timestamps = true; // since you have created_at / updated_at columns
+    public $timestamps = false;
 }
