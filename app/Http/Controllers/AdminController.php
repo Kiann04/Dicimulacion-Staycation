@@ -488,6 +488,7 @@ class AdminController extends Controller
             'end_date'       => $booking->end_date,
             'total_price'    => $booking->total_price,
             'payment_status' => $booking->payment_status,
+            'payment_proof'  => $booking->payment_proof, // ✅ added this line
             'action_by'      => Auth::check() ? Auth::user()->name : 'Admin',
             'deleted_at'     => now(),
         ]);

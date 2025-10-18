@@ -20,6 +20,7 @@ class BookingHistory extends Model
         'end_date',
         'total_price',
         'payment_status',
+        'payment_proof',
         'deleted_at',
         'action_by',
     ];
