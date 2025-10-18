@@ -1,48 +1,48 @@
-@extends('layouts.default')
-@section('Aside')
-    @include('Aside')
-@endsection
+@extends('layouts.admin')
 
 @section('content')
-<body class="admin-dashboard">
-<div class="content-wrapper">
-    <div class="main-content">
-    <h2><i class="fa-solid fa-ban text-danger"></i> Cancelled Bookings</h2>
-    <table class="table table-bordered mt-3">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Guest</th>
-                <th>Staycation</th>
-                <th>Dates</th>
-                <th>Total</th>
-                <th>Payment Status</th>
-                <th>Proof</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($cancelledBookings as $booking_history)
-            <tr>
-                <td>{{ $booking_history->id }}</td>
-                <td>{{ $booking_history->name }}</td>
-                <td>{{ $booking_history->staycation->name ?? 'N/A' }}</td>
-                <td>{{ $booking_history->start_date->format('M d, Y') }} - {{ $booking_history->end_date->format('M d, Y') }}</td>
-                <td>₱{{ number_format($booking_history->total_price, 2) }}</td>
-                <td><span class="badge bg-danger">Cancelled</span></td>
-                <td>
-                    @if($booking_history->payment_proof)
-                        <a href="{{ asset('storage/' . $booking_history->payment_proof) }}" target="_blank" class="btn btn-sm btn-outline-primary">View Proof</a>
-                    @else
-                        <span>No proof</span>
-                    @endif
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="7" class="text-center text-muted">No cancelled bookings found.</td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
+<div class="container mt-4">
+    <h3>Cancelled Bookings</h3>
+
+    @if (session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <div class="table-responsive mt-3">
+        <table class="table table-bordered table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Staycation ID</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Total Price</th>
+                    <th>Payment Status</th>
+                    <th>Cancelled At</th>
+                    <th>Cancelled By</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($cancelledBookings as $booking)
+                    <tr>
+                        <td>{{ $booking->id }}</td>
+                        <td>{{ $booking->name }}</td>
+                        <td>{{ $booking->staycation_id }}</td>
+                        <td>{{ $booking->formatted_start_date }}</td>
+                        <td>{{ $booking->formatted_end_date }}</td>
+                        <td>₱{{ number_format($booking->total_price, 2) }}</td>
+                        <td>{{ ucfirst($booking->payment_status) }}</td>
+                        <td>{{ \Carbon\Carbon::parse($booking->deleted_at)->format('M d, Y h:i A') }}</td>
+                        <td>{{ $booking->action_by ?? 'N/A' }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">No cancelled bookings found.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </div>
 @endsection

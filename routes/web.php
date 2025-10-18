@@ -94,6 +94,7 @@ Route::get('/booking/history', [BookingHistoryController::class, 'index'])->name
 
 
 // Cancel a booking
+
 Route::delete('/booking/{id}/cancel', [BookingHistoryController::class, 'cancel'])->name('BookingHistory.cancel');
 Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('BookingHistory.index')->middleware('auth');
 
@@ -224,7 +225,7 @@ Route::prefix('admin')
     Route::get('/bookings/half-paid', [BookingHistoryController::class, 'showHalfPaid'])->name('bookings.half_paid');
     Route::post('/bookings/{id}/mark-paid', [BookingHistoryController::class, 'markAsPaid'])->name('bookings.markAsPaid');
 
-    Route::get('/bookings/cancelled', [AdminController::class, 'showCancelledBookings'])->name('bookings.cancelled');
+    Route::get('/bookings/cancelled', [AdminController::class, 'cancelled'])->name('bookings.cancelled');
 
     // Admin Messages & Payment Proofs
     Route::get('/messages-payments', [AdminController::class, 'messagesAndPayments'])
@@ -269,3 +270,7 @@ Route::middleware(['auth'])->group(function () {
         return view('test-2fa');
     })->name('test-2fa');
 });
+// routes/web.php
+use App\Http\Controllers\CancelledBookingController;
+
+Route::get('/admin/cancelled', [CancelledBookingController::class, 'index'])->name('admin.cancelled');
