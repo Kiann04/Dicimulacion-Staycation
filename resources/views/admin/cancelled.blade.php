@@ -2,7 +2,9 @@
 @section('Aside')
     @include('Aside')
 @endsection
+
 @section('content')
+<body class="admin-dashboard">
 <div class="container my-5">
     <h2><i class="fa-solid fa-ban text-danger"></i> Cancelled Bookings</h2>
     <table class="table table-bordered mt-3">
