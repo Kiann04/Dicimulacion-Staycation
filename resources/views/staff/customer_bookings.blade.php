@@ -32,7 +32,7 @@
               <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
               <td>{{ $booking->guest_number }}</td>
               <td data-label="Arrival Date">{{ $booking->start_date }}</td>
-              <td data-label="Leaving Date">{{ $booking->end_date }}</td>
+              <td data-label="Departure Date">{{ $booking->end_date }}</td>
               <td>
                 <span class="status">
                   {{ ucfirst($booking->status) }}
