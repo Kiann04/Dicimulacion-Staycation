@@ -6,6 +6,7 @@
 @section('content')
 <body class="admin-dashboard">
 <div class="content-wrapper">
+    <div class="main-content">
     <h2><i class="fa-solid fa-ban text-danger"></i> Cancelled Bookings</h2>
     <table class="table table-bordered mt-3">
         <thead>
