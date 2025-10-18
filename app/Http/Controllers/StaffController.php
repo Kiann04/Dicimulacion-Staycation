@@ -18,7 +18,6 @@ class StaffController extends Controller
     {
         $search = $request->input('search');
 
-        // Search bookings by guest name, email, or staycation name
         $bookings = Booking::with(['user', 'staycation'])
             ->when($search, function ($query, $search) {
                 $query->whereHas('user', function ($q) use ($search) {
@@ -30,12 +29,14 @@ class StaffController extends Controller
                 });
             })
             ->latest()
-            ->get();
+            ->paginate(10) // ✅ show 10 per page with pagination links
+            ->withQueryString(); // ✅ keeps search term when switching pages
 
         $totalBookings = Booking::count();
 
         return view('staff.dashboard', compact('totalBookings', 'bookings', 'search'));
     }
+
 
 
     public function customers(Request $request)

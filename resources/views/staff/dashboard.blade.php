@@ -16,6 +16,8 @@
             <h1>Staff Dashboard</h1>
             <p class="subtext">View recent bookings and customer information</p>
         </header>
+
+        <!-- Search Form -->
         <form method="GET" action="{{ route('staff.dashboard') }}" style="margin-bottom: 15px;">
             <input type="text" name="search" placeholder="Search by name or email"
                    value="{{ request('search') }}" style="padding: 6px;">
@@ -45,8 +47,8 @@
                                 <td>{{ $booking->staycation_id }}</td>
                                 <td>{{ $booking->name }}</td>
                                 <td>{{ $booking->phone }}</td>
-                                <td>{{ $booking->start_date->format('M d, Y') }}</td>
-                                <td>{{ $booking->end_date->format('M d, Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($booking->start_date)->format('M d, Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($booking->end_date)->format('M d, Y') }}</td>
                                 <td>
                                     <span class="status {{ strtolower($booking->status) }}">
                                         {{ ucfirst($booking->status) }}
@@ -60,6 +62,11 @@
                         @endforelse
                     </tbody>
                 </table>
+
+                <!-- Pagination -->
+                <div style="margin-top: 15px;">
+                    {{ $bookings->links() }}
+                </div>
             </div>
         </section>
     </div>
