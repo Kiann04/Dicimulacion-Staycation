@@ -9,7 +9,8 @@ use App\Models\Inquiry;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\InquiryReply;
-
+use Illuminate\Support\Facades\Auth;
+use App\Models\AuditLog;
 
 class StaffController extends Controller
 {
@@ -80,16 +81,27 @@ public function sendReplyMessage(Request $request, $id)
     ]);
 
     $inquiry = Inquiry::findOrFail($id);
+
+    // ✉️ Send reply email
     Mail::to($inquiry->email)->send(new InquiryReply($request->message, $inquiry));
 
-    // Mark as read
-    if($inquiry->status === 'unread'){
+    // ✅ Mark as read if unread
+    if ($inquiry->status === 'unread') {
         $inquiry->status = 'read';
         $inquiry->save();
     }
 
+    // 🧾 Add to audit logs
+    AuditLog::create([
+        'user_id'    => Auth::id(), // the currently logged-in admin
+        'action'     => 'Replied to Inquiry',
+        'description'=> "Admin replied to inquiry #{$inquiry->id} ({$inquiry->email}).",
+        'ip_address' => request()->ip(),
+    ]);
+
     return redirect()->back()->with('success', 'Your reply has been sent successfully!');
 }
+
 
 // Delete message
 public function deleteMessage($id)

@@ -442,6 +442,12 @@ class AdminController extends Controller
             $inquiry->status = 'read';
             $inquiry->save();
         }
+        AuditLog::create([
+        'user_id'    => Auth::id(),
+        'action'     => 'Replied to Inquiry',
+        'description'=> "Admin replied to inquiry from {$inquiry->name} ({$inquiry->email}).",
+        'ip_address' => request()->ip(),
+        ]);
 
         return redirect()->back()->with('success', 'Your reply has been sent successfully!');
     }
