@@ -507,7 +507,10 @@ class AdminController extends Controller
             'description'=> "Booking ID: {$booking->id} permanently deleted and copied to history.",
             'ip_address' => request()->ip(),
         ]);
-
+        $recipient = $booking->user->email ?? $booking->email;
+        if (!empty($recipient)) {
+            Mail::to($recipient)->send(new BookingCancelled($booking));
+        }
         return redirect()->route('admin.cancelled')
                         ->with('success', 'Booking permanently deleted and archived to booking history.');
     }
