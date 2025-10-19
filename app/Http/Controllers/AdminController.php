@@ -18,6 +18,7 @@ use App\Models\AuditLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\BookingHistory;
+use App\Mail\BookingCancelled;
 
 
 class AdminController extends Controller
@@ -503,7 +504,10 @@ class AdminController extends Controller
         'description'=> "Booking ID: {$booking->id} deleted by admin.",
         'ip_address' => request()->ip(),
     ]);
-
+    $recipient = $booking->user->email ?? $booking->email;
+    if (!empty($recipient)) {
+        Mail::to($recipient)->send(new BookingCancelled($booking));
+    }
     // ✅ Redirect to cancelled bookings page
     return redirect()->route('admin.cancelled')
                      ->with('success', 'Unpaid booking moved to Cancelled page.');
