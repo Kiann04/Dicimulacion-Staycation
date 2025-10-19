@@ -274,3 +274,5 @@ Route::middleware(['auth'])->group(function () {
 use App\Http\Controllers\CancelledBookingController;
 
 Route::get('/admin/cancelled', [CancelledBookingController::class, 'index'])->name('admin.cancelled');
+Route::get('/admin/cancelled', [CancelledBookingController::class, 'index'])
+    ->name('admin.bookings.cancelled');
