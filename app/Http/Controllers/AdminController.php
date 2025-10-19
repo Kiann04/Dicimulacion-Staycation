@@ -474,46 +474,49 @@ class AdminController extends Controller
     return redirect()->back()->with('success', 'Staycation availability updated!');
     }
     public function deleteBooking($id)
-{
-    $booking = Booking::findOrFail($id);
+    {
+        $booking = Booking::findOrFail($id);
 
-    if ($booking->payment_status !== 'unpaid') {
-        return redirect()->back()->with('error', 'Only unpaid bookings can be deleted.');
+        // ✅ Only allow deleting unpaid bookings
+        if ($booking->payment_status !== 'unpaid') {
+            return redirect()->back()->with('error', 'Only unpaid bookings can be deleted.');
+        }
+
+        // ✅ Copy all booking details into booking_history before deletion
+        DB::table('booking_history')->insert([
+            'booking_id'     => $booking->id,
+            'user_id'        => $booking->user_id,
+            'name'           => $booking->name,
+            'staycation_id'  => $booking->staycation_id,
+            'start_date'     => $booking->start_date,
+            'end_date'       => $booking->end_date,
+            'total_price'    => $booking->total_price,
+            'payment_status' => $booking->payment_status,
+            'payment_proof'  => $booking->payment_proof,
+            'action_by'      => Auth::check() ? Auth::user()->name : 'Admin',
+            'deleted_at'     => now(), // optional for history tracking
+            'created_at'     => now(),
+            'updated_at'     => now(),
+        ]);
+
+        // ✅ Permanently remove the booking from main table
+        $booking->forceDelete();
+
+        // ✅ Log the action
+        AuditLog::create([
+            'user_id'    => Auth::id(),
+            'action'     => 'Booking Deleted',
+            'description'=> "Booking ID: {$booking->id} was permanently deleted and archived to history.",
+            'ip_address' => request()->ip(),
+        ]);
+        $recipient = $booking->user->email ?? $booking->email;
+        if (!empty($recipient)) {
+            Mail::to($recipient)->send(new BookingCancelled($booking));
+        }
+        // ✅ Redirect to cancelled bookings page
+        return redirect()->route('admin.cancelled')
+                        ->with('success', 'Unpaid booking moved to Cancelled page.');
     }
-
-    // Save to booking_history before soft deleting
-    DB::table('booking_history')->insert([
-        'booking_id'     => $booking->id,
-        'user_id'        => $booking->user_id,
-        'name'           => $booking->name,
-        'staycation_id'  => $booking->staycation_id,
-        'start_date'     => $booking->start_date,
-        'end_date'       => $booking->end_date,
-        'total_price'    => $booking->total_price,
-        'payment_status' => $booking->payment_status,
-        'payment_proof'  => $booking->payment_proof,
-        'action_by'      => Auth::check() ? Auth::user()->name : 'Admin',
-        'deleted_at'     => now(),
-    ]);
-
-    // Soft delete the booking
-    $booking->delete();
-
-    // Log the action
-    AuditLog::create([
-        'user_id'    => Auth::id(),
-        'action'     => 'Booking Deleted',
-        'description'=> "Booking ID: {$booking->id} deleted by admin.",
-        'ip_address' => request()->ip(),
-    ]);
-    $recipient = $booking->user->email ?? $booking->email;
-    if (!empty($recipient)) {
-        Mail::to($recipient)->send(new BookingCancelled($booking));
-    }
-    // ✅ Redirect to cancelled bookings page
-    return redirect()->route('admin.cancelled')
-                     ->with('success', 'Unpaid booking moved to Cancelled page.');
-}
 
     public function viewMessagesAndProofs()
     {
