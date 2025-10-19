@@ -552,10 +552,12 @@ class AdminController extends Controller
 
         return view('admin.message', compact('inquiries', 'bookingProofs', 'activeTab'));
     }
-    public function cancelled()
+    public function showCancelledBookings()
     {
-        // get only soft-deleted bookings
-        $cancelledBookings = \App\Models\Booking::onlyTrashed()->get();
+        // ✅ Fetch from booking_history table instead
+        $cancelledBookings = DB::table('booking_history')
+            ->orderByDesc('id')
+            ->get();
 
         return view('admin.cancelled', compact('cancelledBookings'));
     }
