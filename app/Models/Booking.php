@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Booking extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'staycation_id',
@@ -34,8 +33,6 @@ class Booking extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
-    protected $dates = ['deleted_at'];
-    
     public function staycation()
     {
         return $this->belongsTo(Staycation::class);
