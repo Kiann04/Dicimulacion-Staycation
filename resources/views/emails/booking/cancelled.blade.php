@@ -8,8 +8,8 @@ We regret to inform you that your booking at **Dicimulacion Staycation** has bee
 **Booking Details:**
 - **Booking ID:** {{ $booking->id }}
 - **Staycation:** {{ $booking->staycation->name ?? 'N/A' }}
-- **Check-in:** {{ $booking->start_date }}
-- **Check-out:** {{ $booking->end_date }}
+- **Check-in:** {{ \Carbon\Carbon::parse($booking->start_date)->format('F j, Y') }}
+- **Check-out:** {{ \Carbon\Carbon::parse($booking->end_date)->format('F j, Y') }}
 - **Total Amount:** ₱{{ number_format($booking->total_price, 2) }}
 
 If this was cancelled by mistake or you wish to reschedule, please contact us.
