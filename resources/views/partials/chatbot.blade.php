@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     { keywords: ["checkin", "arrival","check-in","check in"], reply: "Check-in time is 2:00 PM ⏰" },
     { keywords: ["checkout", "departure","check-out"], reply: "Check-out time is 12:00 PM 🕛" },
     { keywords: ["pool", "swimming"], reply: "🏊 Our pool is shared among every three units and open daily from 8 AM to 10 PM." },
-    { keywords: ["payment", "gcash", "maya", "bank", "card"], reply: "💳 We accept GCash, Maya, debit, or credit card payments. A 50% downpayment confirms your booking." },
+    { keywords: ["payment", "gcash", "maya", "bank", "card"], reply: "💳 We accept GCash, debit, or credit card payments. A 50% downpayment confirms your booking." },
     { keywords: ["location", "address","where"], reply: "📍 We’re located at Falcons Court, Village East Avenue, Angono, Rizal." },
     { keywords: ["amenities","wifi","internet"], reply: "🏡 Amenities include WiFi, Kitchen, BBQ grill, Netflix, Parking, Pool access, and Pet-friendly rooms!" },
     { keywords: ["breakfast","food"], reply: "☕ Yes, breakfast is provided! Early arrivals also get complimentary coffee and snacks." },
