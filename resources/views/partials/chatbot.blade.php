@@ -15,7 +15,7 @@
     <!-- Header (No Logo) -->
     <div class="bg-primary text-white px-3 py-2 d-flex align-items-center justify-content-between">
       <div>
-        <h6 class="mb-0 fw-bold">Dicimulation Staycation</h6>
+        <h6 class="mb-0 fw-bold">Dicimulacion Staycation</h6>
         <small>Online</small>
       </div>
       <button id="CloseChatBot" class="btn btn-light btn-sm rounded-circle">
