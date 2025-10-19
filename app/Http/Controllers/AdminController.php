@@ -367,7 +367,9 @@ class AdminController extends Controller
     // bookings by staycation
     public function getEvents($staycationId)
     {
-        $bookings = Booking::where('staycation_id', $staycationId)->get();
+        $bookings = Booking::where('staycation_id', $staycationId)
+        ->whereNull('deleted_at')
+        ->get();
 
         $events = $bookings->map(function ($booking) {
             return [
