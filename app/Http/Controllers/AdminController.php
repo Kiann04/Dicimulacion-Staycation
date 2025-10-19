@@ -477,12 +477,12 @@ class AdminController extends Controller
     {
         $booking = Booking::findOrFail($id);
 
-        // ✅ Only allow deleting unpaid bookings
+        // Only delete unpaid bookings
         if ($booking->payment_status !== 'unpaid') {
             return redirect()->back()->with('error', 'Only unpaid bookings can be deleted.');
         }
 
-        // ✅ Copy all booking details into booking_history before deletion
+        // ✅ Copy booking data to booking_history before deleting
         DB::table('booking_history')->insert([
             'booking_id'     => $booking->id,
             'user_id'        => $booking->user_id,
@@ -494,29 +494,24 @@ class AdminController extends Controller
             'payment_status' => $booking->payment_status,
             'payment_proof'  => $booking->payment_proof,
             'action_by'      => Auth::check() ? Auth::user()->name : 'Admin',
-            'deleted_at'     => now(), // optional for history tracking
-            'created_at'     => now(),
-            'updated_at'     => now(),
+            'deleted_at'     => now(), // mark when it was archived
         ]);
 
-        // ✅ Permanently remove the booking from main table
+        // ✅ Permanently remove the booking (hard delete)
         $booking->forceDelete();
 
-        // ✅ Log the action
+        // ✅ Log action
         AuditLog::create([
             'user_id'    => Auth::id(),
             'action'     => 'Booking Deleted',
-            'description'=> "Booking ID: {$booking->id} was permanently deleted and archived to history.",
+            'description'=> "Booking ID: {$booking->id} permanently deleted and copied to history.",
             'ip_address' => request()->ip(),
         ]);
-        $recipient = $booking->user->email ?? $booking->email;
-        if (!empty($recipient)) {
-            Mail::to($recipient)->send(new BookingCancelled($booking));
-        }
-        // ✅ Redirect to cancelled bookings page
+
         return redirect()->route('admin.cancelled')
-                        ->with('success', 'Unpaid booking moved to Cancelled page.');
+                        ->with('success', 'Booking permanently deleted and archived to booking history.');
     }
+
 
     public function viewMessagesAndProofs()
     {
