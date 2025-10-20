@@ -191,7 +191,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "Do you have a pool?",
     "Are pets allowed?",
     "Where are you located?",
-    "What are your payment options?"
+    "What are your payment options?",
+    "How to reschedule"
   ];
   quick.forEach(q => {
     const b = document.createElement("button");
