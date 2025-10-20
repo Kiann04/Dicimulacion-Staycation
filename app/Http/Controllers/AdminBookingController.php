@@ -108,4 +108,11 @@ class AdminBookingController extends Controller
         return redirect()->back()->with('success', 'Payment status updated successfully!');
     }
 
+    public function getUnpaidCount()
+    {
+        $count = \App\Models\Booking::where('payment_status', 'unpaid')->count();
+        return response()->json(['count' => $count]);
+    }
+
+
 }

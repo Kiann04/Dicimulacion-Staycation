@@ -124,7 +124,7 @@
             <div id="gcashInfo" class="p-3 bg-light border rounded mb-3" style="display:none;">
                 <h6 class="fw-semibold text-primary">GCash Information</h6>
                 <p><strong>Account Name:</strong> Dicimulacion Staycation</p>
-                <p><strong>GCash Number:</strong> 0917-123-4567</p>
+                <p><strong>GCash Number:</strong> 0956-348-1472</p>
             </div>
 
             <!-- BPI Info -->

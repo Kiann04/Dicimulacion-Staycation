@@ -188,6 +188,9 @@ Route::prefix('admin')
     Route::post('/staycations/store', [StaycationController::class, 'store'])->name('staycations.store');
     Route::post('/staycations/{id}/toggle-availability', [AdminController::class, 'toggleAvailability'])
          ->name('toggle_availability');
+     // ✅ Real-time unpaid booking count route
+    Route::get('/unpaid-count', [AdminBookingController::class, 'getUnpaidCount'])
+        ->name('unpaid.count');
 
     // Bookings
     Route::get('/bookings', [StaycationController::class, 'index'])->name('bookings');
@@ -276,3 +279,4 @@ use App\Http\Controllers\CancelledBookingController;
 Route::get('/admin/cancelled', [CancelledBookingController::class, 'index'])->name('admin.cancelled');
 Route::get('/admin/cancelled', [CancelledBookingController::class, 'index'])
     ->name('admin.bookings.cancelled');
+
