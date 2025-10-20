@@ -487,8 +487,8 @@
         <!-- Review Cards -->
         <div class="review-card card h-100 shadow border-0 text-center p-4">
             <img src="{{ asset('assets/Matt.png') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Darwin">
-            <h5 class="fw-bold">Darwin</h5>
-            <p class="text-muted small">"The staycation was perfect! The house was clean, spacious, and the view was breathtaking. Highly recommend!"</p>
+            <h5 class="fw-bold">Darwin Arroyo</h5>
+            <p class="text-muted small">" The house was clean, spacious, and the view was breathtaking. Highly recommend!"</p>
             <div class="text-warning">
                 <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
                 <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
@@ -498,8 +498,8 @@
 
         <div class="review-card card h-100 shadow border-0 text-center p-4">
             <img src="{{ asset('assets/Sarah.jpg') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Sarah">
-            <h5 class="fw-bold">Sarah</h5>
-            <p class="text-muted small">"Amazing experience! The staff were friendly, the rooms were cozy, and everything exceeded our expectations."</p>
+            <h5 class="fw-bold">Sarah Ortiz</h5>
+            <p class="text-muted small">"The staff were friendly, the rooms were cozy, and everything exceeded our expectations."</p>
             <div class="text-warning">
                 <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
                 <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
@@ -509,8 +509,8 @@
 
         <div class="review-card card h-100 shadow border-0 text-center p-4">
             <img src="{{ asset('assets/Alex.jpg') }}" class="rounded-circle mx-auto mb-3" width="80" alt="James">
-            <h5 class="fw-bold">James</h5>
-            <p class="text-muted small">"A truly relaxing staycation. The house had everything we needed, and the view was simply stunning. Will return!"</p>
+            <h5 class="fw-bold">James Santos</h5>
+            <p class="text-muted small">"The house had everything we needed, and the view was simply stunning. Will return!"</p>
             <div class="text-warning">
                 <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
                 <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
@@ -520,8 +520,8 @@
 
         <div class="review-card card h-100 shadow border-0 text-center p-4">
             <img src="{{ asset('assets/test.jpg') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Anna">
-            <h5 class="fw-bold">Anna</h5>
-            <p class="text-muted small">"Wonderful stay! Everything was neat and organized, and the location is perfect for a weekend getaway."</p>
+            <h5 class="fw-bold">Anna Reyes</h5>
+            <p class="text-muted small">"Everything was neat and organized, and the location is perfect for a weekend getaway."</p>
             <div class="text-warning">
                 <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
                 <i class='bx bxs-star'></i><i class='bx bxs-star'></i>
