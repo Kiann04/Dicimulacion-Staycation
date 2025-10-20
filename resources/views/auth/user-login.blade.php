@@ -12,7 +12,7 @@
             
             <!-- Left side (form) -->
             <div class="col-md-6 p-5 d-flex flex-column justify-content-center">
-                <h2 class="fw-bold mb-3">Welcome Back 👋</h2>
+                <h2 class="fw-bold mb-3">Welcome 👋</h2>
                 <p class="text-muted mb-4">Please log in to continue to your account.</p>
 
                 <form method="POST" action="{{ route('login') }}">
