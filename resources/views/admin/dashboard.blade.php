@@ -11,13 +11,9 @@
 <body class="admin-dashboard">
     <div class="content-wrapper">
         <div class="main-content">
-            <div class="notification-bell position-relative" style="cursor:pointer;">
-                <i class="bi bi-bell-fill fs-4 text-primary"></i>
-                <span id="unpaidBadge" 
-                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                    style="display:none;">
-                    0
-                </span>
+            <div id="notificationBell" class="notification-bell">
+                <i class="bell-icon">🔔</i>
+                <span id="unpaidBadge" class="badge">0</span>
             </div>
         <!-- Unpaid Bookings Table -->
         <section class="table-container">
