@@ -24,28 +24,29 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        // ✅ Auto-capitalize names
+        // ✅ Auto-format and clean input
         $firstName = ucwords(strtolower(trim($request->first_name)));
         $lastName = ucwords(strtolower(trim($request->last_name)));
-
-        // ✅ Handle middle initial (optional)
         $middleInitial = !empty($request->middle_initial)
             ? strtoupper(trim($request->middle_initial)) . '.'
             : '';
 
-        // ✅ Combine full name cleanly
+        // ✅ Combine clean full name
         $fullName = trim("$firstName $middleInitial $lastName");
         $fullName = preg_replace('/\s+/', ' ', $fullName);
+
+        // ✅ Clean email (remove extra spaces)
+        $email = strtolower(trim($request->email));
 
         // ✅ Create user
         User::create([
             'name' => $fullName,
-            'email' => $request->email,
+            'email' => $email,
             'password' => Hash::make($request->password),
             'usertype' => 'user',
         ]);
 
-        // ✅ Redirect with success alert
+        // ✅ Redirect with success popup
         return redirect()->route('login')->with('success', 'Account created successfully! Please log in.');
     }
 }
