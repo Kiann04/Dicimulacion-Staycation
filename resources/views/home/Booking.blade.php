@@ -4,7 +4,8 @@
 @endsection
 <section class="container my-5 pt-5">
   <div class="row g-4 align-items-start">
-    <!-- Booking Form -->
+
+    <!-- ✅ Booking Form -->
     <div class="col-lg-6">
       <div class="card shadow-sm border-0">
         <div class="card-body p-4">
@@ -19,158 +20,138 @@
           @endif
 
           <form action="{{ route('booking.preview', $staycation->id) }}" method="POST">
-                @csrf
+            @csrf
+            <div class="mb-3">
+              <label for="name" class="form-label">Full Name</label>
+              <input type="text" id="name" name="name" class="form-control" placeholder="Name" required
+                value="{{ old('name', Auth::user()->name ?? '') }}">
+            </div>
 
-                <div class="mb-3">
-                    <label for="name" class="form-label">Full Name</label>
-                    <input type="text" id="name" name="name" class="form-control" placeholder="Name" required
-                        value="{{ old('name', Auth::user()->name ?? '') }}">
-                </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label">Contact Number</label>
+              <div class="input-group">
+                <span class="input-group-text">+63</span>
+                <input type="tel" id="phone" name="phone" class="form-control" 
+                  placeholder="9123456789" required pattern="[0-9]{10}"
+                  title="Enter a valid 10-digit Philippine phone number"
+                  value="{{ old('phone', Auth::user()?->phone ? ltrim(Auth::user()?->phone, '+63') : '') }}">
+              </div>
+            </div>
 
-                <div class="mb-3">
-                    <label for="phone" class="form-label">Contact Number</label>
-                    <div class="input-group">
-                        <span class="input-group-text">+63</span>
-                        <input type="tel" id="phone" name="phone" class="form-control" 
-                            placeholder="9123456789" 
-                            required 
-                            pattern="[0-9]{10}" 
-                            title="Enter a valid 10-digit Philippine phone number (e.g. 9123456789)"
-                            value="{{ old('phone', Auth::user()?->phone ? ltrim(Auth::user()?->phone, '+63') : '') }}">
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="guest_number" class="form-label">Guests</label>
-                    <input type="number" id="guest_number" name="guest_number" class="form-control" 
-                        placeholder="Guest/s" 
-                        required 
-                        min="1"
-                        value="{{ old('guest_number') }}">
-                </div>
+            <div class="mb-3">
+              <label for="guest_number" class="form-label">Guests</label>
+              <input type="number" id="guest_number" name="guest_number" class="form-control" 
+                placeholder="Guest/s" required min="1" value="{{ old('guest_number') }}">
+            </div>
 
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label for="startDate" class="form-label">Date of Arrival</label>
-                        <input 
-                            type="date" 
-                            id="startDate" 
-                            name="startDate" 
-                            class="form-control" 
-                            required
-                            min="{{ now()->toDateString() }}" 
-                            max="2026-12-31"
-                            value="{{ old('startDate') }}">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="endDate" class="form-label">Date of Departure</label>   
-                        <input 
-                            type="date" 
-                            id="endDate" 
-                            name="endDate" 
-                            class="form-control" 
-                            required
-                            min="{{ now()->toDateString() }}" 
-                            max="2026-12-31"
-                            value="{{ old('endDate') }}">
-                    </div>
-                </div>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="startDate" class="form-label">Date of Arrival</label>
+                <input type="date" id="startDate" name="startDate" class="form-control" required
+                  min="{{ now()->toDateString() }}" max="2026-12-31" value="{{ old('startDate') }}">
+              </div>
+              <div class="col-md-6">
+                <label for="endDate" class="form-label">Date of Departure</label>   
+                <input type="date" id="endDate" name="endDate" class="form-control" required
+                  min="{{ now()->toDateString() }}" max="2026-12-31" value="{{ old('endDate') }}">
+              </div>
+            </div>
 
+            <div id="price-summary" class="border-top pt-3 mb-3" style="display:none;">
+              <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
+              <p id="total-price" class="fw-bold text-success"></p>
+            </div>
 
-                <!-- Price Summary -->
-                <div id="price-summary" class="border-top pt-3 mb-3" style="display:none;">
-                    <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
-                    <p id="total-price" class="fw-bold text-success"></p>
-                </div>
+            <div class="form-check mb-3">
+              <input type="checkbox" class="form-check-input" id="terms_privacy" name="terms_privacy" required>
+              <label class="form-check-label" for="terms_privacy">
+                I agree to the 
+                <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a> and 
+                <a href="{{ url('/privacy') }}" target="_blank">Privacy Policy</a>
+              </label>
+            </div>
 
-                <!-- Terms -->
-                <div class="form-check mb-3">
-                    <input type="checkbox" class="form-check-input" id="terms_privacy" name="terms_privacy" required>
-                    <label class="form-check-label" for="terms_privacy">
-                        I agree to the 
-                        <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a> and 
-                        <a href="{{ url('/privacy') }}" target="_blank">Privacy Policy</a>
-                    </label>
-                </div>
-
-
-                <!-- Submit -->
-                @auth
-                    <button type="submit" class="btn btn-primary w-100 fw-semibold">
-                        Preview Booking
-                    </button>
-                @else
-                    <a href="{{ route('login') }}" class="btn btn-secondary w-100 disabled">
-                        Please log in to reserve
-                    </a>
-                @endauth
-            </form>
+            @auth
+              <button type="submit" class="btn btn-primary w-100 fw-semibold">Preview Booking</button>
+            @else
+              <a href="{{ route('login') }}" class="btn btn-secondary w-100 disabled">
+                Please log in to reserve
+              </a>
+            @endauth
+          </form>
         </div>
       </div>
     </div>
 
-        <!-- Image Carousel -->
-        <div class="col-lg-6">
-        <div id="staycationCarousel" class="carousel slide carousel-fade shadow-sm rounded overflow-hidden" data-bs-ride="carousel" data-bs-interval="3000">
-            <div class="carousel-inner">
-            @php
-                // Combine main image + gallery
-                $images = collect([$staycation->house_image]);
-                if (isset($staycation->images) && $staycation->images->isNotEmpty()) {
-                    $images = $images->merge($staycation->images->pluck('image_path'));
-                }
-            @endphp
+    <!-- ✅ Right side: Calendar -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h4 class="fw-bold mb-3">Availability Calendar</h4>
+          <div id="calendar"></div>
+        </div>
+      </div>
+    </div>
 
-            @foreach($images as $i => $img)
-                <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
-                <img 
-                    src="{{ asset('storage/' . $img) }}" 
-                    class="d-block w-100 rounded" 
-                    alt="Staycation Image {{ $i + 1 }}"
-                    style="height: 420px; object-fit: cover;">
-                </div>
-            @endforeach
+    <!-- ✅ Image Carousel -->
+    <div class="col-12 mt-4">
+      <div id="staycationCarousel" class="carousel slide carousel-fade shadow-sm rounded overflow-hidden" data-bs-ride="carousel" data-bs-interval="3000">
+        <div class="carousel-inner">
+          @php
+            $images = collect([$staycation->house_image]);
+            if (isset($staycation->images) && $staycation->images->isNotEmpty()) {
+                $images = $images->merge($staycation->images->pluck('image_path'));
+            }
+          @endphp
+
+          @foreach($images as $i => $img)
+            <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
+              <img src="{{ asset('storage/' . $img) }}" class="d-block w-100 rounded" 
+                style="height: 420px; object-fit: cover;" alt="Staycation Image {{ $i + 1 }}">
             </div>
-
-            @if($images->count() > 1)
-            <button class="carousel-control-prev" type="button" data-bs-target="#staycationCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon bg-dark rounded-circle p-2"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#staycationCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon bg-dark rounded-circle p-2"></span>
-            </button>
-            @endif
+          @endforeach
         </div>
 
-        <!-- "Show All Photos" Button -->
-        <div class="text-center mt-3">
-            <button type="button" class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#photoModal">
-            <i class="bi bi-images me-2"></i> Show All Photos
-            </button>
-        </div>
-        </div>
+        @if($images->count() > 1)
+          <button class="carousel-control-prev" type="button" data-bs-target="#staycationCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-dark rounded-circle p-2"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#staycationCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-dark rounded-circle p-2"></span>
+          </button>
+        @endif
+      </div>
 
-        <!-- Modal: Show All Photos -->
-        <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content border-0 rounded-4 overflow-hidden">
-            <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold" id="photoModalLabel">{{ $staycation->house_name }} - All Photos</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body bg-light">
-                <div class="row g-3">
-                @foreach($images as $img)
-                    <div class="col-md-4 col-lg-3">
-                    <img src="{{ asset('storage/' . $img) }}" class="img-fluid rounded shadow-sm" alt="Gallery Photo">
-                    </div>
-                @endforeach
-                </div>
-            </div>
-            </div>
-        </div>
-        </div>
+      <div class="text-center mt-3">
+        <button type="button" class="btn btn-outline-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#photoModal">
+          <i class="bi bi-images me-2"></i> Show All Photos
+        </button>
+      </div>
+    </div>
+
   </div>
 </section>
+
+<!-- ✅ Modal: Show All Photos -->
+<div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 overflow-hidden">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold" id="photoModalLabel">{{ $staycation->house_name }} - All Photos</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body bg-light">
+        <div class="row g-3">
+          @foreach($images as $img)
+            <div class="col-md-4 col-lg-3">
+              <img src="{{ asset('storage/' . $img) }}" class="img-fluid rounded shadow-sm" alt="Gallery Photo">
+            </div>
+          @endforeach
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Calendar Section -->
 <div class="container my-5">
