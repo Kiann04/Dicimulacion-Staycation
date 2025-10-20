@@ -177,16 +177,16 @@ setInterval(updateUnpaidCount, 5000);
     position: relative;
     display: inline-block;
     cursor: pointer;
+    margin-right: 20px; /* moves slightly left */
 }
-
 .bell-icon {
     font-size: 28px;
 }
 
 .badge {
     position: absolute;
-    top: -5px;
-    right: -10px;
+    top: -7px;
+    right: -4px;
     background-color: red;
     color: white;
     border-radius: 50%;
