@@ -31,8 +31,9 @@
               <td>#{{ $booking->id }}</td>
               <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
               <td>{{ $booking->guest_number }}</td>
-              <td data-label="Arrival Date">{{ $booking->start_date }}</td>
-              <td data-label="Leaving Date">{{ $booking->end_date }}</td>
+              <td data-label="Arrival Date">{{ \Carbon\Carbon::parse($booking->start_date)->format('F j, Y') }}</td>
+              <td data-label="Leaving Date">{{ \Carbon\Carbon::parse($booking->end_date)->format('F j, Y') }}</td>
+
               <td>
                 <span class="status">
                   {{ ucfirst($booking->status) }}
