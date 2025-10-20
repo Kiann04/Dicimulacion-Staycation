@@ -84,9 +84,9 @@
     </div>
 
     <!-- ✅ Right side: Calendar -->
-    <div class="col-lg-6">
-      <div class="card shadow-sm border-0">
-        <div class="card-body">
+    <div class="col-lg-6 d-flex">
+        <div class="card shadow-sm border-0 flex-fill">
+            <div class="card-body p-4">
           <h4 class="fw-bold mb-3">Availability Calendar</h4>
           <div id="calendar"></div>
         </div>
