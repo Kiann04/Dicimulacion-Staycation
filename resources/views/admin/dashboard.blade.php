@@ -69,7 +69,7 @@
                                 <form action="{{ route('admin.bookings.delete', $booking->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this unpaid booking?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn-delete">Delete</button>
+                                    <button type="submit" class="btn-delete">Cancel</button>
                                 </form>
                             </td>
                         </tr>
