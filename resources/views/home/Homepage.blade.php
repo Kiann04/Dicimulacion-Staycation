@@ -149,7 +149,7 @@
           <div class="card-body text-center">
             <h5 class="fw-bold text-white mb-1">Ashtine Olviga</h5>
             <p class="text-light small mb-1">Singer & Actress</p>
-            <p class="fw-semibold small text-primary mb-0">“Minamahal 100 Bulak Para Kay Stella”</p>
+            <p class="fw-semibold small text-white mb-0">“Minamahal 100 Bulak Para Kay Stella”</p>
           </div>
         </div>
       </div>
@@ -163,7 +163,7 @@
           <div class="card-body text-center">
             <h5 class="fw-bold text-white mb-1">Andres Muhlach</h5>
             <p class="text-light small mb-1">Actor</p>
-            <p class="fw-semibold small text-primary mb-0">“Minamahal 100 Bulak Para Kay Stella”</p>
+            <p class="fw-semibold small text-white mb-0">“Minamahal 100 Bulak Para Kay Stella”</p>
           </div>
         </div>
       </div>
