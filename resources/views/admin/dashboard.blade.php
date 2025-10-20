@@ -169,6 +169,7 @@ setInterval(updateUnpaidCount, 5000);
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
+    padding-right: 20px; /* ✅ adds spacing on right side */
 }
 
 /* 🔔 Notification Bell Styles */
