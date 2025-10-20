@@ -27,7 +27,6 @@ class RegisterController extends Controller
         // ✅ Combine full name properly
         $fullName = trim($request->first_name . ' ' . strtoupper($request->middle_initial) . '. ' . $request->last_name);
         $fullName = preg_replace('/\s+/', ' ', $fullName); // remove double spaces if MI is empty
-        dd($request->all());
 
         // ✅ Create user
         User::create([
