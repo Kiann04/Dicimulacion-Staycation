@@ -20,6 +20,6 @@ class CancelledBookingController extends Controller
                 return $booking;
             });
 
-        return view('admin.booking.cancelled', compact('cancelledBookings'));
+        return view('admin.cancelled', compact('cancelledBookings'));
     }
 }
