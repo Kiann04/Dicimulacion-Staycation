@@ -6,9 +6,9 @@
   <div class="row g-4 align-items-start">
 
     <!-- ✅ Booking Form -->
-    <div class="col-lg-6">
-      <div class="card shadow-sm border-0">
-        <div class="card-body p-4">
+    <div class="col-lg-6 d-flex">
+        <div class="card shadow-sm border-0 flex-fill">
+            <div class="card-body p-4">
           <h3 class="fw-bold">Booking Form for {{ $staycation->house_name }}</h3>
           <p class="text-muted">Enter the required information to book</p>
 
