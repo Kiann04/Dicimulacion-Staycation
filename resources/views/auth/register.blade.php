@@ -129,9 +129,17 @@ document.querySelectorAll('.togglePassword').forEach(button => {
     });
 });
 
+// ✅ Password strength checker
 const password = document.querySelector('#password');
+const confirmPassword = document.querySelector('#password_confirmation');
 const strengthText = document.querySelector('#password-strength');
 
+// Create dynamic feedback element for confirm password
+const confirmFeedback = document.createElement('div');
+confirmFeedback.classList.add('small', 'mt-1');
+confirmPassword.parentElement.parentElement.appendChild(confirmFeedback);
+
+// ✅ Check password strength
 password.addEventListener('input', function () {
     const val = password.value;
     const hasLetters = /[a-zA-Z]/.test(val);
@@ -147,7 +155,27 @@ password.addEventListener('input', function () {
         strengthText.classList.add("text-danger");
     }
 });
+
+// ✅ Confirm password match check
+function checkPasswordMatch() {
+    if (confirmPassword.value === "") {
+        confirmFeedback.textContent = "";
+        confirmFeedback.classList.remove("text-danger", "text-success");
+    } else if (password.value !== confirmPassword.value) {
+        confirmFeedback.textContent = "Passwords do not match ❌";
+        confirmFeedback.classList.remove("text-success");
+        confirmFeedback.classList.add("text-danger");
+    } else {
+        confirmFeedback.textContent = "Passwords match ✅";
+        confirmFeedback.classList.remove("text-danger");
+        confirmFeedback.classList.add("text-success");
+    }
+}
+
+password.addEventListener('input', checkPasswordMatch);
+confirmPassword.addEventListener('input', checkPasswordMatch);
 </script>
+
 @if (session('success'))
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
