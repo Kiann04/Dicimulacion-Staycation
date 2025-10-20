@@ -185,7 +185,7 @@ setInterval(updateUnpaidCount, 5000);
 
 .badge {
     position: absolute;
-    top: -7px;
+    
     right: -4px;
     background-color: red;
     color: white;
