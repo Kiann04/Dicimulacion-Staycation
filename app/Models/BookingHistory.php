@@ -26,4 +26,8 @@ class BookingHistory extends Model
     ];
 
     public $timestamps = false;
+    public function staycation() {
+    return $this->belongsTo(Staycation::class);
+}
+    
 }
