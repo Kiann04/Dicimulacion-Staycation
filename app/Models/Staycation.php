@@ -43,4 +43,8 @@ class Staycation extends Model
     {
         return $this->hasMany(StaycationImage::class);
     }
+    public function bookingHistories()
+    {
+        return $this->hasMany(BookingHistory::class, 'staycation_id', 'id');
+    }
 }
