@@ -26,11 +26,11 @@
                 <tbody>
                     @foreach($reviews as $review)
                     <tr>
-                        <td>{{ $review->user->name ?? 'Deleted User' }}</td>
-                        <td>{{ $review->booking_id }}</td>
-                        <td>{{ $review->rating }}</td>
-                        <td>{{ $review->comment }}</td>
-                        <td>{{ $review->created_at->format('F d, Y') }}</td>
+                        <td data-label="User">{{ $review->user->name ?? 'Deleted User' }}</td>
+                        <td data-label="Booking ID">{{ $review->booking_id }}</td>
+                        <td data-label="Rating">{{ $review->rating }}</td>
+                        <td data-label="Comment" class="comment-cell">{{ $review->comment }}</td>
+                        <td data-label="Date">{{ $review->created_at->format('F d, Y') }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -40,24 +40,35 @@
         {{ $reviews->links() }}
     </div>
 </div>
+
 <style>
-    .table-responsive {
+/* Responsive table container */
+.table-responsive {
     width: 100%;
     overflow-x: auto; /* horizontal scroll for small screens */
 }
 
+/* Table styling */
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 600px; /* optional: keeps table readable */
+    min-width: 600px; /* keeps table readable on desktop */
 }
 
 th, td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #ddd;
+    word-wrap: break-word; /* ensures long words wrap */
+    white-space: normal;   /* allows line breaks */
 }
 
+/* Limit comment width for better wrapping */
+.comment-cell {
+    max-width: 250px;
+}
+
+/* Mobile responsive */
 @media screen and (max-width: 768px) {
     table, thead, tbody, th, td, tr {
         display: block;
@@ -71,12 +82,16 @@ th, td {
 
     tr {
         margin-bottom: 15px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 8px;
     }
 
     td {
         border: none;
         position: relative;
         padding-left: 50%;
+        text-align: left;
     }
 
     td::before {
@@ -87,6 +102,7 @@ th, td {
         padding-right: 10px;
         white-space: nowrap;
         font-weight: bold;
-        content: attr(data-label); /* matches your data-label in td */
+        content: attr(data-label);
     }
 }
+</style>
