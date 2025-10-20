@@ -564,7 +564,16 @@ class AdminController extends Controller
 
         return view('admin.cancelled', compact('cancelledBookings'));
     }
+    public function cancelled()
+    {
+        // Fetch cancelled bookings (adjust according to your DB)
+        $cancelledBookings = Booking::where('payment_status', 'cancelled')
+                                    ->orWhereNotNull('deleted_at')
+                                    ->get();
 
+        // Return the view
+        return view('admin.cancelled', compact('cancelledBookings'));
+    }
 
 
 

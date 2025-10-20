@@ -237,6 +237,8 @@ Route::prefix('admin')
     Route::get('/cancelled', [CancelledBookingController::class, 'index'])
         ->name('admin.cancelled');
 
+        Route::get('/admin/bookings/cancelled', [AdminController::class, 'cancelled'])->name('admin.bookings.cancelled');
+
 });
 
 // =========================
