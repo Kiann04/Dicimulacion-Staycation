@@ -114,7 +114,7 @@
                             <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
                             <td>{{ $booking->transaction_number ?? 'N/A' }}</td>
                             <td>₱{{ number_format($booking->amount_paid, 2) }}</td>
-                            <td>{{ ucfirst($booking->payment_method) }}</td>
+                            <td>{{ strtoupper($booking->payment_method) }}</td>
                             <td>{{ $booking->message_to_admin ?? '—' }}</td>
                             <td>
                                 @if($booking->payment_proof)
