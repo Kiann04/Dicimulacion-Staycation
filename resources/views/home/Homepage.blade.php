@@ -300,7 +300,7 @@
                             <p class="flex-grow-1">{{ $staycation->house_description }}</p>
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <h6 class="fw-bold text-primary mb-0">
-                                    {{ number_format($staycation->house_price, 2) }} PHP
+                                   PHP {{ number_format($staycation->house_price, 2) }} 
                                 </h6>
                                 <a href="{{ url('booking', $staycation->id) }}" 
                                    class="btn btn-outline-primary rounded-pill px-4">
