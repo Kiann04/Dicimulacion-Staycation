@@ -262,6 +262,10 @@
 </section>
 
 <style>
+.card {
+    min-height: 500px; /* Adjust as needed */
+}
+
 .amenity-card {
     background: #fff;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
