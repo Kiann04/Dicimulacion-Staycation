@@ -15,19 +15,28 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
+        // ✅ Validation Rules (no numbers allowed)
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'first_name' => ['required', 'regex:/^[A-Za-z\s]+$/'],
+            'middle_initial' => ['nullable', 'regex:/^[A-Za-z]?$/'],
+            'last_name' => ['required', 'regex:/^[A-Za-z\s]+$/'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
+        // ✅ Combine full name properly
+        $fullName = trim($request->first_name . ' ' . strtoupper($request->middle_initial) . '. ' . $request->last_name);
+        $fullName = preg_replace('/\s+/', ' ', $fullName); // remove double spaces if MI is empty
+
+        // ✅ Create user
         User::create([
-            'name' => $request->name,
+            'name' => $fullName,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'usertype' => 'user',
         ]);
 
+        // ✅ Redirect after registration
         return redirect()->route('login')->with('success', 'Registration successful! Please log in.');
     }
 }
