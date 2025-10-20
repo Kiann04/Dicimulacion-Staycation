@@ -417,9 +417,11 @@
                 
                 <!-- Profile Picture -->
                 <div class="d-flex justify-content-center mb-3">
-                    <img src="{{ $review->user && $review->user->photo ? asset($review->user->photo) : asset('Assets/default.png') }}" 
-                         class="rounded-circle shadow-sm" width="80" height="80" 
-                         alt="{{ $review->user ? $review->user->name : 'Guest' }}">
+                    <img 
+                        src="{{ $review->user && $review->user->photo ? asset($review->user->photo) : asset('Assets/default.png') }}" 
+                        class="rounded-circle shadow-sm" 
+                        style="width:80px;height:80px;object-fit:cover;" 
+                        alt="{{ $review->user ? $review->user->name : 'Guest' }}">
                 </div>
 
                 <!-- Guest Name -->
