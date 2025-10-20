@@ -643,7 +643,13 @@ $(document).ready(function(){
         <div class="mb-3">
             <input type="file" name="attachment" class="form-control" accept="image/*">
         </div>
-
+        
+        <div class="mb-3">
+            <label for="attachment" class="form-label">Attachment (JPEG or PNG only)</label>
+            <input type="file" name="attachment" id="attachment" class="form-control" accept=".jpg,.jpeg,.png">
+            <small class="text-muted">Only JPEG or PNG files are allowed.</small>
+        </div>
+        
         {{-- ✅ Google reCAPTCHA --}}
         <div class="mb-4 text-center">
             {!! NoCaptcha::display() !!}
