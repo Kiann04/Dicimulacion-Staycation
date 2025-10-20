@@ -201,7 +201,7 @@ Route::prefix('admin')
     Route::put('/update_booking/{id}', [AdminController::class, 'updateBooking']);
 
     // ✅ Add this route to delete unpaid bookings
-    Route::delete('/bookings/{id}', [AdminController::class, 'deleteBooking'])->name('admin.bookings.delete');
+    Route::delete('/bookings/{id}', [AdminController::class, 'deleteBooking'])->name('bookings.delete');
 
     // Messages
     Route::get('/view_messages/{id}', [AdminController::class, 'viewMessage'])->name('view_messages');
