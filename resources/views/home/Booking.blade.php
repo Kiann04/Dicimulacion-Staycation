@@ -237,7 +237,7 @@
             <div class="col text-center">
                 <div class="amenity-card p-3 rounded shadow-sm transition-hover">
                     <i class="fas fa-coffee fa-2x text-primary mb-2"></i>
-                    <div class="fw-bold">Breakfast Provided</div>
+                    <div class="fw-bold">Free Breakfast</div>
                     <div class="text-muted small">Complimentary morning meal</div>
                 </div>
             </div>
