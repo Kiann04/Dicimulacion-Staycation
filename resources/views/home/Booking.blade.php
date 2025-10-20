@@ -8,8 +8,8 @@
     <!-- ✅ Booking Form -->
     <div class="row g-4 align-items-stretch">
     <div class="col-lg-6 d-flex">
-        <div class="card shadow-sm border-0 flex-fill">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 flex-fill d-flex flex-column">
+            <div class="card-body p-4 flex-grow-1">
           <h3 class="fw-bold">Booking Form for {{ $staycation->house_name }}</h3>
           <p class="text-muted">Enter the required information to book</p>
 
@@ -86,8 +86,8 @@
 
     <!-- ✅ Right side: Calendar -->
     <div class="col-lg-6 d-flex">
-        <div class="card shadow-sm border-0 flex-fill">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 flex-fill d-flex flex-column">
+            <div class="card-body p-4 flex-grow-1">
           <h4 class="fw-bold mb-3">Availability Calendar</h4>
           <div id="calendar"></div>
         </div>
