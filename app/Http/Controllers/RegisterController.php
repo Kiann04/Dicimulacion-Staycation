@@ -25,8 +25,16 @@ class RegisterController extends Controller
         ]);
 
         // ✅ Combine full name properly
-        $fullName = trim($request->first_name . ' ' . strtoupper($request->middle_initial) . '. ' . $request->last_name);
-        $fullName = preg_replace('/\s+/', ' ', $fullName); // remove double spaces if MI is empty
+        $fullName = $request->first_name;
+
+        if (!empty($request->middle_initial)) {
+            $fullName .= ' ' . strtoupper($request->middle_initial) . '.';
+        }
+
+        $fullName .= ' ' . $request->last_name;
+
+        // ✅ Remove double spaces just in case
+        $fullName = preg_replace('/\s+/', ' ', trim($fullName));
 
         // ✅ Create user
         User::create([
@@ -36,8 +44,7 @@ class RegisterController extends Controller
             'usertype' => 'user',
         ]);
 
-        // ✅ Redirect after registration
+        // ✅ Redirect with success message
         return redirect()->route('login')->with('success', 'Account created successfully! Please log in.');
-
     }
 }
