@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\CancelledBookingController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -234,6 +234,8 @@ Route::prefix('admin')
     Route::get('/messages-payments', [AdminController::class, 'messagesAndPayments'])
      ->name('admin.messages');
 
+    Route::get('/cancelled', [CancelledBookingController::class, 'index'])
+        ->name('admin.cancelled');
 
 });
 
@@ -274,7 +276,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('test-2fa');
 });
 // routes/web.php
-use App\Http\Controllers\CancelledBookingController;
+
 
 Route::prefix('admin')->group(function () {
     Route::get('/cancelled', [CancelledBookingController::class, 'index'])
