@@ -100,7 +100,7 @@
                             <th>Staycation</th>
                             <th>Transaction No.</th>
                             <th>Amount Paid</th>
-                            <th>Payment Status</th>
+                            <th>Payment Method</th>
                             <th>Message to Admin</th>
                             <th>Payment Proof</th>
                             <th>Date</th>
@@ -114,7 +114,7 @@
                             <td>{{ $booking->staycation->house_name ?? 'N/A' }}</td>
                             <td>{{ $booking->transaction_number ?? 'N/A' }}</td>
                             <td>₱{{ number_format($booking->amount_paid, 2) }}</td>
-                            <td>{{ ucfirst($booking->payment_status) }}</td>
+                            <td>{{ ucfirst($booking->payment_method) }}</td>
                             <td>{{ $booking->message_to_admin ?? '—' }}</td>
                             <td>
                                 @if($booking->payment_proof)
