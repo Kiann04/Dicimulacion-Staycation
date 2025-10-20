@@ -639,10 +639,6 @@ $(document).ready(function(){
         <div class="mb-3">
             <textarea name="message" class="form-control" rows="4" placeholder="Write your message here..." required></textarea>
         </div>
-
-        <div class="mb-3">
-            <input type="file" name="attachment" class="form-control" accept="image/*">
-        </div>
         
         <div class="mb-3">
             <label for="attachment" class="form-label">Attachment (JPEG or PNG only)</label>
