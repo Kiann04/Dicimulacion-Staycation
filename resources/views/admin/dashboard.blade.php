@@ -12,14 +12,20 @@
         <div class="main-content">
 
             <!-- 🔔 Notification Bell -->
-            <div id="notificationBell" class="notification-bell">
-                <i class="bell-icon">🔔</i>
-                <span id="unpaidBadge" class="badge">0</span>
-            </div>
+            
 
             <!-- Unpaid Bookings Table -->
             <section class="table-container">
-                <h2>Unpaid Bookings</h2> 
+                <div class="table-header">
+                    <h2>Unpaid Bookings</h2>
+
+                    <!-- 🔔 Notification Bell (right side) -->
+                    <div id="notificationBell" class="notification-bell">
+                        <i class="bell-icon">🔔</i>
+                        <span id="unpaidBadge" class="badge">0</span>
+                    </div>
+                </div>
+
                 <table>
                     <thead>
                         <tr>
