@@ -557,13 +557,14 @@ class AdminController extends Controller
     }
     public function showCancelledBookings()
     {
-        // ✅ Fetch from booking_history table instead
-        $cancelledBookings = DB::table('booking_history')
+        // Fetch cancelled bookings with related staycation
+        $cancelledBookings = BookingHistory::with('staycation')
             ->orderByDesc('id')
             ->get();
 
         return view('admin.cancelled', compact('cancelledBookings'));
     }
+
 
 
 
