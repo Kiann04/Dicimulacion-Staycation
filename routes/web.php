@@ -276,7 +276,7 @@ Route::middleware(['auth'])->group(function () {
 // routes/web.php
 use App\Http\Controllers\CancelledBookingController;
 
-Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
+Route::prefix('admin')->group(function () {
     Route::get('/cancelled', [CancelledBookingController::class, 'index'])
         ->name('admin.cancelled');
 });
