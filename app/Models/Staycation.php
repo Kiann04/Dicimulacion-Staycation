@@ -45,6 +45,6 @@ class Staycation extends Model
     }
     public function bookingHistories()
     {
-        return $this->hasMany(BookingHistory::class, 'staycation_id', 'id');
+        return $this->hasMany(BookingHistory::class);
     }
 }
