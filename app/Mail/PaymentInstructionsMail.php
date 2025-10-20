@@ -23,7 +23,7 @@ class PaymentInstructionsMail extends Mailable
                     ->view('emails.payment_instructions')
                     ->with([
                         'booking' => $this->booking,
-                        'payment_method' => 'Bank Transfer - BDO Account 1234-5678-90', // Example
+                        'payment_method' => 'Bank Transfer - BDO Account 0345-5678-90', // Example
                     ]);
     }
 }
