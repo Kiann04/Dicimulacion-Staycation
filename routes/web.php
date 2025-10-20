@@ -228,7 +228,7 @@ Route::prefix('admin')
     Route::get('/bookings/half-paid', [BookingHistoryController::class, 'showHalfPaid'])->name('bookings.half_paid');
     Route::post('/bookings/{id}/mark-paid', [BookingHistoryController::class, 'markAsPaid'])->name('bookings.markAsPaid');
 
-    Route::get('/bookings/cancelled', [AdminController::class, 'cancelled'])->name('bookings.cancelled');
+    Route::get('/bookings/cancelled', [CancelledBookingController::class, 'cancelled'])->name('bookings.cancelled');
 
     // Admin Messages & Payment Proofs
     Route::get('/messages-payments', [AdminController::class, 'messagesAndPayments'])
