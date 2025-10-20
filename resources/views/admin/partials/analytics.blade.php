@@ -28,7 +28,7 @@
 <div class="content-wrapper">
     <div class="main-content">
         <header>
-            <h1>Dashboard</h1>
+            <h1>Admin Dashboard</h1>
             <p class="subtext">Monitor booking trends</p>
         </header>
 
