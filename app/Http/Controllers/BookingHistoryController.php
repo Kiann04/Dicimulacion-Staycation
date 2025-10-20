@@ -94,7 +94,7 @@ class BookingHistoryController extends Controller
             'startDate' => 'required|date',
             'endDate' => 'required|date|after_or_equal:startDate',
             'payment_type' => 'required|in:half,full',
-            'payment_method' => 'required|in:gcash,bpi',
+            'payment_method' => 'required|in:Gcash,BPI',
             'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:5120',
             'phone' => 'required|string|max:20',
             'transaction_number' => 'nullable|string|max:255',
