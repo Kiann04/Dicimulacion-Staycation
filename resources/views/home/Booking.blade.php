@@ -106,7 +106,7 @@
 
           @foreach($images as $i => $img)
             <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
-              <img src="{{ asset('storage/' . $img) }}" class="d-block w-100 rounded" 
+              <img src="{{ asset('storage/' . $img) }}" class="d-block w-150 rounded" 
                 style="height: 420px; object-fit: cover;" alt="Staycation Image {{ $i + 1 }}">
             </div>
           @endforeach
