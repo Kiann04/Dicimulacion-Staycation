@@ -6,6 +6,7 @@
   <div class="row g-4 align-items-start">
 
     <!-- ✅ Booking Form -->
+    <div class="row g-4 align-items-stretch">
     <div class="col-lg-6 d-flex">
         <div class="card shadow-sm border-0 flex-fill">
             <div class="card-body p-4">
