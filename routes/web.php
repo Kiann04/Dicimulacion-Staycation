@@ -201,7 +201,7 @@ Route::prefix('admin')
     Route::put('/update_booking/{id}', [AdminController::class, 'updateBooking']);
 
     // ✅ Add this route to delete unpaid bookings
-    Route::delete('/bookings/{id}', [AdminController::class, 'deleteBooking'])->name('bookings.delete');
+    Route::delete('/bookings/{id}', [AdminController::class, 'deleteBooking'])->name('admin.bookings.delete');
 
     // Messages
     Route::get('/view_messages/{id}', [AdminController::class, 'viewMessage'])->name('view_messages');
@@ -276,7 +276,7 @@ Route::middleware(['auth'])->group(function () {
 // routes/web.php
 use App\Http\Controllers\CancelledBookingController;
 
-Route::get('/admin/cancelled', [CancelledBookingController::class, 'index'])->name('admin.cancelled');
-Route::get('/admin/cancelled', [CancelledBookingController::class, 'index'])
-    ->name('admin.bookings.cancelled');
-
+Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
+    Route::get('/cancelled', [CancelledBookingController::class, 'index'])
+        ->name('admin.cancelled');
+});
