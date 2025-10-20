@@ -19,10 +19,7 @@
 
             <!-- Unpaid Bookings Table -->
             <section class="table-container">
-                <h2>Unpaid Bookings</h2> <div id="notificationBell" class="notification-bell">
-                <i class="bell-icon">🔔</i>
-                <span id="unpaidBadge" class="badge">0</span>
-            </div>
+                <h2>Unpaid Bookings</h2> 
                 <table>
                     <thead>
                         <tr>
