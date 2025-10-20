@@ -153,11 +153,6 @@
   </div>
 </div>
 
-<!-- Calendar Section -->
-<div class="container my-5">
-    <h2 class="fw-bold">Availability</h2>
-    <div id="calendar"></div>
-</div>
 {{-- Modern Services Section --}}
 <section class="services-section py-5 bg-light">
     <div class="container">
