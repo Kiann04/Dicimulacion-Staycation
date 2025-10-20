@@ -40,21 +40,22 @@
           <div class="card shadow-sm h-100">
             <div class="card-body">
               <h5 class="card-title fw-semibold">2. Cancellation</h5>
-              <p class="card-text">
-                Guests may request rescheduling at least 14 days before the check-in date. 
+              <p class="card-text mb-2">
+                Guests may request rescheduling at least <strong>14 days</strong> before the check-in date. 
                 Cancellations are not allowed once payment has been verified.
-
-                No Refund Policy:
-                All confirmed bookings and verified payments are non-refundable. Refunds will not be issued for cancellations, no-shows, or shortened stays.
-
               </p>
-              <p class="card-text">
+              <p class="card-text mb-2">
+                <strong>No Refund Policy:</strong><br>
+                All confirmed bookings and verified payments are non-refundable. Refunds will not be issued for cancellations, no-shows, or shortened stays.
+              </p>
+              <p class="card-text mb-0">
                 <strong>Note:</strong> In case of emergencies or unavoidable events, please contact the admin directly 
                 for possible rescheduling assistance.
               </p>
             </div>
           </div>
         </div>
+
 
         <!-- Guest Responsibilities -->
         <div class="col-12 col-md-6">
