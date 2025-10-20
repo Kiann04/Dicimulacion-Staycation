@@ -164,15 +164,33 @@ setInterval(updateUnpaidCount, 5000);
     cursor: pointer;
 }
 
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* 🔔 Notification Bell Styles */
+.notification-bell {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.bell-icon {
+    font-size: 28px;
+}
+
 .badge {
     position: absolute;
-    top: -8px;
+    top: -5px;
     right: -10px;
     background-color: red;
     color: white;
     border-radius: 50%;
     font-size: 12px;
-    padding: 3px 7px;
+    padding: 3px 6px;
     display: none;
 }
 
