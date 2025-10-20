@@ -129,34 +129,36 @@ document.querySelectorAll('.togglePassword').forEach(button => {
     });
 });
 
-// ✅ Password strength checker
 const password = document.querySelector('#password');
 const confirmPassword = document.querySelector('#password_confirmation');
 const strengthText = document.querySelector('#password-strength');
 
-// Create dynamic feedback element for confirm password
+// Create feedback for confirm password
 const confirmFeedback = document.createElement('div');
 confirmFeedback.classList.add('small', 'mt-1');
 confirmPassword.parentElement.parentElement.appendChild(confirmFeedback);
 
-// ✅ Check password strength
+// ✅ Password Strength Checker
 password.addEventListener('input', function () {
     const val = password.value;
-    const hasLetters = /[a-zA-Z]/.test(val);
-    const hasNumbers = /[0-9]/.test(val);
+    const hasUppercase = /[A-Z]/.test(val);
+    const hasNumber = /[0-9]/.test(val);
+    const hasMinLength = val.length >= 8;
 
-    if (val.length >= 8 && hasLetters && hasNumbers) {
+    if (hasUppercase && hasNumber && hasMinLength) {
         strengthText.textContent = "Strong password ✅";
         strengthText.classList.remove("text-muted", "text-danger");
         strengthText.classList.add("text-success");
     } else {
-        strengthText.textContent = "Password must be at least 8 characters, include letters and numbers.";
+        strengthText.textContent = "Password must be at least 8 characters, contain one uppercase letter and one number.";
         strengthText.classList.remove("text-muted", "text-success");
         strengthText.classList.add("text-danger");
     }
+
+    checkPasswordMatch(); // update confirmation when typing password
 });
 
-// ✅ Confirm password match check
+// ✅ Confirm password match
 function checkPasswordMatch() {
     if (confirmPassword.value === "") {
         confirmFeedback.textContent = "";
@@ -172,18 +174,17 @@ function checkPasswordMatch() {
     }
 }
 
-password.addEventListener('input', checkPasswordMatch);
 confirmPassword.addEventListener('input', checkPasswordMatch);
 </script>
 
 @if (session('success'))
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        Swal.fire({
-            title: 'Success!',
-            text: '{{ session('success') }}',
-            icon: 'success',
-            confirmButtonText: 'OK'
-        });
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    Swal.fire({
+        title: 'Success!',
+        text: '{{ session('success') }}',
+        icon: 'success',
+        confirmButtonText: 'OK'
+    });
+</script>
 @endif
