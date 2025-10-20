@@ -43,6 +43,10 @@
               <p class="card-text">
                 Guests may request rescheduling at least 14 days before the check-in date. 
                 Cancellations are not allowed once payment has been verified.
+
+                No Refund Policy:
+                All confirmed bookings and verified payments are non-refundable. Refunds will not be issued for cancellations, no-shows, or shortened stays.
+
               </p>
               <p class="card-text">
                 <strong>Note:</strong> In case of emergencies or unavoidable events, please contact the admin directly 
