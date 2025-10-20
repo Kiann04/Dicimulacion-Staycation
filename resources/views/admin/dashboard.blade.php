@@ -147,5 +147,26 @@ $(document).ready(function() {
         });
     });
 });
+// 🔔 Real-time unpaid bookings notification
+function updateUnpaidCount() {
+    $.get(`{{ route('admin.unpaid.count') }}`, function(response) {
+        const count = response.count;
+        const badge = $('#unpaidBadge');
+
+        if (count > 0) {
+            badge.text(count);
+            badge.show();
+        } else {
+            badge.hide();
+        }
+    });
+}
+
+// Run once immediately
+updateUnpaidCount();
+
+// Then check every 5 seconds
+setInterval(updateUnpaidCount, 5000);
+
 </script>
 @endpush
