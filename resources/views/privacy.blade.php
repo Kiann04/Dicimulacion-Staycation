@@ -74,7 +74,6 @@
       <h4 class="fw-semibold mt-4 mb-3">9. Your Rights</h4>
       <p>
         You have the right to access or update your personal data. 
-        If you wish to request account deletion or data removal, please contact us directly through our official email.
       </p>
 
       <h4 class="fw-semibold mt-4 mb-3">10. Updates to This Policy</h4>
