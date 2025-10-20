@@ -15,7 +15,7 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
-        // ✅ Validation Rules (no numbers allowed)
+        // ✅ Validation (no numbers allowed)
         $request->validate([
             'first_name' => ['required', 'regex:/^[A-Za-z\s]+$/'],
             'middle_initial' => ['nullable', 'regex:/^[A-Za-z]?$/'],
@@ -24,17 +24,18 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        // ✅ Combine full name properly
-        $fullName = $request->first_name;
+        // ✅ Auto-capitalize names
+        $firstName = ucwords(strtolower(trim($request->first_name)));
+        $lastName = ucwords(strtolower(trim($request->last_name)));
 
-        if (!empty($request->middle_initial)) {
-            $fullName .= ' ' . strtoupper($request->middle_initial) . '.';
-        }
+        // ✅ Handle middle initial (optional)
+        $middleInitial = !empty($request->middle_initial)
+            ? strtoupper(trim($request->middle_initial)) . '.'
+            : '';
 
-        $fullName .= ' ' . $request->last_name;
-
-        // ✅ Remove double spaces just in case
-        $fullName = preg_replace('/\s+/', ' ', trim($fullName));
+        // ✅ Combine full name cleanly
+        $fullName = trim("$firstName $middleInitial $lastName");
+        $fullName = preg_replace('/\s+/', ' ', $fullName);
 
         // ✅ Create user
         User::create([
@@ -44,7 +45,7 @@ class RegisterController extends Controller
             'usertype' => 'user',
         ]);
 
-        // ✅ Redirect with success message
+        // ✅ Redirect with success alert
         return redirect()->route('login')->with('success', 'Account created successfully! Please log in.');
     }
 }
