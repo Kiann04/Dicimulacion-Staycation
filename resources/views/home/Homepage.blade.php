@@ -641,7 +641,7 @@ $(document).ready(function(){
         </div>
         
         <div class="mb-3">
-            <label for="attachment" class="form-label">Attachment (JPEG or PNG only)</label>
+            <label for="attachment" class="form-label">Attachment</label>
             <input type="file" name="attachment" id="attachment" class="form-control" accept=".jpg,.jpeg,.png">
             <small class="text-muted">Only JPEG or PNG files are allowed.</small>
         </div>
