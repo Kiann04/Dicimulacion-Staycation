@@ -52,7 +52,8 @@
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 600px; /* keeps table readable on desktop */
+    min-width: 600px;
+    table-layout: fixed; /* keeps table readable on desktop */
 }
 
 th, td {
@@ -65,9 +66,10 @@ th, td {
 
 /* Limit comment width for better wrapping */
 .comment-cell {
-    max-width: 250px;
+    max-width: 300px;   /* adjust as needed */
+    word-wrap: break-word;
+    white-space: normal;
 }
-
 /* Mobile responsive */
 @media screen and (max-width: 768px) {
     table, thead, tbody, th, td, tr {
