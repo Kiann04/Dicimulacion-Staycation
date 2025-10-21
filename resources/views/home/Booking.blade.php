@@ -10,18 +10,8 @@
     <div class="col-lg-6 d-flex">
         <div class="card shadow-sm border-0 flex-fill d-flex flex-column">
             <div class="card-body p-4 flex-grow-1">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                  <h3 class="fw-bold mb-1">Booking Form for <span id="selectedStaycationName">{{ $staycation->house_name }}</span></h3>
-                  <p class="text-muted mb-0">Enter the required information to book</p>
-                </div>
-               <button type="button" 
-                        class="btn btn-change-staycation px-4 py-2 rounded-pill fw-semibold"
-                        data-bs-toggle="modal" 
-                        data-bs-target="#changeStaycationModal">
-                  <i class="bi bi-house-door me-2"></i> Change Staycation
-                </button>
-              </div>
+          <h3 class="fw-bold">Booking Form for {{ $staycation->house_name }}</h3>
+          <p class="text-muted">Enter the required information to book</p>
 
           @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
