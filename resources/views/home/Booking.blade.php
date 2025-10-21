@@ -155,15 +155,25 @@
           Guests must follow check-in/out times and house rules. Refunds are not allowed once payment is verified.
           Damages may result in additional charges. Please ensure all guests comply with our policies.
         </p>
-        <p class="text-muted mb-0">
+
+        <p class="text-muted mb-3">
           Dimaculacion Staycation reserves the right to update these terms without prior notice.
         </p>
+
+        <p class="text-center fw-semibold">
+          For full details, please visit our 
+          <a href="{{ route('terms') }}" target="_blank" class="text-primary text-decoration-underline">
+            Terms and Conditions
+          </a>.
+        </p>
       </div>
+
       <div class="modal-footer">
         <button type="button" id="agreeButton" class="btn btn-primary fw-semibold" data-bs-dismiss="modal">
           I Have Read and Agree
         </button>
       </div>
+
     </div>
   </div>
 </div>
