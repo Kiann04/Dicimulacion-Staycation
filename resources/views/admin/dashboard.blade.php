@@ -96,42 +96,86 @@ $(document).ready(function() {
         const id = $(this).data('id');
         const status = $(this).val();
 
-        Swal.fire({
-            icon: 'warning',
-            title: `Change payment status to "${status.replace('_', ' ')}"?`,
-            showCancelButton: true,
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.post(`{{ url('admin/bookings') }}/${id}/update-payment`, {
-                    _token: '{{ csrf_token() }}',
-                    payment_status: status
-                }, function(res) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Updated!',
-                        text: res.message || 'Payment status updated successfully.',
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
+        // Fetch proof of payment from database
+        $.get(`{{ url('admin/bookings') }}/${id}/proof`, function(data) {
+            const proofUrl = data.proof;
 
-                    const statusEl = $(`#booking-${id} .status`);
-                    if (status === 'paid') {
-                        statusEl.text('Confirmed').attr('class', 'status approved');
-                    } else if (status === 'half_paid') {
-                        statusEl.text('Partially Paid').attr('class', 'status pending');
-                    } else {
-                        statusEl.text('Cancelled').attr('class', 'status declined');
-                        $(`#booking-${id}`).fadeOut(500);
-                    }
-                });
-            } else {
-                location.reload();
-            }
+            Swal.fire({
+                title: `Change payment status to "${status.replace('_', ' ')}"?`,
+                html: proofUrl 
+                    ? `
+                        <div style="margin-top:10px;">
+                            <img src="${proofUrl}" 
+                                id="proof-img" 
+                                alt="Proof of Payment" 
+                                style="max-width:100%;border-radius:10px;cursor:zoom-in;box-shadow:0 0 10px rgba(0,0,0,0.2);">
+                            <p style="font-size:13px;color:gray;margin-top:5px;">
+                                Click the image to enlarge
+                            </p>
+                        </div>
+                    `
+                    : '<p>No proof of payment uploaded.</p>',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, update',
+                cancelButtonText: 'No',
+                didOpen: () => {
+                    // Click to zoom in the proof image
+                    $('#proof-img').on('click', function() {
+                        Swal.fire({
+                            title: 'Proof of Payment',
+                            imageUrl: proofUrl,
+                            imageAlt: 'Proof of Payment',
+                            imageWidth: '100%',
+                            showConfirmButton: false,
+                            showCloseButton: true,
+                            background: '#000',
+                            customClass: {
+                                popup: 'zoom-popup'
+                            }
+                        });
+                    });
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `{{ url('admin/bookings') }}/${id}/update-payment`,
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            payment_status: status
+                        },
+                        success: function(res) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Updated!',
+                                text: res.message || 'Payment status updated successfully.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+
+                            const statusEl = $(`#booking-${id} .status`);
+                            if (status === 'paid') {
+                                statusEl.text('Confirmed').attr('class', 'status approved');
+                            } else if (status === 'half_paid') {
+                                statusEl.text('Partially Paid').attr('class', 'status pending');
+                            } else {
+                                statusEl.text('Cancelled').attr('class', 'status declined');
+                                $(`#booking-${id}`).fadeOut(500);
+                            }
+                        },
+                        error: function() {
+                            Swal.fire('Error', 'Something went wrong updating the payment status.', 'error');
+                        }
+                    });
+                } else {
+                    location.reload();
+                }
+            });
         });
     });
 });
+
 
 // 🔔 Real-time unpaid booking count
 function updateUnpaidCount() {

@@ -217,6 +217,9 @@ Route::prefix('admin')
     Route::post('/bookings/{id}/approve', [AdminBookingController::class, 'approveBooking'])->name('bookings.approve');
     Route::post('/bookings/{id}/decline', [AdminBookingController::class, 'declineBooking'])->name('bookings.decline');
     Route::post('/bookings/{id}/update-payment', [AdminBookingController::class, 'updatePayment'])->name('bookings.updatePayment');
+    Route::get('/bookings/{id}/proof', [App\Http\Controllers\AdminBookingController::class, 'getProof']);
+    Route::post('/bookings/{id}/update-payment', [App\Http\Controllers\AdminBookingController::class, 'updatePayment']);
+
 
     // Extra
     Route::get('/customers/{id}/bookings', [AdminController::class, 'viewBookings'])->name('customers.bookings');
