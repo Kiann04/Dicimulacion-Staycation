@@ -182,6 +182,17 @@
     </div>
   </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const agreeButton = document.getElementById('agreeButton');
+  const checkbox = document.getElementById('terms_privacy');
+
+  agreeButton.addEventListener('click', () => {
+    checkbox.disabled = false;
+    checkbox.checked = true;
+  });
+});
+</script>
 
 {{-- Modern Services Section --}}
 <section class="services-section py-5 bg-light">
