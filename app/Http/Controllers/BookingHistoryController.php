@@ -14,111 +14,77 @@ class BookingHistoryController extends Controller
 {
     // 🏠 Show booking form for selected staycation
     public function bookingForm($id)
-{
-    $staycation = Staycation::findOrFail($id);
+    {
+        $staycation = Staycation::findOrFail($id);
 
-    // Get reviews for this staycation
-    $reviews = Review::where('staycation_id', $id)->get();
+        // Get reviews for this staycation
+        $reviews = Review::where('staycation_id', $id)->get();
 
-    // Count reviews for each star rating (1 to 5)
-    $starCounts = [
-        5 => Review::where('staycation_id', $id)->where('rating', 5)->count(),
-        4 => Review::where('staycation_id', $id)->where('rating', 4)->count(),
-        3 => Review::where('staycation_id', $id)->where('rating', 3)->count(),
-        2 => Review::where('staycation_id', $id)->where('rating', 2)->count(),
-        1 => Review::where('staycation_id', $id)->where('rating', 1)->count(),
-    ];
+        // Count reviews for each star rating (1 to 5)
+        $starCounts = [
+            5 => Review::where('staycation_id', $id)->where('rating', 5)->count(),
+            4 => Review::where('staycation_id', $id)->where('rating', 4)->count(),
+            3 => Review::where('staycation_id', $id)->where('rating', 3)->count(),
+            2 => Review::where('staycation_id', $id)->where('rating', 2)->count(),
+            1 => Review::where('staycation_id', $id)->where('rating', 1)->count(),
+        ];
 
-    // Total and average rating
-    $totalReviews = $reviews->count();
-    $averageRating = $totalReviews > 0 ? round($reviews->avg('rating'), 1) : 0;
+        // Total and average rating
+        $totalReviews = $reviews->count();
+        $averageRating = $totalReviews > 0 ? round($reviews->avg('rating'), 1) : 0;
 
-    // ✅ Get all other staycations (for the "Change Staycation" modal)
-    $otherStaycations = Staycation::where('id', '!=', $id)->get();
-
-    // Pass everything to the view
-    return view('home.Booking', compact(
-        'staycation',
-        'reviews',
-        'starCounts',
-        'averageRating',
-        'totalReviews',
-        'otherStaycations' // ✅ Added this
-    ));
-}
-
+        // Pass everything to the view
+        return view('home.Booking', compact(
+            'staycation',
+            'reviews',
+            'starCounts',
+            'averageRating',
+            'totalReviews'
+        ));
+    }
 
 
     // 📄 Step 1: Preview Booking before confirming
     public function previewBooking(Request $request, $staycation_id)
-{
-    $staycation = Staycation::findOrFail($staycation_id);
+    {
+        $staycation = Staycation::findOrFail($staycation_id);
 
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'phone' => 'required|string|max:20',
-        'guest_number' => 'required|integer|min:1',
-        'startDate' => 'required|date',
-        'endDate' => 'required|date|after:startDate',
-    ]);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'guest_number' => 'required|integer|min:1',
+            'startDate' => 'required|date',
+            'endDate' => 'required|date|after:startDate',
+        ]);
 
-    $startDate = Carbon::parse($request->startDate);
-    $endDate = Carbon::parse($request->endDate);
+        $startDate = Carbon::parse($request->startDate);
+        $endDate = Carbon::parse($request->endDate);
 
-    $otherStaycations = Staycation::where('id', '!=', $staycation_id)->get();
-
-    // ✅ Check overlapping bookings
-    // ✅ Fixed overlap check (ignore cancelled, allow same-day checkout)
-    $hasOverlap = Booking::where('staycation_id', $staycation->id)
-        ->whereNull('deleted_at')
-        ->whereIn('payment_status', ['paid', 'pending', 'unpaid']) // adjust if needed
-        ->where(function ($query) use ($startDate, $endDate) {
-            $query->where('start_date', '<', $endDate)
-                ->where('end_date', '>', $startDate);
-        })
-        ->exists();
-
-
-    if ($hasOverlap) {
-        $availableStaycations = Staycation::where('id', '!=', $staycation->id)
-            ->whereDoesntHave('bookings', function ($query) use ($startDate, $endDate) {
+        // 🧩 Fix overlap logic (allow check-in on same day another booking checks out)
+        $hasOverlap = Booking::where('staycation_id', $staycation->id)
+            ->where(function ($query) use ($startDate, $endDate) {
                 $query->where('start_date', '<', $endDate)
-                      ->where('end_date', '>', $startDate);
+                    ->where('end_date', '>', $startDate);
             })
-            ->get();
+            ->exists();
 
-        // ✅ Render same page with available staycations (no booking continuation)
+        if ($hasOverlap) {
+            return back()->with('message', "⚠️ The selected dates overlap with an existing booking. Please choose another range.");
+        }
+
+        $nights = $startDate->diffInDays($endDate);
+        $totalPrice = $nights * $staycation->house_price;
+
         return view('home.preview_booking', [
             'staycation' => $staycation,
-            'otherStaycations' => $otherStaycations,
-            'availableStaycations' => $availableStaycations,
             'name' => $request->name,
             'phone' => $request->phone,
             'guest_number' => $request->guest_number,
             'startDate' => $request->startDate,
             'endDate' => $request->endDate,
-            'totalPrice' => null,
-            'message' => "⚠️ The selected dates are not available for this staycation."
-        ]);
+            'totalPrice' => $totalPrice,
+        ])->with('success', '✅ Dates are available! Please confirm your booking.');
     }
-
-    // ✅ Continue if available
-    $nights = $startDate->diffInDays($endDate);
-    $totalPrice = $nights * $staycation->house_price;
-
-    return view('home.preview_booking', [
-        'staycation' => $staycation,
-        'otherStaycations' => $otherStaycations,
-        'name' => $request->name,
-        'phone' => $request->phone,
-        'guest_number' => $request->guest_number,
-        'startDate' => $request->startDate,
-        'endDate' => $request->endDate,
-        'totalPrice' => $totalPrice,
-        'message' => '✅ Dates are available! Please confirm your booking.'
-    ]);
-}
-
     // 📄 Step 2: Submit booking request
     public function submitRequest(Request $request, $staycation_id)
     {   

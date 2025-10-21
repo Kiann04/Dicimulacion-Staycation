@@ -3,12 +3,13 @@
     @include('Header')
 @endsection
 <section class="container my-5 pt-5">
-  <div class="row g-4 align-items-stretch">
-    
-    <!-- ✅ Left: Booking Form -->
+  <div class="row g-4 align-items-start">
+
+    <!-- ✅ Booking Form -->
+    <div class="row g-4 align-items-stretch">
     <div class="col-lg-6 d-flex">
-      <div class="card shadow-sm border-0 flex-fill d-flex flex-column">
-        <div class="card-body p-4 flex-grow-1">
+        <div class="card shadow-sm border-0 flex-fill d-flex flex-column">
+            <div class="card-body p-4 flex-grow-1">
           <h3 class="fw-bold">Booking Form for {{ $staycation->house_name }}</h3>
           <p class="text-muted">Enter the required information to book</p>
 
@@ -19,36 +20,31 @@
             <div class="alert alert-danger">{!! nl2br(e(session('message'))) !!}</div>
           @endif
 
-          <form action="{{ route('booking.preview', $staycation->id) }}" method="POST" id="bookingForm">
+          <form action="{{ route('booking.preview', $staycation->id) }}" method="POST">
             @csrf
-
-            <!-- Full Name -->
             <div class="mb-3">
               <label for="name" class="form-label">Full Name</label>
               <input type="text" id="name" name="name" class="form-control" placeholder="Name" required
                 value="{{ old('name', Auth::user()->name ?? '') }}">
             </div>
 
-            <!-- Contact Number -->
             <div class="mb-3">
               <label for="phone" class="form-label">Contact Number</label>
               <div class="input-group">
                 <span class="input-group-text">+63</span>
-                <input type="tel" id="phone" name="phone" class="form-control"
+                <input type="tel" id="phone" name="phone" class="form-control" 
                   placeholder="9123456789" required pattern="[0-9]{10}"
                   title="Enter a valid 10-digit Philippine phone number"
                   value="{{ old('phone', Auth::user()?->phone ? ltrim(Auth::user()?->phone, '+63') : '') }}">
               </div>
             </div>
 
-            <!-- Guests -->
             <div class="mb-3">
               <label for="guest_number" class="form-label">Guests</label>
-              <input type="number" id="guest_number" name="guest_number" class="form-control"
+              <input type="number" id="guest_number" name="guest_number" class="form-control" 
                 placeholder="Guest/s" required min="1" value="{{ old('guest_number') }}">
             </div>
 
-            <!-- Dates -->
             <div class="row g-3 mb-3">
               <div class="col-md-6">
                 <label for="startDate" class="form-label">Date of Arrival</label>
@@ -56,42 +52,28 @@
                   min="{{ now()->toDateString() }}" max="2026-12-31" value="{{ old('startDate') }}">
               </div>
               <div class="col-md-6">
-                <label for="endDate" class="form-label">Date of Departure</label>
+                <label for="endDate" class="form-label">Date of Departure</label>   
                 <input type="date" id="endDate" name="endDate" class="form-control" required
                   min="{{ now()->toDateString() }}" max="2026-12-31" value="{{ old('endDate') }}">
               </div>
             </div>
 
-            <!-- Price Summary -->
             <div id="price-summary" class="border-top pt-3 mb-3" style="display:none;">
               <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
               <p id="total-price" class="fw-bold text-success"></p>
             </div>
 
-            <!-- Terms Modal Trigger -->
-            <div class="mb-3 text-center">
-              <button type="button" class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#termsModal">
-                View Terms & Conditions
-              </button>
+            <div class="form-check mb-3">
+              <input type="checkbox" class="form-check-input" id="terms_privacy" name="terms_privacy" required>
+              <label class="form-check-label" for="terms_privacy">
+                I agree to the 
+                <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a> and 
+                <a href="{{ url('/privacy') }}" target="_blank">Privacy Policy</a>
+              </label>
             </div>
-            
-            <!-- 🏠 Change Staycation Button -->
-            <div class="mb-3 text-center">
-              <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#changeStaycationModal">
-                Change Staycation
-              </button>
-              <small class="text-muted d-block mt-1">
-                If your selected date is unavailable, choose another house.
-              </small>
-            </div>
-            <!-- Hidden Agreement Checkbox -->
-            <input type="hidden" name="terms_privacy" id="terms_privacy" value="0">
 
-            <!-- Submit Button -->
             @auth
-              <button type="submit" id="submitBtn" class="btn btn-primary w-100 fw-semibold" disabled>
-                Preview Booking
-              </button>
+              <button type="submit" class="btn btn-primary w-100 fw-semibold">Preview Booking</button>
             @else
               <a href="{{ route('login') }}" class="btn btn-secondary w-100 disabled">
                 Please log in to reserve
@@ -102,21 +84,18 @@
       </div>
     </div>
 
-    <!-- ✅ Right: Calendar -->
+    <!-- ✅ Right side: Calendar -->
     <div class="col-lg-6 d-flex">
-      <div class="card shadow-sm border-0 flex-fill d-flex flex-column">
-        <div class="card-body p-4 flex-grow-1">
+        <div class="card shadow-sm border-0 flex-fill d-flex flex-column">
+            <div class="card-body p-4 flex-grow-1">
           <h4 class="fw-bold mb-3">Availability Calendar</h4>
           <div id="calendar"></div>
         </div>
       </div>
     </div>
 
-  </div>
-
-  <!-- ✅ Image Carousel below both columns -->
-  <div class="row mt-4">
-    <div class="col-12">
+    <!-- ✅ Image Carousel -->
+    <div class="col-12 mt-4">
       <div id="staycationCarousel" class="carousel slide carousel-fade shadow-sm rounded overflow-hidden" data-bs-ride="carousel" data-bs-interval="3000">
         <div class="carousel-inner">
           @php
@@ -129,10 +108,12 @@
           @foreach($images as $i => $img)
             <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
               <img 
-                src="{{ asset('storage/' . $img) }}" 
-                class="d-block w-100 rounded-4 shadow-sm"
-                alt="Staycation Image"
-                style="height: 550px; object-fit: contain; background-color: #f8f9fa;">
+                    src="{{ asset('storage/' . $img) }}" 
+                    class="d-block w-100 rounded-4 shadow-sm"
+                    alt="Staycation Image"
+                    style="height: 550px; object-fit: contain; background-color: #f8f9fa;"
+                >
+
             </div>
           @endforeach
         </div>
@@ -153,55 +134,8 @@
         </button>
       </div>
     </div>
+
   </div>
-  <!-- Terms & Conditions Modal -->
-<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title fw-bold" id="termsModalLabel">Terms & Conditions</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-
-      <div class="modal-body">
-        <p>
-          By proceeding with your booking, you agree to the following:
-          <br><br>
-          • The reservation will only be confirmed once payment is verified.<br>
-          • Cancellations within 48 hours before check-in are non-refundable.<br>
-          • Guests are responsible for any damages during their stay.<br>
-          • Please review our full 
-          <a href="{{ url('/terms') }}" target="_blank">Terms and Conditions</a> and 
-          <a href="{{ url('/privacy') }}" target="_blank">Privacy Policy</a>.
-        </p>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="agreeBtn">I Agree</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-  <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const agreeBtn = document.getElementById('agreeBtn');
-  const submitBtn = document.getElementById('submitBtn');
-  const termsPrivacy = document.getElementById('terms_privacy');
-
-  agreeBtn.addEventListener('click', function () {
-    // Mark terms as agreed
-    termsPrivacy.value = 1;
-    // Enable submit
-    submitBtn.disabled = false;
-    // Close modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('termsModal'));
-    modal.hide();
-  });
-});
-</script>
-
 </section>
 
 <!-- ✅ Modal: Show All Photos -->
@@ -224,129 +158,6 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
   </div>
 </div>
-
-<!-- 🏠 Change Staycation Modal -->
-<div class="modal fade" id="changeStaycationModal" tabindex="-1" aria-labelledby="changeStaycationModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content border-0 shadow-lg rounded-4">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title fw-semibold" id="changeStaycationModalLabel">Select Another Staycation</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-
-      <div class="modal-body">
-        <div class="row g-4">
-          @foreach($otherStaycations as $stay)
-            <div class="col-md-6">
-              <div class="card h-100 shadow-sm border-0">
-                <img 
-                  src="{{ asset('storage/' . $stay->house_image) }}" 
-                  class="card-img-top rounded-top"
-                  alt="{{ $stay->house_name }}"
-                  style="height: 200px; object-fit: cover;"
-                >
-                <div class="card-body">
-                  <h5 class="card-title fw-bold">{{ $stay->house_name }}</h5>
-                  <p class="text-muted mb-2">₱{{ number_format($stay->house_price, 2) }} / night</p>
-                  <p class="small text-secondary mb-3" style="min-height: 40px;">
-                    {{ Str::limit($stay->house_description, 80) }}
-                  </p>
-                  <a href="{{ route('booking.form', $stay->id) }}" class="btn btn-primary w-100">
-                    Select This Staycation
-                  </a>
-                </div>
-              </div>
-            </div>
-          @endforeach
-
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-@if(session('availableStaycations'))
-  @php
-    $availableStaycations = session('availableStaycations');
-    $name = session('name');
-    $phone = session('phone');
-    $guest_number = session('guest_number');
-    $startDate = session('startDate');
-    $endDate = session('endDate');
-  @endphp
-
-  <!-- Modal -->
-  <div class="modal fade" id="availableStaycationsModal" tabindex="-1" aria-labelledby="availableStaycationsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg">
-        <div class="modal-header bg-warning text-dark">
-          <h5 class="modal-title fw-bold" id="availableStaycationsModalLabel">
-            The selected staycation is unavailable
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-
-        <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
-          <p class="text-muted">Please choose from these available staycations for your selected dates:</p>
-
-          <div class="row g-4">
-            @forelse($availableStaycations as $alt)
-              <div class="col-md-4 col-sm-6">
-                <div class="card shadow-sm border-0 h-100">
-                  <div class="position-relative">
-                    <img src="{{ asset($alt->house_image ?? 'Assets/default.jpg') }}" 
-                         class="card-img-top" 
-                         style="height:200px; object-fit:cover; border-top-left-radius: .5rem; border-top-right-radius: .5rem;">
-                    <span class="badge bg-success position-absolute top-0 end-0 m-2">Available</span>
-                  </div>
-
-                  <div class="card-body d-flex flex-column">
-                    <h5 class="card-title fw-bold">{{ $alt->house_name }}</h5>
-                    <p class="card-text text-muted mb-1">₱{{ number_format($alt->house_price, 2) }} / night</p>
-                    <p class="card-text small text-secondary flex-grow-1">
-                      {{ $alt->house_location ?? 'No location info' }}
-                    </p>
-
-                    <form action="{{ route('booking.preview', $alt->id) }}" method="POST">
-                      @csrf
-                      <input type="hidden" name="name" value="{{ $name }}">
-                      <input type="hidden" name="phone" value="{{ $phone }}">
-                      <input type="hidden" name="guest_number" value="{{ $guest_number }}">
-                      <input type="hidden" name="startDate" value="{{ $startDate }}">
-                      <input type="hidden" name="endDate" value="{{ $endDate }}">
-                      <button type="submit" class="btn btn-primary w-100 fw-semibold mt-2">
-                        Book this Staycation
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            @empty
-              <p class="text-danger">No other staycations available for the selected dates.</p>
-            @endforelse
-          </div>
-        </div>
-
-        <div class="modal-footer border-0">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Auto-show modal when there are available staycations -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var modal = new bootstrap.Modal(document.getElementById('availableStaycationsModal'));
-      modal.show();
-    });
-  </script>
-@endif
-
 
 {{-- Modern Services Section --}}
 <section class="services-section py-5 bg-light">
