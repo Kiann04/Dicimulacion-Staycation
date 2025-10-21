@@ -143,15 +143,24 @@ $(document).ready(function() {
       if (data.proof) {
         $('#modal-proof').html(`
           <img src="${data.proof}" alt="Proof of Payment" 
-            class="img-fluid rounded shadow-sm" style="max-height:250px;">
+            class="img-fluid rounded shadow-sm" style="max-height:250px;cursor:zoom-in;">
         `);
+
+        // Click image to enlarge
+        $('#modal-proof img').on('click', function() {
+          Swal.fire({
+            imageUrl: data.proof,
+            imageAlt: 'Proof of Payment',
+            showConfirmButton: false,
+            showCloseButton: true,
+            background: '#000'
+          });
+        });
       } else {
         $('#modal-proof').html('<span class="text-muted">No proof uploaded</span>');
       }
 
       $('#paymentModal').modal('show');
-
-      // Store booking ID globally
       $('#paymentModal').data('booking-id', id);
     });
   });
@@ -160,27 +169,41 @@ $(document).ready(function() {
   $('.updatePayment').click(function() {
     const id = $('#paymentModal').data('booking-id');
     const status = $(this).data('status');
+    const statusText = status === 'half_paid' ? 'Half Paid' : 'Fully Paid';
 
-    $.ajax({
-      url: `{{ url('admin/bookings') }}/${id}/update-payment`,
-      method: 'POST',
-      data: {
-        _token: '{{ csrf_token() }}',
-        payment_status: status
-      },
-      success: function(res) {
-        $('#paymentModal').modal('hide');
-        Swal.fire({
-          icon: 'success',
-          title: 'Updated!',
-          text: res.message || 'Payment status updated successfully.',
-          timer: 1500,
-          showConfirmButton: false
+    Swal.fire({
+      title: `Are you sure?`,
+      text: `This booking will be marked as "${statusText}".`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: `Yes, mark as ${statusText}`,
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `{{ url('admin/bookings') }}/${id}/update-payment`,
+          method: 'POST',
+          data: {
+            _token: '{{ csrf_token() }}',
+            payment_status: status
+          },
+          success: function(res) {
+            $('#paymentModal').modal('hide');
+            Swal.fire({
+              icon: 'success',
+              title: 'Updated!',
+              text: res.message || `Booking marked as ${statusText}.`,
+              timer: 1500,
+              showConfirmButton: false
+            });
+            setTimeout(() => location.reload(), 1500);
+          },
+          error: function() {
+            Swal.fire('Error', 'Something went wrong updating the payment status.', 'error');
+          }
         });
-        setTimeout(() => location.reload(), 1500);
-      },
-      error: function() {
-        Swal.fire('Error', 'Something went wrong updating the payment status.', 'error');
       }
     });
   });
