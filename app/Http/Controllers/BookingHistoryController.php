@@ -69,7 +69,7 @@ class BookingHistoryController extends Controller
             ->exists();
 
         if ($hasOverlap) {
-            return back()->with('message', "⚠️ The selected dates overlap with an existing booking. Please choose another range.");
+            return back()->with('message', "⚠️ The selected dates are already booked for this staycation. Please choose another staycation or select different dates.");
         }
 
         $nights = $startDate->diffInDays($endDate);
