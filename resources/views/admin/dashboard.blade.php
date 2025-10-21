@@ -35,10 +35,12 @@
                             <th>Phone</th>
                             <th>Arrival</th>
                             <th>Departure</th>
-                            <th>Created At</th>
+                            <th>Transaction No.</th>
+                            <th>Amount Paid</th>
                             <th>Payment Status</th>
                             <th>Booking Status</th>
                             <th>Action</th>
+                            <th>Created At</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,8 +53,8 @@
                             <td>{{ $booking->phone }}</td>
                             <td>{{ $booking->formatted_start_date }}</td>
                             <td>{{ $booking->formatted_end_date }}</td>
-                            <td>{{ $booking->created_at->format('M d, Y h:i A') }}</td>
-
+                            <td>{{ $booking->transaction_number ?? 'N/A' }}</td>
+                            <td>₱{{ number_format($booking->amount_paid, 2) }}</td>
                             <td>
                                 <select class="payment-select" data-id="{{ $booking->id }}">
                                     <option value="pending" {{ $booking->payment_status == 'pending' ? 'selected' : '' }}>Pending</option>
@@ -72,6 +74,7 @@
                                     <button type="submit" class="btn-delete">Cancel</button>
                                 </form>
                             </td>
+                            <td>{{ $booking->created_at->format('M d, Y h:i A') }}</td>
                         </tr>
                         @endif
                     @empty
