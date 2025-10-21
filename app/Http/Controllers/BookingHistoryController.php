@@ -60,7 +60,7 @@ class BookingHistoryController extends Controller
         $startDate = Carbon::parse($request->startDate);
         $endDate = Carbon::parse($request->endDate);
 
-        // 🧩 Fix overlap logic (allow check-in on same day another booking checks out)
+        // 🧩 Check overlapping bookings
         $hasOverlap = Booking::where('staycation_id', $staycation->id)
             ->where(function ($query) use ($startDate, $endDate) {
                 $query->where('start_date', '<', $endDate)
@@ -69,9 +69,26 @@ class BookingHistoryController extends Controller
             ->exists();
 
         if ($hasOverlap) {
-            return back()->with('message', "⚠️ The selected dates overlap with an existing booking. Please choose another range.");
+            // 🏠 Get all other staycations that are free during the same date range
+            $availableStaycations = Staycation::where('id', '!=', $staycation->id)
+                ->whereDoesntHave('bookings', function ($query) use ($startDate, $endDate) {
+                    $query->where('start_date', '<', $endDate)
+                        ->where('end_date', '>', $startDate);
+                })
+                ->get();
+
+            return back()->with([
+                'message' => "⚠️ The selected dates are not available for this staycation.",
+                'availableStaycations' => $availableStaycations,
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'guest_number' => $request->guest_number,
+                'startDate' => $request->startDate,
+                'endDate' => $request->endDate
+            ]);
         }
 
+        // ✅ Continue to preview if available
         $nights = $startDate->diffInDays($endDate);
         $totalPrice = $nights * $staycation->house_price;
 
@@ -85,6 +102,7 @@ class BookingHistoryController extends Controller
             'totalPrice' => $totalPrice,
         ])->with('success', '✅ Dates are available! Please confirm your booking.');
     }
+
     // 📄 Step 2: Submit booking request
     public function submitRequest(Request $request, $staycation_id)
     {   

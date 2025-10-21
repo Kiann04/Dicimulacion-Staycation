@@ -74,7 +74,16 @@
                 View Terms & Conditions
               </button>
             </div>
-
+            
+            <!-- 🏠 Change Staycation Button -->
+            <div class="mb-3 text-center">
+              <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#changeStaycationModal">
+                Change Staycation
+              </button>
+              <small class="text-muted d-block mt-1">
+                If your selected date is unavailable, choose another house.
+              </small>
+            </div>
             <!-- Hidden Agreement Checkbox -->
             <input type="hidden" name="terms_privacy" id="terms_privacy" value="0">
 
@@ -215,6 +224,128 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
   </div>
 </div>
+
+<!-- 🏠 Change Staycation Modal -->
+<div class="modal fade" id="changeStaycationModal" tabindex="-1" aria-labelledby="changeStaycationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-semibold" id="changeStaycationModalLabel">Select Another Staycation</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row g-4">
+          @foreach($otherStaycations as $house)
+            <div class="col-md-6">
+              <div class="card h-100 shadow-sm border-0">
+                <img 
+                  src="{{ asset('storage/' . $house->house_image) }}" 
+                  class="card-img-top rounded-top"
+                  alt="{{ $house->house_name }}"
+                  style="height: 200px; object-fit: cover;"
+                >
+                <div class="card-body">
+                  <h5 class="card-title fw-bold">{{ $house->house_name }}</h5>
+                  <p class="text-muted mb-2">₱{{ number_format($house->house_price, 2) }} / night</p>
+                  <p class="small text-secondary mb-3" style="min-height: 40px;">
+                    {{ Str::limit($house->house_description, 80) }}
+                  </p>
+                  <a href="{{ route('booking.form', $house->id) }}" class="btn btn-primary w-100">
+                    Select This Staycation
+                  </a>
+                </div>
+              </div>
+            </div>
+          @endforeach
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if(session('availableStaycations'))
+  @php
+    $availableStaycations = session('availableStaycations');
+    $name = session('name');
+    $phone = session('phone');
+    $guest_number = session('guest_number');
+    $startDate = session('startDate');
+    $endDate = session('endDate');
+  @endphp
+
+  <!-- Modal -->
+  <div class="modal fade" id="availableStaycationsModal" tabindex="-1" aria-labelledby="availableStaycationsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title fw-bold" id="availableStaycationsModalLabel">
+            The selected staycation is unavailable
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+          <p class="text-muted">Please choose from these available staycations for your selected dates:</p>
+
+          <div class="row g-4">
+            @forelse($availableStaycations as $alt)
+              <div class="col-md-4 col-sm-6">
+                <div class="card shadow-sm border-0 h-100">
+                  <div class="position-relative">
+                    <img src="{{ asset($alt->house_image ?? 'Assets/default.jpg') }}" 
+                         class="card-img-top" 
+                         style="height:200px; object-fit:cover; border-top-left-radius: .5rem; border-top-right-radius: .5rem;">
+                    <span class="badge bg-success position-absolute top-0 end-0 m-2">Available</span>
+                  </div>
+
+                  <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fw-bold">{{ $alt->house_name }}</h5>
+                    <p class="card-text text-muted mb-1">₱{{ number_format($alt->house_price, 2) }} / night</p>
+                    <p class="card-text small text-secondary flex-grow-1">
+                      {{ $alt->house_location ?? 'No location info' }}
+                    </p>
+
+                    <form action="{{ route('booking.preview', $alt->id) }}" method="POST">
+                      @csrf
+                      <input type="hidden" name="name" value="{{ $name }}">
+                      <input type="hidden" name="phone" value="{{ $phone }}">
+                      <input type="hidden" name="guest_number" value="{{ $guest_number }}">
+                      <input type="hidden" name="startDate" value="{{ $startDate }}">
+                      <input type="hidden" name="endDate" value="{{ $endDate }}">
+                      <button type="submit" class="btn btn-primary w-100 fw-semibold mt-2">
+                        Book this Staycation
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            @empty
+              <p class="text-danger">No other staycations available for the selected dates.</p>
+            @endforelse
+          </div>
+        </div>
+
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auto-show modal when there are available staycations -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var modal = new bootstrap.Modal(document.getElementById('availableStaycationsModal'));
+      modal.show();
+    });
+  </script>
+@endif
+
 
 {{-- Modern Services Section --}}
 <section class="services-section py-5 bg-light">
