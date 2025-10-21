@@ -3,159 +3,111 @@
     @include('Header')
 @endsection
 <section class="container my-5 pt-5">
-  <div class="row g-4 align-items-start">
-
-    <!-- ✅ Booking Form -->
-    <div class="row g-4 align-items-stretch">
-  <div class="col-lg-6 d-flex">
-    <div class="card shadow-sm border-0 flex-fill d-flex flex-column">
-      <div class="card-body p-4 flex-grow-1">
-        <h3 class="fw-bold">Booking Form for {{ $staycation->house_name }}</h3>
-        <p class="text-muted">Enter the required information to book</p>
-
-        @if(session('success'))
-          <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-        @if(session('message'))
-          <div class="alert alert-danger">{!! nl2br(e(session('message'))) !!}</div>
-        @endif
-
-        <form action="{{ route('booking.preview', $staycation->id) }}" method="POST" id="bookingForm">
-          @csrf
-
-          <!-- Full Name -->
-          <div class="mb-3">
-            <label for="name" class="form-label">Full Name</label>
-            <input type="text" id="name" name="name" class="form-control" placeholder="Name" required
-              value="{{ old('name', Auth::user()->name ?? '') }}">
-          </div>
-
-          <!-- Contact Number -->
-          <div class="mb-3">
-            <label for="phone" class="form-label">Contact Number</label>
-            <div class="input-group">
-              <span class="input-group-text">+63</span>
-              <input type="tel" id="phone" name="phone" class="form-control"
-                placeholder="9123456789" required pattern="[0-9]{10}"
-                title="Enter a valid 10-digit Philippine phone number"
-                value="{{ old('phone', Auth::user()?->phone ? ltrim(Auth::user()?->phone, '+63') : '') }}">
-            </div>
-          </div>
-
-          <!-- Guests -->
-          <div class="mb-3">
-            <label for="guest_number" class="form-label">Guests</label>
-            <input type="number" id="guest_number" name="guest_number" class="form-control"
-              placeholder="Guest/s" required min="1" value="{{ old('guest_number') }}">
-          </div>
-
-          <!-- Dates -->
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label for="startDate" class="form-label">Date of Arrival</label>
-              <input type="date" id="startDate" name="startDate" class="form-control" required
-                min="{{ now()->toDateString() }}" max="2026-12-31" value="{{ old('startDate') }}">
-            </div>
-            <div class="col-md-6">
-              <label for="endDate" class="form-label">Date of Departure</label>
-              <input type="date" id="endDate" name="endDate" class="form-control" required
-                min="{{ now()->toDateString() }}" max="2026-12-31" value="{{ old('endDate') }}">
-            </div>
-          </div>
-
-          <!-- Price Summary -->
-          <div id="price-summary" class="border-top pt-3 mb-3" style="display:none;">
-            <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
-            <p id="total-price" class="fw-bold text-success"></p>
-          </div>
-
-          <!-- Terms Modal Trigger -->
-          <div class="mb-3 text-center">
-            <button type="button" class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#termsModal">
-              View Terms & Conditions
-            </button>
-          </div>
-
-          <!-- Hidden Agreement Checkbox -->
-          <input type="hidden" name="terms_privacy" id="terms_privacy" value="0">
-
-          <!-- Submit Button -->
-          @auth
-            <button type="submit" id="submitBtn" class="btn btn-primary w-100 fw-semibold" disabled>
-              Preview Booking
-            </button>
-          @else
-            <a href="{{ route('login') }}" class="btn btn-secondary w-100 disabled">
-              Please log in to reserve
-            </a>
-          @endauth
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 🌐 TERMS & CONDITIONS MODAL -->
-<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title fw-bold" id="termsModalLabel">Terms & Conditions and Privacy Policy</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <h6>Terms & Conditions</h6>
-        <p>
-          <!-- You can replace this text with your real content or include partial -->
-          By booking a staycation, you agree to follow the property’s rules, payment policies, and cancellation terms.
-          Guests are responsible for any damages during their stay.
-        </p>
-        <h6>Privacy Policy</h6>
-        <p>
-          We collect your data solely for booking and communication purposes.
-          Your personal information will not be shared with third parties without consent.
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success" id="agreeBtn">I Agree</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ✅ SCRIPT -->
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const agreeBtn = document.getElementById('agreeBtn');
-  const submitBtn = document.getElementById('submitBtn');
-  const termsPrivacy = document.getElementById('terms_privacy');
-
-  agreeBtn.addEventListener('click', function () {
-    // Mark terms as agreed
-    termsPrivacy.value = 1;
-    // Enable submit
-    submitBtn.disabled = false;
-    // Close modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('termsModal'));
-    modal.hide();
-  });
-});
-</script>
-
-
-    <!-- ✅ Right side: Calendar -->
+  <div class="row g-4 align-items-stretch">
+    
+    <!-- ✅ Left: Booking Form -->
     <div class="col-lg-6 d-flex">
-        <div class="card shadow-sm border-0 flex-fill d-flex flex-column">
-            <div class="card-body p-4 flex-grow-1">
+      <div class="card shadow-sm border-0 flex-fill d-flex flex-column">
+        <div class="card-body p-4 flex-grow-1">
+          <h3 class="fw-bold">Booking Form for {{ $staycation->house_name }}</h3>
+          <p class="text-muted">Enter the required information to book</p>
+
+          @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+          @endif
+          @if(session('message'))
+            <div class="alert alert-danger">{!! nl2br(e(session('message'))) !!}</div>
+          @endif
+
+          <form action="{{ route('booking.preview', $staycation->id) }}" method="POST" id="bookingForm">
+            @csrf
+
+            <!-- Full Name -->
+            <div class="mb-3">
+              <label for="name" class="form-label">Full Name</label>
+              <input type="text" id="name" name="name" class="form-control" placeholder="Name" required
+                value="{{ old('name', Auth::user()->name ?? '') }}">
+            </div>
+
+            <!-- Contact Number -->
+            <div class="mb-3">
+              <label for="phone" class="form-label">Contact Number</label>
+              <div class="input-group">
+                <span class="input-group-text">+63</span>
+                <input type="tel" id="phone" name="phone" class="form-control"
+                  placeholder="9123456789" required pattern="[0-9]{10}"
+                  title="Enter a valid 10-digit Philippine phone number"
+                  value="{{ old('phone', Auth::user()?->phone ? ltrim(Auth::user()?->phone, '+63') : '') }}">
+              </div>
+            </div>
+
+            <!-- Guests -->
+            <div class="mb-3">
+              <label for="guest_number" class="form-label">Guests</label>
+              <input type="number" id="guest_number" name="guest_number" class="form-control"
+                placeholder="Guest/s" required min="1" value="{{ old('guest_number') }}">
+            </div>
+
+            <!-- Dates -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label for="startDate" class="form-label">Date of Arrival</label>
+                <input type="date" id="startDate" name="startDate" class="form-control" required
+                  min="{{ now()->toDateString() }}" max="2026-12-31" value="{{ old('startDate') }}">
+              </div>
+              <div class="col-md-6">
+                <label for="endDate" class="form-label">Date of Departure</label>
+                <input type="date" id="endDate" name="endDate" class="form-control" required
+                  min="{{ now()->toDateString() }}" max="2026-12-31" value="{{ old('endDate') }}">
+              </div>
+            </div>
+
+            <!-- Price Summary -->
+            <div id="price-summary" class="border-top pt-3 mb-3" style="display:none;">
+              <p>₱<span id="price-per-night">{{ $staycation->house_price }}</span> / night</p>
+              <p id="total-price" class="fw-bold text-success"></p>
+            </div>
+
+            <!-- Terms Modal Trigger -->
+            <div class="mb-3 text-center">
+              <button type="button" class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#termsModal">
+                View Terms & Conditions
+              </button>
+            </div>
+
+            <!-- Hidden Agreement Checkbox -->
+            <input type="hidden" name="terms_privacy" id="terms_privacy" value="0">
+
+            <!-- Submit Button -->
+            @auth
+              <button type="submit" id="submitBtn" class="btn btn-primary w-100 fw-semibold" disabled>
+                Preview Booking
+              </button>
+            @else
+              <a href="{{ route('login') }}" class="btn btn-secondary w-100 disabled">
+                Please log in to reserve
+              </a>
+            @endauth
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ Right: Calendar -->
+    <div class="col-lg-6 d-flex">
+      <div class="card shadow-sm border-0 flex-fill d-flex flex-column">
+        <div class="card-body p-4 flex-grow-1">
           <h4 class="fw-bold mb-3">Availability Calendar</h4>
           <div id="calendar"></div>
         </div>
       </div>
     </div>
 
-    <!-- ✅ Image Carousel -->
-    <div class="col-12 mt-4">
+  </div>
+
+  <!-- ✅ Image Carousel below both columns -->
+  <div class="row mt-4">
+    <div class="col-12">
       <div id="staycationCarousel" class="carousel slide carousel-fade shadow-sm rounded overflow-hidden" data-bs-ride="carousel" data-bs-interval="3000">
         <div class="carousel-inner">
           @php
@@ -168,12 +120,10 @@ document.addEventListener('DOMContentLoaded', function () {
           @foreach($images as $i => $img)
             <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
               <img 
-                    src="{{ asset('storage/' . $img) }}" 
-                    class="d-block w-100 rounded-4 shadow-sm"
-                    alt="Staycation Image"
-                    style="height: 550px; object-fit: contain; background-color: #f8f9fa;"
-                >
-
+                src="{{ asset('storage/' . $img) }}" 
+                class="d-block w-100 rounded-4 shadow-sm"
+                alt="Staycation Image"
+                style="height: 550px; object-fit: contain; background-color: #f8f9fa;">
             </div>
           @endforeach
         </div>
@@ -194,7 +144,6 @@ document.addEventListener('DOMContentLoaded', function () {
         </button>
       </div>
     </div>
-
   </div>
 </section>
 
