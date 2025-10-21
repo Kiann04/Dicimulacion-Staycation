@@ -145,6 +145,36 @@
       </div>
     </div>
   </div>
+  <!-- Terms & Conditions Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="termsModalLabel">Terms & Conditions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <p>
+          By proceeding with your booking, you agree to the following:
+          <br><br>
+          • The reservation will only be confirmed once payment is verified.<br>
+          • Cancellations within 48 hours before check-in are non-refundable.<br>
+          • Guests are responsible for any damages during their stay.<br>
+          • Please review our full 
+          <a href="{{ url('/terms') }}" target="_blank">Terms and Conditions</a> and 
+          <a href="{{ url('/privacy') }}" target="_blank">Privacy Policy</a>.
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="agreeBtn">I Agree</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   <script>
 document.addEventListener('DOMContentLoaded', function () {
   const agreeBtn = document.getElementById('agreeBtn');
