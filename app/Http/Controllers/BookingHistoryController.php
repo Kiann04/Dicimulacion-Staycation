@@ -223,6 +223,13 @@ class BookingHistoryController extends Controller
     }
 
 
+    public function showBookingForm($id)
+    {
+        $staycation = Staycation::findOrFail($id);
+        $allStaycations = Staycation::where('house_availability', 'available')->get();
+
+        return view('booking.form', compact('staycation', 'allStaycations'));
+    }
 
 
 }
