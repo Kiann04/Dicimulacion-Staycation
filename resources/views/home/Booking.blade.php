@@ -187,9 +187,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const agreeButton = document.getElementById('agreeButton');
   const checkbox = document.getElementById('terms_privacy');
 
+  // If user has agreed before (saved in localStorage), enable the checkbox automatically
+  if (localStorage.getItem('agreedToTerms') === 'true') {
+    checkbox.disabled = false;
+    checkbox.checked = true;
+  }
+
+  // When user clicks "I Have Read and Agree"
   agreeButton.addEventListener('click', () => {
     checkbox.disabled = false;
     checkbox.checked = true;
+    localStorage.setItem('agreedToTerms', 'true');
+  });
+
+  // If the form is submitted, clear the stored agreement
+  const form = document.querySelector('form');
+  form.addEventListener('submit', () => {
+    localStorage.removeItem('agreedToTerms');
   });
 });
 </script>
