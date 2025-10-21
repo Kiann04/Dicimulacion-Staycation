@@ -68,12 +68,16 @@ class BookingHistoryController extends Controller
     $otherStaycations = Staycation::where('id', '!=', $staycation_id)->get();
 
     // ✅ Check overlapping bookings
+    // ✅ Fixed overlap check (ignore cancelled, allow same-day checkout)
     $hasOverlap = Booking::where('staycation_id', $staycation->id)
+        ->whereNull('deleted_at')
+        ->whereIn('payment_status', ['paid', 'pending', 'unpaid']) // adjust if needed
         ->where(function ($query) use ($startDate, $endDate) {
             $query->where('start_date', '<', $endDate)
-                  ->where('end_date', '>', $startDate);
+                ->where('end_date', '>', $startDate);
         })
         ->exists();
+
 
     if ($hasOverlap) {
         $availableStaycations = Staycation::where('id', '!=', $staycation->id)
