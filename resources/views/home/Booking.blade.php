@@ -134,6 +134,59 @@
 
   </div>
 </section>
+<!-- Terms and Conditions Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="termsModalLabel">Terms & Conditions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+        <p class="text-muted">
+          Bookings are only confirmed once payment has been verified by Dicimulacion Staycation. Guests must follow check-in/out times and house rules.
+          Refunds are not allowed once payment is verified, and any damages may result in additional charges.
+          Please ensure all guests comply with the property policies.
+        </p>
+        <p class="text-muted mb-0">
+          Dicimulacion Staycation reserves the right to update these terms without prior notice.
+          For the full version, please check our Terms & Conditions page.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="agreeButton" class="btn btn-primary fw-semibold" data-bs-dismiss="modal">
+          I Have Read and Agree
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const agreeButton = document.getElementById('agreeButton');
+  const bookButton = document.getElementById('bookButton');
+
+  // Disable booking until user agrees
+  bookButton.disabled = true;
+
+  // If user already agreed before (saved in localStorage)
+  if (localStorage.getItem('agreedToTerms') === 'true') {
+    bookButton.disabled = false;
+  }
+
+  // Enable booking when they click "I Agree"
+  agreeButton.addEventListener('click', () => {
+    bookButton.disabled = false;
+    localStorage.setItem('agreedToTerms', 'true');
+  });
+
+  // Optional: clear local storage after booking
+  const form = document.getElementById('bookingForm');
+  form.addEventListener('submit', () => {
+    localStorage.removeItem('agreedToTerms');
+  });
+});
+</script>
 
 <!-- ✅ Modal: Show All Photos -->
 <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
