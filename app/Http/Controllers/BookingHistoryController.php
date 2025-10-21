@@ -65,10 +65,9 @@ class BookingHistoryController extends Controller
     $startDate = Carbon::parse($request->startDate);
     $endDate = Carbon::parse($request->endDate);
 
-    // Get other staycations for modal
     $otherStaycations = Staycation::where('id', '!=', $staycation_id)->get();
 
-    // Check overlapping bookings
+    // ✅ Check overlapping bookings
     $hasOverlap = Booking::where('staycation_id', $staycation->id)
         ->where(function ($query) use ($startDate, $endDate) {
             $query->where('start_date', '<', $endDate)
@@ -77,7 +76,6 @@ class BookingHistoryController extends Controller
         ->exists();
 
     if ($hasOverlap) {
-        // Get available staycations for same date range
         $availableStaycations = Staycation::where('id', '!=', $staycation->id)
             ->whereDoesntHave('bookings', function ($query) use ($startDate, $endDate) {
                 $query->where('start_date', '<', $endDate)
@@ -85,23 +83,22 @@ class BookingHistoryController extends Controller
             })
             ->get();
 
-        // Instead of back()->with(), re-render same page with modal auto-open
+        // ✅ Render same page with available staycations (no booking continuation)
         return view('home.preview_booking', [
             'staycation' => $staycation,
             'otherStaycations' => $otherStaycations,
+            'availableStaycations' => $availableStaycations,
             'name' => $request->name,
             'phone' => $request->phone,
             'guest_number' => $request->guest_number,
             'startDate' => $request->startDate,
             'endDate' => $request->endDate,
             'totalPrice' => null,
-        ])->with([
-            'message' => "⚠️ The selected dates are not available for this staycation.",
-            'availableStaycations' => $availableStaycations,
+            'message' => "⚠️ The selected dates are not available for this staycation."
         ]);
     }
 
-    // Continue if available
+    // ✅ Continue if available
     $nights = $startDate->diffInDays($endDate);
     $totalPrice = $nights * $staycation->house_price;
 
@@ -114,7 +111,8 @@ class BookingHistoryController extends Controller
         'startDate' => $request->startDate,
         'endDate' => $request->endDate,
         'totalPrice' => $totalPrice,
-    ])->with('success', '✅ Dates are available! Please confirm your booking.');
+        'message' => '✅ Dates are available! Please confirm your booking.'
+    ]);
 }
 
     // 📄 Step 2: Submit booking request
