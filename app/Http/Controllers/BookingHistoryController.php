@@ -60,6 +60,9 @@ class BookingHistoryController extends Controller
         $startDate = Carbon::parse($request->startDate);
         $endDate = Carbon::parse($request->endDate);
 
+        // Get all other staycations for the modal
+        $otherStaycations = Staycation::where('id', '!=', $staycation_id)->get();
+
         // 🧩 Check overlapping bookings
         $hasOverlap = Booking::where('staycation_id', $staycation->id)
             ->where(function ($query) use ($startDate, $endDate) {
@@ -80,6 +83,7 @@ class BookingHistoryController extends Controller
             return back()->with([
                 'message' => "⚠️ The selected dates are not available for this staycation.",
                 'availableStaycations' => $availableStaycations,
+                'otherStaycations' => $otherStaycations, // ✅ Added
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'guest_number' => $request->guest_number,
@@ -100,8 +104,10 @@ class BookingHistoryController extends Controller
             'startDate' => $request->startDate,
             'endDate' => $request->endDate,
             'totalPrice' => $totalPrice,
+            'otherStaycations' => $otherStaycations // ✅ Added
         ])->with('success', '✅ Dates are available! Please confirm your booking.');
     }
+
 
     // 📄 Step 2: Submit booking request
     public function submitRequest(Request $request, $staycation_id)
