@@ -14,34 +14,39 @@ class BookingHistoryController extends Controller
 {
     // 🏠 Show booking form for selected staycation
     public function bookingForm($id)
-    {
-        $staycation = Staycation::findOrFail($id);
+{
+    $staycation = Staycation::findOrFail($id);
 
-        // Get reviews for this staycation
-        $reviews = Review::where('staycation_id', $id)->get();
+    // Get reviews for this staycation
+    $reviews = Review::where('staycation_id', $id)->get();
 
-        // Count reviews for each star rating (1 to 5)
-        $starCounts = [
-            5 => Review::where('staycation_id', $id)->where('rating', 5)->count(),
-            4 => Review::where('staycation_id', $id)->where('rating', 4)->count(),
-            3 => Review::where('staycation_id', $id)->where('rating', 3)->count(),
-            2 => Review::where('staycation_id', $id)->where('rating', 2)->count(),
-            1 => Review::where('staycation_id', $id)->where('rating', 1)->count(),
-        ];
+    // Count reviews for each star rating (1 to 5)
+    $starCounts = [
+        5 => Review::where('staycation_id', $id)->where('rating', 5)->count(),
+        4 => Review::where('staycation_id', $id)->where('rating', 4)->count(),
+        3 => Review::where('staycation_id', $id)->where('rating', 3)->count(),
+        2 => Review::where('staycation_id', $id)->where('rating', 2)->count(),
+        1 => Review::where('staycation_id', $id)->where('rating', 1)->count(),
+    ];
 
-        // Total and average rating
-        $totalReviews = $reviews->count();
-        $averageRating = $totalReviews > 0 ? round($reviews->avg('rating'), 1) : 0;
+    // Total and average rating
+    $totalReviews = $reviews->count();
+    $averageRating = $totalReviews > 0 ? round($reviews->avg('rating'), 1) : 0;
 
-        // Pass everything to the view
-        return view('home.Booking', compact(
-            'staycation',
-            'reviews',
-            'starCounts',
-            'averageRating',
-            'totalReviews'
-        ));
-    }
+    // ✅ Get all other staycations (for the "Change Staycation" modal)
+    $otherStaycations = Staycation::where('id', '!=', $id)->get();
+
+    // Pass everything to the view
+    return view('home.Booking', compact(
+        'staycation',
+        'reviews',
+        'starCounts',
+        'averageRating',
+        'totalReviews',
+        'otherStaycations' // ✅ Added this
+    ));
+}
+
 
 
     // 📄 Step 1: Preview Booking before confirming
