@@ -167,41 +167,6 @@
     </div>
   </div>
 </div>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const agreeButton = document.getElementById('agreeButton');
-  const bookButton = document.getElementById('bookButton');
-
-  // Make button visible but disabled by default
-  bookButton.disabled = true;
-  bookButton.style.opacity = '0.6';
-  bookButton.style.cursor = 'not-allowed';
-
-  // If the user has already agreed before (saved in localStorage)
-  if (localStorage.getItem('agreedToTerms') === 'true') {
-    bookButton.disabled = false;
-    bookButton.style.opacity = '1';
-    bookButton.style.cursor = 'pointer';
-  }
-
-  // When the user clicks "I Agree"
-  agreeButton.addEventListener('click', () => {
-    bookButton.disabled = false;
-    bookButton.style.opacity = '1';
-    bookButton.style.cursor = 'pointer';
-    localStorage.setItem('agreedToTerms', 'true');
-  });
-
-  // Optional: clear localStorage after booking submission
-  const form = document.querySelector('form[action*="booking.preview"]');
-  if (form) {
-    form.addEventListener('submit', () => {
-      localStorage.removeItem('agreedToTerms');
-    });
-  }
-});
-</script>
-
 
 <!-- ✅ Modal: Show All Photos -->
 <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
@@ -503,6 +468,38 @@ document.addEventListener('DOMContentLoaded', () => {
 @section('content')
 @include('partials.chatbot')
 @endsection
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const agreeButton = document.getElementById('agreeButton');
+  const bookButton = document.getElementById('bookButton');
+
+  // If either button doesn't exist (e.g. not logged in), stop
+  if (!bookButton || !agreeButton) return;
+
+  // Always disable initially
+  bookButton.disabled = true;
+  bookButton.style.opacity = '0.6';
+  bookButton.style.cursor = 'not-allowed';
+
+  // Remove any previous agreement to force reading again
+  localStorage.removeItem('agreedToTerms');
+
+  // When the user clicks "I Have Read and Agree"
+  agreeButton.addEventListener('click', () => {
+    bookButton.disabled = false;
+    bookButton.style.opacity = '1';
+    bookButton.style.cursor = 'pointer';
+  });
+
+  // Optional: after form submit, clear agreement
+  const form = document.querySelector('form[action*="booking.preview"]');
+  if (form) {
+    form.addEventListener('submit', () => {
+      localStorage.removeItem('agreedToTerms');
+    });
+  }
+});
+</script>
 
 <!-- FullCalendar + Price Calculation -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
