@@ -69,8 +69,11 @@
                 View Terms and Conditions
               </a>
             </div>
-            @auth
-              <button type="submit" class="btn btn-primary w-100 fw-semibold">Preview Booking</button>
+             @auth
+              <!-- Hidden by default -->
+              <button type="submit" id="bookButton" class="btn btn-primary w-100 fw-semibold" style="display: none;">
+                Preview Booking
+              </button>
             @else
               <a href="{{ route('login') }}" class="btn btn-secondary w-100 disabled">
                 Please log in to reserve
