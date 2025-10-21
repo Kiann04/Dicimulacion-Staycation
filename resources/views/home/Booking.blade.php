@@ -167,27 +167,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const agreeButton = document.getElementById('agreeButton');
   const bookButton = document.getElementById('bookButton');
 
-  // Disable booking until user agrees
+  // Make button visible but disabled by default
   bookButton.disabled = true;
+  bookButton.style.opacity = '0.6';
+  bookButton.style.cursor = 'not-allowed';
 
-  // If user already agreed before (saved in localStorage)
+  // If the user has already agreed before (saved in localStorage)
   if (localStorage.getItem('agreedToTerms') === 'true') {
     bookButton.disabled = false;
+    bookButton.style.opacity = '1';
+    bookButton.style.cursor = 'pointer';
   }
 
-  // Enable booking when they click "I Agree"
+  // When the user clicks "I Agree"
   agreeButton.addEventListener('click', () => {
     bookButton.disabled = false;
+    bookButton.style.opacity = '1';
+    bookButton.style.cursor = 'pointer';
     localStorage.setItem('agreedToTerms', 'true');
   });
 
-  // Optional: clear local storage after booking
-  const form = document.getElementById('bookingForm');
-  form.addEventListener('submit', () => {
-    localStorage.removeItem('agreedToTerms');
-  });
+  // Optional: clear localStorage after booking submission
+  const form = document.querySelector('form[action*="booking.preview"]');
+  if (form) {
+    form.addEventListener('submit', () => {
+      localStorage.removeItem('agreedToTerms');
+    });
+  }
 });
 </script>
+
 
 <!-- ✅ Modal: Show All Photos -->
 <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
