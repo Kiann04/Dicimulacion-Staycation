@@ -21,25 +21,6 @@
                         data-bs-target="#changeStaycationModal">
                   <i class="bi bi-house-door me-2"></i> Change Staycation
                 </button>
-
-                <style>
-                .btn-change-staycation {
-                  background-color: #e8f0ff; /* Light blue background */
-                  color: #0d6efd;            /* Primary blue text */
-                  border: 1.5px solid #0d6efd;
-                  transition: all 0.3s ease;
-                }
-
-                .btn-change-staycation:hover {
-                  background-color: #0d6efd; /* Blue hover */
-                  color: #fff;               /* White text */
-                  box-shadow: 0 4px 12px rgba(13,110,253,0.2);
-                  transform: translateY(-1px);
-                }
-                </style>
-
-
-
               </div>
 
           @if(session('success'))
