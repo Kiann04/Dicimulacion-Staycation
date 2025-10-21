@@ -122,14 +122,17 @@ class AdminBookingController extends Controller
     }
     public function getProof($id)
     {
-        $booking = DB::table('bookings')->where('id', $id)->first();
-
+        $booking = Booking::findOrFail($id);
         return response()->json([
-            'proof' => $booking && $booking->payment_proof
-                ? asset($booking->payment_proof)
-                : null
+            'id' => $booking->id,
+            'start_date' => $booking->formatted_start_date,
+            'end_date' => $booking->formatted_end_date,
+            'total_price' => $booking->total_price,
+            'amount_paid' => $booking->amount_paid,
+            'proof' => $booking->payment_proof ? asset($booking->payment_proof) : null,
         ]);
     }
+
 
 
 

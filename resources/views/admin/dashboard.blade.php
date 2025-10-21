@@ -56,12 +56,13 @@
                             <td>{{ strtoupper($booking->payment_method) }}</td> 
                             <td>₱{{ number_format($booking->amount_paid, 2) }}</td>
                             <td>
-                                <select class="payment-select" data-id="{{ $booking->id }}">
-                                    <option value="pending" {{ $booking->payment_status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="half_paid" {{ $booking->payment_status == 'half_paid' ? 'selected' : '' }}>Half Paid</option>
-                                    <option value="paid" {{ $booking->payment_status == 'paid' ? 'selected' : '' }}>Paid</option>
-                                </select>
+                                <button type="button" 
+                                    class="btn btn-sm btn-outline-primary openPaymentModal" 
+                                    data-id="{{ $booking->id }}">
+                                    Update Payment
+                                </button>
                             </td>
+
 
                             <td>
                                 <span class="status {{ $booking->status }}">{{ ucfirst($booking->status) }}</span>
@@ -82,6 +83,37 @@
                     @endforelse
                     </tbody>
                 </table>
+                <!-- Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="paymentModalLabel">Update Payment Status</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered mb-3">
+          <tbody>
+            <tr><th>Booking ID</th><td id="modal-booking-id"></td></tr>
+            <tr><th>Arrival Date</th><td id="modal-start-date"></td></tr>
+            <tr><th>Departure Date</th><td id="modal-end-date"></td></tr>
+            <tr><th>Total Price</th><td id="modal-total-price"></td></tr>
+            <tr><th>Amount Paid</th><td id="modal-amount-paid"></td></tr>
+            <tr><th>Proof of Payment</th>
+                <td id="modal-proof"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-warning w-50 updatePayment" data-status="half_paid">Mark as Half Paid</button>
+          <button class="btn btn-success w-50 updatePayment" data-status="paid">Mark as Fully Paid</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
             </section>
         </div>
     </div>
@@ -95,89 +127,65 @@
 <script>
 // Payment update logic
 $(document).ready(function() {
-    $('.payment-select').change(function() {
-        const id = $(this).data('id');
-        const status = $(this).val();
 
-        // Fetch proof of payment from database
-        $.get(`{{ url('admin/bookings') }}/${id}/proof`, function(data) {
-            const proofUrl = data.proof;
+  // When "Update Payment" button is clicked
+  $('.openPaymentModal').click(function() {
+    const id = $(this).data('id');
 
-            Swal.fire({
-                title: `Change payment status to "${status.replace('_', ' ')}"?`,
-                html: proofUrl 
-                    ? `
-                        <div style="margin-top:10px;">
-                            <img src="${proofUrl}" 
-                                id="proof-img" 
-                                alt="Proof of Payment" 
-                                style="max-width:100%;border-radius:10px;cursor:zoom-in;box-shadow:0 0 10px rgba(0,0,0,0.2);">
-                            <p style="font-size:13px;color:gray;margin-top:5px;">
-                                Click the image to enlarge
-                            </p>
-                        </div>
-                    `
-                    : '<p>No proof of payment uploaded.</p>',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, update',
-                cancelButtonText: 'No',
-                didOpen: () => {
-                    // Click to zoom in the proof image
-                    $('#proof-img').on('click', function() {
-                        Swal.fire({
-                            title: 'Proof of Payment',
-                            imageUrl: proofUrl,
-                            imageAlt: 'Proof of Payment',
-                            imageWidth: '100%',
-                            showConfirmButton: false,
-                            showCloseButton: true,
-                            background: '#000',
-                            customClass: {
-                                popup: 'zoom-popup'
-                            }
-                        });
-                    });
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: `{{ url('admin/bookings') }}/${id}/update-payment`,
-                        method: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            payment_status: status
-                        },
-                        success: function(res) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Updated!',
-                                text: res.message || 'Payment status updated successfully.',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
+    // Fetch booking info via AJAX
+    $.get(`{{ url('admin/bookings') }}/${id}/proof`, function(data) {
+      $('#modal-booking-id').text(data.id);
+      $('#modal-start-date').text(data.start_date);
+      $('#modal-end-date').text(data.end_date);
+      $('#modal-total-price').text('₱' + parseFloat(data.total_price).toLocaleString());
+      $('#modal-amount-paid').text('₱' + parseFloat(data.amount_paid).toLocaleString());
 
-                            const statusEl = $(`#booking-${id} .status`);
-                            if (status === 'paid') {
-                                statusEl.text('Confirmed').attr('class', 'status approved');
-                            } else if (status === 'half_paid') {
-                                statusEl.text('Partially Paid').attr('class', 'status pending');
-                            } else {
-                                statusEl.text('Cancelled').attr('class', 'status declined');
-                                $(`#booking-${id}`).fadeOut(500);
-                            }
-                        },
-                        error: function() {
-                            Swal.fire('Error', 'Something went wrong updating the payment status.', 'error');
-                        }
-                    });
-                } else {
-                    location.reload();
-                }
-            });
-        });
+      if (data.proof) {
+        $('#modal-proof').html(`
+          <img src="${data.proof}" alt="Proof of Payment" 
+            class="img-fluid rounded shadow-sm" style="max-height:250px;">
+        `);
+      } else {
+        $('#modal-proof').html('<span class="text-muted">No proof uploaded</span>');
+      }
+
+      $('#paymentModal').modal('show');
+
+      // Store booking ID globally
+      $('#paymentModal').data('booking-id', id);
     });
+  });
+
+  // When "Half Paid" or "Paid" button is clicked
+  $('.updatePayment').click(function() {
+    const id = $('#paymentModal').data('booking-id');
+    const status = $(this).data('status');
+
+    $.ajax({
+      url: `{{ url('admin/bookings') }}/${id}/update-payment`,
+      method: 'POST',
+      data: {
+        _token: '{{ csrf_token() }}',
+        payment_status: status
+      },
+      success: function(res) {
+        $('#paymentModal').modal('hide');
+        Swal.fire({
+          icon: 'success',
+          title: 'Updated!',
+          text: res.message || 'Payment status updated successfully.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+        setTimeout(() => location.reload(), 1500);
+      },
+      error: function() {
+        Swal.fire('Error', 'Something went wrong updating the payment status.', 'error');
+      }
+    });
+  });
 });
+
 
 
 // 🔔 Real-time unpaid booking count
