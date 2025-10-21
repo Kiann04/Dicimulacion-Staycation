@@ -146,6 +146,23 @@
     </div>
   </div>
 </section>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const agreeBtn = document.getElementById('agreeBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const termsPrivacy = document.getElementById('terms_privacy');
+
+  agreeBtn.addEventListener('click', function () {
+    // Mark terms as agreed
+    termsPrivacy.value = 1;
+    // Enable submit
+    submitBtn.disabled = false;
+    // Close modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('termsModal'));
+    modal.hide();
+  });
+});
+</script>
 
 <!-- ✅ Modal: Show All Photos -->
 <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
