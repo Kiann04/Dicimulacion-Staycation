@@ -236,28 +236,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
       <div class="modal-body">
         <div class="row g-4">
-          @foreach($otherStaycations as $house)
+          @foreach($otherStaycations as $stay)
             <div class="col-md-6">
               <div class="card h-100 shadow-sm border-0">
                 <img 
-                  src="{{ asset('storage/' . $house->house_image) }}" 
+                  src="{{ asset('storage/' . $stay->house_image) }}" 
                   class="card-img-top rounded-top"
-                  alt="{{ $house->house_name }}"
+                  alt="{{ $stay->house_name }}"
                   style="height: 200px; object-fit: cover;"
                 >
                 <div class="card-body">
-                  <h5 class="card-title fw-bold">{{ $house->house_name }}</h5>
-                  <p class="text-muted mb-2">₱{{ number_format($house->house_price, 2) }} / night</p>
+                  <h5 class="card-title fw-bold">{{ $stay->house_name }}</h5>
+                  <p class="text-muted mb-2">₱{{ number_format($stay->house_price, 2) }} / night</p>
                   <p class="small text-secondary mb-3" style="min-height: 40px;">
-                    {{ Str::limit($house->house_description, 80) }}
+                    {{ Str::limit($stay->house_description, 80) }}
                   </p>
-                  <a href="{{ route('booking.form', $house->id) }}" class="btn btn-primary w-100">
+                  <a href="{{ route('booking.form', $stay->id) }}" class="btn btn-primary w-100">
                     Select This Staycation
                   </a>
                 </div>
               </div>
             </div>
           @endforeach
+
         </div>
       </div>
 
