@@ -15,10 +15,25 @@
                   <h3 class="fw-bold mb-1">Booking Form for <span id="selectedStaycationName">{{ $staycation->house_name }}</span></h3>
                   <p class="text-muted mb-0">Enter the required information to book</p>
                 </div>
-                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" 
+                <button type="button" class="btn btn-gradient rounded-pill px-4 py-2 fw-semibold" 
                         data-bs-toggle="modal" data-bs-target="#changeStaycationModal">
-                  <i class="bi bi-house-door me-1"></i> Change Staycation
+                  <i class="bi bi-house-door me-2"></i> Change Staycation
                 </button>
+
+                <style>
+                .btn-gradient {
+                  background: linear-gradient(90deg, #4e73df, #1cc88a);
+                  color: #fff;
+                  border: none;
+                  transition: all 0.3s ease;
+                  box-shadow: 0 3px 10px rgba(78,115,223,0.3);
+                }
+                .btn-gradient:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0 6px 20px rgba(78,115,223,0.4);
+                }
+                </style>
+
               </div>
 
           @if(session('success'))
