@@ -53,7 +53,7 @@
                             <td>{{ $booking->phone }}</td>
                             <td>{{ $booking->formatted_start_date }}</td>
                             <td>{{ $booking->formatted_end_date }}</td>
-                            <td>{{ strtoupper($booking->payment_method) }}</td>
+                            <td>{{ strtoupper($booking->payment_method) }}</td> 
                             <td>₱{{ number_format($booking->amount_paid, 2) }}</td>
                             <td>
                                 <select class="payment-select" data-id="{{ $booking->id }}">
