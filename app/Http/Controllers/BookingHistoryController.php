@@ -46,68 +46,71 @@ class BookingHistoryController extends Controller
 
     // 📄 Step 1: Preview Booking before confirming
     public function previewBooking(Request $request, $staycation_id)
-    {
-        $staycation = Staycation::findOrFail($staycation_id);
+{
+    $staycation = Staycation::findOrFail($staycation_id);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'guest_number' => 'required|integer|min:1',
-            'startDate' => 'required|date',
-            'endDate' => 'required|date|after:startDate',
-        ]);
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'phone' => 'required|string|max:20',
+        'guest_number' => 'required|integer|min:1',
+        'startDate' => 'required|date',
+        'endDate' => 'required|date|after:startDate',
+    ]);
 
-        $startDate = Carbon::parse($request->startDate);
-        $endDate = Carbon::parse($request->endDate);
+    $startDate = Carbon::parse($request->startDate);
+    $endDate = Carbon::parse($request->endDate);
 
-        // Get all other staycations for the modal
-        $otherStaycations = Staycation::where('id', '!=', $staycation_id)->get();
+    // Get other staycations for modal
+    $otherStaycations = Staycation::where('id', '!=', $staycation_id)->get();
 
-        // 🧩 Check overlapping bookings
-        $hasOverlap = Booking::where('staycation_id', $staycation->id)
-            ->where(function ($query) use ($startDate, $endDate) {
+    // Check overlapping bookings
+    $hasOverlap = Booking::where('staycation_id', $staycation->id)
+        ->where(function ($query) use ($startDate, $endDate) {
+            $query->where('start_date', '<', $endDate)
+                  ->where('end_date', '>', $startDate);
+        })
+        ->exists();
+
+    if ($hasOverlap) {
+        // Get available staycations for same date range
+        $availableStaycations = Staycation::where('id', '!=', $staycation->id)
+            ->whereDoesntHave('bookings', function ($query) use ($startDate, $endDate) {
                 $query->where('start_date', '<', $endDate)
-                    ->where('end_date', '>', $startDate);
+                      ->where('end_date', '>', $startDate);
             })
-            ->exists();
+            ->get();
 
-        if ($hasOverlap) {
-            // 🏠 Get all other staycations that are free during the same date range
-            $availableStaycations = Staycation::where('id', '!=', $staycation->id)
-                ->whereDoesntHave('bookings', function ($query) use ($startDate, $endDate) {
-                    $query->where('start_date', '<', $endDate)
-                        ->where('end_date', '>', $startDate);
-                })
-                ->get();
-
-            return back()->with([
-                'message' => "⚠️ The selected dates are not available for this staycation.",
-                'availableStaycations' => $availableStaycations,
-                'otherStaycations' => $otherStaycations, // ✅ Added
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'guest_number' => $request->guest_number,
-                'startDate' => $request->startDate,
-                'endDate' => $request->endDate
-            ]);
-        }
-
-        // ✅ Continue to preview if available
-        $nights = $startDate->diffInDays($endDate);
-        $totalPrice = $nights * $staycation->house_price;
-
+        // Instead of back()->with(), re-render same page with modal auto-open
         return view('home.preview_booking', [
             'staycation' => $staycation,
+            'otherStaycations' => $otherStaycations,
             'name' => $request->name,
             'phone' => $request->phone,
             'guest_number' => $request->guest_number,
             'startDate' => $request->startDate,
             'endDate' => $request->endDate,
-            'totalPrice' => $totalPrice,
-            'otherStaycations' => $otherStaycations // ✅ Added
-        ])->with('success', '✅ Dates are available! Please confirm your booking.');
+            'totalPrice' => null,
+        ])->with([
+            'message' => "⚠️ The selected dates are not available for this staycation.",
+            'availableStaycations' => $availableStaycations,
+        ]);
     }
 
+    // Continue if available
+    $nights = $startDate->diffInDays($endDate);
+    $totalPrice = $nights * $staycation->house_price;
+
+    return view('home.preview_booking', [
+        'staycation' => $staycation,
+        'otherStaycations' => $otherStaycations,
+        'name' => $request->name,
+        'phone' => $request->phone,
+        'guest_number' => $request->guest_number,
+        'startDate' => $request->startDate,
+        'endDate' => $request->endDate,
+        'totalPrice' => $totalPrice,
+    ])->with('success', '✅ Dates are available! Please confirm your booking.');
+}
 
     // 📄 Step 2: Submit booking request
     public function submitRequest(Request $request, $staycation_id)
