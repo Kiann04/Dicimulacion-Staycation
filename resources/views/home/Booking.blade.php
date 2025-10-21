@@ -64,13 +64,14 @@
             </div>
 
             <div class="form-check mb-3">
-              <input type="checkbox" class="form-check-input" id="terms_privacy" name="terms_privacy" required>
+              <input type="checkbox" class="form-check-input" id="terms_privacy" name="terms_privacy" disabled required>
               <label class="form-check-label" for="terms_privacy">
                 I agree to the 
-                <a href="{{ url('/terms') }}" target="_blank">Terms & Conditions</a> and 
+                <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms & Conditions</a> and 
                 <a href="{{ url('/privacy') }}" target="_blank">Privacy Policy</a>
               </label>
             </div>
+
 
             @auth
               <button type="submit" class="btn btn-primary w-100 fw-semibold">Preview Booking</button>
@@ -154,6 +155,29 @@
             </div>
           @endforeach
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Terms and Conditions Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="termsModalLabel">Terms & Conditions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+        <p class="text-muted">
+          <!-- Put your actual terms here -->
+          By booking this staycation, you agree to our house rules, cancellation policy, 
+          and privacy standards. Damages caused during the stay will be charged accordingly.
+          Please ensure all guests follow the check-in and check-out times.
+          <!-- Add more... -->
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="agreeButton" class="btn btn-primary" data-bs-dismiss="modal">I Have Read and Agree</button>
       </div>
     </div>
   </div>
