@@ -145,8 +145,7 @@
       </div>
     </div>
   </div>
-</section>
-<script>
+  <script>
 document.addEventListener('DOMContentLoaded', function () {
   const agreeBtn = document.getElementById('agreeBtn');
   const submitBtn = document.getElementById('submitBtn');
@@ -163,6 +162,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 </script>
+
+</section>
 
 <!-- ✅ Modal: Show All Photos -->
 <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
