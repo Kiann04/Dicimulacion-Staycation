@@ -70,8 +70,12 @@
               </a>
             </div>
              @auth
-              <!-- Hidden by default -->
-              <button type="submit" id="bookButton" class="btn btn-primary w-100 fw-semibold" style="display: none;">
+              <!-- Visible but disabled by default -->
+              <button type="submit" 
+                      id="bookButton" 
+                      class="btn btn-primary w-100 fw-semibold" 
+                      disabled
+                      style="opacity: 0.6; cursor: not-allowed;">
                 Preview Booking
               </button>
             @else
@@ -79,6 +83,7 @@
                 Please log in to reserve
               </a>
             @endauth
+
           </form>
         </div>
       </div>
