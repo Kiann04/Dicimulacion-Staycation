@@ -35,7 +35,7 @@
                             <th>Phone</th>
                             <th>Arrival</th>
                             <th>Departure</th>
-                            <th>Transaction No.</th>
+                            <th>Payment Method</th>
                             <th>Amount Paid</th>
                             <th>Payment Status</th>
                             <th>Booking Status</th>
@@ -53,7 +53,7 @@
                             <td>{{ $booking->phone }}</td>
                             <td>{{ $booking->formatted_start_date }}</td>
                             <td>{{ $booking->formatted_end_date }}</td>
-                            <td>{{ $booking->transaction_number ?? 'N/A' }}</td>
+                            <td>{{ strtoupper($booking->payment_method) }}</td>
                             <td>₱{{ number_format($booking->amount_paid, 2) }}</td>
                             <td>
                                 <select class="payment-select" data-id="{{ $booking->id }}">
