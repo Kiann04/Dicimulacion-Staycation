@@ -90,5 +90,35 @@ class StaycationController extends Controller
         $staycation = Staycation::findOrFail($id);
         return view('admin.staycations.edit', compact('staycation'));
     }
+    public function update(Request $request, $id)
+{
+    $staycation = Staycation::findOrFail($id);
+
+    $request->validate([
+        'house_name' => 'required|string|max:255',
+        'house_description' => 'required|string',
+        'house_price' => 'required|numeric',
+        'house_location' => 'required|string',
+        'house_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'house_availability' => 'required|string',
+    ]);
+
+    $staycation->house_name = $request->house_name;
+    $staycation->house_description = $request->house_description;
+    $staycation->house_price = $request->house_price;
+    $staycation->house_location = $request->house_location;
+    $staycation->house_availability = $request->house_availability;
+
+    // If new image uploaded
+    if ($request->hasFile('house_image')) {
+        $path = $request->file('house_image')->store('staycations', 'public');
+        $staycation->house_image = $path;
+    }
+
+    $staycation->save();
+
+    return redirect()->route('admin.dashboard')->with('success', 'Staycation updated successfully!');
+}
+
 
 }
