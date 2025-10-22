@@ -57,13 +57,16 @@
                 @endif
               </td>
 
-              <td>
-                <form action="{{ route('admin.bookings.updatePayment', $booking->id) }}" method="POST" class="paid-form">
-                  @csrf
-                  <input type="hidden" name="payment_status" value="paid">
-                  <button type="button" class="action-btn mark-paid-btn">Mark as Paid</button>
-                </form>
+              <<td>
+                  <form action="{{ route('admin.bookings.updatePayment', $booking->id) }}" method="POST" class="paid-form">
+                      @csrf
+                      <input type="hidden" name="payment_status" value="paid">
+                      <button type="submit" class="action-btn mark-paid-btn">
+                          Mark as Paid
+                      </button>
+                  </form>
               </td>
+
             </tr>
           @empty
             <tr>
