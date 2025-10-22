@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\BlockedDate;
+use App\Models\Staycation; // add this at the top
 
 class BlockedDateController extends Controller
 {
     public function index()
     {
-        // order by start_date instead of date
         $blockedDates = BlockedDate::orderBy('start_date', 'asc')->get();
-        return view('admin.block_dates', compact('blockedDates'));
+        $staycations = Staycation::all(); // fetch all staycations
+
+        return view('admin.block_dates', compact('blockedDates', 'staycations'));
     }
+
 
     public function store(Request $request)
     {
