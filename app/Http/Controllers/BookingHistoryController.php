@@ -252,15 +252,37 @@ class BookingHistoryController extends Controller
     }
 
 
+    
     public function showBookingForm($id)
     {
         $staycation = Staycation::findOrFail($id);
         $allStaycations = Staycation::where('house_availability', 'available')->get();
-
-        // ✅ Get all blocked dates from the DB
-        $blockedDates = BlockedDate::pluck('date')->toArray();
+        $blockedDates = BlockedDate::where('staycation_id', $id)->get();
 
         return view('booking.form', compact('staycation', 'allStaycations', 'blockedDates'));
     }
+    public function blockDates(Request $request)
+{
+    $request->validate([
+        'staycation_id' => 'required|exists:staycations,id',
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+        'reason' => 'nullable|string|max:255',
+    ]);
+    
+    // Only allow admin to do this
+    if (auth()->user()->usertype !== 'admin') {
+        abort(403, 'Unauthorized action.');
+    }
+
+    BlockedDate::create([
+        'staycation_id' => $request->staycation_id,
+        'start_date' => $request->start_date,
+        'end_date' => $request->end_date,
+        'reason' => $request->reason ?? 'Renovation',
+    ]);
+
+    return back()->with('success', 'Dates successfully blocked.');
+}
 
 }
