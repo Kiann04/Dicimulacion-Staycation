@@ -56,12 +56,6 @@
                         <option value="unavailable" {{ $staycation->house_availability === 'unavailable' ? 'selected' : '' }}>Unavailable</option>
                     </select>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Block Dates (Optional)</label>
-                    <input type="text" name="blocked_dates" id="blocked_dates" class="form-control" 
-                        placeholder="Select date range">
-                    <small class="text-muted">Set dates when this staycation can't be booked (e.g., renovation, private use).</small>
-                </div>
                 <!-- Buttons -->
                 <div class="d-flex justify-content-between mt-4">
                     <a href="{{ url()->previous() }}" class="btn btn-secondary px-4">Cancel</a>
@@ -72,31 +66,3 @@
     </div>
 </div>
 @endsection
-@push('scripts')
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const blockedDates = @json($staycation->blocked_dates ?? null);
-
-    $('#blocked_dates').daterangepicker({
-        autoUpdateInput: false,
-        locale: { cancelLabel: 'Clear' }
-    });
-
-    $('#blocked_dates').on('apply.daterangepicker', function(ev, picker) {
-        $(this).val(picker.startDate.format('YYYY-MM-DD') + ' to ' + picker.endDate.format('YYYY-MM-DD'));
-    });
-
-    $('#blocked_dates').on('cancel.daterangepicker', function(ev, picker) {
-        $(this).val('');
-    });
-
-    // Pre-fill if existing blackout dates
-    if(blockedDates){
-        const [start, end] = blockedDates.split(' to ');
-        $('#blocked_dates').data('daterangepicker').setStartDate(start);
-        $('#blocked_dates').data('daterangepicker').setEndDate(end);
-        $('#blocked_dates').val(blockedDates);
-    }
-});
-</script>
-@endpush
