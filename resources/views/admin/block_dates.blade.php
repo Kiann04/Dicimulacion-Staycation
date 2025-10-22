@@ -4,7 +4,9 @@
 @endsection
 
 @section('content')
-<div class="container mt-5">
+<body class="admin-dashboard">
+  <div class="content-wrapper">
+    <div class="main-content">
     <h2>Block a Date</h2>
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
