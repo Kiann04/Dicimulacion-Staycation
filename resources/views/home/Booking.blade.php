@@ -16,9 +16,16 @@
           @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
           @endif
-          @if(session('message'))
-            <div class="alert alert-danger">{!! nl2br(e(session('message'))) !!}</div>
+          @if(session('availableStaycations') && session('availableStaycations')->count() > 0)
+          <div class="text-center mb-4">
+              <button type="button" class="btn btn-outline-primary fw-semibold rounded-pill px-4" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#availableStaycationsModal">
+                  <i class="bi bi-search-heart me-2"></i> Show Available Staycations
+              </button>
+          </div>
           @endif
+
 
           <form action="{{ route('booking.preview', $staycation->id) }}" method="POST">
             @csrf
@@ -83,8 +90,24 @@
                 Please log in to reserve
               </a>
             @endauth
-
           </form>
+          @auth
+              @if (Auth::user()->role === 'admin')
+              <div class="mt-4 p-3 border rounded">
+                  <h5>🛑 Block a Date</h5>
+                  <form action="{{ route('admin.block-date') }}" method="POST">
+                      @csrf
+                      <div class="mb-2">
+                          <input type="date" name="date" class="form-control" required>
+                      </div>
+                      <div class="mb-2">
+                          <input type="text" name="reason" class="form-control" placeholder="Reason (optional)">
+                      </div>
+                      <button type="submit" class="btn btn-danger w-100">Block Date</button>
+                  </form>
+              </div>
+              @endif
+              @endauth
         </div>
       </div>
     </div>
@@ -302,6 +325,13 @@
 </section>
 
 <style>
+.hover-scale {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-scale:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
 .card {
     min-height: 500px; /* Adjust as needed */
 }
@@ -381,6 +411,73 @@
 .service-card:nth-child(11) { animation-delay: 1.1s; }
 .service-card:nth-child(12) { animation-delay: 1.2s; }
 </style>
+<!-- 🔥 Modal: Show Available Staycations -->
+<div class="modal fade" id="availableStaycationsModal" tabindex="-1" aria-labelledby="availableStaycationsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow-lg">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold" id="availableStaycationsLabel">
+          <i class="bi bi-house-door me-2"></i> Available Staycations
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body bg-light">
+    @if(session('availableStaycations') && session('availableStaycations')->count() > 0)
+        <p class="fw-semibold text-center mb-4">
+            Available staycations for {{ session('startDate') }} to {{ session('endDate') }}:
+        </p>
+        <div class="row g-4">
+            @foreach(session('availableStaycations') as $available)
+              <div class="col-md-6 col-lg-4">
+                  <div class="card border-0 shadow-sm rounded-4 h-100 hover-scale">
+                      <img src="{{ asset('storage/' . $available->house_image) }}" 
+                          class="card-img-top rounded-top-4" 
+                          alt="{{ $available->house_name }}" 
+                          style="height: 220px; object-fit: cover;">
+                      <div class="card-body">
+                          <h5 class="fw-bold mb-1">{{ $available->house_name }}</h5>
+                          <p class="text-muted small mb-2">{{ $available->house_location }}</p>
+                          <p class="fw-semibold text-primary mb-2">₱{{ number_format($available->house_price, 2) }} / night</p>
+
+                          <!-- Form to preserve previous input -->
+                          <form action="{{ route('booking.preview', $available->id) }}" method="POST">
+                              @csrf
+                              <input type="hidden" name="name" value="{{ old('name', session('name')) }}">
+                              <input type="hidden" name="phone" value="{{ old('phone', session('phone')) }}">
+                              <input type="hidden" name="guest_number" value="{{ old('guest_number', session('guest_number')) }}">
+                              <input type="hidden" name="startDate" value="{{ old('startDate', session('startDate')) }}">
+                              <input type="hidden" name="endDate" value="{{ old('endDate', session('endDate')) }}">
+                              <button type="submit" class="btn btn-outline-primary w-100 fw-semibold rounded-pill">
+                                  Book This Staycation
+                              </button>
+                          </form>
+
+                      </div>
+                  </div>
+              </div>
+              @endforeach
+
+        </div>
+    @else
+        <div class="text-center py-5">
+            <i class="bi bi-exclamation-circle text-warning display-5 mb-3"></i>
+            <p class="fw-semibold text-muted mb-1">No available staycations for these dates.</p>
+            <p class="text-muted small">Please try different dates.</p>
+        </div>
+    @endif
+</div>
+
+
+      <div class="modal-footer bg-white border-0">
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Reviews Section -->
 <section class="container my-5" id="reviews">
     <h2 class="fw-bold mb-5 text-center display-6">What Our Guests Say</h2>
@@ -614,34 +711,34 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 🗓️ FullCalendar with PH timezone
+    // 🗓️ FullCalendar with PH timezone & blocked dates
     const staycationId = "{{ $staycation->id }}";
     if (document.getElementById("calendar")) {
         fetch(`/events/${staycationId}`)
             .then(res => res.json())
             .then(events => {
-                // Filter out past bookings 🔥
                 const todayPH = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
                 const todayDate = new Date(todayPH);
                 todayDate.setHours(0, 0, 0, 0);
 
-                const bookedEvents = events
+                // Map events from server (both booked + blocked)
+                const calendarEvents = events
                     .map(event => {
                         const startPH = new Date(new Date(event.start).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
                         const endPH = new Date(new Date(event.end).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
-                        endPH.setDate(endPH.getDate() - 1);
+                        endPH.setDate(endPH.getDate() - 1); // include last day
 
                         return {
-                            title: "Booked",
+                            title: event.title,
                             start: startPH.toISOString().split("T")[0],
                             end: endPH.toISOString().split("T")[0],
                             allDay: true,
-                            display: "background",
-                            backgroundColor: "#f56565",
-                            borderColor: "#f56565",
+                            display: event.display || "background",
+                            backgroundColor: event.color || "#f56565",
+                            borderColor: event.color || "#f56565"
                         };
                     })
-                    .filter(event => new Date(event.end) >= todayDate); // ⛔ hide past bookings
+                    .filter(event => new Date(event.end) >= todayDate); // hide past events
 
                 const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
                     initialView: "dayGridMonth",
@@ -653,15 +750,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         right: ""
                     },
                     timeZone: "Asia/Manila",
-                    events: bookedEvents,
+                    events: calendarEvents,
 
-                    // ✅ Restrict navigation (no past months)
+                    // Restrict navigation (no past months)
                     validRange: {
                         start: todayDate.toISOString().split("T")[0],
-                        end: "2026-12-31" // Optional: limit max future booking range
+                        end: "2026-12-31"
                     },
 
-                    // 🩶 Grey out past dates
+                    // Grey out past dates
                     dayCellDidMount: function (info) {
                         const cellDate = new Date(info.date);
                         const today = new Date();
@@ -674,16 +771,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     },
 
-                    // 🚫 Disable clicks on past dates
+                    // Disable clicks on past dates
                     dateClick: function (info) {
                         const clickedDate = new Date(info.date);
                         const today = new Date();
                         today.setHours(0, 0, 0, 0);
                         clickedDate.setHours(0, 0, 0, 0);
 
-                        if (clickedDate < today) {
-                            return; // Ignore past date clicks
-                        }
+                        if (clickedDate < today) return;
 
                         console.log("Future date clicked:", clickedDate);
                     }
@@ -699,7 +794,14 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-
+@if(session('availableStaycations') && session('availableStaycations')->count() > 0)
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var modal = new bootstrap.Modal(document.getElementById('availableStaycationsModal'));
+    modal.show();
+});
+</script>
+@endif
 
 @section('Footer')
 @include('Footer')
