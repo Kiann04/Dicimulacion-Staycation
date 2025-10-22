@@ -46,7 +46,7 @@
     <ul>
         @foreach ($blockedDates as $blocked)
             <li>
-                <strong>{{ $blocked->staycation->house_name }}</strong>:
+                <strong>{{ $blocked->staycation?->house_name ?? 'Unknown House' }}</strong>:
                 {{ $blocked->start_date }} to {{ $blocked->end_date }}
                 - {{ $blocked->reason ?? 'No reason' }}
             </li>
