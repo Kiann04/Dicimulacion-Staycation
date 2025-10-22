@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\BookingHistory;
 use App\Mail\BookingCancelled;
 
+use App\Models\BlockedDate;
 
 class AdminController extends Controller
 {
