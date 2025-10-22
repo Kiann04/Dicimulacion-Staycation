@@ -185,6 +185,15 @@
             <i class="fa-solid fa-file-alt"></i> View Logs
           </a>
         </div>
+        <!-- Blocked Dates -->
+        <div class="setting-card">
+          <h3><i class="fa-solid fa-calendar-xmark"></i> Blocked Dates</h3>
+          <p>Manage the blocked dates for your staycation properties to prevent bookings on certain days.</p>
+          <a href="{{ route('admin.blocked_dates.index') }}" class="settings-btn">
+            <i class="fa-solid fa-calendar-check"></i> Manage Dates
+          </a>
+        </div>
+
 
       </section>
     </div>
