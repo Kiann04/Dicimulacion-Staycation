@@ -1,4 +1,7 @@
 @extends('layouts.default')
+@section('Aside')
+    @include('Aside')
+@endsection
 
 @section('content')
 <div class="container mt-5">
