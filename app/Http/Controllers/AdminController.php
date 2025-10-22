@@ -364,40 +364,41 @@ class AdminController extends Controller
 
     // bookings by staycation
     public function getEvents($staycationId)
-{
-    // ✅ Bookings
-    $bookings = Booking::where('staycation_id', $staycationId)
-        ->whereNull('deleted_at')
-        ->get();
+    {
+        // Bookings
+        $bookings = Booking::where('staycation_id', $staycationId)
+            ->whereNull('deleted_at')
+            ->get();
 
-    $bookingEvents = $bookings->map(function ($booking) {
-        return [
-            'title' => 'Booked',
-            'start' => $booking->start_date,
-            'end' => Carbon::parse($booking->end_date)->addDay()->toDateString(), // include last day
-            'color' => '#f56565', // red
-            'display' => 'background',
-        ];
-    });
+        $bookingEvents = $bookings->map(function ($booking) {
+            return [
+                'title' => 'Booked',
+                'start' => $booking->start_date,
+                'end' => Carbon::parse($booking->end_date)->addDay()->toDateString(),
+                'color' => '#f56565', // red
+                'display' => 'background', // full background
+                'allDay' => true,          // important for all-day
+            ];
+        });
 
-    // ✅ Blocked Dates
-    $blockedDates = BlockedDate::where('staycation_id', $staycationId)->get();
+        // Blocked Dates
+        $blockedDates = BlockedDate::where('staycation_id', $staycationId)->get();
 
-    $blockedEvents = $blockedDates->map(function ($blocked) {
-        return [
-            'title' => $blocked->reason ?? 'Blocked',
-            'start' => $blocked->start_date,
-            'end' => Carbon::parse($blocked->end_date)->addDay()->toDateString(),
-            'color' => '#fcd34d', // yellow
-            'display' => 'background',
-        ];
-    });
+        $blockedEvents = $blockedDates->map(function ($blocked) {
+            return [
+                'title' => $blocked->reason ?? 'Blocked',
+                'start' => $blocked->start_date,
+                'end' => Carbon::parse($blocked->end_date)->addDay()->toDateString(),
+                'color' => '#fcd34d', // yellow
+                'display' => 'background',
+                'allDay' => true,     // important for all-day
+            ];
+        });
 
-    // ✅ Merge both arrays
-    $events = $bookingEvents->merge($blockedEvents);
+        $events = $bookingEvents->merge($blockedEvents)->values();
 
-    return response()->json($events);
-}
+        return response()->json($events);
+    }
 
     public function view_staycation_bookings($staycation_id)
     {
