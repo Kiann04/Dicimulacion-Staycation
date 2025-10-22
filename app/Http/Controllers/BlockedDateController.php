@@ -10,12 +10,13 @@ class BlockedDateController extends Controller
 {
     public function index()
     {
-        $blockedDates = BlockedDate::orderBy('start_date', 'asc')->get();
-        $staycations = Staycation::all(); // fetch all staycations
+        $blockedDates = BlockedDate::with('staycation') // ✅ eager load
+                                    ->orderBy('start_date', 'asc')
+                                    ->get();
+        $staycations = Staycation::all();
 
         return view('admin.block_dates', compact('blockedDates', 'staycations'));
     }
-
 
     public function store(Request $request)
     {
