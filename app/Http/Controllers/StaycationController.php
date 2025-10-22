@@ -85,4 +85,10 @@ class StaycationController extends Controller
 
         return view('home.AllReviews', compact('allReviews'));
     }
+    public function edit($id)
+    {
+        $staycation = Staycation::findOrFail($id);
+        return view('admin.staycations.edit', compact('staycation'));
+    }
+
 }

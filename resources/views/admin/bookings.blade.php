@@ -14,61 +14,81 @@
       </header>
 
       <!-- 🏡 Staycation Houses -->
-      <section class="staycation-houses my-5">
-        <h2>Our Staycation Houses</h2>
-        <div class="house-grid" style="display:flex; gap:20px; flex-wrap:wrap;">
-          @forelse($staycations as $staycation)
+     <section class="staycation-houses my-5">
+    <h2>Our Staycation Houses</h2>
+    <div class="house-grid" style="display:flex; gap:20px; flex-wrap:wrap;">
+        @forelse($staycations as $staycation)
             <div class="house-card" style="background:#fff; padding:15px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); width:220px; text-align:center;">
-  
-            <!-- Image container forcing landscape -->
-            <div class="house-image" style="width:100%; height:150px; overflow:hidden; border-radius:8px; margin-bottom:10px;">
-              <img src="{{ asset('storage/' . $staycation->house_image) }}" 
-                  alt="{{ $staycation->house_name }}" 
-                  style="width:100%; height:100%; object-fit:cover; object-position:center;">
+
+                <!-- Image -->
+                <div class="house-image" style="width:100%; height:150px; overflow:hidden; border-radius:8px; margin-bottom:10px;">
+                    <img src="{{ asset('storage/' . $staycation->house_image) }}" 
+                        alt="{{ $staycation->house_name }}" 
+                        style="width:100%; height:100%; object-fit:cover; object-position:center;">
+                </div>
+
+                <!-- Info -->
+                <div class="house-info" style="margin-top:10px;">
+                    <h3>{{ $staycation->house_name }}</h3>
+
+                    <!-- Toggle Availability -->
+                    <form action="{{ route('admin.toggle_availability', $staycation->id) }}" method="POST" style="margin:10px 0;">
+                        @csrf
+                        <button type="submit" 
+                                class="btn-toggle" 
+                                style="
+                                    padding:8px 15px;
+                                    border:none;
+                                    border-radius:6px;
+                                    font-weight:bold;
+                                    color:#fff;
+                                    cursor:pointer;
+                                    background-color: {{ $staycation->house_availability === 'available' ? '#28a745' : '#dc3545' }};
+                                ">
+                            {{ ucfirst($staycation->house_availability) }}
+                        </button>
+                    </form>
+
+                    <!-- View Bookings -->
+                    <a href="{{ route('admin.view_staycation_bookings', $staycation->id) }}" 
+                        class="btn-view" 
+                        style="
+                            display:inline-block;
+                            padding:8px 15px;
+                            background:#007bff;
+                            color:#fff;
+                            border-radius:6px;
+                            text-decoration:none;
+                            font-weight:bold;
+                            transition: background 0.3s;
+                            margin-bottom:8px;
+                        ">
+                        View Bookings
+                    </a>
+
+                    <!-- ✏️ Edit Button -->
+                    <a href="{{ route('admin.edit_staycation', $staycation->id) }}" 
+                        class="btn-edit" 
+                        style="
+                            display:inline-block;
+                            padding:8px 15px;
+                            background:#0056b3;
+                            color:#fff;
+                            border-radius:6px;
+                            text-decoration:none;
+                            font-weight:bold;
+                            transition: background 0.3s;
+                        ">
+                        Edit
+                    </a>
+                </div>
             </div>
-
-            <div class="house-info" style="margin-top:10px;">
-              <h3>{{ $staycation->house_name }}</h3>
-
-                <!-- Availability Button -->
-                <form action="{{ route('admin.toggle_availability', $staycation->id) }}" method="POST" style="margin:10px 0;">
-                    @csrf
-                    <button type="submit" 
-                            class="btn-toggle" 
-                            style="
-                              padding:8px 15px;
-                              border:none;
-                              border-radius:6px;
-                              font-weight:bold;
-                              color:#fff;
-                              cursor:pointer;
-                              background-color: {{ $staycation->house_availability === 'available' ? '#28a745' : '#dc3545' }};
-                            ">
-                        {{ ucfirst($staycation->house_availability) }}
-                    </button>
-                </form>
-
-                <a href="{{ route('admin.view_staycation_bookings', $staycation->id) }}" 
-                    class="btn-view" 
-                    style="
-                      display:inline-block;
-                      padding:8px 15px;
-                      background:#007bff;
-                      color:#fff;
-                      border-radius:6px;
-                      text-decoration:none;
-                      font-weight:bold;
-                      transition: background 0.3s;
-                    ">
-                    View Bookings
-                </a>
-              </div>
-            </div>
-          @empty
+        @empty
             <p>No staycations available yet.</p>
-          @endforelse
-        </div>
-      </section>
+        @endforelse
+    </div>
+</section>
+
 
       <!-- 📋 Booking History Section -->
       <section class="booking-history my-5" id="history">

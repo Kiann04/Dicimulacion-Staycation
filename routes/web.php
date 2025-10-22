@@ -245,6 +245,8 @@ Route::prefix('admin')
         Route::get('/admin/bookings/cancelled', [AdminController::class, 'cancelled'])->name('admin.bookings.cancelled');
 
 });
+Route::get('/admin/staycation/{id}/edit', [StaycationController::class, 'edit'])->name('admin.edit_staycation');
+Route::put('/admin/staycation/{id}', [StaycationController::class, 'update'])->name('admin.update_staycation');
 
 // =========================
 // Staff Routes
