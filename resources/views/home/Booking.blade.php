@@ -425,7 +425,7 @@
       <div class="modal-body bg-light">
     @if(session('availableStaycations') && session('availableStaycations')->count() > 0)
         <p class="fw-semibold text-center mb-4">
-            Available staycations for {{ session('startDate') }} to {{ session('endDate') }}:
+            Sorry, your selected dates ({{ session('startDate') }} to {{ session('endDate') }}) are not available. You can choose from other available staycations for the same dates:
         </p>
         <div class="row g-4">
             @foreach(session('availableStaycations') as $available)
