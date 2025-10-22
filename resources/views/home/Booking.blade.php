@@ -413,24 +413,35 @@
         </p>
         <div class="row g-4">
             @foreach(session('availableStaycations') as $available)
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 shadow-sm rounded-4 h-100 hover-scale">
-                        <img src="{{ asset('storage/' . $available->house_image) }}" 
-                             class="card-img-top rounded-top-4" 
-                             alt="{{ $available->house_name }}" 
-                             style="height: 220px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="fw-bold mb-1">{{ $available->house_name }}</h5>
-                            <p class="text-muted small mb-2">{{ $available->house_location }}</p>
-                            <p class="fw-semibold text-primary mb-2">₱{{ number_format($available->house_price, 2) }} / night</p>
-                            <a href="{{ route('booking.form', $available->id) }}" 
-                               class="btn btn-outline-primary w-100 fw-semibold rounded-pill">
-                               Book This Staycation
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
+              <div class="col-md-6 col-lg-4">
+                  <div class="card border-0 shadow-sm rounded-4 h-100 hover-scale">
+                      <img src="{{ asset('storage/' . $available->house_image) }}" 
+                          class="card-img-top rounded-top-4" 
+                          alt="{{ $available->house_name }}" 
+                          style="height: 220px; object-fit: cover;">
+                      <div class="card-body">
+                          <h5 class="fw-bold mb-1">{{ $available->house_name }}</h5>
+                          <p class="text-muted small mb-2">{{ $available->house_location }}</p>
+                          <p class="fw-semibold text-primary mb-2">₱{{ number_format($available->house_price, 2) }} / night</p>
+
+                          <!-- Form to preserve previous input -->
+                          <form action="{{ route('booking.preview', $available->id) }}" method="POST">
+                              @csrf
+                              <input type="hidden" name="name" value="{{ old('name', session('name')) }}">
+                              <input type="hidden" name="phone" value="{{ old('phone', session('phone')) }}">
+                              <input type="hidden" name="guest_number" value="{{ old('guest_number', session('guest_number')) }}">
+                              <input type="hidden" name="startDate" value="{{ old('startDate', session('startDate')) }}">
+                              <input type="hidden" name="endDate" value="{{ old('endDate', session('endDate')) }}">
+                              <button type="submit" class="btn btn-outline-primary w-100 fw-semibold rounded-pill">
+                                  Book This Staycation
+                              </button>
+                          </form>
+
+                      </div>
+                  </div>
+              </div>
+              @endforeach
+
         </div>
     @else
         <div class="text-center py-5">

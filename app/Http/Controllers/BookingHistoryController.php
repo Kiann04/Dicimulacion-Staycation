@@ -91,7 +91,11 @@ class BookingHistoryController extends Controller
             'availableStaycations' => $availableStaycations,
             'startDate' => $request->startDate,
             'endDate' => $request->endDate,
+            'guest_number' => $request->guest_number,
+            'name' => $request->name,
+            'phone' => $request->phone,
         ]);
+
     }
 
 
