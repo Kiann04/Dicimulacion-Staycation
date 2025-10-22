@@ -711,32 +711,36 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 🗓️ FullCalendar with PH timezone and blocked dates
+    // 🗓️ FullCalendar with PH timezone & blocked dates
     const staycationId = "{{ $staycation->id }}";
-    const calendarEl = document.getElementById("calendar");
-
-    if (calendarEl) {
+    if (document.getElementById("calendar")) {
         fetch(`/events/${staycationId}`)
             .then(res => res.json())
             .then(events => {
-                const todayPH = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
-                todayPH.setHours(0, 0, 0, 0);
+                const todayPH = new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" });
+                const todayDate = new Date(todayPH);
+                todayDate.setHours(0, 0, 0, 0);
 
-                const calendarEvents = events.map(event => {
-                    const startPH = new Date(new Date(event.start).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
-                    const endPH = new Date(new Date(event.end).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
-                    return {
-                        title: event.title,
-                        start: startPH.toISOString().split("T")[0],
-                        end: endPH.toISOString().split("T")[0],
-                        allDay: true,
-                        display: event.display || "background",
-                        backgroundColor: event.color || "#f56565",
-                        borderColor: event.color || "#f56565",
-                    };
-                }).filter(event => new Date(event.end) >= todayPH); // hide past events
+                // Map events from server (both booked + blocked)
+                const calendarEvents = events
+                    .map(event => {
+                        const startPH = new Date(new Date(event.start).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+                        const endPH = new Date(new Date(event.end).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+                        endPH.setDate(endPH.getDate() - 1); // include last day
 
-                const calendar = new FullCalendar.Calendar(calendarEl, {
+                        return {
+                            title: event.title,
+                            start: startPH.toISOString().split("T")[0],
+                            end: endPH.toISOString().split("T")[0],
+                            allDay: true,
+                            display: event.display || "background",
+                            backgroundColor: event.color || "#f56565",
+                            borderColor: event.color || "#f56565"
+                        };
+                    })
+                    .filter(event => new Date(event.end) >= todayDate); // hide past events
+
+                const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
                     initialView: "dayGridMonth",
                     height: "auto",
                     aspectRatio: 1.4,
@@ -748,13 +752,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     timeZone: "Asia/Manila",
                     events: calendarEvents,
 
-                    // ✅ Restrict navigation (no past months)
+                    // Restrict navigation (no past months)
                     validRange: {
-                        start: todayPH.toISOString().split("T")[0],
+                        start: todayDate.toISOString().split("T")[0],
                         end: "2026-12-31"
                     },
 
-                    // 🩶 Grey out past dates
+                    // Grey out past dates
                     dayCellDidMount: function (info) {
                         const cellDate = new Date(info.date);
                         const today = new Date();
@@ -767,14 +771,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     },
 
-                    // 🚫 Disable clicks on past dates
-                    dateClick: function(info) {
+                    // Disable clicks on past dates
+                    dateClick: function (info) {
                         const clickedDate = new Date(info.date);
                         const today = new Date();
                         today.setHours(0, 0, 0, 0);
                         clickedDate.setHours(0, 0, 0, 0);
 
                         if (clickedDate < today) return;
+
                         console.log("Future date clicked:", clickedDate);
                     }
                 });
