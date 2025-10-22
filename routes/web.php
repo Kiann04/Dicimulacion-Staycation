@@ -303,5 +303,7 @@ use App\Http\Controllers\ReportController;
 
 
 // Reports
-Route::post('admin/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
+Route::post('admin/reports/generate', [ReportController::class, 'generate'])
+    ->name('admin.reports.generate');
+
 Route::get('admin/reports/download/{type}/{year}/{month?}', [ReportController::class, 'download'])->name('reports.download');
