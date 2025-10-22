@@ -135,6 +135,33 @@ class AdminBookingController extends Controller
 
 
 
+    public function markAsFullyPaid(Request $request, $id)
+{
+    $booking = Booking::with('user', 'staycation')->findOrFail($id);
 
+    // Only allow update if currently half paid
+    if (strtolower($booking->payment_status) !== 'half_paid') {
+        return redirect()->back()->with('error', 'Only half-paid bookings can be marked as fully paid.');
+    }
+
+    $booking->payment_status = 'paid';
+    $booking->status = 'confirmed';
+    $booking->save();
+
+    $recipient = $booking->user->email ?? $booking->email;
+
+    if (!empty($recipient)) {
+        Mail::to($recipient)->send(new PaymentReceiptMail($booking));
+    }
+
+    AuditLog::create([
+        'user_id'    => Auth::id(),
+        'action'     => 'Remaining Payment Received',
+        'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as Paid (was Half Paid).",
+        'ip_address' => $request->ip(),
+    ]);
+
+    return redirect()->back()->with('success', 'Booking marked as fully paid.');
+}
 
 }

@@ -222,6 +222,7 @@ Route::prefix('admin')
     Route::get('/bookings/{id}/proof', [App\Http\Controllers\AdminBookingController::class, 'getProof']);
     Route::post('/bookings/{id}/update-payment', [App\Http\Controllers\AdminBookingController::class, 'updatePayment']);
 
+        Route::post('/bookings/{id}/mark-fully-paid', [App\Http\Controllers\AdminBookingController::class, 'markAsFullyPaid'])->name('admin.bookings.markFullyPaid');
 
     // Extra
     Route::get('/customers/{id}/bookings', [AdminController::class, 'viewBookings'])->name('customers.bookings');
