@@ -364,23 +364,41 @@ class AdminController extends Controller
 
     // bookings by staycation
     public function getEvents($staycationId)
-    {
-        $bookings = Booking::where('staycation_id', $staycationId)
+{
+    // ✅ Bookings
+    $bookings = Booking::where('staycation_id', $staycationId)
         ->whereNull('deleted_at')
         ->get();
 
-        $events = $bookings->map(function ($booking) {
-            return [
-                'title' => 'Booked',
-                'start' => $booking->start_date,
-                'end' => Carbon::parse($booking->end_date)->addDay()->toDateString(), // ✅ include last day
-                'color' => '#999', // grey background
-                'display' => 'background', // block day
-            ];
-        });
+    $bookingEvents = $bookings->map(function ($booking) {
+        return [
+            'title' => 'Booked',
+            'start' => $booking->start_date,
+            'end' => Carbon::parse($booking->end_date)->addDay()->toDateString(), // include last day
+            'color' => '#f56565', // red
+            'display' => 'background',
+        ];
+    });
 
-        return response()->json($events);
-    }
+    // ✅ Blocked Dates
+    $blockedDates = BlockedDate::where('staycation_id', $staycationId)->get();
+
+    $blockedEvents = $blockedDates->map(function ($blocked) {
+        return [
+            'title' => $blocked->reason ?? 'Blocked',
+            'start' => $blocked->start_date,
+            'end' => Carbon::parse($blocked->end_date)->addDay()->toDateString(),
+            'color' => '#fcd34d', // yellow
+            'display' => 'background',
+        ];
+    });
+
+    // ✅ Merge both arrays
+    $events = $bookingEvents->merge($blockedEvents);
+
+    return response()->json($events);
+}
+
     public function view_staycation_bookings($staycation_id)
     {
         // Get the bookings for the specific staycation with the housename
