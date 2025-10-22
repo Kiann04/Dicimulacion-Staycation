@@ -47,4 +47,8 @@ class Staycation extends Model
     {
         return $this->hasMany(BookingHistory::class);
     }
+    public function blockedDates()
+    {
+        return $this->hasMany(BlockedDate::class);
+    }
 }

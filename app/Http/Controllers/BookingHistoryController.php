@@ -68,26 +68,40 @@ class BookingHistoryController extends Controller
     $endDate = Carbon::parse($request->endDate);
 
     // Check if selected staycation is already booked
-    $hasOverlap = Booking::where('staycation_id', $staycation->id)
+    $hasBookingOverlap = Booking::where('staycation_id', $staycation->id)
         ->where(function ($query) use ($startDate, $endDate) {
             $query->where('start_date', '<', $endDate)
                   ->where('end_date', '>', $startDate);
         })
         ->exists();
 
-    if ($hasOverlap) {
+    // Check if selected staycation has blocked dates
+    $hasBlockedOverlap = BlockedDate::where('staycation_id', $staycation->id)
+        ->where(function ($query) use ($startDate, $endDate) {
+            $query->where('start_date', '<', $endDate)
+                  ->where('end_date', '>', $startDate);
+        })
+        ->exists();
+
+    if ($hasBookingOverlap || $hasBlockedOverlap) {
         $availableStaycations = Staycation::where('id', '!=', $staycation->id)
             ->where('house_availability', 'available')
             ->whereDoesntHave('bookings', function ($query) use ($startDate, $endDate) {
                 $query->where(function ($q) use ($startDate, $endDate) {
                     $q->where('start_date', '<', $endDate)
-                    ->where('end_date', '>', $startDate);
+                      ->where('end_date', '>', $startDate);
+                });
+            })
+            ->whereDoesntHave('blockedDates', function ($query) use ($startDate, $endDate) {
+                $query->where(function ($q) use ($startDate, $endDate) {
+                    $q->where('start_date', '<', $endDate)
+                      ->where('end_date', '>', $startDate);
                 });
             })
             ->get();
 
         return back()->with([
-            'message' => "⚠️ The selected dates are already booked for {$staycation->house_name}.",
+            'message' => "⚠️ The selected dates are not available for {$staycation->house_name}.",
             'availableStaycations' => $availableStaycations,
             'startDate' => $request->startDate,
             'endDate' => $request->endDate,
@@ -95,9 +109,7 @@ class BookingHistoryController extends Controller
             'name' => $request->name,
             'phone' => $request->phone,
         ]);
-
     }
-
 
     // If no overlap, calculate total price
     $nights = $startDate->diffInDays($endDate);
@@ -261,28 +273,5 @@ class BookingHistoryController extends Controller
 
         return view('booking.form', compact('staycation', 'allStaycations', 'blockedDates'));
     }
-    public function blockDates(Request $request)
-{
-    $request->validate([
-        'staycation_id' => 'required|exists:staycations,id',
-        'start_date' => 'required|date',
-        'end_date' => 'required|date|after_or_equal:start_date',
-        'reason' => 'nullable|string|max:255',
-    ]);
-    
-    // Only allow admin to do this
-    if (auth()->user()->usertype !== 'admin') {
-        abort(403, 'Unauthorized action.');
-    }
-
-    BlockedDate::create([
-        'staycation_id' => $request->staycation_id,
-        'start_date' => $request->start_date,
-        'end_date' => $request->end_date,
-        'reason' => $request->reason ?? 'Renovation',
-    ]);
-
-    return back()->with('success', 'Dates successfully blocked.');
-}
 
 }
