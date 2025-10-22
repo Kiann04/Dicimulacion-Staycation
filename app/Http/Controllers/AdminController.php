@@ -235,9 +235,7 @@ class AdminController extends Controller
         $inquiries = Inquiry::latest()->paginate(10); // 10 per page
 
         // Booking payment proofs (paginated)
-        $bookingProofs = Booking::with('user', 'staycation')
-                            ->where('status', 'pending')
-                            ->whereNotNull('payment_proof')
+       $bookingProofs = Booking::with('user', 'staycation')
                             ->latest()
                             ->paginate(10); // 10 per page
 
