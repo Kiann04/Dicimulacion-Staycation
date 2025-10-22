@@ -4,50 +4,64 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Booking;
-use PDF;
 use Carbon\Carbon;
+use PDF;
 
 class ReportController extends Controller
 {
-    // 🔹 Handles form submission
+    /**
+     * 🔹 Handles form submission — redirects to download route
+     */
     public function generate(Request $request)
     {
-        $reportType = $request->input('report_type');
+        $reportType = strtolower($request->input('report_type'));
         $year = $request->input('report_year');
         $month = $request->input('report_month');
 
-        // Redirects to download route with parameters
-        return redirect()->route('admin.reports.download', [
-            'type' => strtolower($reportType),
+        // Redirect to the correct download route
+        return redirect()->route('reports.download', [
+            'type' => $reportType,
             'year' => $year,
             'month' => $month,
         ]);
     }
 
-    // 🔹 Generates and downloads the PDF report
+    /**
+     * 🔹 Generates and downloads the PDF report
+     */
     public function download($type, $year, $month = null)
     {
+        // Determine report type and fetch data
         if ($type === 'monthly' && $month) {
-            $bookings = Booking::whereYear('start_date', $year)
+            $bookings = Booking::with(['user', 'staycation'])
+                ->whereYear('start_date', $year)
                 ->whereMonth('start_date', $month)
                 ->get();
 
-            $reportTitle = 'Monthly Report - ' . Carbon::createFromFormat('m', $month)->format('F') . ' ' . $year;
-            $fileName = 'monthly_report_' . $year . '_' . $month . '.pdf';
+            $monthName = Carbon::createFromFormat('m', $month)->format('F');
+            $reportTitle = "Monthly Report - {$monthName} {$year}";
+            $fileName = "monthly_report_{$year}_{$month}.pdf";
+            $reportType = 'Monthly';
         } else {
-            $bookings = Booking::whereYear('start_date', $year)->get();
+            $bookings = Booking::with(['user', 'staycation'])
+                ->whereYear('start_date', $year)
+                ->get();
 
-            $reportTitle = 'Annual Report - ' . $year;
-            $fileName = 'annual_report_' . $year . '.pdf';
+            $reportTitle = "Annual Report - {$year}";
+            $fileName = "annual_report_{$year}.pdf";
+            $reportType = 'Yearly';
         }
 
+        // Generate PDF
         $pdf = PDF::loadView('admin.reports.pdf', [
             'bookings' => $bookings,
             'reportTitle' => $reportTitle,
+            'reportType' => $reportType,
             'year' => $year,
             'month' => $month,
         ]);
 
+        // Download the PDF
         return $pdf->download($fileName);
     }
 }
