@@ -299,3 +299,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/blocked-dates', [BlockedDateController::class, 'index'])->name('admin.blocked_dates.index');
     Route::post('/admin/blocked-dates', [BlockedDateController::class, 'store'])->name('admin.blocked_dates.store');
 });
+use App\Http\Controllers\ReportController;
+
+
+// Reports
+Route::post('admin/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
+Route::get('admin/reports/download/{type}/{year}/{month?}', [ReportController::class, 'download'])->name('reports.download');
