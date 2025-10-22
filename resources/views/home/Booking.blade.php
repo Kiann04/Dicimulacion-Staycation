@@ -90,7 +90,8 @@
                 Please log in to reserve
               </a>
             @endauth
-            @auth
+          </form>
+          @auth
               @if (Auth::user()->role === 'admin')
               <div class="mt-4 p-3 border rounded">
                   <h5>🛑 Block a Date</h5>
@@ -107,7 +108,6 @@
               </div>
               @endif
               @endauth
-          </form>
         </div>
       </div>
     </div>
