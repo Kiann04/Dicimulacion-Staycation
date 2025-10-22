@@ -72,3 +72,31 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const blockedDates = @json($staycation->blocked_dates ?? null);
+
+    $('#blocked_dates').daterangepicker({
+        autoUpdateInput: false,
+        locale: { cancelLabel: 'Clear' }
+    });
+
+    $('#blocked_dates').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('YYYY-MM-DD') + ' to ' + picker.endDate.format('YYYY-MM-DD'));
+    });
+
+    $('#blocked_dates').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+    // Pre-fill if existing blackout dates
+    if(blockedDates){
+        const [start, end] = blockedDates.split(' to ');
+        $('#blocked_dates').data('daterangepicker').setStartDate(start);
+        $('#blocked_dates').data('daterangepicker').setEndDate(end);
+        $('#blocked_dates').val(blockedDates);
+    }
+});
+</script>
+@endpush
