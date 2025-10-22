@@ -46,45 +46,58 @@ class BookingHistoryController extends Controller
 
     // 📄 Step 1: Preview Booking before confirming
     public function previewBooking(Request $request, $staycation_id)
-    {
-        $staycation = Staycation::findOrFail($staycation_id);
+{
+    $staycation = Staycation::findOrFail($staycation_id);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'guest_number' => 'required|integer|min:1',
-            'startDate' => 'required|date',
-            'endDate' => 'required|date|after:startDate',
-        ]);
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'phone' => 'required|string|max:20',
+        'guest_number' => 'required|integer|min:1',
+        'startDate' => 'required|date',
+        'endDate' => 'required|date|after:startDate',
+    ]);
 
-        $startDate = Carbon::parse($request->startDate);
-        $endDate = Carbon::parse($request->endDate);
+    $startDate = Carbon::parse($request->startDate);
+    $endDate = Carbon::parse($request->endDate);
 
-        // 🧩 Fix overlap logic (allow check-in on same day another booking checks out)
-        $hasOverlap = Booking::where('staycation_id', $staycation->id)
-            ->where(function ($query) use ($startDate, $endDate) {
-                $query->where('start_date', '<', $endDate)
-                    ->where('end_date', '>', $startDate);
-            })
-            ->exists();
+    // 🧩 Check if dates overlap (avoid double booking)
+    $hasOverlap = Booking::where('staycation_id', $staycation->id)
+        ->where(function ($query) use ($startDate, $endDate) {
+            $query->where('start_date', '<', $endDate)
+                  ->where('end_date', '>', $startDate);
+        })
+        ->exists();
 
-        if ($hasOverlap) {
-            return back()->with('message', "⚠️ The selected dates are already booked for this staycation. Please choose another staycation or select different dates.");
-        }
+    // 🚫 If booked, show modern suggestion
+    if ($hasOverlap) {
+        // ✅ Get other available staycations (excluding this one)
+        $availableStaycations = Staycation::where('id', '!=', $staycation->id)
+            ->where('house_availability', 'available')
+            ->get();
 
-        $nights = $startDate->diffInDays($endDate);
-        $totalPrice = $nights * $staycation->house_price;
-
-        return view('home.preview_booking', [
+        return view('home.unavailable_booking', [
             'staycation' => $staycation,
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'guest_number' => $request->guest_number,
+            'availableStaycations' => $availableStaycations,
             'startDate' => $request->startDate,
             'endDate' => $request->endDate,
-            'totalPrice' => $totalPrice,
-        ])->with('success', '✅ Dates are available! Please confirm your booking.');
+        ])->with('message', "⚠️ The selected dates are already booked. Please choose another staycation.");
     }
+
+    // ✅ If no overlap, calculate total
+    $nights = $startDate->diffInDays($endDate);
+    $totalPrice = $nights * $staycation->house_price;
+
+    return view('home.preview_booking', [
+        'staycation' => $staycation,
+        'name' => $request->name,
+        'phone' => $request->phone,
+        'guest_number' => $request->guest_number,
+        'startDate' => $request->startDate,
+        'endDate' => $request->endDate,
+        'totalPrice' => $totalPrice,
+    ])->with('success', '✅ Dates are available! Please confirm your booking.');
+}
+
     // 📄 Step 2: Submit booking request
     public function submitRequest(Request $request, $staycation_id)
     {   

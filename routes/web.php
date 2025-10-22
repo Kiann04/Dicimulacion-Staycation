@@ -108,6 +108,8 @@ Route::post('/reviews', [ReviewController::class, 'store'])
 // =========================
 Route::post('/contact/send', [HomeController::class, 'sendInquiry'])->name('contact.send');
 
+Route::post('/booking/preview/{staycation_id}', [BookingHistoryController::class, 'previewBooking'])->name('booking.preview');
+Route::get('/booking/form/{id}', [BookingHistoryController::class, 'bookingForm'])->name('BookingHistory.bookingForm');
 
 // =========================
 // Chatbot
