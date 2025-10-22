@@ -13,6 +13,8 @@ class BlockedDate extends Model
         'staycation_id',
         'start_date',
         'end_date',
-        'reason'
+        'reason',
     ];
+
+    public $timestamps = true;
 }
