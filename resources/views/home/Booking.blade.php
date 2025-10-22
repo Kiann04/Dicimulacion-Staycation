@@ -769,7 +769,14 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
-
+@if(session('availableStaycations') && session('availableStaycations')->count() > 0)
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var modal = new bootstrap.Modal(document.getElementById('availableStaycationsModal'));
+    modal.show();
+});
+</script>
+@endif
 
 @section('Footer')
 @include('Footer')
