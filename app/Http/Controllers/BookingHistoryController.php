@@ -70,18 +70,16 @@ class BookingHistoryController extends Controller
 
     // 🚫 If booked, show modern suggestion
     if ($hasOverlap) {
-        // ✅ Get other available staycations (excluding this one)
-        $availableStaycations = Staycation::where('id', '!=', $staycation->id)
-            ->where('house_availability', 'available')
-            ->get();
+    $availableStaycations = Staycation::where('house_availability', 'available')
+        ->where('id', '!=', $staycation->id)
+        ->get();
 
-        return view('home.unavailable_booking', [
-            'staycation' => $staycation,
-            'availableStaycations' => $availableStaycations,
-            'startDate' => $request->startDate,
-            'endDate' => $request->endDate,
-        ])->with('message', "⚠️ The selected dates are already booked. Please choose another staycation.");
-    }
+    return back()->with([
+        'message' => "⚠️ The selected dates are already booked for {$staycation->house_name}.",
+        'availableStaycations' => $availableStaycations
+    ]);
+}
+
 
     // ✅ If no overlap, calculate total
     $nights = $startDate->diffInDays($endDate);

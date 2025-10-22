@@ -17,8 +17,14 @@
             <div class="alert alert-success">{{ session('success') }}</div>
           @endif
           @if(session('message'))
-            <div class="alert alert-danger">{!! nl2br(e(session('message'))) !!}</div>
+            <div class="alert alert-danger mb-3">{!! nl2br(e(session('message'))) !!}</div>
+            <div class="text-center mb-4">
+              <button type="button" class="btn btn-outline-primary fw-semibold rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#availableStaycationsModal">
+                <i class="bi bi-search-heart me-2"></i> Show Available Staycations
+              </button>
+            </div>
           @endif
+
 
           <form action="{{ route('booking.preview', $staycation->id) }}" method="POST">
             @csrf
@@ -302,6 +308,13 @@
 </section>
 
 <style>
+.hover-scale {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-scale:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
 .card {
     min-height: 500px; /* Adjust as needed */
 }
@@ -381,6 +394,58 @@
 .service-card:nth-child(11) { animation-delay: 1.1s; }
 .service-card:nth-child(12) { animation-delay: 1.2s; }
 </style>
+<!-- 🔥 Modal: Show Available Staycations -->
+<div class="modal fade" id="availableStaycationsModal" tabindex="-1" aria-labelledby="availableStaycationsLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow-lg">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold" id="availableStaycationsLabel">
+          <i class="bi bi-house-door me-2"></i> Available Staycations
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body bg-light">
+        @if(isset($availableStaycations) && $availableStaycations->count() > 0)
+          <div class="row g-4">
+            @foreach($availableStaycations as $available)
+              <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 hover-scale">
+                  <img src="{{ asset('storage/' . $available->house_image) }}" 
+                       class="card-img-top rounded-top-4" 
+                       alt="{{ $available->house_name }}" 
+                       style="height: 220px; object-fit: cover;">
+                  <div class="card-body">
+                    <h5 class="fw-bold mb-1">{{ $available->house_name }}</h5>
+                    <p class="text-muted small mb-2">{{ $available->house_location }}</p>
+                    <p class="fw-semibold text-primary mb-2">₱{{ number_format($available->house_price, 2) }} / night</p>
+                    <a href="{{ route('booking.form', $available->id) }}" 
+                       class="btn btn-outline-primary w-100 fw-semibold rounded-pill">
+                       Book This Staycation
+                    </a>
+                  </div>
+                </div>
+              </div>
+            @endforeach
+          </div>
+        @else
+          <div class="text-center py-5">
+            <i class="bi bi-exclamation-circle text-warning display-5 mb-3"></i>
+            <p class="fw-semibold text-muted mb-1">No available staycations right now.</p>
+            <p class="text-muted small">Please try different dates.</p>
+          </div>
+        @endif
+      </div>
+
+      <div class="modal-footer bg-white border-0">
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Reviews Section -->
 <section class="container my-5" id="reviews">
     <h2 class="fw-bold mb-5 text-center display-6">What Our Guests Say</h2>
