@@ -18,4 +18,9 @@ class BlockedDate extends Model
     ];
 
     public $timestamps = true;
+    // app/Models/BlockedDate.php
+public function staycation()
+{
+    return $this->belongsTo(Staycation::class);
+}
 }
