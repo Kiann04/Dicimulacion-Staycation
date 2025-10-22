@@ -16,13 +16,14 @@
           @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
           @endif
-          @if(session('message'))
-            <div class="alert alert-danger mb-3">{!! nl2br(e(session('message'))) !!}</div>
-            <div class="text-center mb-4">
-              <button type="button" class="btn btn-outline-primary fw-semibold rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#availableStaycationsModal">
-                <i class="bi bi-search-heart me-2"></i> Show Available Staycations
+          @if(session('availableStaycations') && session('availableStaycations')->count() > 0)
+          <div class="text-center mb-4">
+              <button type="button" class="btn btn-outline-primary fw-semibold rounded-pill px-4" 
+                      data-bs-toggle="modal" 
+                      data-bs-target="#availableStaycationsModal">
+                  <i class="bi bi-search-heart me-2"></i> Show Available Staycations
               </button>
-            </div>
+          </div>
           @endif
 
 
@@ -406,36 +407,40 @@
       </div>
 
       <div class="modal-body bg-light">
-        @if(isset($availableStaycations) && $availableStaycations->count() > 0)
-          <div class="row g-4">
-            @foreach($availableStaycations as $available)
-              <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm rounded-4 h-100 hover-scale">
-                  <img src="{{ asset('storage/' . $available->house_image) }}" 
-                       class="card-img-top rounded-top-4" 
-                       alt="{{ $available->house_name }}" 
-                       style="height: 220px; object-fit: cover;">
-                  <div class="card-body">
-                    <h5 class="fw-bold mb-1">{{ $available->house_name }}</h5>
-                    <p class="text-muted small mb-2">{{ $available->house_location }}</p>
-                    <p class="fw-semibold text-primary mb-2">₱{{ number_format($available->house_price, 2) }} / night</p>
-                    <a href="{{ route('booking.form', $available->id) }}" 
-                       class="btn btn-outline-primary w-100 fw-semibold rounded-pill">
-                       Book This Staycation
-                    </a>
-                  </div>
+    @if(session('availableStaycations') && session('availableStaycations')->count() > 0)
+        <p class="fw-semibold text-center mb-4">
+            Available staycations for {{ session('startDate') }} to {{ session('endDate') }}:
+        </p>
+        <div class="row g-4">
+            @foreach(session('availableStaycations') as $available)
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 hover-scale">
+                        <img src="{{ asset('storage/' . $available->house_image) }}" 
+                             class="card-img-top rounded-top-4" 
+                             alt="{{ $available->house_name }}" 
+                             style="height: 220px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-1">{{ $available->house_name }}</h5>
+                            <p class="text-muted small mb-2">{{ $available->house_location }}</p>
+                            <p class="fw-semibold text-primary mb-2">₱{{ number_format($available->house_price, 2) }} / night</p>
+                            <a href="{{ route('booking.form', $available->id) }}" 
+                               class="btn btn-outline-primary w-100 fw-semibold rounded-pill">
+                               Book This Staycation
+                            </a>
+                        </div>
+                    </div>
                 </div>
-              </div>
             @endforeach
-          </div>
-        @else
-          <div class="text-center py-5">
+        </div>
+    @else
+        <div class="text-center py-5">
             <i class="bi bi-exclamation-circle text-warning display-5 mb-3"></i>
-            <p class="fw-semibold text-muted mb-1">No available staycations right now.</p>
+            <p class="fw-semibold text-muted mb-1">No available staycations for these dates.</p>
             <p class="text-muted small">Please try different dates.</p>
-          </div>
-        @endif
-      </div>
+        </div>
+    @endif
+</div>
+
 
       <div class="modal-footer bg-white border-0">
         <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">

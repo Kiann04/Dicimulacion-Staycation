@@ -76,22 +76,24 @@ class BookingHistoryController extends Controller
         ->exists();
 
     if ($hasOverlap) {
-        // Get other staycations available for the same dates
         $availableStaycations = Staycation::where('id', '!=', $staycation->id)
             ->where('house_availability', 'available')
             ->whereDoesntHave('bookings', function ($query) use ($startDate, $endDate) {
                 $query->where(function ($q) use ($startDate, $endDate) {
                     $q->where('start_date', '<', $endDate)
-                      ->where('end_date', '>', $startDate);
+                    ->where('end_date', '>', $startDate);
                 });
             })
             ->get();
 
         return back()->with([
             'message' => "⚠️ The selected dates are already booked for {$staycation->house_name}.",
-            'availableStaycations' => $availableStaycations
+            'availableStaycations' => $availableStaycations,
+            'startDate' => $request->startDate,
+            'endDate' => $request->endDate,
         ]);
     }
+
 
     // If no overlap, calculate total price
     $nights = $startDate->diffInDays($endDate);
