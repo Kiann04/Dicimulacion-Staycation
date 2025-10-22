@@ -56,7 +56,12 @@
                         <option value="unavailable" {{ $staycation->house_availability === 'unavailable' ? 'selected' : '' }}>Unavailable</option>
                     </select>
                 </div>
-
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Block Dates (Optional)</label>
+                    <input type="text" name="blocked_dates" id="blocked_dates" class="form-control" 
+                        placeholder="Select date range">
+                    <small class="text-muted">Set dates when this staycation can't be booked (e.g., renovation, private use).</small>
+                </div>
                 <!-- Buttons -->
                 <div class="d-flex justify-content-between mt-4">
                     <a href="{{ url()->previous() }}" class="btn btn-secondary px-4">Cancel</a>
