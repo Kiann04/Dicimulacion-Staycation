@@ -9,7 +9,7 @@ use App\Models\Booking;
 use Carbon\Carbon;
 use App\Models\Review;
 
-
+use App\Models\BlockedDate;
 class BookingHistoryController extends Controller
 {
     // 🏠 Show booking form for selected staycation
@@ -257,8 +257,10 @@ class BookingHistoryController extends Controller
         $staycation = Staycation::findOrFail($id);
         $allStaycations = Staycation::where('house_availability', 'available')->get();
 
-        return view('booking.form', compact('staycation', 'allStaycations'));
-    }
+        // ✅ Get all blocked dates from the DB
+        $blockedDates = BlockedDate::pluck('date')->toArray();
 
+        return view('booking.form', compact('staycation', 'allStaycations', 'blockedDates'));
+    }
 
 }

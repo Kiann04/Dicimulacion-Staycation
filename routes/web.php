@@ -293,3 +293,9 @@ Route::prefix('admin')->group(function () {
     Route::get('/cancelled', [CancelledBookingController::class, 'index'])
         ->name('admin.cancelled');
 });
+use App\Http\Controllers\BlockedDateController;
+
+Route::middleware(['auth', 'isAdmin'])->group(function () {
+    Route::get('/admin/blocked-dates', [BlockedDateController::class, 'index'])->name('admin.blocked_dates.index');
+    Route::post('/admin/blocked-dates', [BlockedDateController::class, 'store'])->name('admin.blocked_dates.store');
+});

@@ -90,7 +90,23 @@
                 Please log in to reserve
               </a>
             @endauth
-
+            @auth
+              @if (Auth::user()->role === 'admin')
+              <div class="mt-4 p-3 border rounded">
+                  <h5>🛑 Block a Date</h5>
+                  <form action="{{ route('admin.block-date') }}" method="POST">
+                      @csrf
+                      <div class="mb-2">
+                          <input type="date" name="date" class="form-control" required>
+                      </div>
+                      <div class="mb-2">
+                          <input type="text" name="reason" class="form-control" placeholder="Reason (optional)">
+                      </div>
+                      <button type="submit" class="btn btn-danger w-100">Block Date</button>
+                  </form>
+              </div>
+              @endif
+              @endauth
           </form>
         </div>
       </div>
