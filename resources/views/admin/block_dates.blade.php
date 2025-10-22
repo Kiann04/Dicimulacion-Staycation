@@ -23,18 +23,35 @@
     @endif
 
     {{-- 📅 Block Date Form --}}
-    <form action="{{ route('admin.blocked_dates.store') }}" method="POST" class="mb-4">
-        @csrf
-        <div class="mb-3">
-            <label for="date" class="form-label fw-semibold">Date to Block</label>
-            <input type="date" name="date" id="date" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label for="reason" class="form-label fw-semibold">Reason (optional)</label>
-            <input type="text" name="reason" id="reason" class="form-control" placeholder="e.g. Renovation, Maintenance">
-        </div>
-        <button type="submit" class="btn btn-danger w-100">Block Date</button>
-    </form>
+    <form action="{{ route('admin.blocked_dates.store') }}" method="POST">
+    @csrf
+    <div class="mb-3">
+        <label for="staycation_id" class="form-label">Staycation</label>
+        <select name="staycation_id" id="staycation_id" class="form-control" required>
+            @foreach($staycations as $stay)
+                <option value="{{ $stay->id }}">{{ $stay->house_name }}</option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="start_date" class="form-label">Start Date</label>
+        <input type="date" name="start_date" id="start_date" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="end_date" class="form-label">End Date</label>
+        <input type="date" name="end_date" id="end_date" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="reason" class="form-label">Reason (optional)</label>
+        <input type="text" name="reason" id="reason" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-danger">Block Date</button>
+</form>
+
 
     <hr>
 
