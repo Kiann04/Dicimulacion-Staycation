@@ -248,7 +248,8 @@ Route::prefix('admin')
 });
 Route::get('/admin/staycation/{id}/edit', [StaycationController::class, 'edit'])->name('admin.edit_staycation');
 Route::put('/admin/staycation/{id}', [StaycationController::class, 'update'])->name('admin.update_staycation');
-
+Route::post('/admin/bookings/{id}/mark-fully-paid', [AdminBookingController::class, 'markAsFullyPaid'])
+    ->name('admin.bookings.markFullyPaid');
 // =========================
 // Staff Routes
 Route::prefix('staff')->name('staff.')->middleware([
