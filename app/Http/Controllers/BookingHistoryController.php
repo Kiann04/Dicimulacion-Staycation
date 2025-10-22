@@ -67,7 +67,7 @@ class BookingHistoryController extends Controller
     $startDate = Carbon::parse($request->startDate);
     $endDate = Carbon::parse($request->endDate);
 
-    // 🧩 Check if dates overlap (avoid double booking)
+    // Check if selected staycation is already booked
     $hasOverlap = Booking::where('staycation_id', $staycation->id)
         ->where(function ($query) use ($startDate, $endDate) {
             $query->where('start_date', '<', $endDate)
@@ -75,20 +75,25 @@ class BookingHistoryController extends Controller
         })
         ->exists();
 
-    // 🚫 If booked, show modern suggestion
     if ($hasOverlap) {
-    $availableStaycations = Staycation::where('house_availability', 'available')
-        ->where('id', '!=', $staycation->id)
-        ->get();
+        // Get other staycations available for the same dates
+        $availableStaycations = Staycation::where('id', '!=', $staycation->id)
+            ->where('house_availability', 'available')
+            ->whereDoesntHave('bookings', function ($query) use ($startDate, $endDate) {
+                $query->where(function ($q) use ($startDate, $endDate) {
+                    $q->where('start_date', '<', $endDate)
+                      ->where('end_date', '>', $startDate);
+                });
+            })
+            ->get();
 
-    return back()->with([
-        'message' => "⚠️ The selected dates are already booked for {$staycation->house_name}.",
-        'availableStaycations' => $availableStaycations
-    ]);
-}
+        return back()->with([
+            'message' => "⚠️ The selected dates are already booked for {$staycation->house_name}.",
+            'availableStaycations' => $availableStaycations
+        ]);
+    }
 
-
-    // ✅ If no overlap, calculate total
+    // If no overlap, calculate total price
     $nights = $startDate->diffInDays($endDate);
     $totalPrice = $nights * $staycation->house_price;
 
