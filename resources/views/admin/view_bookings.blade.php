@@ -48,8 +48,8 @@
                 <td>{{ $booking->id }}</td>
                 <td>{{ $booking->name }}</td>
                 <td>{{ $booking->phone }}</td>
-                <td>{{ $booking->guest_number }}</td>
-                <td>{{ $booking->start_date }}</td>
+                <td>{{ $booking->formatted_start_date }}</td>
+                <td>{{ $booking->formatted_end_date }}</td>
                 <td>{{ $booking->end_date }}</td>
                 <td>
                   <a href="{{ url('admin/update_booking/'.$booking->id) }}" class="btn btn-sm btn-info">
