@@ -9,7 +9,7 @@
     <div class="main-content">
         <header>
             <h1>Generate Reports</h1>
-            <p class="subtext">Download monthly or annual reports for your staycation business</p>
+            <p class="subtext">Download weekly, monthly, or annual reports for your staycation business</p>
         </header>
 
         <!-- ✅ Report Form -->
@@ -22,7 +22,8 @@
                 <!-- Report Type -->
                 <div class="form-group mb-3">
                     <label for="report_type">Report Type:</label>
-                    <select id="report_type" name="report_type" class="form-control" required onchange="toggleMonthField()">
+                    <select id="report_type" name="report_type" class="form-control" required onchange="toggleFields()">
+                        <option value="Weekly">Weekly</option>
                         <option value="Monthly">Monthly</option>
                         <option value="Annual" selected>Yearly</option>
                     </select>
@@ -32,6 +33,16 @@
                 <div class="form-group mb-3">
                     <label for="report_year">Year:</label>
                     <input type="number" id="report_year" name="report_year" min="2023" max="{{ date('Y') }}" value="{{ date('Y') }}" required>
+                </div>
+
+                <!-- Week (Shown only for Weekly Reports) -->
+                <div class="form-group mb-3" id="week_field" style="display: none;">
+                    <label for="report_week">Week:</label>
+                    <select id="report_week" name="report_week" class="form-control">
+                        @for ($i = 1; $i <= 52; $i++)
+                            <option value="{{ $i }}">Week {{ $i }}</option>
+                        @endfor
+                    </select>
                 </div>
 
                 <!-- Month (Shown only for Monthly Reports) -->
@@ -61,12 +72,20 @@
     </div>
 </div>
 
-<!-- ✅ JavaScript to toggle month field -->
+<!-- ✅ JavaScript to toggle fields -->
 <script>
-function toggleMonthField() {
-    const reportType = document.getElementById('report_type').value;
+function toggleFields() {
+    const type = document.getElementById('report_type').value;
+    const weekField = document.getElementById('week_field');
     const monthField = document.getElementById('month_field');
-    monthField.style.display = (reportType === 'Monthly') ? 'block' : 'none';
+
+    // Hide all first
+    weekField.style.display = 'none';
+    monthField.style.display = 'none';
+
+    // Show based on type
+    if (type === 'Weekly') weekField.style.display = 'block';
+    else if (type === 'Monthly') monthField.style.display = 'block';
 }
 </script>
 </body>
