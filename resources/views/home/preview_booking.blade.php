@@ -125,6 +125,13 @@
                 <h6 class="fw-semibold text-primary">GCash Information</h6>
                 <p><strong>Account Name:</strong> Dicimulacion Staycation</p>
                 <p><strong>GCash Number:</strong> 0956-348-1472</p>
+                
+                <!-- ✅ QR Code Image -->
+                <div class="text-center mt-3">
+                    <img src="{{ asset('image/Gcash.jpg') }}" alt="GCash QR Code" 
+                        style="max-width: 250px; width: 100%; border-radius: 10px;">
+                    <p class="mt-2 text-muted" style="font-size: 0.9rem;">Scan this QR to pay via GCash</p>
+                </div>
             </div>
 
             <!-- BPI Info -->
