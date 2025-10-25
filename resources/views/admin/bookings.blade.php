@@ -31,23 +31,6 @@
                 <div class="house-info" style="margin-top:10px;">
                     <h3>{{ $staycation->house_name }}</h3>
 
-                    <!-- Toggle Availability -->
-                    <form action="{{ route('admin.toggle_availability', $staycation->id) }}" method="POST" style="margin:10px 0;">
-                        @csrf
-                        <button type="submit" 
-                                class="btn-toggle" 
-                                style="
-                                    padding:8px 15px;
-                                    border:none;
-                                    border-radius:6px;
-                                    font-weight:bold;
-                                    color:#fff;
-                                    cursor:pointer;
-                                    background-color: {{ $staycation->house_availability === 'available' ? '#28a745' : '#dc3545' }};
-                                ">
-                            {{ ucfirst($staycation->house_availability) }}
-                        </button>
-                    </form>
 
                     <!-- View Bookings -->
                     <a href="{{ route('admin.view_staycation_bookings', $staycation->id) }}" 
