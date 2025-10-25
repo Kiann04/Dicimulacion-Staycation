@@ -67,13 +67,15 @@
                 Any damages caused during the stay may result in additional charges.
               </p>
               <p class="card-text">
-                <strong>Additional Guests:</strong> The maximum standard occupancy per booking is six (6) guests. 
-                An additional charge of <strong>₱500 per extra person</strong> will be applied for groups exceeding six (6) guests. 
-                This ensures proper accommodation and maintenance of facilities for all guests.
+                <strong>Additional Guests:</strong> The maximum number of guests allowed per booking is 
+                <strong>eight (8)</strong>. The standard occupancy is six (6) guests. 
+                An additional charge of <strong>₱500 per extra person</strong> applies for the 7th and 8th guests. 
+                Bookings exceeding eight (8) guests are not permitted for safety and comfort reasons.
               </p>
             </div>
           </div>
         </div>
+
 
         <!-- Liability -->
         <div class="col-12 col-md-6">
