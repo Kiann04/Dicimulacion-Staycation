@@ -36,8 +36,8 @@
                             <td>{{ $booking->name }}</td>
                             <td>{{ $booking->phone }}</td>
                             <td>{{ $booking->guest_number }}</td>
-                            <td>{{ $booking->start_date }}</td>
-                            <td>{{ $booking->end_date }}</td>
+                            <td data-label="Arrival Date">{{ $booking->start_date }}</td>
+                            <td data-label="Departure Date">{{ $booking->end_date }}</td>
                             <td>
                                 <span class="status-badge {{ strtolower($booking->status) }}">
                                     {{ ucfirst($booking->status) }}
