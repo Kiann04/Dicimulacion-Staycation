@@ -32,16 +32,14 @@
                 <!-- Year -->
                 <div class="form-group mb-3">
                     <label for="report_year">Year:</label>
-                    <input type="number" id="report_year" name="report_year" min="2023" max="{{ date('Y') }}" value="{{ date('Y') }}" required>
+                    <input type="number" id="report_year" name="report_year" min="2023" max="{{ date('Y') }}" value="{{ date('Y') }}" required onchange="updateWeeks()">
                 </div>
 
                 <!-- Week (Shown only for Weekly Reports) -->
                 <div class="form-group mb-3" id="week_field" style="display: none;">
                     <label for="report_week">Week:</label>
                     <select id="report_week" name="report_week" class="form-control">
-                        @for ($i = 1; $i <= 52; $i++)
-                            <option value="{{ $i }}">Week {{ $i }}</option>
-                        @endfor
+                        <!-- Weeks will be dynamically generated -->
                     </select>
                 </div>
 
@@ -72,20 +70,49 @@
     </div>
 </div>
 
-<!-- ✅ JavaScript to toggle fields -->
+<!-- ✅ JavaScript -->
 <script>
 function toggleFields() {
     const type = document.getElementById('report_type').value;
     const weekField = document.getElementById('week_field');
     const monthField = document.getElementById('month_field');
 
-    // Hide all first
     weekField.style.display = 'none';
     monthField.style.display = 'none';
 
-    // Show based on type
-    if (type === 'Weekly') weekField.style.display = 'block';
-    else if (type === 'Monthly') monthField.style.display = 'block';
+    if (type === 'Weekly') {
+        weekField.style.display = 'block';
+        updateWeeks();
+    } else if (type === 'Monthly') {
+        monthField.style.display = 'block';
+    }
+}
+
+function updateWeeks() {
+    const year = document.getElementById('report_year').value;
+    const weekSelect = document.getElementById('report_week');
+    weekSelect.innerHTML = ''; // Clear old options
+
+    // Start from first Monday of the year
+    let startDate = new Date(year, 0, 1);
+    while (startDate.getDay() !== 1) { // 1 = Monday
+        startDate.setDate(startDate.getDate() + 1);
+    }
+
+    let weekNum = 1;
+    while (startDate.getFullYear() == year) {
+        let endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 6);
+
+        const option = document.createElement('option');
+        option.value = weekNum;
+        option.text = `Week ${weekNum} (${startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})`;
+
+        weekSelect.appendChild(option);
+
+        startDate.setDate(startDate.getDate() + 7);
+        weekNum++;
+    }
 }
 </script>
 </body>
