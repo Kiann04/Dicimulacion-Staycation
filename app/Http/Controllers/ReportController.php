@@ -17,22 +17,38 @@ class ReportController extends Controller
         $reportType = strtolower($request->input('report_type'));
         $year = $request->input('report_year');
         $month = $request->input('report_month');
+        $week = $request->input('report_week');
 
         // Redirect to the correct download route
         return redirect()->route('reports.download', [
             'type' => $reportType,
             'year' => $year,
             'month' => $month,
+            'week' => $week,
         ]);
     }
 
     /**
      * 🔹 Generates and downloads the PDF report
      */
-    public function download($type, $year, $month = null)
+    public function download($type, $year, $month = null, $week = null)
     {
-        // Determine report type and fetch data
-        if ($type === 'monthly' && $month) {
+        if ($type === 'weekly' && $week) {
+            // Compute start and end dates of the selected week
+            $startOfWeek = Carbon::now()->setISODate($year, $week)->startOfWeek(Carbon::MONDAY);
+            $endOfWeek = (clone $startOfWeek)->endOfWeek(Carbon::SUNDAY);
+
+            // Fetch bookings for that week
+            $bookings = Booking::with(['user', 'staycation'])
+                ->whereBetween('start_date', [$startOfWeek, $endOfWeek])
+                ->get();
+
+            $reportTitle = "Weekly Report - Week {$week} ({$startOfWeek->format('M d')} – {$endOfWeek->format('M d, Y')})";
+            $fileName = "weekly_report_week_{$week}_{$year}.pdf";
+            $reportType = 'Weekly';
+
+        } elseif ($type === 'monthly' && $month) {
+            // Fetch monthly bookings
             $bookings = Booking::with(['user', 'staycation'])
                 ->whereYear('start_date', $year)
                 ->whereMonth('start_date', $month)
@@ -42,7 +58,9 @@ class ReportController extends Controller
             $reportTitle = "Monthly Report - {$monthName} {$year}";
             $fileName = "monthly_report_{$year}_{$month}.pdf";
             $reportType = 'Monthly';
+
         } else {
+            // Fetch annual bookings
             $bookings = Booking::with(['user', 'staycation'])
                 ->whereYear('start_date', $year)
                 ->get();
@@ -59,6 +77,7 @@ class ReportController extends Controller
             'reportType' => $reportType,
             'year' => $year,
             'month' => $month,
+            'week' => $week,
         ]);
 
         // Download the PDF
