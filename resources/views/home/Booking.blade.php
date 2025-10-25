@@ -49,7 +49,7 @@
             <div class="mb-3">
               <label for="guest_number" class="form-label">Guests</label>
               <input type="number" id="guest_number" name="guest_number" class="form-control" 
-                placeholder="Guest/s" required min="1" value="{{ old('guest_number') }}">
+                placeholder="Guest/s" required min="1" max="8" value="{{ old('guest_number') }}">
             </div>
 
             <div class="row g-3 mb-3">
@@ -792,6 +792,13 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Local device time:", new Date());
     console.log("Philippine time:", new Date().toLocaleString("en-US", { timeZone: "Asia/Manila" }));
 });
+    guestInput.addEventListener("input", function () {
+        if (this.value > 8) {
+            alert("Maximum of 8 guests only.");
+            this.value = 8;
+        }
+        calculatePrice();
+    });
 </script>
 
 @if(session('availableStaycations') && session('availableStaycations')->count() > 0)

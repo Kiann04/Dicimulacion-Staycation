@@ -59,7 +59,7 @@ class BookingHistoryController extends Controller
     $request->validate([
         'name' => 'required|string|max:255',
         'phone' => 'required|string|max:20',
-        'guest_number' => 'required|integer|min:1',
+        'guest_number' => 'required|integer|min:1|max:8',
         'startDate' => 'required|date',
         'endDate' => 'required|date|after:startDate',
     ]);
