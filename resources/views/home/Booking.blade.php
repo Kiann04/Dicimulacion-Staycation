@@ -643,34 +643,43 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 🧮 Price Calculation
     function calculatePrice() {
-        if (startInput.value && endInput.value) {
-            const start = new Date(startInput.value);
-            const end = new Date(endInput.value);
+      if (startInput.value && endInput.value) {
+          const start = new Date(startInput.value);
+          const end = new Date(endInput.value);
 
-            if (end > start) {
-                const nights = Math.floor((end - start) / (1000 * 60 * 60 * 24));
-                let total = nights * pricePerNight;
+          if (end > start) {
+              const nights = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+              let total = nights * pricePerNight;
 
-                const guests = parseInt(guestInput.value) || 0;
-                if (guests > 6) {
-                    const extraGuests = guests - 6;
-                    const extraFee = extraGuests * 500;
-                    total += extraFee;
-                    totalPriceElem.textContent =
-                        `Total for ${nights} night${nights > 1 ? 's' : ''} (₱${extraFee.toLocaleString()} extra for ${extraGuests} guest${extraGuests > 1 ? 's' : ''}): ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-                } else {
-                    totalPriceElem.textContent =
-                        `Total for ${nights} night${nights > 1 ? 's' : ''}: ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-                }
+              let guests = parseInt(guestInput.value) || 0;
 
-                priceSummary.style.display = "block";
-            } else {
-                priceSummary.style.display = "none";
-            }
-        } else {
-            priceSummary.style.display = "none";
-        }
-    }
+              // 🔒 Limit guests to maximum of 8
+              if (guests > 8) {
+                  alert("Maximum of 8 guests only.");
+                  guests = 8;
+                  guestInput.value = 8;
+              }
+
+              // 💰 Add ₱500 per extra guest beyond 6
+              if (guests > 6) {
+                  const extraGuests = guests - 6;
+                  const extraFee = extraGuests * 500;
+                  total += extraFee;
+                  totalPriceElem.textContent =
+                      `Total for ${nights} night${nights > 1 ? 's' : ''} (₱${extraFee.toLocaleString()} extra for ${extraGuests} guest${extraGuests > 1 ? 's' : ''}): ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+              } else {
+                  totalPriceElem.textContent =
+                      `Total for ${nights} night${nights > 1 ? 's' : ''}: ₱${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+              }
+
+              priceSummary.style.display = "block";
+          } else {
+              priceSummary.style.display = "none";
+          }
+      } else {
+          priceSummary.style.display = "none";
+      }
+  }
 
     // Date change listeners
     startInput.addEventListener("change", function () {
