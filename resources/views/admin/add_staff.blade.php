@@ -3,7 +3,9 @@
 @section('Aside')
     @include('Aside')
 @endsection
-
+<body class="admin-dashboard">
+  <div class="content-wrapper">
+    <div class="main-content">
 @section('content')
 <div class="container my-5">
     <h2 class="fw-bold mb-4">Create Staff Account</h2>
