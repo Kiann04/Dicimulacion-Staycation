@@ -24,7 +24,9 @@
         <thead>
           <tr>
             <th>ID</th><th>Staycation</th><th>Customer</th><th>Phone</th>
-            <th>Arrival</th><th>Departure</th><th>Payment</th><th>Status</th><th>Proof of Payment</th>
+            <th>Arrival</th><th>Departure</th><th>Payment</th>
+            <th id="statusHeader" style="cursor: pointer;">Status ⬍</th>
+            <th>Proof of Payment</th>
           </tr>
         </thead>
         <tbody>
@@ -57,6 +59,7 @@
 
 <!-- 🔍 Added: Instant Table Search Script -->
 <script>
+<script>
 document.getElementById('bookingSearch').addEventListener('keyup', function() {
   const searchValue = this.value.toLowerCase();
   const rows = document.querySelectorAll('#bookingsTable tbody tr');
@@ -66,5 +69,36 @@ document.getElementById('bookingSearch').addEventListener('keyup', function() {
     row.style.display = text.includes(searchValue) ? '' : 'none';
   });
 });
+
+// ✅ Click to filter by Completed / Confirmed
+document.getElementById('statusHeader').addEventListener('click', function() {
+  const rows = document.querySelectorAll('#bookingsTable tbody tr');
+  let isFiltered = this.dataset.filtered === "true";
+
+  rows.forEach(row => {
+    const statusCell = row.querySelector('td:nth-child(8)'); // 8th column = status
+    if (!statusCell) return;
+
+    const statusText = statusCell.textContent.trim().toLowerCase();
+
+    // If already filtered, show all
+    if (isFiltered) {
+      row.style.display = '';
+    } else {
+      // Show only completed or confirmed
+      if (statusText === 'completed' || statusText === 'confirmed') {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    }
+  });
+
+  // Toggle state
+  this.dataset.filtered = isFiltered ? "false" : "true";
+  this.textContent = isFiltered ? 'Status ⬍' : 'Status (Filtered)';
+});
 </script>
+</script>
+
 @endsection
