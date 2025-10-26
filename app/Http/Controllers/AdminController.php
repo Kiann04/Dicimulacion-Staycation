@@ -592,6 +592,11 @@ class AdminController extends Controller
         // Return the view
         return view('admin.cancelled', compact('cancelledBookings'));
     }
+    public function addStaff()
+    {
+        return view('admin.add_staff');
+    }
+
     public function createStaff(Request $request)
     {
         $request->validate([
@@ -604,7 +609,7 @@ class AdminController extends Controller
             'name'      => $request->name,
             'email'     => $request->email,
             'password'  => Hash::make($request->password),
-            'usertype'  => 'staff', // 👈 sets usertype as staff
+            'usertype'  => 'staff',
         ]);
 
         return redirect()->back()->with('success', 'Staff account created successfully!');
