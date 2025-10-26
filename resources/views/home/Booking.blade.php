@@ -755,8 +755,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             display: event.display || "background",
                             backgroundColor: event.color || "#f56565",
                             borderColor: event.color || "#f56565"
-                            classNames: event.className ? [event.className] : []
-
+                            
                         };
                     })
                     .filter(event => new Date(event.end) >= todayDate); // hide past events
