@@ -350,6 +350,12 @@
 .transition-hover:hover i {
     transform: scale(1.2);
 }
+.fc-event.blocked-date {
+      color: #000 !important;        /* 🖤 black font */
+      font-weight: 600;             /* bold for visibility */
+      background-color: #e5e7eb !important; /* light gray background */
+      border: none;
+  }
 </style>
 
 
