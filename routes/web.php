@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\Auth\NewPasswordController;
+
+use Illuminate\Support\Collection;
 Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
     ->middleware('guest')
     ->name('password.reset');
@@ -134,20 +136,40 @@ Route::get('/test-gemini', function () {
 // =========================
 // Calendar Events
 // =========================
+
 Route::get('/events/{staycation_id}', function ($staycation_id) {
-    return DB::table('bookings')
+    // 🟥 1. Booked Dates
+    $booked = DB::table('bookings')
         ->where('staycation_id', $staycation_id)
         ->select(
             DB::raw("'Booked' as title"),
             DB::raw("start_date as start"),
-            // Add 1 day to end_date
-            DB::raw("DATE_ADD(end_date, INTERVAL 1 DAY) as end"),
+            DB::raw("DATE_ADD(end_date, INTERVAL 1 DAY) as end"), // include last night
             DB::raw("'background' as display"),
+            DB::raw("'#f87171' as color"), // red
             DB::raw("'booked-date' as className")
         )
         ->get();
-});
 
+    // 🟦 2. Blocked Dates
+    $blocked = DB::table('blocked_dates')
+        ->where('staycation_id', $staycation_id)
+        ->select(
+            DB::raw("COALESCE(reason, 'Blocked') as title"),
+            DB::raw("start_date as start"),
+            DB::raw("DATE_ADD(end_date, INTERVAL 1 DAY) as end"),
+            DB::raw("'background' as display"),
+            DB::raw("'#6b7280' as color"), // gray
+            DB::raw("'blocked-date' as className")
+        )
+        ->get();
+
+    // ✅ 3. Combine both collections
+    $events = $booked->merge($blocked);
+
+    // ✅ 4. Return JSON response
+    return response()->json($events);
+});
 // =========================
 // Dashboard (Sanctum/Jetstream)
 // =========================
