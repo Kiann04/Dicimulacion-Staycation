@@ -640,6 +640,15 @@ document.addEventListener('DOMContentLoaded', () => {
       font-weight: 600;
       opacity: 0.9 !important;
   }
+    .fc-bg-event {
+      opacity: 1 !important;
+  }
+
+  /* Optional: keep text readable */
+  .fc-event-title {
+      color: #000 !important;
+      font-weight: 600;
+  }
 </style>
 
 <script>
