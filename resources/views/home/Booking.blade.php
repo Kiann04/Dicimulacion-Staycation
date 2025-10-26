@@ -612,11 +612,33 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
 <style>
-  .fc-event.blocked-date {
+  /* Calendar appearance */
+  #calendar {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .fc-toolbar-title {
+      font-size: 1.4rem !important;
+      font-weight: 700;
+      color: #1e293b;
+  }
+  .fc-daygrid-day-number {
+      font-weight: 600;
+      color: #1e293b;
+  }
+  /* Booked (red) */
+  .fc-event[style*="background-color: rgb(245, 101, 101)"] {
+      background-color: #ef4444 !important;
+      opacity: 0.8 !important;
+  }
+  /* Blocked (yellow) */
+  .fc-event[style*="background-color: rgb(252, 211, 77)"] {
+      background-color: #facc15 !important;
       color: #000 !important;
       font-weight: 600;
-      background-color: #e5e7eb !important;
-      border: none;
+      opacity: 0.9 !important;
   }
 </style>
 
