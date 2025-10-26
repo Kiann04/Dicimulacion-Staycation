@@ -741,24 +741,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 todayDate.setHours(0, 0, 0, 0);
 
                 // Map events from server (both booked + blocked)
-                const calendarEvents = events
-                    .map(event => {
-                        const startPH = new Date(new Date(event.start).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
-                        const endPH = new Date(new Date(event.end).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
-                        endPH.setDate(endPH.getDate() - 1); // include last day
+                const calendarEvents = events.map(event => {
+                const startPH = new Date(new Date(event.start).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+                const endPH = new Date(new Date(event.end).toLocaleString("en-US", { timeZone: "Asia/Manila" }));
+                endPH.setDate(endPH.getDate() - 1); // include last day
 
-                        return {
-                            title: event.title,
-                            start: startPH.toISOString().split("T")[0],
-                            end: endPH.toISOString().split("T")[0],
-                            allDay: true,
-                            display: event.display || "background",
-                            backgroundColor: event.color || "#f56565",
-                            borderColor: event.color || "#f56565"
-                            
-                        };
-                    })
-                    .filter(event => new Date(event.end) >= todayDate); // hide past events
+                return {
+                    title: event.title,
+                    start: startPH.toISOString().split("T")[0],
+                    end: endPH.toISOString().split("T")[0],
+                    allDay: true,
+                    display: event.display || "background",
+                    backgroundColor: event.color || "#f56565",
+                    borderColor: event.color || "#f56565",
+                    classNames: event.className ? [event.className] : [] // ✅ key fix
+                };
+            }).filter(event => new Date(event.end) >= todayDate);
 
                 const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
                     initialView: "dayGridMonth",
