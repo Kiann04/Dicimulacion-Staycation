@@ -601,9 +601,14 @@ class AdminController extends Controller
     {
         $request->validate([
             'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
+            'email'    => 'required|email',
             'password' => 'required|min:6',
         ]);
+
+        // Check if email already exists
+        if (User::where('email', $request->email)->exists()) {
+            return redirect()->back()->with('error', 'A staff account with this email already exists.');
+        }
 
         User::create([
             'name'      => $request->name,
@@ -614,9 +619,6 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Staff account created successfully!');
     }
-
-
-
 }
 
 
