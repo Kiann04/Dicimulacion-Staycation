@@ -1,41 +1,26 @@
 @extends('layouts.default')
 
-@section('Aside')
-    @include('Aside')
-@endsection
-<body class="admin-dashboard">
-  <div class="content-wrapper">
-    <div class="main-content">
 @section('content')
-<div class="container my-5">
-    <h2 class="fw-bold mb-4">Create Staff Account</h2>
+<div class="container mt-4">
+    <h3 class="fw-bold mb-4">Add Staff Account</h3>
+    <form action="{{ route('admin.createStaff') }}" method="POST">
+        @csrf
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
 
-    @if (session('success'))
-        <div class="alert alert-success mb-3">{{ session('success') }}</div>
-    @endif
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
 
-    <div class="card shadow-sm p-4 border-0 rounded-4">
-        <form action="{{ route('admin.createStaff') }}" method="POST">
-            @csrf
-            <div class="mb-3">
-                <label class="form-label">Full Name</label>
-                <input type="text" name="name" class="form-control" required>
-            </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
 
-            <div class="mb-3">
-                <label class="form-label">Email Address</label>
-                <input type="email" name="email" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary">
-                <i class="fa-solid fa-user-plus"></i> Create Staff
-            </button>
-        </form>
-    </div>
+        <button type="submit" class="btn btn-primary">Create Staff</button>
+    </form>
 </div>
 @endsection
