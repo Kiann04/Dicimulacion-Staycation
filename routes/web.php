@@ -316,13 +316,18 @@ Route::prefix('admin')->group(function () {
         ->name('admin.cancelled');
 });
 use App\Http\Controllers\BlockedDateController;
-
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::post('/admin/blocked-dates', [BlockedDateController::class, 'store'])->name('admin.blocked_dates.store');
-    Route::get('/admin/events/{staycationId}', [BlockedDateController::class, 'getEvents']);
-    Route::get('/admin/blocked-dates', [BlockedDateController::class, 'index'])->name('admin.blocked_dates');
+    // Show blocked dates + form
+    Route::get('/admin/blocked-dates', [BlockedDateController::class, 'index'])
+        ->name('admin.blocked_dates.index');
 
+    // Store new blocked date
+    Route::post('/admin/blocked-dates', [BlockedDateController::class, 'store'])
+        ->name('admin.blocked_dates.store');
 
+    // Calendar events (booked + blocked)
+    Route::get('/admin/events/{staycationId}', [BlockedDateController::class, 'getEvents'])
+        ->name('admin.events');
 });
 use App\Http\Controllers\ReportController;
 
