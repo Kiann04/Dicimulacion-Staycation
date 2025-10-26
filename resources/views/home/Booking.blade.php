@@ -640,6 +640,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- FullCalendar + Price Calculation -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+<style>
+  .fc-event.blocked-date {
+      color: #000 !important;
+      font-weight: 600;
+      background-color: #e5e7eb !important;
+      border: none;
+  }
+</style>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const startInput = document.getElementById("startDate");
