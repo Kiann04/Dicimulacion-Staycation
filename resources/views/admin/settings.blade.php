@@ -194,6 +194,15 @@
           </a>
         </div>
 
+        <!-- Create Staff Account -->
+        <div class="setting-card">
+          <h3><i class="fa-solid fa-user-plus"></i> Create Staff Account</h3>
+          <p>Create a new staff account to manage bookings and staycation operations.</p>
+          <a href="{{ route('admin.addStaff') }}" class="settings-btn">
+            <i class="fa-solid fa-user-gear"></i> Add Staff
+          </a>
+        </div>
+        
 
       </section>
     </div>

@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\BookingHistory;
 use App\Mail\BookingCancelled;
-
+use Illuminate\Support\Facades\Hash;
 use App\Models\BlockedDate;
 
 class AdminController extends Controller
@@ -591,6 +591,23 @@ class AdminController extends Controller
 
         // Return the view
         return view('admin.cancelled', compact('cancelledBookings'));
+    }
+    public function createStaff(Request $request)
+    {
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+        ]);
+
+        User::create([
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'password'  => Hash::make($request->password),
+            'usertype'  => 'staff', // 👈 sets usertype as staff
+        ]);
+
+        return redirect()->back()->with('success', 'Staff account created successfully!');
     }
 
 

@@ -337,3 +337,6 @@ Route::post('admin/reports/generate', [ReportController::class, 'generate'])
     ->name('admin.reports.generate');
 
 Route::get('admin/reports/download/{type}/{year}/{month?}/{week?}', [ReportController::class, 'download'])->name('reports.download');
+
+Route::get('/admin/add-staff', [AdminController::class, 'addStaff'])->name('admin.addStaff');
+Route::post('/admin/create-staff', [AdminController::class, 'createStaff'])->name('admin.createStaff');
