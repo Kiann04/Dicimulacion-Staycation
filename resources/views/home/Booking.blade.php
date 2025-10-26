@@ -361,6 +361,12 @@
 
 
 <style>
+  .fc-event.blocked-date {
+      color: #000 !important;        /* 🖤 black font */
+      font-weight: 600;             /* bold for visibility */
+      background-color: #e5e7eb !important; /* light gray background */
+      border: none;
+  }
 /* Modern Hover Effects for Service Cards (same as before) */
 .service-card {
     cursor: pointer;
