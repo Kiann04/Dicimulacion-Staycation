@@ -2,24 +2,6 @@
 @section('Header')
     @include('Header')
 @endsection
-{{-- ✅ Add this before your scripts --}}
-<style>
-  /* 🔴 Booked Dates */
-  .fc-event.booked-date {
-      color: #fff !important;
-      background-color: #ef4444 !important;
-      border: none;
-      font-weight: 600;
-  }
-
-  /* ⚫ Blocked Dates */
-  .fc-event.blocked-date {
-      color: #000 !important;
-      background-color: #e5e7eb !important; /* light gray */
-      border: none;
-      font-weight: 600;
-  }
-</style>
 <section class="container my-5 pt-5">
   <div class="row g-4 align-items-start">
 
@@ -368,23 +350,11 @@
 .transition-hover:hover i {
     transform: scale(1.2);
 }
-.fc-event.blocked-date {
-      color: #000 !important;        /* 🖤 black font */
-      font-weight: 600;             /* bold for visibility */
-      background-color: #e5e7eb !important; /* light gray background */
-      border: none;
-  }
 </style>
 
 
 
 <style>
-  .fc-event.blocked-date {
-      color: #000 !important;        /* 🖤 black font */
-      font-weight: 600;             /* bold for visibility */
-      background-color: #e5e7eb !important; /* light gray background */
-      border: none;
-  }
 /* Modern Hover Effects for Service Cards (same as before) */
 .service-card {
     cursor: pointer;
