@@ -59,7 +59,6 @@
 
 <!-- 🔍 Added: Instant Table Search Script -->
 <script>
-<script>
 document.getElementById('bookingSearch').addEventListener('keyup', function() {
   const searchValue = this.value.toLowerCase();
   const rows = document.querySelectorAll('#bookingsTable tbody tr');
@@ -70,35 +69,40 @@ document.getElementById('bookingSearch').addEventListener('keyup', function() {
   });
 });
 
-// ✅ Click to filter by Completed / Confirmed
-document.getElementById('statusHeader').addEventListener('click', function() {
+// ✅ Cycle between: All → Confirmed → Completed → All
+const statusHeader = document.getElementById('statusHeader');
+let filterMode = 'all'; // current filter mode
+
+statusHeader.addEventListener('click', function() {
   const rows = document.querySelectorAll('#bookingsTable tbody tr');
-  let isFiltered = this.dataset.filtered === "true";
+
+  // Cycle filter mode
+  if (filterMode === 'all') filterMode = 'confirmed';
+  else if (filterMode === 'confirmed') filterMode = 'completed';
+  else filterMode = 'all';
 
   rows.forEach(row => {
-    const statusCell = row.querySelector('td:nth-child(8)'); // 8th column = status
+    const statusCell = row.querySelector('td:nth-child(8)');
     if (!statusCell) return;
-
     const statusText = statusCell.textContent.trim().toLowerCase();
 
-    // If already filtered, show all
-    if (isFiltered) {
+    // Show based on filter mode
+    if (filterMode === 'all') {
       row.style.display = '';
-    } else {
-      // Show only completed or confirmed
-      if (statusText === 'completed' || statusText === 'confirmed') {
-        row.style.display = '';
-      } else {
-        row.style.display = 'none';
-      }
+    } else if (filterMode === 'confirmed') {
+      row.style.display = statusText === 'confirmed' ? '' : 'none';
+    } else if (filterMode === 'completed') {
+      row.style.display = statusText === 'completed' ? '' : 'none';
     }
   });
 
-  // Toggle state
-  this.dataset.filtered = isFiltered ? "false" : "true";
-  this.textContent = isFiltered ? 'Status ⬍' : 'Status (Filtered)';
+  // Update header label
+  if (filterMode === 'all') {
+    this.textContent = 'Status ⬍';
+  } else {
+    this.textContent = `Status (${filterMode.charAt(0).toUpperCase() + filterMode.slice(1)})`;
+  }
 });
-</script>
 </script>
 
 @endsection
