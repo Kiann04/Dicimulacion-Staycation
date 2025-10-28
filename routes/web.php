@@ -340,3 +340,7 @@ Route::get('admin/reports/download/{type}/{year}/{month?}/{week?}', [ReportContr
 
 Route::get('/admin/add-staff', [AdminController::class, 'addStaff'])->name('admin.addStaff');
 Route::post('/admin/create-staff', [AdminController::class, 'createStaff'])->name('admin.createStaff');
+Route::get('/admin/staff/list', [AdminController::class, 'index'])->name('admin.staffList');
+
+    // delete staff
+Route::delete('/admin/staff/delete/{id}', [AdminController::class, 'destroy'])->name('admin.deleteStaff');

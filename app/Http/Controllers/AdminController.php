@@ -619,6 +619,25 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Staff account created successfully!');
     }
+    public function index()
+    {
+        $staff = User::where('usertype', 'staff')->get();
+        return view('admin.staff.list', compact('staff'));
+    }
+
+    // Delete a staff account
+    public function destroy($id)
+    {
+        $staff = User::findOrFail($id);
+
+        if ($staff->usertype === 'admin') {
+            return redirect()->back()->with('error', 'You cannot delete an admin account.');
+        }
+
+        $staff->delete();
+
+        return redirect()->back()->with('success', 'Staff account deleted successfully.');
+    }
 }
 
 

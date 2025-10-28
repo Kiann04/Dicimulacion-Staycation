@@ -203,6 +203,13 @@
           </a>
         </div>
         
+        <div class="setting-card">
+          <h3><i class="fa-solid fa-users"></i> Manage Staff Accounts</h3>
+          <p>View all staff accounts and delete if necessary.</p>
+          <a href="{{ route('admin.staffList') }}" class="settings-btn">
+            <i class="fa-solid fa-list"></i> View Staff List
+          </a>
+        </div>
 
       </section>
     </div>
