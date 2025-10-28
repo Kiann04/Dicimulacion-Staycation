@@ -73,76 +73,70 @@ document.addEventListener("DOMContentLoaded", () => {
   closeBtn.addEventListener("click", () => chatbotContainer.classList.add("hidden"));
 
   // ✅ Expanded FAQ knowledge base (from your paper)
- const faq = [
+const faq = [
   // 🧾 BOOKING
-  { keywords: ["book","reserve","how to book","make reservation","booking process","how do i book"], reply: "📝 You can book directly on our website! Go to the Booking page, choose your house, select your date, and fill out the booking form." },
-  { keywords: ["available","availability","vacant","check house"], reply: "📅 You can check available houses and dates on our Booking page before confirming your stay." },
-  { keywords: ["house 1","house one"], reply: "🏠 House 1 offers a cozy stay with modern amenities — you can book it on our Booking page." },
-  { keywords: ["house 2","house two"], reply: "🏡 House 2 provides comfort and privacy — you can reserve it directly on the website." },
-  { keywords: ["house 3","house three"], reply: "🏡 House 3 can be booked on our website — select it from the Booking page and pick your preferred dates." },
-  { keywords: ["house 4","house four"], reply: "🏡 House 4 features elegant interiors and access to shared pool amenities — book it online anytime!" },
-  { keywords: ["house 5","house five"], reply: "🏡 House 5 is perfect for groups or families. Check availability on the Booking page." },
-  { keywords: ["house 6","house six"], reply: "🏡 House 6 offers relaxing vibes with full amenities — book it directly on our website." },
-  { keywords: ["house 7","house seven"], reply: "🏡 House 7 provides a great view and cozy ambiance — available for online booking." },
-  { keywords: ["house 8","house eight"], reply: "🏡 House 8 is designed for comfort and convenience. You can reserve it online anytime." },
-  { keywords: ["confirm","approval","approved","waiting","pending"], reply: "✅ After you submit your booking, our admin will review it. Once approved, you’ll receive a confirmation email or see it on your account page." },
-  { keywords: ["reschedule","move date","change date","change schedule"], reply: "📅 You can reschedule your stay at least 14 days before your booked date. Contact the admin for assistance." },
-  { keywords: ["cancel","refund","cancel booking","cancellation"], reply: "❌ Cancellations are not allowed, but you can reschedule at least 14 days in advance. No-shows without notice forfeit the booking payment." },
-  { keywords: ["edit booking","change booking","modify booking"], reply: "✏️ To make changes to your booking, please message our admin through the Contact Us page." },
+  { keywords: ["book","reserve","how to book","mag book","paano mag book","reservation"], reply: "📝 You can book directly on our website! / Pwede kang mag-book sa aming website. Punta ka lang sa **Booking page**, piliin ang bahay at petsa, tapos i-fill out ang form." },
+  { keywords: ["available","availability","vacant","may bakante","bakante"], reply: "📅 You can check available houses on our Booking page. / Pwede mong makita ang mga bakanteng bahay sa Booking page ng aming website." },
+  { keywords: ["house 1","house one"], reply: "🏠 House 1 offers a cozy stay with modern amenities — maaari mong i-book ito sa Booking page." },
+  { keywords: ["house 2","house two"], reply: "🏡 House 2 provides comfort and privacy — available ito para sa booking sa aming website." },
+  { keywords: ["house 3","house three"], reply: "🏡 House 3 can be booked on our website — piliin lang ito sa Booking page at pumili ng petsa mo." },
+  { keywords: ["confirm","approval","approved","waiting","pending","kumpirma"], reply: "✅ After you submit your booking, you’ll receive a confirmation once approved. / Kapag na-submit mo na ang booking, makakatanggap ka ng kumpirmasyon kapag naaprubahan ng admin." },
+  { keywords: ["reschedule","move date","change date","lipat petsa"], reply: "📅 You can reschedule your stay at least 14 days before your booked date. / Pwede mong ilipat ang petsa ng iyong stay 14 na araw bago ang booking mo." },
+  { keywords: ["cancel","refund","cancel booking","kansel"," kansel booking"], reply: "❌ Cancellations aren’t allowed, pero pwede kang mag-reschedule 14 days bago ang booking date. / Hindi pinapayagan ang cancellation, pero pwede kang magpalit ng petsa." },
+  { keywords: ["edit booking","change booking","modify booking","baguhin booking"], reply: "✏️ To make changes, please contact our admin through the Contact Us page. / Para baguhin ang booking, makipag-ugnayan sa admin sa Contact Us page." },
 
   // 💰 PAYMENT
-  { keywords: ["payment","gcash","maya","bank","card","bpi","pay","how to pay","payment options"], reply: "💳 We accept **GCash, debit, and credit card payments**. A **50% downpayment** confirms your booking. After paying, upload your proof of payment on the website." },
-  { keywords: ["downpayment","half payment"], reply: "💰 A 50% downpayment is required to confirm your reservation. The remaining balance can be paid before check-in." },
-  { keywords: ["full payment","remaining balance"], reply: "💸 You may also pay the full amount in advance, or settle the remaining balance upon arrival." },
-  { keywords: ["proof","upload payment","receipt","payment proof"], reply: "📤 Upload your payment proof on your account’s Payment Confirmation section after booking." },
-  { keywords: ["confirmation","payment received","payment verified"], reply: "✅ Once your payment is verified by our admin, you’ll receive an email or dashboard notification confirming your booking." },
-  { keywords: ["refund policy"], reply: "⚠️ Refunds are not available. However, you may reschedule your stay at least 14 days before your check-in date." },
+  { keywords: ["payment","gcash","maya","bank","card","bpi","pay","bayad","magbayad","how to pay"], reply: "💳 We accept **GCash, debit, or credit card** payments. / Tumanggap kami ng **GCash, debit, o credit card**. 50% downpayment ang kailangan para ma-confirm ang booking mo. Pagkatapos magbayad, i-upload ang proof of payment sa website." },
+  { keywords: ["downpayment","half payment","deposit","advance"], reply: "💰 A 50% downpayment confirms your reservation. / Kailangan ng **50% downpayment** para makumpirma ang iyong booking." },
+  { keywords: ["proof","upload payment","receipt","payment proof","resibo"], reply: "📤 Upload your payment proof sa **Payment Confirmation** section ng website pagkatapos magbayad." },
+  { keywords: ["refund policy","refund"], reply: "⚠️ Refunds are not available. / Walang refund, pero pwede kang mag-reschedule 14 days bago ang stay mo." },
 
   // 🕒 CHECK-IN / CHECK-OUT
-  { keywords: ["checkin","check-in","check in"], reply: "⏰ Check-in time is **2:00 PM**." },
-  { keywords: ["checkout","check-out","check out"], reply: "🕛 Check-out time is **12:00 PM noon**." },
-  { keywords: ["late checkout","late check-out","late check in"], reply: "⚠️ Late check-out may incur additional charges. Please inform the admin in advance if needed." },
-  { keywords: ["early checkin","early check-in"], reply: "🌅 Early check-in may be allowed depending on availability. Please message the admin for approval." },
+  { keywords: ["checkin","check-in","check in","oras ng check in"], reply: "⏰ Check-in time is **2:00 PM**. / Ang check-in time ay **2:00 PM**." },
+  { keywords: ["checkout","check-out","check out","oras ng check out"], reply: "🕛 Check-out time is **12:00 PM noon**. / Ang check-out time ay **12:00 PM ng tanghali**." },
+  { keywords: ["late checkout","late check-out","late check in","nahuli"], reply: "⚠️ Late check-out may have extra charges. / Maaaring may dagdag na bayad kapag late ang pag-check-out." },
+  { keywords: ["early checkin","early check-in","maagang check in"], reply: "🌅 Early check-in depends on availability. / Ang maagang check-in ay depende sa availability — paki-message ang admin para magpa-approve." },
 
   // 🧍‍♂️ GUEST POLICIES
-  { keywords: ["extra guest","additional guest","more guests"], reply: "👥 Each extra guest costs **₱500 per person per night**." },
-  { keywords: ["guest limit","maximum","how many people","capacity"], reply: "🏠 Each house has its own guest limit, listed on the Booking page." },
-  { keywords: ["children","kids","baby","infant"], reply: "👶 Children are allowed! Please include them in your total guest count when booking." },
-  { keywords: ["pets","dog","cat","pet friendly"], reply: "🐾 Yes! We are pet-friendly — no extra charge for your furry friends!" },
+  { keywords: ["extra guest","additional guest","more guests","dagdag tao","kasama"], reply: "👥 Each extra guest is ₱500 per person per night. / May dagdag na **₱500 bawat tao bawat gabi** para sa extra guest." },
+  { keywords: ["guest limit","maximum","ilan pwede","capacity","ilan tao"], reply: "🏠 Each house has its own guest limit shown on the Booking page. / May maximum number of guests bawat bahay — makikita ito sa Booking page." },
+  { keywords: ["children","kids","baby","bata"], reply: "👶 Children are allowed! / Pinapayagan ang mga bata — isama lang sa bilang ng guests kapag magbo-book." },
+  { keywords: ["pets","dog","cat","aso","pusa","pet friendly"], reply: "🐾 Yes! Pet-friendly kami — walang dagdag bayad para sa iyong alagang hayop." },
 
   // 🏖️ AMENITIES
-  { keywords: ["amenities","features","services"], reply: "🌟 Our amenities include WiFi, kitchen, BBQ grill, Netflix, parking, pool access, and pet-friendly rooms!" },
-  { keywords: ["wifi","internet"], reply: "🌐 Yes, we have free WiFi in all houses. The password will be provided upon check-in." },
-  { keywords: ["pool","swimming","swim"], reply: "🏊 Our pool is shared among every three units and open daily from **8 AM to 10 PM**." },
-  { keywords: ["breakfast","food","coffee","snacks"], reply: "☕ Yes! Breakfast is provided, and early guests receive complimentary coffee and snacks." },
-  { keywords: ["parking","car","garage"], reply: "🚗 Free parking is available both on-site and along the street." },
-  { keywords: ["grill","bbq","barbecue"], reply: "🔥 BBQ grills are available for guests to use near the pool area." },
-  { keywords: ["tv","netflix","entertainment"], reply: "📺 Each house comes with a Smart TV and free Netflix access." },
+  { keywords: ["amenities","features","services","amenidad"], reply: "🌟 Amenities include WiFi, kitchen, BBQ grill, Netflix, parking, pool access, at pet-friendly rooms. / Kumpleto sa WiFi, kusina, BBQ grill, Netflix, parking, at pool!" },
+  { keywords: ["wifi","internet"], reply: "🌐 Yes, may free WiFi sa lahat ng bahay. / Oo, may libreng WiFi — ibibigay ang password pag check-in." },
+  { keywords: ["pool","swimming","swim","paligo","swimming pool"], reply: "🏊 The pool is shared among every three units at open daily 8 AM–10 PM. / Ang pool ay bukas mula **8 AM hanggang 10 PM**, at pinaghahati-hatian ng tatlong units." },
+  { keywords: ["breakfast","food","coffee","snacks","pagkain","almusal"], reply: "☕ Yes! May free breakfast at libreng kape o snacks sa maagang dating. / Free breakfast and coffee for early guests!" },
+  { keywords: ["parking","car","garage","sasakyan"], reply: "🚗 Free parking on-site and on the street. / May **libreng parking** sa loob at sa labas ng lugar." },
+  { keywords: ["grill","bbq","barbecue","ihawan"], reply: "🔥 May BBQ grills na pwede mong gamitin malapit sa pool area. / Pwede kang mag-ihaw, basta linisin pagkatapos gamitin." },
+  { keywords: ["tv","netflix","entertainment"], reply: "📺 May Smart TV with Netflix sa bawat bahay. / Lahat ng units ay may TV na may Netflix access." },
 
   // 🏡 HOUSE DETAILS
-  { keywords: ["houses","rooms","units"], reply: "🏡 We have **8 unique staycation houses**, each with its own design and amenities. You can view them on the 'Houses' page." },
-  { keywords: ["long stay","monthly","28 days","long term"], reply: "📆 Yes! We allow long-term stays (28 days or more) with special rates." },
-  { keywords: ["cleaning","housekeeping"], reply: "🧹 Rooms are cleaned before every check-in. Extra cleaning services are available upon request." },
-  { keywords: ["aircon","air conditioning"], reply: "❄️ All houses include air conditioning for your comfort." },
-  { keywords: ["kitchen","cook","cooking"], reply: "🍳 Each unit has a kitchen where you can cook your own meals." },
-  { keywords: ["security","safe","guard"], reply: "🛡️ The area is gated with 24/7 security for your safety." },
+  { keywords: ["houses","rooms","units","bahay","kwarto"], reply: "🏡 We have **8 unique houses**, bawat isa may sariling design at amenities. / Mayroon kaming **8 bahay** na may iba't ibang style at kumpletong gamit." },
+  { keywords: ["long stay","monthly","28 days","long term","matagal"], reply: "📆 Yes, we allow long-term stays (28 days or more). / Pwede kang mag-stay ng pangmatagalan, 28 days o higit pa." },
+  { keywords: ["cleaning","housekeeping","linis","clean"], reply: "🧹 Nililinis ang mga rooms bago ang bawat check-in. / Pwede ring humingi ng extra cleaning kapag kailangan." },
+  { keywords: ["aircon","air conditioning","aircon ba"], reply: "❄️ Lahat ng bahay ay may aircon para sa iyong comfort." },
+  { keywords: ["kitchen","cook","cooking","lutuan","magluto"], reply: "🍳 May kusina ang bawat unit kung saan pwede kang magluto ng sarili mong pagkain." },
+  { keywords: ["security","safe","guard","bantay","seguridad"], reply: "🛡️ May 24/7 guard at gated area para sa kaligtasan ng guests." },
 
   // 🔒 ACCOUNT / LOGIN
-  { keywords: ["account","login","register","signup","sign up"], reply: "👤 You can register for an account to manage bookings, view payment history, and message the admin." },
-  { keywords: ["forgot password","reset password","recover account"], reply: "🔑 You can reset your password on the Login page by clicking 'Forgot Password'." },
-  { keywords: ["update account","edit profile"], reply: "⚙️ You can update your profile information and password in your account settings." },
+  { keywords: ["account","login","register","signup","sign up","mag register"], reply: "👤 Pwede kang gumawa ng account para i-manage ang booking, makita ang payment history, at makipag-ugnayan sa admin." },
+  { keywords: ["forgot password","reset password","recover account","nakalimutan password"], reply: "🔑 Kung nakalimutan mo ang password, i-click ang 'Forgot Password' sa Login page para mag-reset." },
+  { keywords: ["update account","edit profile","baguhin profile"], reply: "⚙️ Pwede mong baguhin ang iyong profile o password sa Account Settings." },
 
   // 📞 CONTACT
-  { keywords: ["contact","admin","owner","message","help","support"], reply: "📞 You can contact the admin via the **Contact Us** tab or send a message directly through your account dashboard." },
-  { keywords: ["owner","host"], reply: "👨‍💼 The owner is **Mr. Edgar Fuentes Dicimulacion**, a Computer Engineer with over 7 years of hosting experience." },
-  { keywords: ["facebook","social","page","messenger"], reply: "💬 You can reach us on Facebook Messenger via our official Dicimulacion Staycation page." },
+  { keywords: ["contact","admin","owner","message","help","support","tulong"], reply: "📞 Pwede kang makipag-ugnayan sa admin sa **Contact Us** tab o mag-message sa dashboard. / Para sa tulong, bisitahin ang Contact Us page." },
+  { keywords: ["owner","host","may-ari","host"], reply: "👨‍💼 Ang may-ari ay si **Mr. Edgar Fuentes Dicimulacion**, isang Computer Engineer na may higit 7 taon sa hosting industry." },
+  { keywords: ["facebook","social","page","messenger"], reply: "💬 Pwede rin kaming kontakin sa aming official **Facebook Page (Dicimulacion Staycation)** sa Messenger." },
 
   // ❓ GENERAL QUESTIONS
-  { keywords: ["rules","policy","house rules"], reply: "📜 Guests must follow the house rules — no loud noise after 10 PM, no smoking indoors, and keep the place clean." },
-  { keywords: ["check availability","available date"], reply: "📅 You can check available dates on our Booking page before reserving." },
-  { keywords: ["thanks","thank you","thank"], reply: "😊 You're very welcome! We're happy to help you plan your perfect staycation!" },
-  { keywords: ["bye","goodbye","see you"], reply: "👋 Goodbye! Hope to see you soon at Dicimulacion Staycation!" }
+  { keywords: ["rules","policy","house rules","bawal","patakaran"], reply: "📜 Paalala: Bawal ang maingay pagkatapos ng 10 PM, bawal manigarilyo sa loob, at panatilihing malinis ang bahay. / Please observe house rules during your stay." },
+  { keywords: ["check availability","available date","may bakante ba"], reply: "📅 Pwede mong tingnan ang mga available dates sa Booking page bago mag-book." },
+  { keywords: ["thanks","thank you","salamat"], reply: "😊 You're very welcome! / Walang anuman! Sana makita ka namin sa Dicimulacion Staycation!" },
+  { keywords: ["bye","goodbye","paalam","alis"], reply: "👋 Bye! Ingat ka, at sana makita ka namin sa Dicimulacion Staycation!" }
 ];
+
   // Append Message
   function appendMessage(text, sender) {
     const msgDiv = document.createElement("div");
