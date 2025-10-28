@@ -27,15 +27,6 @@
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
     }
 
-    .staff-photo {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-bottom: 1rem;
-        border: 3px solid #eee;
-    }
-
     .staff-name {
         font-weight: 600;
         font-size: 1.1rem;
@@ -46,6 +37,12 @@
     .staff-email {
         font-size: 0.9rem;
         color: #666;
+        margin-bottom: 1rem;
+    }
+
+    .staff-date {
+        font-size: 0.85rem;
+        color: #888;
         margin-bottom: 1rem;
     }
 
@@ -102,14 +99,9 @@
     <div class="staff-container">
         @forelse($staff as $s)
             <div class="staff-card">
-                @if($s->photo)
-                    <img src="{{ asset('storage/' . $s->photo) }}" class="staff-photo" alt="Staff Photo">
-                @else
-                    <img src="{{ asset('images/default-user.png') }}" class="staff-photo" alt="Default Photo">
-                @endif
-
                 <div class="staff-name">{{ $s->name }}</div>
                 <div class="staff-email">{{ $s->email }}</div>
+                <div class="staff-date">Created: {{ $s->created_at ? $s->created_at->format('M d, Y') : 'N/A' }}</div>
 
                 <form action="{{ route('admin.deleteStaff', $s->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this staff account?')">
                     @csrf
