@@ -72,18 +72,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   closeBtn.addEventListener("click", () => chatbotContainer.classList.add("hidden"));
 
-  // FAQs
+  // ✅ Expanded FAQ knowledge base (from your paper)
   const faq = [
-    { keywords: ["checkin","arrival","check-in","check in"], reply: "Check-in time is 2:00 PM ⏰" },
-    { keywords: ["checkout","departure","check-out"], reply: "Check-out time is 12:00 PM 🕛" },
-    { keywords: ["pool","swimming"], reply: "🏊 Our pool is open daily from 8 AM to 10 PM." },
-    { keywords: ["payment","gcash","maya","bank","card"], reply: "💳 We accept GCash, debit, or credit card payments. 50% downpayment confirms your booking." },
-    { keywords: ["location","address","where"], reply: "📍 We’re located at Falcons Court, Village East Avenue, Angono, Rizal." },
-    { keywords: ["amenities","wifi","internet"], reply: "🏡 WiFi, Kitchen, BBQ grill, Netflix, Parking, Pool access, and Pet-friendly rooms!" },
+    { keywords: ["book","reserve","how to book"], reply: "📝 You can book directly on our website. Go to the Booking page, choose your house, and fill out the booking form." },
+    { keywords: ["house 3","house three"], reply: "🏡 House 3 can be booked through our Booking page — just select 'House 3' and choose your date." },
+    { keywords: ["confirm","approval","approved"], reply: "✅ After you submit your booking, you’ll receive a confirmation via email or the website once approved by the admin." },
+    { keywords: ["reschedule","move date","change date"], reply: "📅 You can reschedule your stay at least 14 days before your booked date." },
+    { keywords: ["cancel","refund"], reply: "❌ Cancellations aren’t allowed, but you may reschedule at least 14 days in advance." },
+    { keywords: ["checkin","check-in","check in"], reply: "⏰ Check-in time is 2:00 PM." },
+    { keywords: ["checkout","check-out","check out"], reply: "🕛 Check-out time is 12:00 PM noon." },
+    { keywords: ["late checkout","late check-out"], reply: "⚠️ Late check-out may incur additional charges." },
+    { keywords: ["payment","gcash","maya","bank","card"], reply: "💳 We accept GCash, debit, or credit card payments. A 50% downpayment confirms your booking." },
+    { keywords: ["proof","upload payment","receipt"], reply: "📤 Upload your payment proof in the website’s Payment Confirmation section after booking." },
     { keywords: ["pets","dog","cat"], reply: "🐾 Yes! We’re pet-friendly — no extra charge for your furry friends!" },
-    { keywords: ["parking","car"], reply: "🚗 Free parking is available on-site and on the street." },
-    { keywords: ["reschedule","cancel","move date"], reply: "🔁 You can reschedule your stay at least 14 days before your booking." },
-    { keywords: ["booking","reserve"], reply: "📝 You can book directly on our website via the Booking page." },
+    { keywords: ["extra guest","additional guest"], reply: "👥 Each extra guest is ₱500 per person per night." },
+    { keywords: ["guest limit","maximum"], reply: "🏠 Each house has a specific guest limit shown on the booking page." },
+    { keywords: ["location","address","where"], reply: "📍 We’re located at Falcons Court, Village East Avenue, Angono, Rizal." },
+    { keywords: ["amenities","wifi","internet"], reply: "🌐 Amenities include WiFi, kitchen, BBQ grill, Netflix, parking, pool access, and pet-friendly rooms!" },
+    { keywords: ["pool","swimming"], reply: "🏊 The pool is shared among every three units and open daily from 8 AM to 10 PM." },
+    { keywords: ["breakfast","food","coffee"], reply: "☕ Yes! Breakfast is provided. Early arrivals get complimentary coffee and snacks." },
+    { keywords: ["parking","car"], reply: "🚗 Free parking is available on-site and along the street." },
+    { keywords: ["account","login","register"], reply: "👤 You can register for an account to manage bookings, view payment history, and contact the admin." },
+    { keywords: ["forgot password","reset password"], reply: "🔑 You can reset your password on the Login page by clicking 'Forgot Password'." },
+    { keywords: ["contact","admin","owner","message"], reply: "📞 You can contact the admin through the Contact Us tab on the website." },
+    { keywords: ["owner","host"], reply: "👨‍💼 The owner is Mr. Edgar Fuentes Dicimulacion — a Computer Engineer with 7 years of hosting experience." },
+    { keywords: ["houses","rooms","units"], reply: "🏡 We have 8 unique staycation houses — each with its own design and amenities." },
+    { keywords: ["long stay","monthly","28 days"], reply: "📅 Yes, we allow long-term stays (28 days or more)." }
   ];
 
   // Append Message
@@ -123,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typing) typing.remove();
   }
 
-  // Find FAQ first, else use Gemini
+  // Handle message (FAQ → Gemini)
   async function handleMessage(msg) {
     appendMessage(msg, "user");
     input.value = "";
@@ -140,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // If no match, call Gemini API
+    // Fallback to Gemini AI
     try {
       const response = await fetch("{{ url('/chat-gemini') }}", {
         method: "POST",
@@ -172,7 +186,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Quick buttons
-  const quick = ["What time is check-in?", "Are pets allowed?", "Where are you located?", "What are your payment options?"];
+  const quick = [
+    "How to book a stay?",
+    "What are your payment options?",
+    "What time is check-in?",
+    "Are pets allowed?",
+    "Can I reschedule my booking?"
+  ];
   quick.forEach(q => {
     const b = document.createElement("button");
     b.classList.add("btn", "btn-outline-primary", "btn-sm", "rounded-pill");
@@ -182,6 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
+
 
 <!-- Style -->
 <style>
