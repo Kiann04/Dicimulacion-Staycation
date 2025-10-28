@@ -90,7 +90,6 @@
     }
 </style>
 
-<div class="container">
     <h2 class="header-title"><i class="fa-solid fa-users"></i> Staff Accounts</h2>
     <p style="text-align:center; color:#555;">Manage all staff accounts below. You can delete them if necessary.</p>
 
