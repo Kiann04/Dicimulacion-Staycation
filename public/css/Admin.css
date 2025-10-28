@@ -737,9 +737,15 @@ button:disabled {
   .main-content {
     margin-left: 0; /* take full width */
   }
+/* Default: hidden on desktop */
+.sidebar-toggle {
+  display: none;
+}
 
-  /* Optional toggle button */
+/* Show only on tablet and smaller screens */
+@media (max-width: 1024px) {
   .sidebar-toggle {
+    display: block;
     position: fixed;
     top: 15px;
     left: 15px;
@@ -752,4 +758,3 @@ button:disabled {
     z-index: 1100;
   }
 }
-
