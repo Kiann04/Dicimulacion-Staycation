@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\Auth\NewPasswordController;
-
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
     ->middleware('guest')
@@ -123,22 +123,22 @@ Route::view('/chatbot', 'chatbot');
 Route::post('/chatbot', [ChatBotController::class, 'ask'])->name('chatbot.ask');
 Route::post('/chat', [ChatBotController::class, 'ask']); // API endpoint
 
-Route::get('/test-gemini', function () {
+
+
+Route::post('/chat-gemini', function (Request $request) {
     $apiKey = env('GEMINI_API_KEY');
+    $userMessage = $request->input('message');
 
     $response = Http::withHeaders([
         'Content-Type' => 'application/json',
-    ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={$apiKey}", [
-        'contents' => [
-            [
-                'parts' => [
-                    ['text' => 'Hello Gemini!']
-                ]
-            ]
-        ],
+    ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={$apiKey}", [
+        'contents' => [[
+            'parts' => [['text' => $userMessage]]
+        ]]
     ]);
 
-    return $response->json();
+    $reply = $response->json('candidates.0.content.parts.0.text');
+    return response()->json(['reply' => $reply ?? "Sorry, I didn’t understand that. 😅"]);
 });
 // =========================
 // Calendar Events
