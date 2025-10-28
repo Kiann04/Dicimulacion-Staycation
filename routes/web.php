@@ -124,7 +124,6 @@ Route::post('/chatbot', [ChatBotController::class, 'ask'])->name('chatbot.ask');
 Route::post('/chat', [ChatBotController::class, 'ask']); // API endpoint
 
 
-
 Route::post('/chat-gemini', function (Request $request) {
     $apiKey = env('GEMINI_API_KEY');
     $message = $request->input('message');
@@ -137,9 +136,14 @@ Route::post('/chat-gemini', function (Request $request) {
         ],
     ]);
 
-    // 🪄 For debugging — show the full JSON Gemini returns
-    return $response->json();
+    $data = $response->json();
+
+    // Extract Gemini reply safely
+    $reply = $data['candidates'][0]['content']['parts'][0]['text'] ?? "🤖 Sorry, I couldn’t understand that.";
+
+    return response()->json(['reply' => $reply]);
 });
+
 // =========================
 // Calendar Events
 // =========================
