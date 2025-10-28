@@ -131,21 +131,14 @@ Route::post('/chat-gemini', function (Request $request) {
 
     $response = Http::withHeaders([
         'Content-Type' => 'application/json',
-    ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={$apiKey}", [
+    ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$apiKey}", [
         'contents' => [
             ['parts' => [['text' => $message]]],
         ],
     ]);
 
-    $data = $response->json();
-
-    // Gemini sometimes returns structured content, so we handle multiple possibilities:
-    $reply = $data['candidates'][0]['content']['parts'][0]['text']
-        ?? $data['candidates'][0]['content']['parts'][0]['data']['text']
-        ?? $data['candidates'][0]['content']['parts'][0]['textContent']
-        ?? "🤖 Sorry, I couldn't understand that.";
-
-    return response()->json(['reply' => $reply]);
+    // 🪄 For debugging — show the full JSON Gemini returns
+    return $response->json();
 });
 // =========================
 // Calendar Events
