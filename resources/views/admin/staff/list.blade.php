@@ -1,9 +1,13 @@
 @extends('layouts.default')
 
-@section('Header')
-    @include('Header')
+
+@section ('Aside')
+@include ('Aside')
 @endsection
 
+<body class="admin-dashboard">
+  <div class="content-wrapper">
+    <div class="main-content">
 @section('content')
 <style>
     .staff-container {
