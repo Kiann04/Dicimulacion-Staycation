@@ -23,6 +23,7 @@ class BookingHistory extends Model
         'payment_proof',
         'deleted_at',
         'action_by',
+        'action_at'
     ];
 
     public $timestamps = false;
