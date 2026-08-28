@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            if (! Schema::hasColumn('bookings', 'transaction_number')) {
-                $table->string('transaction_number')->nullable()->after('payment_method');
+            if (! Schema::hasColumn('bookings', 'message_to_admin')) {
+                $table->text('message_to_admin')->nullable()->after('transaction_number');
+            }
+
+            if (! Schema::hasColumn('bookings', 'deleted_at')) {
+                $table->softDeletes();
             }
         });
     }
@@ -24,8 +28,12 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            if (Schema::hasColumn('bookings', 'transaction_number')) {
-                $table->dropColumn('transaction_number');
+            if (Schema::hasColumn('bookings', 'message_to_admin')) {
+                $table->dropColumn('message_to_admin');
+            }
+
+            if (Schema::hasColumn('bookings', 'deleted_at')) {
+                $table->dropSoftDeletes();
             }
         });
     }

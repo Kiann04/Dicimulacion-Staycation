@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Booking extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'staycation_id',
@@ -27,12 +27,14 @@ class Booking extends Model
         'payment_method',
         'payment_proof',
         'transaction_number',
-        'message_to_admin'
+        'message_to_admin',
     ];
+
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
+
     public function staycation()
     {
         return $this->belongsTo(Staycation::class);
@@ -47,6 +49,7 @@ class Booking extends Model
     {
         return $this->hasOne(Review::class);
     }
+
     public function getFormattedStartDateAttribute()
     {
         return $this->start_date->timezone('Asia/Manila')->format('M d, Y');
@@ -56,9 +59,9 @@ class Booking extends Model
     {
         return $this->end_date->timezone('Asia/Manila')->format('M d, Y');
     }
+
     public function history()
     {
         return $this->hasOne(BookingHistory::class, 'booking_id');
     }
-
 }

@@ -21,13 +21,13 @@ class BookingApproved extends Mailable
     public function build()
     {
         return $this->subject('Booking Approved ✅')
-                    ->markdown('emails.bookings.approved')
-                    ->with([
-                        'booking' => $this->booking,
-                        'qrCodeUrl' => asset('images/QRPH.png'),
-                        'bankName' => 'XYZ Bank',
-                        'accountNo' => '123456789',
-                        'accountName' => 'Staycation Rentals'
-                    ]);
+            ->markdown('emails.bookings.approved')
+            ->with([
+                'booking' => $this->booking,
+                'qrCodeUrl' => asset('image/QRPH.png'),
+                'bankName' => 'XYZ Bank',
+                'accountNo' => '123456789',
+                'accountName' => 'Staycation Rentals',
+            ]);
     }
 }

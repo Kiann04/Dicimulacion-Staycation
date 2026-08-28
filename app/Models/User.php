@@ -16,6 +16,7 @@ class User extends Authenticatable
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
+
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
@@ -29,7 +30,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'usertype'
+        'usertype',
     ];
 
     /**
@@ -65,31 +66,32 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
     public function updateProfilePhoto($photo)
     {
         // Ensure folder exists
         $destination = public_path('uploads/profile_photos');
-        if (!file_exists($destination)) {
+        if (! file_exists($destination)) {
             mkdir($destination, 0755, true);
         }
 
         // Save file with unique name
-        $filename = time() . '_' . $photo->getClientOriginalName();
+        $filename = time().'_'.$photo->getClientOriginalName();
         $photo->move($destination, $filename);
 
         // Save relative path in DB
-        $this->update(['photo' => 'uploads/profile_photos/' . $filename]);
+        $this->update(['photo' => 'uploads/profile_photos/'.$filename]);
     }
 
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
-    public function getProfilePhotoUrlAttribute()
-{
-    return $this->photo && file_exists(storage_path('app/public/'.$this->photo)) 
-        ? asset('storage/'.$this->photo) 
-        : asset('Assets/default.png');
-}
 
+    public function getProfilePhotoUrlAttribute()
+    {
+        return $this->photo && file_exists(storage_path('app/public/'.$this->photo))
+            ? asset('storage/'.$this->photo)
+            : asset('assets/Profile.logo.png');
+    }
 }

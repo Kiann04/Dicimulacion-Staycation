@@ -5,8 +5,6 @@
 @endsection
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('css/homepage.css') }}">
-
 <div class="login container">
     <div class="login-container">
         <h2>Two-Factor Authentication Settings</h2>

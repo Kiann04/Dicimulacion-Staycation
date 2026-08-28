@@ -128,7 +128,7 @@
                 
                 <!-- ✅ QR Code Image -->
                 <div class="text-center mt-3">
-                    <img src="{{ asset('image/Gcash.jpg') }}" alt="GCash QR Code" 
+                    <img src="{{ asset('image/QRPH.png') }}" alt="GCash QR Code"
                         style="max-width: 250px; width: 100%; border-radius: 10px;">
                     <p class="mt-2 text-muted" style="font-size: 0.9rem;">Scan this QR to pay via GCash</p>
                 </div>

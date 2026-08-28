@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('staycation_images', function (Blueprint $table) {
+        Schema::create('blocked_dates', function (Blueprint $table) {
             $table->id();
             $table->foreignId('staycation_id')->constrained('staycations')->onDelete('cascade');
-            $table->string('image_path');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->string('reason')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('staycation_images');
+        Schema::dropIfExists('blocked_dates');
     }
 };

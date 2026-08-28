@@ -22,7 +22,7 @@
 
       <!-- Slide 1 -->
       <div class="carousel-item active">
-        <div class="hero-slide" style="background-image: url('{{ asset('assets/sunset.jpg') }}');">
+        <div class="hero-slide" style="background-image: url('{{ asset('assets/View1.jpg') }}');">
           <div class="hero-overlay"></div>
           <div class="hero-content text-center text-white fade-in">
             <h1 class="fw-bold display-4">Find Your Next Perfect Place</h1>
@@ -33,7 +33,7 @@
 
       <!-- Slide 2 -->
       <div class="carousel-item">
-        <div class="hero-slide" style="background-image: url('{{ asset('assets/Sunlight.jpg') }}');">
+        <div class="hero-slide" style="background-image: url('{{ asset('assets/House3.png') }}');">
           <div class="hero-overlay"></div>
           <div class="hero-content text-center text-white fade-in">
             <h1 class="fw-bold display-4">Experience the Best Staycation</h1>
@@ -44,7 +44,7 @@
 
       <!-- Slide 3 -->
       <div class="carousel-item">
-        <div class="hero-slide" style="background-image: url('{{ asset('assets/forest.jpg') }}');">
+        <div class="hero-slide" style="background-image: url('{{ asset('assets/House5.png') }}');">
           <div class="hero-overlay"></div>
           <div class="hero-content text-center text-white fade-in">
             <h1 class="fw-bold display-4">Unwind in Beautiful Places</h1>
@@ -144,7 +144,7 @@
       <div class="col-sm-6 col-md-5 col-lg-4">
         <div class="artist-card card bg-transparent border-0 rounded-4 overflow-hidden h-100">
           <div class="artist-img-wrapper">
-            <img src="{{ asset('assets/artists/ashtine_olviga.jpg') }}" class="artist-img" alt="Ashtine Olviga">
+            <img src="{{ asset('assets/Profile.logo.png') }}" class="artist-img artist-placeholder" alt="Placeholder portrait for Ashtine Olviga">
           </div>
           <div class="card-body text-center">
             <h5 class="fw-bold text-white mb-1">Ashtine Olviga</h5>
@@ -158,7 +158,7 @@
       <div class="col-sm-6 col-md-5 col-lg-4">
         <div class="artist-card card bg-transparent border-0 rounded-4 overflow-hidden h-100">
           <div class="artist-img-wrapper">
-            <img src="{{ asset('assets/artists/andres_muhlach.jpg') }}" class="artist-img" alt="Andres Muhlach">
+            <img src="{{ asset('assets/Profile.logo.png') }}" class="artist-img artist-placeholder" alt="Placeholder portrait for Andres Muhlach">
           </div>
           <div class="card-body text-center">
             <h5 class="fw-bold text-white mb-1">Andres Muhlach</h5>
@@ -178,7 +178,7 @@
 /* Background setup */
 .featured-artists-section {
   position: relative;
-  background: url('{{ asset('assets/artists/movie_bg.jpg') }}') center center / cover no-repeat fixed;
+  background: url('{{ asset('assets/AboutUs.jpg') }}') center center / cover no-repeat fixed;
   overflow: hidden;
   border-radius: 0;
   min-height: 700px;
@@ -216,6 +216,12 @@
   object-fit: cover;
   transition: transform 0.5s ease;
   border-bottom: 3px solid #0d6efd;
+}
+
+.artist-placeholder {
+  object-fit: contain;
+  padding: 5rem;
+  background-color: #f8f9fa;
 }
 .artist-img:hover {
   transform: scale(1.05);
@@ -497,7 +503,7 @@
         </div>
 
         <div class="review-card card h-100 shadow border-0 text-center p-4">
-            <img src="{{ asset('assets/Sarah.jpg') }}" class="rounded-circle mx-auto mb-3" width="80" alt="Sarah">
+            <img src="{{ asset('assets/Profile.logo.png') }}" class="review-profile-placeholder rounded-circle mx-auto mb-3" width="80" alt="Placeholder portrait for Sarah Ortiz">
             <h5 class="fw-bold">Sarah Ortiz</h5>
             <p class="text-muted small">"The staff were friendly, the rooms were cozy, and everything exceeded our expectations."</p>
             <div class="text-warning">
@@ -508,7 +514,7 @@
         </div>
 
         <div class="review-card card h-100 shadow border-0 text-center p-4">
-            <img src="{{ asset('assets/Alex.jpg') }}" class="rounded-circle mx-auto mb-3" width="80" alt="James">
+            <img src="{{ asset('assets/Profile.logo.png') }}" class="review-profile-placeholder rounded-circle mx-auto mb-3" width="80" alt="Placeholder portrait for James Santos">
             <h5 class="fw-bold">James Santos</h5>
             <p class="text-muted small">"The house had everything we needed, and the view was simply stunning. Will return!"</p>
             <div class="text-warning">
@@ -538,6 +544,12 @@
     border-radius: 50%; /* Makes it a circle */
     aspect-ratio: 1/1; /* Forces it to stay square even if the source image isn't */
     border: 3px solid #f8f9fa; /* optional light border */
+}
+
+.reviews-slider .review-card img.review-profile-placeholder {
+    object-fit: contain;
+    padding: 12px;
+    background-color: #f8f9fa;
 }
 /* Prevent slick carousel overflow */
 .reviews-slider {
@@ -670,4 +682,3 @@ $(document).ready(function(){
 @section('Footer')
     @include('Footer')
 @endsection
-

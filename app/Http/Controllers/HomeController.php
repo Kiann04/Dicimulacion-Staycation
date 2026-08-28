@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Staycation;
 use App\Models\Booking;
 use App\Models\Review;
-use Carbon\Carbon;
-use App\Mail\BookingCreated;
-use Illuminate\Support\Facades\Mail;
+use App\Models\Staycation;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -22,6 +19,7 @@ class HomeController extends Controller
 
         return view('home.Homepage', compact('staycations', 'reviews'));
     }
+
     // Store review for a booking
     public function storeReview(Request $request)
     {
@@ -44,13 +42,13 @@ class HomeController extends Controller
         Review::create([
             'user_id' => Auth::id(),
             'booking_id' => $booking->id,
+            'staycation_id' => $booking->staycation_id,
             'rating' => $request->rating,
             'comment' => $request->comment,
         ]);
 
         return back()->with('success', 'Thank you! Your review has been submitted.');
     }
-
 
     // Handle contact form submission with optional attachment
     public function sendInquiry(Request $request)
@@ -71,14 +69,14 @@ class HomeController extends Controller
 
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
-            $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $filename = uniqid().'_'.time().'.'.$file->getClientOriginalExtension();
             $file->move(public_path('uploads'), $filename);
             $data['attachment'] = $filename;
         }
 
         DB::table('inquiries')->insert($data);
 
-        return redirect()->to(url()->previous() . '#contact')->with('success', 'Your message has been sent!');
+        return redirect()->to(url()->previous().'#contact')->with('success', 'Your message has been sent!');
     }
 
     public function privacy()

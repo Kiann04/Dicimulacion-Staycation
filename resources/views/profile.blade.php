@@ -4,8 +4,6 @@
     @include('Header')
 @endsection
 
-<link rel="stylesheet" href="{{ asset('Css/home.css') }}">
-
 <main style="margin-top: 30px;">
 <div class="container py-5">
     <div class="row g-4">

@@ -13,6 +13,6 @@ class Report extends Model
         'type',
         'start_date',
         'end_date',
-        'file_path',
+        'file_name',
     ];
 }

@@ -2,25 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Mail\BookingCancelled;
+use App\Mail\InquiryReply;
+use App\Models\AuditLog;
+use App\Models\BlockedDate;
 use App\Models\Booking;
+use App\Models\BookingHistory;
+use App\Models\Inquiry;
+use App\Models\Report;
 use App\Models\Staycation;
 use App\Models\User;
-use App\Models\Inquiry;
-use App\Models\Report; 
-use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Mail\InquiryReply;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\BookingApproved;
-use App\Mail\BookingDeclined;
-use App\Models\AuditLog;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Models\BookingHistory;
-use App\Mail\BookingCancelled;
 use Illuminate\Support\Facades\Hash;
-use App\Models\BlockedDate;
+use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
@@ -32,9 +30,9 @@ class AdminController extends Controller
             ->update(['status' => 'completed']);
 
         // ✅ 2. Overall Stats
-        $totalUsers    = User::count();
+        $totalUsers = User::count();
         $totalBookings = Booking::count();
-        $totalRevenue  = Booking::sum(DB::raw("
+        $totalRevenue = Booking::sum(DB::raw("
             CASE 
                 WHEN payment_status = 'paid' THEN total_price
                 WHEN payment_status = 'half_paid' THEN total_price / 2
@@ -49,7 +47,7 @@ class AdminController extends Controller
 
         // ✅ 3. Monthly Analytics
         $currentMonth = Carbon::now()->month;
-        $currentYear  = Carbon::now()->year;
+        $currentYear = Carbon::now()->year;
 
         $monthlyBookings = Booking::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
@@ -80,17 +78,18 @@ class AdminController extends Controller
             });
 
         $averageOccupancy = $totalStaycations > 0
-        ? round(($bookedDays / ($totalDays * $totalStaycations)) * 100) . '%': '0%';
+        ? round(($bookedDays / ($totalDays * $totalStaycations)) * 100).'%' : '0%';
 
         // ✅ 4. Chart Data (last 6 months)
         $months = collect(range(0, 5))
-            ->map(fn($i) => Carbon::now()->subMonths($i)->format('M'))
+            ->map(fn ($i) => Carbon::now()->subMonths($i)->format('M'))
             ->reverse()
             ->values();
 
         $totals = collect(range(0, 5))
             ->map(function ($i) {
                 $month = Carbon::now()->subMonths($i);
+
                 return Booking::whereMonth('created_at', $month->month)
                     ->whereYear('created_at', $month->year)
                     ->count();
@@ -101,6 +100,7 @@ class AdminController extends Controller
         $revenues = collect(range(0, 5))
             ->map(function ($i) {
                 $month = Carbon::now()->subMonths($i);
+
                 return Booking::whereMonth('created_at', $month->month)
                     ->whereYear('created_at', $month->year)
                     ->sum(DB::raw("
@@ -116,21 +116,20 @@ class AdminController extends Controller
 
         // ✅ 5. Return Single View with all data
         return view('admin.dashboard', [
-            'totalUsers'        => $totalUsers,
-            'totalBookings'     => $totalBookings,
-            'totalRevenue'      => $totalRevenue,
-            'bookings'          => $bookings,
-            'monthlyBookings'   => $monthlyBookings,
-            'monthlyRevenue'    => $monthlyRevenue,
-            'newUsers'          => $newUsers,
-            'averageOccupancy'  => $averageOccupancy,
-            'months'            => $months,
-            'totals'            => $totals,
-            'revenues'          => $revenues,
+            'totalUsers' => $totalUsers,
+            'totalBookings' => $totalBookings,
+            'totalRevenue' => $totalRevenue,
+            'bookings' => $bookings,
+            'monthlyBookings' => $monthlyBookings,
+            'monthlyRevenue' => $monthlyRevenue,
+            'newUsers' => $newUsers,
+            'averageOccupancy' => $averageOccupancy,
+            'months' => $months,
+            'totals' => $totals,
+            'revenues' => $revenues,
         ]);
     }
 
-    
     public function customers(Request $request)
     {
         $search = $request->input('search');
@@ -139,19 +138,16 @@ class AdminController extends Controller
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                        ->orWhere('email', 'like', "%{$search}%");
                 });
             })
             ->orderBy('name', 'asc') // optional, sort by name
             ->paginate(10) // show 10 customers per page
             ->withQueryString(); // keep search term in URL
-        
+
         return view('admin.customers', compact('customers', 'search'));
     }
 
-
-    
-    
     public function analytics()
     {
         $currentMonth = Carbon::now()->month;
@@ -185,17 +181,18 @@ class AdminController extends Controller
                 return Carbon::parse($b->start_date)->diffInDays(Carbon::parse($b->end_date));
             });
 
-        $averageOccupancy = round(($bookedDays / ($totalDays * 1)) * 100) . '%'; // assuming 1 property
+        $averageOccupancy = round(($bookedDays / ($totalDays * 1)) * 100).'%'; // assuming 1 property
 
         // --- Charts (last 6 months) ---
         $months = collect(range(0, 5))
-            ->map(fn($i) => Carbon::now()->subMonths($i)->format('M'))
+            ->map(fn ($i) => Carbon::now()->subMonths($i)->format('M'))
             ->reverse()
             ->values();
 
         $totals = collect(range(0, 5))
             ->map(function ($i) {
                 $month = Carbon::now()->subMonths($i);
+
                 return Booking::whereMonth('created_at', $month->month)
                     ->whereYear('created_at', $month->year)
                     ->count();
@@ -206,6 +203,7 @@ class AdminController extends Controller
         $revenues = collect(range(0, 5))
             ->map(function ($i) {
                 $month = Carbon::now()->subMonths($i);
+
                 return Booking::whereMonth('created_at', $month->month)
                     ->whereYear('created_at', $month->year)
                     ->sum(DB::raw("
@@ -236,9 +234,9 @@ class AdminController extends Controller
         $inquiries = Inquiry::latest()->paginate(10); // 10 per page
 
         // Booking payment proofs (paginated)
-       $bookingProofs = Booking::with('user', 'staycation')
-                            ->latest()
-                            ->paginate(10); // 10 per page
+        $bookingProofs = Booking::with('user', 'staycation')
+            ->latest()
+            ->paginate(10); // 10 per page
 
         return view('admin.messages', compact('inquiries', 'bookingProofs'));
     }
@@ -261,33 +259,34 @@ class AdminController extends Controller
     public function deleteMessage($id)
     {
         Inquiry::destroy($id);
+
         return redirect()->route('admin.messages')->with('success', 'Message deleted!');
     }
 
-    public function bookings() {
+    public function bookings()
+    {
         return view('admin.bookings');
     }
 
     public function reports()
     {
-    $reports = Report::all();
+        $reports = Report::all();
 
-    // Count bookings for the current month
-    $currentMonth = Carbon::now()->month;
-    $currentYear  = Carbon::now()->year;
-    $monthlyBookings = Booking::whereYear('created_at', $currentYear)
-                              ->whereMonth('created_at', $currentMonth)
-                              ->count();
+        // Count bookings for the current month
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+        $monthlyBookings = Booking::whereYear('created_at', $currentYear)
+            ->whereMonth('created_at', $currentMonth)
+            ->count();
 
-    return view('admin.reports', compact('reports', 'monthlyBookings'));
-    }   
+        return view('admin.reports', compact('reports', 'monthlyBookings'));
+    }
 
-    
     public function generateReport(Request $request)
     {
         $request->validate([
             'report_type' => 'required',
-            'report_year' => 'required|integer|min:2000|max:' . date('Y'),
+            'report_year' => 'required|integer|min:2000|max:'.date('Y'),
         ]);
 
         $year = $request->input('report_year');
@@ -300,18 +299,18 @@ class AdminController extends Controller
             ->get();
 
         // Initialize months
-        $months = collect(range(1,12))->mapWithKeys(function($m){
-            return [Carbon::create()->month($m)->format('F') => ['bookings'=>0, 'revenue'=>0]];
+        $months = collect(range(1, 12))->mapWithKeys(function ($m) {
+            return [Carbon::create()->month($m)->format('F') => ['bookings' => 0, 'revenue' => 0]];
         })->toArray();
 
-        foreach($bookings as $b){
+        foreach ($bookings as $b) {
             $monthName = Carbon::parse($b->created_at)->format('F');
             $months[$monthName]['bookings'] += 1;
 
             // Add full price for 'paid', half price for 'half_paid'
-            if($b->payment_status === 'paid'){
+            if ($b->payment_status === 'paid') {
                 $months[$monthName]['revenue'] += $b->total_price;
-            } elseif($b->payment_status === 'half_paid'){
+            } elseif ($b->payment_status === 'half_paid') {
                 $months[$monthName]['revenue'] += $b->total_price / 2;
             }
         }
@@ -325,41 +324,45 @@ class AdminController extends Controller
             'totalRevenue' => $totalRevenue,
             'totalBookings' => $totalBookings,
             'type' => $type,
-            'year' => $year
+            'year' => $year,
         ]);
 
-        return $pdf->download('Annual_Report_' . $year . '.pdf');
+        return $pdf->download('Annual_Report_'.$year.'.pdf');
     }
 
     public function downloadReport($id)
     {
-    $report = Report::findOrFail($id);
-    $path   = storage_path('app/reports/' . $report->file_name);
+        $report = Report::findOrFail($id);
+        $path = storage_path('app/reports/'.$report->file_name);
 
-    return response()->download($path);
+        return response()->download($path);
     }
 
-    public function settings() 
+    public function settings()
     {
         // Fetch latest 50 logs
         $auditLogs = AuditLog::latest()->paginate(50);
 
         return view('admin.settings', compact('auditLogs'));
     }
+
     public function auditLogs()
-{
-    // Fetch the latest 50 logs
-    $auditLogs = AuditLog::latest()->paginate(50);
+    {
+        // Fetch the latest 50 logs
+        $auditLogs = AuditLog::latest()->paginate(50);
 
-    return view('admin.audit_logs', compact('auditLogs'));
-}
+        return view('admin.audit_logs', compact('auditLogs'));
+    }
 
-    public function addProduct() {
+    public function addProduct()
+    {
         return view('admin.addproduct');
     }
+
     public function view_bookings()
     {
         $bookings = Booking::orderByDesc('id')->get();
+
         return view('admin.view_bookings', compact('bookings'));
     }
 
@@ -405,8 +408,8 @@ class AdminController extends Controller
     {
         // Get the bookings for the specific staycation with the housename
         $bookings = Booking::where('staycation_id', $staycation_id)
-                        ->orderByDesc('id')
-                        ->get();
+            ->orderByDesc('id')
+            ->get();
 
         // Fetch the staycation data for the given ID (including housename)
         $staycation = Staycation::find($staycation_id);
@@ -418,35 +421,39 @@ class AdminController extends Controller
     {
         $booking = Booking::findOrFail($id);
         $staycations = Staycation::all(); // all available staycations
+
         return view('admin.update_bookings', compact('booking', 'staycations'));
     }
+
     public function updateBooking(Request $request, $id)
     {
-    $request->validate([
-        'staycation_id' => 'required|exists:staycations,id',
-        'name' => 'required|string|max:255',
-        'phone' => 'required|string|max:20',
-        'guest_number' => 'required|integer|min:1',
-        'start_date' => 'required|date',
-        'end_date' => 'required|date|after_or_equal:start_date',
-    ]);
+        $request->validate([
+            'staycation_id' => 'required|exists:staycations,id',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'guest_number' => 'required|integer|min:1',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
 
-    $booking = Booking::findOrFail($id);
-    $booking->update($request->only([
-        'staycation_id',
-        'name',
-        'phone',
-        'guest_number',
-        'start_date',
-        'end_date',
-    ]));
+        $booking = Booking::findOrFail($id);
+        $booking->update($request->only([
+            'staycation_id',
+            'name',
+            'phone',
+            'guest_number',
+            'start_date',
+            'end_date',
+        ]));
 
-    return redirect()->back()->with('success', 'Booking updated successfully!');
-    
-        }
-        public function replyMessageForm($id)
+        return redirect()->back()->with('success', 'Booking updated successfully!');
+
+    }
+
+    public function replyMessageForm($id)
     {
         $inquiry = Inquiry::findOrFail($id);
+
         return view('admin.reply_message', compact('inquiry'));
     }
 
@@ -460,15 +467,15 @@ class AdminController extends Controller
         Mail::to($inquiry->email)->send(new InquiryReply($request->message, $inquiry));
 
         // Mark as read
-        if($inquiry->status === 'unread'){
+        if ($inquiry->status === 'unread') {
             $inquiry->status = 'read';
             $inquiry->save();
         }
         AuditLog::create([
-        'user_id'    => Auth::id(),
-        'action'     => 'Replied to Inquiry',
-        'description'=> "Admin replied to inquiry from {$inquiry->name} ({$inquiry->email}).",
-        'ip_address' => request()->ip(),
+            'user_id' => Auth::id(),
+            'action' => 'Replied to Inquiry',
+            'description' => "Admin replied to inquiry from {$inquiry->name} ({$inquiry->email}).",
+            'ip_address' => request()->ip(),
         ]);
 
         return redirect()->back()->with('success', 'Your reply has been sent successfully!');
@@ -481,16 +488,18 @@ class AdminController extends Controller
 
         return view('admin.customer_bookings', compact('customer', 'bookings'));
     }
+
     public function toggleAvailability($id)
     {
-    $staycation = Staycation::findOrFail($id);
+        $staycation = Staycation::findOrFail($id);
 
-    // Toggle availability
-    $staycation->house_availability = $staycation->house_availability === 'available' ? 'unavailable' : 'available';
-    $staycation->save();
+        // Toggle availability
+        $staycation->house_availability = $staycation->house_availability === 'available' ? 'unavailable' : 'available';
+        $staycation->save();
 
-    return redirect()->back()->with('success', 'Staycation availability updated!');
+        return redirect()->back()->with('success', 'Staycation availability updated!');
     }
+
     public function deleteBooking($id)
     {
         $booking = Booking::findOrFail($id);
@@ -502,17 +511,17 @@ class AdminController extends Controller
 
         // ✅ Copy booking data to booking_history before deleting
         DB::table('booking_history')->insert([
-            'booking_id'     => $booking->id,
-            'user_id'        => $booking->user_id,
-            'name'           => $booking->name,
-            'staycation_id'  => $booking->staycation_id,
-            'start_date'     => $booking->start_date,
-            'end_date'       => $booking->end_date,
-            'total_price'    => $booking->total_price,
+            'booking_id' => $booking->id,
+            'user_id' => $booking->user_id,
+            'name' => $booking->name,
+            'staycation_id' => $booking->staycation_id,
+            'start_date' => $booking->start_date,
+            'end_date' => $booking->end_date,
+            'total_price' => $booking->total_price,
             'payment_status' => $booking->payment_status,
-            'payment_proof'  => $booking->payment_proof,
-            'action_by'      => Auth::check() ? Auth::user()->name : 'Admin',
-            'deleted_at'     => now(), // mark when it was archived
+            'payment_proof' => $booking->payment_proof,
+            'action_by' => Auth::check() ? Auth::user()->name : 'Admin',
+            'deleted_at' => now(), // mark when it was archived
         ]);
 
         // ✅ Permanently remove the booking (hard delete)
@@ -520,19 +529,19 @@ class AdminController extends Controller
 
         // ✅ Log action
         AuditLog::create([
-            'user_id'    => Auth::id(),
-            'action'     => 'Booking Deleted',
-            'description'=> "Booking ID: {$booking->id} permanently deleted and copied to history.",
+            'user_id' => Auth::id(),
+            'action' => 'Booking Deleted',
+            'description' => "Booking ID: {$booking->id} permanently deleted and copied to history.",
             'ip_address' => request()->ip(),
         ]);
         $recipient = $booking->user->email ?? $booking->email;
-        if (!empty($recipient)) {
+        if (! empty($recipient)) {
             Mail::to($recipient)->send(new BookingCancelled($booking));
         }
-        return redirect()->route('admin.cancelled')
-                        ->with('success', 'Booking permanently deleted and archived to booking history.');
-    }
 
+        return redirect()->route('admin.cancelled')
+            ->with('success', 'Booking permanently deleted and archived to booking history.');
+    }
 
     public function viewMessagesAndProofs()
     {
@@ -541,12 +550,13 @@ class AdminController extends Controller
 
         // Load bookings with payment proofs
         $bookingProofs = Booking::with(['user', 'staycation'])
-                            ->whereNotNull('payment_proof')
-                            ->latest()
-                            ->get();
+            ->whereNotNull('payment_proof')
+            ->latest()
+            ->get();
 
         return view('admin.messages_and_proofs', compact('inquiries', 'bookingProofs'));
     }
+
     public function messagesAndPayments(Request $request)
     {
         // Load all inquiries
@@ -573,6 +583,7 @@ class AdminController extends Controller
 
         return view('admin.message', compact('inquiries', 'bookingProofs', 'activeTab'));
     }
+
     public function showCancelledBookings()
     {
         // Fetch cancelled bookings with related staycation
@@ -582,16 +593,21 @@ class AdminController extends Controller
 
         return view('admin.cancelled', compact('cancelledBookings'));
     }
+
     public function cancelled()
     {
         // Fetch cancelled bookings (adjust according to your DB)
-        $cancelledBookings = Booking::where('payment_status', 'cancelled')
-                                    ->orWhereNotNull('deleted_at')
-                                    ->get();
+        $cancelledBookings = Booking::withTrashed()
+            ->where(function ($query) {
+                $query->where('payment_status', 'cancelled')
+                    ->orWhereNotNull('deleted_at');
+            })
+            ->get();
 
         // Return the view
         return view('admin.cancelled', compact('cancelledBookings'));
     }
+
     public function addStaff()
     {
         return view('admin.add_staff');
@@ -600,8 +616,8 @@ class AdminController extends Controller
     public function createStaff(Request $request)
     {
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
             'password' => 'required|min:6',
         ]);
 
@@ -611,17 +627,19 @@ class AdminController extends Controller
         }
 
         User::create([
-            'name'      => $request->name,
-            'email'     => $request->email,
-            'password'  => Hash::make($request->password),
-            'usertype'  => 'staff',
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'usertype' => 'staff',
         ]);
 
         return redirect()->back()->with('success', 'Staff account created successfully!');
     }
+
     public function index()
     {
         $staff = User::where('usertype', 'staff')->get();
+
         return view('admin.staff.list', compact('staff'));
     }
 
@@ -639,5 +657,3 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Staff account deleted successfully.');
     }
 }
-
-

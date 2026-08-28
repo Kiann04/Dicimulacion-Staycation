@@ -1,2 +1,5 @@
 *
 !.gitignore
+!staycations/
+!staycations/gallery/
+!staycations/gallery/.gitkeep
