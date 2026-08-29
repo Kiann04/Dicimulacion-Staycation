@@ -22,3 +22,16 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 node_modules
+# Next.js
+/frontend/.next/
+/frontend/node_modules/
+/frontend/tsconfig.tsbuildinfo
+
+# Frontend environment files
+/frontend/.env
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.production.local
+
+# Keep example environment file
+!/frontend/.env.example
