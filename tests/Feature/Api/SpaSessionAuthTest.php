@@ -106,25 +106,37 @@ class SpaSessionAuthTest extends TestCase
     /**
      * The frontend role check is a UX affordance only. This is the assertion
      * that actually matters: a genuine, valid staff session is still refused
-     * admin data by Laravel.
+     * every admin mutation by Laravel, whatever the client chose to render.
+     *
+     * Staff may *read* back-office listings by design (BackOfficeMiddleware);
+     * the authority boundary is the mutation, so that is what is asserted.
      */
-    public function test_a_staff_session_is_refused_admin_data_by_the_server(): void
+    public function test_a_staff_session_is_refused_admin_mutations_by_the_server(): void
     {
         $staff = User::factory()->create(['usertype' => 'staff']);
 
         $this->actingAs($staff)
-            ->getJson('/api/v1/admin/dashboard')
+            ->postJson('/api/v1/admin/staycations', [
+                'house_name' => 'Injected Villa',
+                'house_description' => 'Should never be created.',
+                'house_price' => 1000,
+                'house_location' => 'Nowhere',
+                'house_availability' => 'available',
+            ])
             ->assertStatus(403)
             ->assertJsonPath('error_code', 'forbidden');
+
+        $this->assertDatabaseMissing('staycations', ['house_name' => 'Injected Villa']);
     }
 
-    public function test_a_customer_session_is_refused_admin_data_by_the_server(): void
+    public function test_a_customer_session_is_refused_back_office_data_by_the_server(): void
     {
         $customer = User::factory()->create(['usertype' => 'user']);
 
         $this->actingAs($customer)
             ->getJson('/api/v1/admin/dashboard')
-            ->assertStatus(403);
+            ->assertStatus(403)
+            ->assertJsonPath('error_code', 'forbidden');
     }
 
     public function test_an_admin_session_reaches_admin_data(): void
