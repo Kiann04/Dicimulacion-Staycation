@@ -50,7 +50,7 @@
               <!-- 🆕 Added: Proof of Payment -->
               <td>
                 @if($booking->payment_proof)
-                  <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" 
+                  <a href="{{ route('admin.bookings.proof.file', $booking->id) }}"
                      target="_blank">View Proof</a>
                 @else
                   <span class="text-muted">No proof</span>

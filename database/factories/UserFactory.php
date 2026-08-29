@@ -36,7 +36,24 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'profile_photo_path' => null,
             'current_team_id' => null,
+            'usertype' => 'user',
         ];
+    }
+
+    /** A user with full administrative access. */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'usertype' => 'admin',
+        ]);
+    }
+
+    /** A staff member: read-mostly access, no admin-only operations. */
+    public function staff(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'usertype' => 'staff',
+        ]);
     }
 
     /**

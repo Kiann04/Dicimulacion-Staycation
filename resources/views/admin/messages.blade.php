@@ -118,7 +118,7 @@
                             <td>{{ $booking->message_to_admin ?? '—' }}</td>
                             <td>
                                 @if($booking->payment_proof)
-                                    <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" target="_blank" class="btn btn-sm btn-outline-primary">View Proof</a>
+                                    <a href="{{ route('admin.bookings.proof.file', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-primary">View Proof</a>
                                 @else
                                     <span class="text-muted">No proof</span>
                                 @endif

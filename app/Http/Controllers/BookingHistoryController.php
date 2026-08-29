@@ -2,276 +2,233 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PaymentStatus;
+use App\Http\Requests\PreviewBookingRequest;
+use App\Http\Requests\StoreBookingWebRequest;
+use App\Models\BlockedDate;
+use App\Models\Booking;
+use App\Models\Review;
+use App\Models\Staycation;
+use App\Services\Booking\BookingAvailabilityService;
+use App\Services\Booking\BookingService;
+use App\Services\Booking\BookingSubmission;
+use App\Services\Booking\DateRange;
+use App\Services\Booking\Exceptions\BookingException;
+use App\Services\Payment\PaymentService;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Staycation;
-use App\Models\Booking;
-use Carbon\Carbon;
-use App\Models\Review;
 
-use App\Models\BlockedDate;
+/**
+ * The customer-facing Blade booking flow.
+ *
+ * Availability, pricing and creation are delegated to the booking services, so
+ * this controller and the v1 API enforce identical rules. It contains no
+ * date-overlap arithmetic and no price arithmetic of its own.
+ */
 class BookingHistoryController extends Controller
 {
-    // 🏠 Show booking form for selected staycation
-    public function bookingForm($id)
-{
-    $staycation = Staycation::findOrFail($id);
+    public function __construct(
+        private BookingAvailabilityService $availability,
+        private BookingService $bookings,
+        private PaymentService $payments,
+    ) {}
 
-    // Get reviews for this staycation
-    $reviews = Review::where('staycation_id', $id)->get();
+    public function bookingForm(int $id): View
+    {
+        $staycation = Staycation::findOrFail($id);
 
-    // Count reviews for each star rating (1 to 5)
-    $starCounts = [
-        5 => Review::where('staycation_id', $id)->where('rating', 5)->count(),
-        4 => Review::where('staycation_id', $id)->where('rating', 4)->count(),
-        3 => Review::where('staycation_id', $id)->where('rating', 3)->count(),
-        2 => Review::where('staycation_id', $id)->where('rating', 2)->count(),
-        1 => Review::where('staycation_id', $id)->where('rating', 1)->count(),
-    ];
+        $reviews = Review::where('staycation_id', $id)->get();
 
-    // Total and average rating
-    $totalReviews = $reviews->count();
-    $averageRating = $totalReviews > 0 ? round($reviews->avg('rating'), 1) : 0;
+        $starCounts = [
+            5 => $reviews->where('rating', 5)->count(),
+            4 => $reviews->where('rating', 4)->count(),
+            3 => $reviews->where('rating', 3)->count(),
+            2 => $reviews->where('rating', 2)->count(),
+            1 => $reviews->where('rating', 1)->count(),
+        ];
 
-    // ✅ Get other available staycations (exclude this one)
-    $availableStaycations = Staycation::where('id', '!=', $staycation->id)
-        ->where('house_availability', 'available')
-        ->get();
+        $totalReviews = $reviews->count();
+        $averageRating = $totalReviews > 0 ? round($reviews->avg('rating'), 1) : 0;
 
-    // Pass everything to the view
-    return view('home.Booking', compact(
-        'staycation',
-        'reviews',
-        'starCounts',
-        'averageRating',
-        'totalReviews',
-        'availableStaycations' // <-- added this
-    ));
-}
-
-
-
-    // 📄 Step 1: Preview Booking before confirming
-    public function previewBooking(Request $request, $staycation_id)
-{
-    $staycation = Staycation::findOrFail($staycation_id);
-
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'phone' => 'required|string|max:20',
-        'guest_number' => 'required|integer|min:1|max:8',
-        'startDate' => 'required|date',
-        'endDate' => 'required|date|after:startDate',
-    ]);
-
-    $startDate = Carbon::parse($request->startDate);
-    $endDate = Carbon::parse($request->endDate);
-
-    // Check if selected staycation is already booked
-    $hasBookingOverlap = Booking::where('staycation_id', $staycation->id)
-        ->where(function ($query) use ($startDate, $endDate) {
-            $query->where('start_date', '<', $endDate)
-                  ->where('end_date', '>', $startDate);
-        })
-        ->exists();
-
-    // Check if selected staycation has blocked dates
-    $hasBlockedOverlap = BlockedDate::where('staycation_id', $staycation->id)
-        ->where(function ($query) use ($startDate, $endDate) {
-            $query->where('start_date', '<', $endDate)
-                  ->where('end_date', '>', $startDate);
-        })
-        ->exists();
-
-    if ($hasBookingOverlap || $hasBlockedOverlap) {
-        $availableStaycations = Staycation::where('id', '!=', $staycation->id)
-            ->where('house_availability', 'available')
-            ->whereDoesntHave('bookings', function ($query) use ($startDate, $endDate) {
-                $query->where(function ($q) use ($startDate, $endDate) {
-                    $q->where('start_date', '<', $endDate)
-                      ->where('end_date', '>', $startDate);
-                });
-            })
-            ->whereDoesntHave('blockedDates', function ($query) use ($startDate, $endDate) {
-                $query->where(function ($q) use ($startDate, $endDate) {
-                    $q->where('start_date', '<', $endDate)
-                      ->where('end_date', '>', $startDate);
-                });
-            })
+        $availableStaycations = Staycation::query()
+            ->available()
+            ->whereKeyNot($staycation->getKey())
             ->get();
 
-        return back()->with([
-            'message' => "⚠️ The selected dates are not available for {$staycation->house_name}.",
-            'availableStaycations' => $availableStaycations,
-            'startDate' => $request->startDate,
-            'endDate' => $request->endDate,
-            'guest_number' => $request->guest_number,
-            'name' => $request->name,
-            'phone' => $request->phone,
-        ]);
+        return view('home.Booking', compact(
+            'staycation',
+            'reviews',
+            'starCounts',
+            'averageRating',
+            'totalReviews',
+            'availableStaycations',
+        ));
     }
 
-    // If no overlap, calculate total price
-    $nights = $startDate->diffInDays($endDate);
-    $totalPrice = $nights * $staycation->house_price;
-
-    return view('home.preview_booking', [
-        'staycation' => $staycation,
-        'name' => $request->name,
-        'phone' => $request->phone,
-        'guest_number' => $request->guest_number,
-        'startDate' => $request->startDate,
-        'endDate' => $request->endDate,
-        'totalPrice' => $totalPrice,
-    ])->with('success', '✅ Dates are available! Please confirm your booking.');
-}
-
-    // 📄 Step 2: Submit booking request
-    public function submitRequest(Request $request, $staycation_id)
-    {   
-        // Validate the request
-        $request->validate([
-            'guest_number' => 'required|integer|min:1',
-            'startDate' => 'required|date',
-            'endDate' => 'required|date|after_or_equal:startDate',
-            'payment_type' => 'required|in:half,full',
-            'payment_method' => 'required|in:gcash,bpi',
-            'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:5120',
-            'phone' => 'required|string|max:20',
-            'transaction_number' => 'nullable|string|max:255',
-            'message' => 'nullable|string|max:500',
-        ]);
-
+    /**
+     * Step 1: confirm the dates are free and show the server-computed price.
+     * The figure shown here is recomputed on submission, so a stale preview can
+     * never become the price actually charged.
+     */
+    public function previewBooking(PreviewBookingRequest $request, int $staycation_id): View|RedirectResponse
+    {
         $staycation = Staycation::findOrFail($staycation_id);
 
-        // Parse dates safely
-        $start = Carbon::parse($request->startDate);
-        $end = Carbon::parse($request->endDate);
+        $range = DateRange::fromInput($request->string('startDate')->toString(), $request->string('endDate')->toString());
 
-        // Prevent negative or zero nights (minimum 1 night)
-        if ($end->lessThanOrEqualTo($start)) {
-            $nights = 1;
-        } else {
-            $nights = $start->diffInDays($end);
+        $conflicts = $this->availability->conflicts($staycation, $range);
+
+        if ($conflicts !== [] || ! $staycation->isBookable()) {
+            return back()->with([
+                'message' => "⚠️ The selected dates are not available for {$staycation->house_name}.",
+                'availableStaycations' => $this->availability->alternatives($range, $staycation->getKey()),
+                'startDate' => $request->string('startDate')->toString(),
+                'endDate' => $request->string('endDate')->toString(),
+                'guest_number' => $request->integer('guest_number'),
+                'name' => $request->string('name')->toString(),
+                'phone' => $request->string('phone')->toString(),
+            ]);
         }
 
-        // Compute base price
-        $totalPrice = $staycation->house_price * $nights;
-        
-        
-        // Add ₱500 per guest beyond 6
-        $extraGuests = max(0, $request->guest_number - 6);
-        $extraFee = $extraGuests * 500;
-        $totalPrice += $extraFee; 
-        // Apply half or full payment
+        $quote = $this->bookings->quote($staycation, $range, $request->integer('guest_number'));
 
+        return view('home.preview_booking', [
+            'staycation' => $staycation,
+            'name' => $request->string('name')->toString(),
+            'phone' => $request->string('phone')->toString(),
+            'guest_number' => $request->integer('guest_number'),
+            'startDate' => $range->startString(),
+            'endDate' => $range->endString(),
+            'totalPrice' => $quote->totalPrice,
+            'quote' => $quote,
+        ])->with('success', '✅ Dates are available! Please confirm your booking.');
+    }
 
-        $amountPaid = $request->payment_type === 'half'
-            ? round($totalPrice / 2, 2)
-            : $totalPrice;
-        
-        // Upload proof of payment
-        $proofPath = null;
-        if ($request->hasFile('payment_proof')) {
-            $proofFile = $request->file('payment_proof');
-            $proofName = time().'_'.$proofFile->getClientOriginalName();
-            $proofFile->move(public_path('payment_proofs'), $proofName);
-            $proofPath = 'payment_proofs/'.$proofName; // save relative path
+    /**
+     * Step 2: create the booking. Availability is re-checked inside a locked
+     * transaction by BookingService, which is what closes the window between
+     * preview and submission.
+     */
+    public function submitRequest(StoreBookingWebRequest $request, int $staycation_id): RedirectResponse
+    {
+        $staycation = Staycation::findOrFail($staycation_id);
+
+        try {
+            $submission = new BookingSubmission(
+                range: DateRange::fromInput(
+                    $request->string('startDate')->toString(),
+                    $request->string('endDate')->toString(),
+                ),
+                guestNumber: $request->integer('guest_number'),
+                phone: $request->string('phone')->toString(),
+                paymentType: $request->string('payment_type')->toString(),
+                paymentMethod: $request->string('payment_method')->toString(),
+                paymentProof: $request->file('payment_proof'),
+                transactionNumber: $request->input('transaction_number'),
+                messageToAdmin: $request->input('message'),
+            );
+
+            $this->bookings->create($request->user(), $staycation, $submission);
+        } catch (BookingException $exception) {
+            return back()
+                ->withInput()
+                ->with('error', $exception->getMessage());
         }
-
-        // ✅ Duplicate booking check
-        $duplicate = Booking::where('staycation_id', $staycation_id)
-            ->where('start_date', $start->format('Y-m-d'))
-            ->where('end_date', $end->format('Y-m-d'))
-            ->first();
-
-        if ($duplicate) {
-            return back()->with('error', 'This staycation is already booked for the selected dates.');
-        }
-
-        // Create booking record
-        Booking::create([
-            'staycation_id' => $staycation_id,
-            'user_id' => Auth::id(),
-            'name' => Auth::user()->name,
-            'email' => Auth::user()->email,
-            'phone' => $request->phone,
-            'guest_number' => $request->guest_number,
-            'start_date' => $start->format('Y-m-d'),
-            'end_date' => $end->format('Y-m-d'),
-            'price_per_day' => $staycation->house_price,
-            'total_price' => $totalPrice, 
-            'amount_paid' => $amountPaid,
-            'payment_status' => 'unpaid',
-            'payment_method' => $request->payment_method,
-            'payment_proof' => $proofPath,
-            'transaction_number' => $request->transaction_number ?? null,
-            'message_to_admin' => $request->message ?? null,
-            'status' => 'pending',
-        ]);
 
         return redirect()->route('BookingHistory.index')
             ->with('success', 'Your booking has been submitted! Please wait for admin confirmation.');
     }
 
-
-
-    // 📖 Show booking history
-    public function index()
+    public function index(): View
     {
-        $bookings = Booking::where('user_id', Auth::id())->orderBy('start_date', 'desc')->get();
+        $bookings = Booking::query()
+            ->where('user_id', Auth::id())
+            ->with('staycation')
+            ->orderBy('start_date', 'desc')
+            ->get();
+
         return view('home.Booking_History', compact('bookings'));
     }
 
-    // ❌ Cancel pending booking
-    public function cancel($id)
+    /**
+     * Customer cancellation.
+     *
+     * Previously this hard-deleted the row, which erased the customer's history
+     * and any record of the payment. It now moves the booking to the cancelled
+     * status, which is what releases the dates, and archives it for the admin
+     * cancelled-bookings screen.
+     */
+    public function cancel(Request $request, int $id): RedirectResponse
     {
         $booking = Booking::where('id', $id)
             ->where('user_id', Auth::id())
-            ->where('status', 'pending')
             ->firstOrFail();
 
-        $booking->delete();
+        $this->authorize('cancel', $booking);
+
+        try {
+            $this->bookings->cancel($booking, $request->user());
+        } catch (BookingException $exception) {
+            return back()->with('error', $exception->getMessage());
+        }
 
         return redirect()->route('BookingHistory.index')
             ->with('success', 'Booking cancelled successfully.');
     }
-    public function showPaid()
+
+    public function showPaid(): View
     {
-        $bookings = Booking::where('payment_status', 'paid')->latest()->get();
-        $staycations = Staycation::all(); // ✅ added
+        $bookings = Booking::where('payment_status', PaymentStatus::Paid->value)
+            ->with('staycation')
+            ->latest()
+            ->get();
+
+        $staycations = Staycation::all();
+
         return view('admin.paid_bookings', compact('bookings', 'staycations'))->with('filter', 'Paid Bookings');
     }
 
-    public function showHalfPaid()
+    public function showHalfPaid(): View
     {
-        $bookings = Booking::where('payment_status', 'half_paid')->latest()->get();
-        $staycations = Staycation::all(); // ✅ added
+        $bookings = Booking::where('payment_status', PaymentStatus::HalfPaid->value)
+            ->with('staycation')
+            ->latest()
+            ->get();
+
+        $staycations = Staycation::all();
+
         return view('admin.half_paid_bookings', compact('bookings', 'staycations'))->with('filter', 'Half-Paid Bookings');
     }
-    public function markAsPaid($id)
+
+    /**
+     * Marks a booking settled from the admin listing. Delegates to PaymentService
+     * so amount_paid and the ledger are updated too, not just the status flag.
+     */
+    public function markAsPaid(Request $request, int $id): JsonResponse
     {
         $booking = Booking::findOrFail($id);
-        $booking->payment_status = 'paid';
-        $booking->amount_paid = $booking->total_price;
-        $booking->save();
+
+        $this->authorize('manage', $booking);
+
+        $booking = $this->payments->applyPaymentStatus($booking, PaymentStatus::Paid->value, $request->user());
 
         return response()->json([
             'success' => true,
             'message' => 'Booking marked as fully paid!',
-            'id' => $booking->id,
+            'id' => $booking->getKey(),
+            'amount_paid' => (string) $booking->amount_paid,
         ]);
     }
 
-
-    
-    public function showBookingForm($id)
+    public function showBookingForm(int $id): View
     {
         $staycation = Staycation::findOrFail($id);
-        $allStaycations = Staycation::where('house_availability', 'available')->get();
+        $allStaycations = Staycation::available()->get();
         $blockedDates = BlockedDate::where('staycation_id', $id)->get();
 
         return view('booking.form', compact('staycation', 'allStaycations', 'blockedDates'));
     }
-
 }

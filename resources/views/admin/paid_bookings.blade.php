@@ -42,7 +42,7 @@
               <td><span class="status {{ $booking->status }}">{{ ucfirst($booking->status) }}</span></td>
               <td>
                 @if($booking->payment_proof)
-                  <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" target="_blank">View Proof</a>
+                  <a href="{{ route('admin.bookings.proof.file', $booking->id) }}" target="_blank">View Proof</a>
                 @else
                   <span class="text-muted">No proof</span>
                 @endif

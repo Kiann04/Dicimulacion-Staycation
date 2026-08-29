@@ -2,166 +2,196 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Booking;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\PaymentInstructionsMail;
-use App\Models\AuditLog;
-use App\Mail\PaymentReceiptMail;
-use Illuminate\Support\Facades\Auth;
+use App\Enums\PaymentStatus;
+use App\Http\Requests\Api\Admin\UpdatePaymentStatusRequest;
 use App\Mail\BookingApproved;
 use App\Mail\BookingDeclined;
-use Illuminate\Support\Facades\DB;
+use App\Mail\PaymentReceiptMail;
+use App\Models\Booking;
+use App\Services\Booking\BookingService;
+use App\Services\Booking\Exceptions\BookingException;
+use App\Services\Payment\PaymentProofStorage;
+use App\Services\Payment\PaymentService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
+/**
+ * Admin booking actions for the Blade back office.
+ *
+ * State transitions, audit logging and money handling are delegated to
+ * BookingService and PaymentService; this controller is responsible only for
+ * HTTP concerns and notification email.
+ */
 class AdminBookingController extends Controller
 {
-    // ✅ Approve booking (waiting for payment)
-    public function approveBooking($id)
+    public function __construct(
+        private BookingService $bookings,
+        private PaymentService $payments,
+        private PaymentProofStorage $proofs,
+    ) {}
+
+    public function approveBooking(Request $request, int $id): RedirectResponse
     {
         $booking = Booking::with('user', 'staycation')->findOrFail($id);
 
-        $booking->status = 'approved';
-        $booking->payment_status = 'pending'; 
-        $booking->save();
+        $this->authorize('manage', $booking);
 
-        // Log action
-        AuditLog::create([
-            'user_id'    => Auth::id(),
-            'action'     => 'Booking Approved',
-            'description'=> 'Booking ID: ' . $booking->id . ' approved and awaiting payment.',
-            'ip_address' => request()->ip(),
-        ]);
-
-        // Send email
-        $recipient = $booking->user->email ?? $booking->email;
-        if (!empty($recipient)) {
-            Mail::to($recipient)->send(new BookingApproved($booking));
+        try {
+            $booking = $this->bookings->approve($booking, $request->user());
+        } catch (BookingException $exception) {
+            return back()->with('error', $exception->getMessage());
         }
+
+        $this->notify($booking, fn () => new BookingApproved($booking));
 
         return back()->with('success', 'Booking approved, audit log created, and email sent.');
     }
 
-    // ✅ Decline booking → set status to Declined
-    public function declineBooking($id)
+    public function declineBooking(Request $request, int $id): RedirectResponse
     {
         $booking = Booking::with('user', 'staycation')->findOrFail($id);
 
-        $booking->status = 'declined'; 
-        $booking->payment_status = 'failed';
-        $booking->save();
+        $this->authorize('manage', $booking);
 
-        AuditLog::create([
-            'user_id'    => Auth::id(),
-            'action'     => 'Booking Declined',
-            'description'=> 'Booking ID: ' . $booking->id . ' has been declined.',
-            'ip_address' => request()->ip(),
-        ]);
+        $booking = $this->bookings->decline($booking, $request->user(), $request->input('reason'));
 
-        if ($booking->user && $booking->user->email) {
-            Mail::to($booking->user->email)->send(new BookingDeclined($booking));
-        }
+        $this->notify($booking, fn () => new BookingDeclined($booking));
 
         return back()->with('success', 'Booking declined and email sent.');
     }
 
+    /**
+     * Applies an admin-selected payment status. The status is now validated
+     * against the enum rather than trusted from the request, and amount_paid is
+     * kept consistent with it by PaymentService.
+     */
+    public function updatePayment(UpdatePaymentStatusRequest $request, int $id): JsonResponse|RedirectResponse
+    {
+        $booking = Booking::with('user', 'staycation')->findOrFail($id);
 
-    // ✅ Update payment status
-    public function updatePayment(Request $request, $id)
-{
-    $booking = Booking::with('user', 'staycation')->findOrFail($id);
-    $paymentStatus = strtolower($request->input('payment_status'));
-    $booking->payment_status = $paymentStatus;
+        $this->authorize('manage', $booking);
 
-    $recipient = $booking->user->email ?? $booking->email;
+        $booking = $this->payments->applyPaymentStatus(
+            $booking,
+            $request->string('payment_status')->toString(),
+            $request->user(),
+        );
 
-    if (in_array($paymentStatus, ['paid', 'half_paid'])) {
-        $booking->status = 'confirmed';
-
-        if (!empty($recipient)) {
-            Mail::to($recipient)->send(new PaymentReceiptMail($booking));
+        if (in_array($booking->payment_status, [PaymentStatus::Paid->value, PaymentStatus::HalfPaid->value], true)) {
+            $this->notify($booking, fn () => new PaymentReceiptMail($booking));
         }
 
-        AuditLog::create([
-            'user_id'    => Auth::id(),
-            'action'     => $paymentStatus === 'paid' ? 'Payment Received' : 'Partial Payment',
-            'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as " . ucfirst(str_replace('_', ' ', $paymentStatus)) . ".",
-            'ip_address' => request()->ip(),
-        ]);
-    } elseif ($paymentStatus === 'unpaid') {
-        $booking->status = 'cancelled';
+        if ($request->ajax() || $request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment status updated successfully!',
+                'booking_status' => $booking->status,
+                'payment_status' => $booking->payment_status,
+                'amount_paid' => (string) $booking->amount_paid,
+            ]);
+        }
 
-        AuditLog::create([
-            'user_id'    => Auth::id(),
-            'action'     => 'Payment Unpaid',
-            'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as Unpaid.",
-            'ip_address' => request()->ip(),
-        ]);
-    } else {
-        $booking->status = 'approved';
+        return redirect()->back()->with('success', 'Payment status updated successfully!');
     }
 
-    $booking->save();
-
-    // ✅ Detect AJAX and respond accordingly
-    if ($request->ajax()) {
-        return response()->json([
-            'success' => true,
-            'message' => 'Payment status updated successfully!',
-            'booking_status' => $booking->status,
-        ]);
-    }
-
-    return redirect()->back()->with('success', 'Payment status updated successfully!');
-}
-
-
-    public function getUnpaidCount()
+    public function getUnpaidCount(): JsonResponse
     {
-        $count = \App\Models\Booking::where('payment_status', 'unpaid')->count();
+        $count = Booking::whereIn('payment_status', [
+            PaymentStatus::Unpaid->value,
+            PaymentStatus::Pending->value,
+        ])->count();
+
         return response()->json(['count' => $count]);
     }
-    public function getProof($id)
+
+    /**
+     * Booking summary for the admin proof modal.
+     *
+     * The proof itself is no longer returned as a public asset URL. The response
+     * carries a link to the authorized streaming route instead, so the file
+     * cannot be opened by anyone who happens to learn the filename.
+     */
+    public function getProof(int $id): JsonResponse
     {
         $booking = Booking::findOrFail($id);
+
+        $this->authorize('viewPaymentProof', $booking);
+
         return response()->json([
-            'id' => $booking->id,
+            'id' => $booking->getKey(),
             'start_date' => $booking->formatted_start_date,
             'end_date' => $booking->formatted_end_date,
-            'total_price' => $booking->total_price,
-            'amount_paid' => $booking->amount_paid,
-            'proof' => $booking->payment_proof ? asset($booking->payment_proof) : null,
+            'total_price' => (string) $booking->total_price,
+            'amount_paid' => (string) ($booking->amount_paid ?? '0.00'),
+            'balance_due' => $booking->balanceDue(),
+            'proof' => $this->proofs->exists($booking->payment_proof)
+                ? route('admin.bookings.proof.file', ['booking' => $booking->getKey()])
+                : null,
         ]);
     }
 
+    /** Streams a payment proof to an authorized back-office user. */
+    public function showProofFile(int $id): Response
+    {
+        $booking = Booking::findOrFail($id);
 
+        $this->authorize('viewPaymentProof', $booking);
 
-    public function markAsFullyPaid(Request $request, $id)
-{
-    $booking = Booking::with('user', 'staycation')->findOrFail($id);
+        $response = $this->proofs->download($booking->payment_proof, 'payment-proof-'.$booking->getKey());
 
-    // Only allow update if currently half paid
-    if (strtolower($booking->payment_status) !== 'half_paid') {
-        return redirect()->back()->with('error', 'Only half-paid bookings can be marked as fully paid.');
+        abort_if($response === null, 404, 'No payment proof is on file for this booking.');
+
+        return $response;
     }
 
-    $booking->payment_status = 'paid';
-    $booking->status = 'confirmed';
-    $booking->save();
+    /**
+     * Settles the remaining balance on a half-paid booking.
+     *
+     * Previously this set payment_status to "paid" without touching amount_paid,
+     * so receipts and reports continued to show only the deposit. PaymentService
+     * now writes the balance to the ledger and sets amount_paid to the total.
+     */
+    public function markAsFullyPaid(Request $request, int $id): RedirectResponse
+    {
+        $booking = Booking::with('user', 'staycation')->findOrFail($id);
 
-    $recipient = $booking->user->email ?? $booking->email;
+        $this->authorize('manage', $booking);
 
-    if (!empty($recipient)) {
-        Mail::to($recipient)->send(new PaymentReceiptMail($booking));
+        try {
+            $booking = $this->payments->markAsFullyPaid($booking, $request->user());
+        } catch (BookingException $exception) {
+            return redirect()->back()->with('error', $exception->getMessage());
+        }
+
+        $this->notify($booking, fn () => new PaymentReceiptMail($booking));
+
+        return redirect()->back()->with('success', 'Booking marked as fully paid.');
     }
 
-    AuditLog::create([
-        'user_id'    => Auth::id(),
-        'action'     => 'Remaining Payment Received',
-        'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as Paid (was Half Paid).",
-        'ip_address' => $request->ip(),
-    ]);
+    /**
+     * Sends a customer notification without letting a mail failure roll back or
+     * mask the state change that has already been committed.
+     */
+    private function notify(Booking $booking, callable $mailableFactory): void
+    {
+        $recipient = $booking->user->email ?? $booking->email;
 
-    return redirect()->back()->with('success', 'Booking marked as fully paid.');
-}
+        if (empty($recipient)) {
+            return;
+        }
 
+        try {
+            Mail::to($recipient)->send($mailableFactory());
+        } catch (Throwable $exception) {
+            Log::warning('Failed to send booking notification email.', [
+                'booking_id' => $booking->getKey(),
+                'exception' => $exception->getMessage(),
+            ]);
+        }
+    }
 }

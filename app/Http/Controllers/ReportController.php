@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Booking;
-use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
@@ -20,8 +19,9 @@ class ReportController extends Controller
         $month = $request->input('report_month');
         $week = $request->input('report_week');
 
-        // Redirect to the correct download route
-        return redirect()->route('reports.download', [
+        // Redirect to the correct download route. The route now lives inside the
+        // admin group, so its name carries the "admin." prefix.
+        return redirect()->route('admin.reports.download', [
             'type' => $reportType,
             'year' => $year,
             'month' => $month,

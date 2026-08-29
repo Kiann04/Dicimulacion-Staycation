@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -16,6 +17,7 @@ class User extends Authenticatable
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
+
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
@@ -29,7 +31,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'usertype'
+        'usertype',
     ];
 
     /**
@@ -65,31 +67,53 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
     public function updateProfilePhoto($photo)
     {
         // Ensure folder exists
         $destination = public_path('uploads/profile_photos');
-        if (!file_exists($destination)) {
+        if (! file_exists($destination)) {
             mkdir($destination, 0755, true);
         }
 
         // Save file with unique name
-        $filename = time() . '_' . $photo->getClientOriginalName();
+        $filename = time().'_'.$photo->getClientOriginalName();
         $photo->move($destination, $filename);
 
         // Save relative path in DB
-        $this->update(['photo' => 'uploads/profile_photos/' . $filename]);
+        $this->update(['photo' => 'uploads/profile_photos/'.$filename]);
     }
 
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
-    public function getProfilePhotoUrlAttribute()
-{
-    return $this->photo && file_exists(storage_path('app/public/'.$this->photo)) 
-        ? asset('storage/'.$this->photo) 
-        : asset('Assets/default.png');
-}
 
+    public function getProfilePhotoUrlAttribute()
+    {
+        return $this->photo && file_exists(storage_path('app/public/'.$this->photo))
+            ? asset('storage/'.$this->photo)
+            : asset('Assets/default.png');
+    }
+
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->usertype === 'admin';
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->usertype === 'staff';
+    }
+
+    /** Admins and staff both see back-office data; only admins may mutate it. */
+    public function isStaffOrAdmin(): bool
+    {
+        return $this->isAdmin() || $this->isStaff();
+    }
 }

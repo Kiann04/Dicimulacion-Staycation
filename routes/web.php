@@ -1,12 +1,65 @@
 <?php
-use App\Http\Controllers\CancelledBookingController;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
+
+use App\Http\Controllers\AdminBookingController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\NewPasswordController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
+use App\Http\Controllers\BlockedDateController;
+use App\Http\Controllers\BookingHistoryController;
+use App\Http\Controllers\CancelledBookingController;
+use App\Http\Controllers\ChatBotController;
+use App\Http\Controllers\ConsentPopupController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\OfflineChatBotController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\StaffController;
+use App\Http\Controllers\StaycationController;
+use App\Models\Staycation;
+use App\Services\Booking\BookingAvailabilityService;
+use App\Services\Booking\DateRange;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes (Blade application)
+|--------------------------------------------------------------------------
+|
+| Route names are load-bearing: the Blade views reference them by name, so the
+| names below are preserved exactly even where the URI or middleware changed.
+|
+| Consolidated in this pass:
+|  - /terms was declared twice; the second declaration silently replaced the
+|    first, so only the surviving one is kept.
+|  - BookingHistory.index and booking.preview were each declared twice.
+|  - The admin update_booking routes were unnamed inside a named group, which
+|    gave them both the name "admin." and made that name ambiguous.
+|  - admin.admin.messages / admin.admin.cancelled / admin.admin.bookings.cancelled
+|    were produced by applying an "admin." prefix to names that already carried
+|    it. No view referenced them; they have been dropped in favour of the
+|    correctly named routes that already existed.
+|  - Every admin route now sits inside the admin middleware group. Staff account
+|    management, report generation, staycation editing and mark-as-fully-paid
+|    were previously reachable by any visitor.
+|
+*/
+
+// =========================
+// Public pages
+// =========================
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::view('/terms', 'home.Terms&Condition')->name('terms');
+Route::view('/privacy', 'privacy')->name('privacy');
+
+Route::post('/contact/send', [HomeController::class, 'sendInquiry'])->name('contact.send');
+Route::post('/save-consent', [ConsentPopupController::class, 'save'])->name('save.consent');
+
+// =========================
+// Password reset
+// =========================
 Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
     ->middleware('guest')
     ->name('password.reset');
@@ -15,50 +68,8 @@ Route::post('/reset-password', [NewPasswordController::class, 'store'])
     ->middleware('guest')
     ->name('password.update');
 
-Route::get('/terms', function () {
-return view('Terms&Condition'); // or 'terms' if your file is named terms.blade.php
-})->name('terms');
-
-Route::get('/privacy', function () {
-    return view('privacy');
-})->name('privacy');
-use App\Http\Controllers\{
-    LoginController,
-    AdminController,
-    StaycationController,
-    HomeController,
-    RegisterController,
-    StaffController,
-    ReviewController,
-    AdminBookingController,
-    OfflineChatBotController,
-    ChatBotController,
-    BookingHistoryController,
-    ProfileController
-};
-
-Route::middleware(['auth'])->group(function () {
-    // Other profile routes...
-
-    // Profile password update
-    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])
-        ->name('profile.password.update');
-});
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
-
 // =========================
-// Public Pages
-// =========================
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::view('/terms', 'home.Terms&Condition')->name('terms');
-
-
-// =========================
-// Auth (User)
+// Auth (customer)
 // =========================
 Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register'])->name('register.perform');
@@ -66,142 +77,107 @@ Route::post('/register', [RegisterController::class, 'register'])->name('registe
 Route::get('/login', [LoginController::class, 'showUserLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'userLogin'])->name('user.login');
 
-Route::post('/logout', function () {
-    Auth::logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-    return redirect()->route('home');
-})->name('logout');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // =========================
-// Auth (Admin + Staff)
+// Auth (admin + staff)
 // =========================
 Route::get('/admin/login', [LoginController::class, 'showAdminStaffLoginForm'])->name('admin.staff.login');
 Route::post('/admin/login', [LoginController::class, 'adminStaffLogin'])->name('admin.staff.login.perform');
-// =========================
-// PUBLIC BOOKING ROUTES
-// =========================
-
-// Booking form
-Route::get('/booking/{id}', [BookingHistoryController::class, 'bookingForm'])->name('booking.form');
-
-// Preview booking
-Route::post('/booking/{id}/preview', [BookingHistoryController::class, 'previewBooking'])->name('booking.preview');;
-
-// Submit booking
-Route::post('/booking/{id}/submit', [BookingHistoryController::class, 'submitRequest'])->name('booking.submit');
-
-// Booking history
-Route::get('/booking/history', [BookingHistoryController::class, 'index'])->name('BookingHistory.index');
-
-
-// Cancel a booking
-
-Route::delete('/booking/{id}/cancel', [BookingHistoryController::class, 'cancel'])->name('BookingHistory.cancel');
-Route::get('/booking-history', [BookingHistoryController::class, 'index'])->name('BookingHistory.index')->middleware('auth');
 
 // =========================
-// routes/web.php
-Route::post('/reviews', [ReviewController::class, 'store'])
+// Booking
+// =========================
+// Declared before /booking/{id} so the literal segment is not swallowed by the
+// wildcard, which is what previously made /booking/history unreachable.
+Route::get('/booking/history', [BookingHistoryController::class, 'index'])
     ->middleware('auth')
-    ->name('reviews.store');
-// =========================
-// Contact / Messages
-// =========================
-Route::post('/contact/send', [HomeController::class, 'sendInquiry'])->name('contact.send');
+    ->name('BookingHistory.index');
 
-Route::post('/booking/preview/{staycation_id}', [BookingHistoryController::class, 'previewBooking'])->name('booking.preview');
+Route::get('/booking-history', [BookingHistoryController::class, 'index'])
+    ->middleware('auth')
+    ->name('BookingHistory.indexAlias');
+
+// The booking form itself stays public so visitors can browse a staycation and
+// its calendar; the form's submit control is already gated behind @auth.
+Route::get('/booking/{id}', [BookingHistoryController::class, 'bookingForm'])->name('booking.form');
 Route::get('/booking/form/{id}', [BookingHistoryController::class, 'bookingForm'])->name('BookingHistory.bookingForm');
+
+// Everything that reads or writes a customer's own booking requires a session.
+Route::middleware('auth')->group(function () {
+    Route::post('/booking/{id}/preview', [BookingHistoryController::class, 'previewBooking'])->name('booking.preview');
+    Route::post('/booking/{id}/submit', [BookingHistoryController::class, 'submitRequest'])->name('booking.submit');
+    Route::delete('/booking/{id}/cancel', [BookingHistoryController::class, 'cancel'])->name('BookingHistory.cancel');
+
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+});
 
 // =========================
 // Chatbot
 // =========================
 Route::post('/offline-chat', [OfflineChatBotController::class, 'chat']);
-Route::get('/offline-chat', fn() => view('offline-chat'));
+Route::get('/offline-chat', fn () => view('offline-chat'));
 
 Route::view('/chatbot', 'chatbot');
 Route::post('/chatbot', [ChatBotController::class, 'ask'])->name('chatbot.ask');
-Route::post('/chat', [ChatBotController::class, 'ask']); // API endpoint
-
-
-Route::post('/chat-gemini', function (Request $request) {
-    $apiKey = env('GEMINI_API_KEY');
-    $message = $request->input('message');
-
-    $response = Http::withHeaders([
-        'Content-Type' => 'application/json',
-    ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$apiKey}", [
-        'contents' => [
-            ['parts' => [['text' => $message]]],
-        ],
-    ]);
-
-    $data = $response->json();
-
-    // Extract Gemini reply safely
-    $reply = $data['candidates'][0]['content']['parts'][0]['text'] ?? "🤖 Sorry, I couldn’t understand that.";
-
-    return response()->json(['reply' => $reply]);
-});
+Route::post('/chat', [ChatBotController::class, 'ask']);
 
 // =========================
-// Calendar Events
+// Calendar events (public availability feed)
 // =========================
+/**
+ * Only bookings in a blocking status are published to the calendar, so a
+ * cancelled or declined booking no longer paints its dates as unavailable.
+ */
+Route::get('/events/{staycation_id}', function (int $staycation_id, BookingAvailabilityService $availability) {
+    $staycation = Staycation::findOrFail($staycation_id);
 
-Route::get('/events/{staycation_id}', function ($staycation_id) {
-    // 🟥 1. Booked Dates
-    $booked = DB::table('bookings')
-        ->where('staycation_id', $staycation_id)
-        ->select(
-            DB::raw("'Booked' as title"),
-            DB::raw("start_date as start"),
-            DB::raw("DATE_ADD(end_date, INTERVAL 1 DAY) as end"), // include last night
-            DB::raw("'background' as display"),
-            DB::raw("'#f87171' as color"), // red
-            DB::raw("'booked-date' as className")
-        )
-        ->get();
+    $window = DateRange::fromInput(
+        now()->subYear()->toDateString(),
+        now()->addYears(2)->toDateString(),
+    );
 
-    // 🟦 2. Blocked Dates
-    $blocked = DB::table('blocked_dates')
-        ->where('staycation_id', $staycation_id)
-        ->select(
-            DB::raw("COALESCE(reason, 'Blocked') as title"),
-            DB::raw("start_date as start"),
-            DB::raw("DATE_ADD(end_date, INTERVAL 1 DAY) as end"),
-            DB::raw("'background' as display"),
-            DB::raw("'#6b7280' as color"), // gray
-            DB::raw("'blocked-date' as className")
-        )
-        ->get();
+    $events = collect($availability->occupiedRanges($staycation, $window))
+        ->map(fn (array $range) => [
+            'title' => $range['type'] === 'booking' ? 'Booked' : ($range['reason'] ?? 'Blocked'),
+            'start' => $range['start_date'],
+            // FullCalendar treats "end" as exclusive; the stored end_date is the
+            // check-out day, which is already exclusive of the last night.
+            'end' => $range['end_date'],
+            'display' => 'background',
+            'color' => $range['type'] === 'booking' ? '#f87171' : '#6b7280',
+            'className' => $range['type'] === 'booking' ? 'booked-date' : 'blocked-date',
+            'allDay' => true,
+        ])
+        ->values();
 
-    // ✅ 3. Combine both collections
-    $events = $booked->merge($blocked);
-
-    // ✅ 4. Return JSON response
     return response()->json($events);
-});
+})->name('staycation.events');
+
 // =========================
-// Dashboard (Sanctum/Jetstream)
+// Dashboard (Jetstream)
 // =========================
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', fn() => view('dashboard'))->name('dashboard');
+    Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
 });
 
 // =========================
 // Profile
 // =========================
-Route::middleware(['auth'])->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.show');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+
+    Route::get('/test-2fa', fn () => view('test-2fa'))->name('test-2fa');
 });
 
 // =========================
-// Admin Routes
+// Admin
 // =========================
 Route::prefix('admin')
     ->name('admin.')
@@ -209,149 +185,111 @@ Route::prefix('admin')
         'auth:sanctum',
         config('jetstream.auth_session'),
         'verified',
-        'admin'
+        'admin',
     ])
     ->group(function () {
 
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/customers', [AdminController::class, 'customers'])->name('customers');
-    Route::get('/analytics', [AdminController::class, 'analytics'])->name('analytics');
-    Route::get('/messages', [AdminController::class, 'messages'])->name('messages');
-    Route::get('/reports', [AdminController::class, 'reports'])->name('reports');
-    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
-    Route::get('/addproduct', [AdminController::class, 'addProduct'])->name('addproduct');
-    Route::post('/staycations/store', [StaycationController::class, 'store'])->name('staycations.store');
-    Route::post('/staycations/{id}/toggle-availability', [AdminController::class, 'toggleAvailability'])
-         ->name('toggle_availability');
-     // ✅ Real-time unpaid booking count route
-    Route::get('/unpaid-count', [AdminBookingController::class, 'getUnpaidCount'])
-        ->name('unpaid.count');
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/customers', [AdminController::class, 'customers'])->name('customers');
+        Route::get('/customers/{id}/bookings', [AdminController::class, 'viewBookings'])->name('customers.bookings');
+        Route::get('/analytics', [AdminController::class, 'analytics'])->name('analytics');
+        Route::get('/messages', [AdminController::class, 'messages'])->name('messages');
+        Route::get('/reports', [AdminController::class, 'reports'])->name('reports');
+        Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+        Route::get('/addproduct', [AdminController::class, 'addProduct'])->name('addproduct');
+        Route::get('/audit-logs', [AdminController::class, 'auditLogs'])->name('audit.logs');
+        Route::get('/reviews', [ReviewController::class, 'adminIndex'])->name('reviews');
 
-    // Bookings
-    Route::get('/bookings', [StaycationController::class, 'index'])->name('bookings');
-    Route::get('/staycation/{id}', [StaycationController::class, 'showStaycation'])->name('staycation.show');
-    Route::get('/view_bookings', [AdminController::class, 'view_bookings'])->name('view_bookings');
-    Route::get('/view_bookings/{staycation_id}', [AdminController::class, 'view_staycation_bookings'])->name('view_staycation_bookings');
-    Route::get('/update_booking/{id}', [AdminController::class, 'editBooking']);
-    Route::put('/update_booking/{id}', [AdminController::class, 'updateBooking']);
+        // Staycations
+        Route::post('/staycations/store', [StaycationController::class, 'store'])->name('staycations.store');
+        Route::post('/staycations/{id}/toggle-availability', [AdminController::class, 'toggleAvailability'])
+            ->name('toggle_availability');
+        Route::get('/staycation/{id}', [StaycationController::class, 'showStaycation'])->name('staycation.show');
+        Route::get('/staycation/{id}/edit', [StaycationController::class, 'edit'])->name('edit_staycation');
+        Route::put('/staycation/{id}', [StaycationController::class, 'update'])->name('update_staycation');
 
-    // ✅ Add this route to delete unpaid bookings
-    Route::delete('/bookings/{id}', [AdminController::class, 'deleteBooking'])->name('bookings.delete');
+        // Bookings
+        Route::get('/bookings', [StaycationController::class, 'index'])->name('bookings');
+        Route::get('/view_bookings', [AdminController::class, 'view_bookings'])->name('view_bookings');
+        Route::get('/view_bookings/{staycation_id}', [AdminController::class, 'view_staycation_bookings'])
+            ->name('view_staycation_bookings');
+        Route::get('/update_booking/{id}', [AdminController::class, 'editBooking'])->name('bookings.edit');
+        Route::put('/update_booking/{id}', [AdminController::class, 'updateBooking'])->name('bookings.update');
+        Route::delete('/bookings/{id}', [AdminController::class, 'deleteBooking'])->name('bookings.delete');
 
-    // Messages
-    Route::get('/view_messages/{id}', [AdminController::class, 'viewMessage'])->name('view_messages');
-    Route::get('/messages/delete/{id}', [AdminController::class, 'deleteMessage'])->name('delete_message');
-    Route::get('/messages/{id}/reply', [AdminController::class, 'replyMessageForm'])->name('reply_message');
-    Route::post('/messages/{id}/reply', [AdminController::class, 'sendReplyMessage'])->name('send_reply');
+        Route::get('/unpaid-count', [AdminBookingController::class, 'getUnpaidCount'])->name('unpaid.count');
 
-    // Reports
-    Route::post('/reports/generate', [AdminController::class, 'generateReport'])->name('reports.generate');
-    Route::get('/reports/download/{id}', [AdminController::class, 'downloadReport'])->name('reports.download');
+        // Booking filters. Declared before /bookings/{id} style routes so the
+        // literal segments are matched first.
+        Route::get('/bookings/paid', [BookingHistoryController::class, 'showPaid'])->name('bookings.paid');
+        Route::get('/bookings/half-paid', [BookingHistoryController::class, 'showHalfPaid'])->name('bookings.half_paid');
+        Route::get('/bookings/cancelled', [CancelledBookingController::class, 'index'])->name('bookings.cancelled');
+        Route::get('/cancelled', [CancelledBookingController::class, 'index'])->name('cancelled');
 
-    // Bookings actions
-    Route::post('/bookings/{id}/approve', [AdminBookingController::class, 'approveBooking'])->name('bookings.approve');
-    Route::post('/bookings/{id}/decline', [AdminBookingController::class, 'declineBooking'])->name('bookings.decline');
-    Route::post('/bookings/{id}/update-payment', [AdminBookingController::class, 'updatePayment'])->name('bookings.updatePayment');
-    Route::get('/bookings/{id}/proof', [App\Http\Controllers\AdminBookingController::class, 'getProof']);
-    Route::post('/bookings/{id}/update-payment', [App\Http\Controllers\AdminBookingController::class, 'updatePayment']);
+        // Booking actions
+        Route::post('/bookings/{id}/approve', [AdminBookingController::class, 'approveBooking'])->name('bookings.approve');
+        Route::post('/bookings/{id}/decline', [AdminBookingController::class, 'declineBooking'])->name('bookings.decline');
+        Route::post('/bookings/{id}/update-payment', [AdminBookingController::class, 'updatePayment'])->name('bookings.updatePayment');
+        Route::post('/bookings/{id}/mark-paid', [BookingHistoryController::class, 'markAsPaid'])->name('bookings.markAsPaid');
+        Route::post('/bookings/{id}/mark-fully-paid', [AdminBookingController::class, 'markAsFullyPaid'])
+            ->name('bookings.markFullyPaid');
 
-        Route::post('/bookings/{id}/mark-fully-paid', [App\Http\Controllers\AdminBookingController::class, 'markAsFullyPaid'])->name('admin.bookings.markFullyPaid');
+        // Payment proofs. The JSON endpoint returns booking figures plus a link to
+        // the streaming route below; neither exposes a public file URL.
+        Route::get('/bookings/{id}/proof', [AdminBookingController::class, 'getProof'])->name('bookings.proof');
+        Route::get('/bookings/{booking}/proof/file', [AdminBookingController::class, 'showProofFile'])
+            ->name('bookings.proof.file');
 
-    // Extra
-    Route::get('/customers/{id}/bookings', [AdminController::class, 'viewBookings'])->name('customers.bookings');
-    Route::get('/audit-logs', [AdminController::class, 'auditLogs'])->name('audit.logs');
-    Route::get('/reviews', [ReviewController::class, 'adminIndex'])->name('reviews');
+        // Messages
+        Route::get('/view_messages/{id}', [AdminController::class, 'viewMessage'])->name('view_messages');
+        Route::get('/messages/delete/{id}', [AdminController::class, 'deleteMessage'])->name('delete_message');
+        Route::get('/messages/{id}/reply', [AdminController::class, 'replyMessageForm'])->name('reply_message');
+        Route::post('/messages/{id}/reply', [AdminController::class, 'sendReplyMessage'])->name('send_reply');
+        Route::get('/messages-payments', [AdminController::class, 'messagesAndPayments'])->name('messages_payments');
 
-    // Booking Filter Routes
-    Route::get('/bookings/paid', [BookingHistoryController::class, 'showPaid'])->name('bookings.paid');
-    Route::get('/bookings/half-paid', [BookingHistoryController::class, 'showHalfPaid'])->name('bookings.half_paid');
-    Route::post('/bookings/{id}/mark-paid', [BookingHistoryController::class, 'markAsPaid'])->name('bookings.markAsPaid');
+        // Reports
+        Route::post('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
+        Route::get('/reports/download/{type}/{year}/{month?}/{week?}', [ReportController::class, 'download'])
+            ->name('reports.download');
 
-    Route::get('/bookings/cancelled', [CancelledBookingController::class, 'index'])->name('bookings.cancelled');
+        // Blocked dates
+        Route::get('/blocked-dates', [BlockedDateController::class, 'index'])->name('blocked_dates.index');
+        Route::post('/blocked-dates', [BlockedDateController::class, 'store'])->name('blocked_dates.store');
+        Route::get('/events/{staycationId}', [BlockedDateController::class, 'getEvents'])->name('events');
 
-    // Admin Messages & Payment Proofs
-    Route::get('/messages-payments', [AdminController::class, 'messagesAndPayments'])
-     ->name('admin.messages');
+        // Staff management. These were previously reachable without any
+        // authentication at all, which allowed anyone to create or delete a staff
+        // account.
+        Route::get('/add-staff', [AdminController::class, 'addStaff'])->name('addStaff');
+        Route::post('/create-staff', [AdminController::class, 'createStaff'])->name('createStaff');
+        Route::get('/staff/list', [AdminController::class, 'index'])->name('staffList');
+        Route::delete('/staff/delete/{id}', [AdminController::class, 'destroy'])->name('deleteStaff');
+    });
 
-    Route::get('/cancelled', [CancelledBookingController::class, 'index'])
-        ->name('admin.cancelled');
-
-        Route::get('/admin/bookings/cancelled', [AdminController::class, 'cancelled'])->name('admin.bookings.cancelled');
-
-});
-Route::get('/admin/staycation/{id}/edit', [StaycationController::class, 'edit'])->name('admin.edit_staycation');
-Route::put('/admin/staycation/{id}', [StaycationController::class, 'update'])->name('admin.update_staycation');
-Route::post('/admin/bookings/{id}/mark-fully-paid', [AdminBookingController::class, 'markAsFullyPaid'])
-    ->name('admin.bookings.markFullyPaid');
 // =========================
-// Staff Routes
-Route::prefix('staff')->name('staff.')->middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-    'staff'
-])->group(function () {
-    Route::get('/dashboard', [StaffController::class, 'dashboard'])->name('dashboard');
+// Staff
+// =========================
+Route::prefix('staff')
+    ->name('staff.')
+    ->middleware([
+        'auth:sanctum',
+        config('jetstream.auth_session'),
+        'verified',
+        'staff',
+    ])
+    ->group(function () {
+        Route::get('/dashboard', [StaffController::class, 'dashboard'])->name('dashboard');
 
-    // Customers
-    Route::get('/customers', [StaffController::class, 'customers'])->name('customers');
-    Route::get('/customers/{id}/bookings', [StaffController::class, 'viewCustomerBookings'])->name('customers.bookings');
+        Route::get('/customers', [StaffController::class, 'customers'])->name('customers');
+        Route::get('/customers/{id}/bookings', [StaffController::class, 'viewCustomerBookings'])->name('customers.bookings');
 
-    // Bookings
-    Route::get('/bookings', [StaffController::class, 'bookings'])->name('bookings');
+        Route::get('/bookings', [StaffController::class, 'bookings'])->name('bookings');
 
-    // Messages
-    Route::get('/messages', [StaffController::class, 'messages'])->name('messages');
-    Route::get('/messages/{id}', [StaffController::class, 'viewMessage'])->name('view_message');
-    Route::get('/messages/{id}/reply', [StaffController::class, 'replyMessageForm'])->name('reply_message');
-    Route::post('/messages/{id}/reply', [StaffController::class, 'sendReplyMessage'])->name('send_reply');
-    Route::delete('/messages/{id}', [StaffController::class, 'deleteMessage'])->name('delete_message');
+        Route::get('/messages', [StaffController::class, 'messages'])->name('messages');
+        Route::get('/messages/{id}', [StaffController::class, 'viewMessage'])->name('view_message');
+        Route::get('/messages/{id}/reply', [StaffController::class, 'replyMessageForm'])->name('reply_message');
+        Route::post('/messages/{id}/reply', [StaffController::class, 'sendReplyMessage'])->name('send_reply');
+        Route::delete('/messages/{id}', [StaffController::class, 'deleteMessage'])->name('delete_message');
 
-    // Settings
-    Route::get('/settings', [StaffController::class, 'settings'])->name('settings');
-});
-use App\Http\Controllers\ConsentPopupController;
-
-Route::post('/save-consent', [ConsentPopupController::class, 'save'])->name('save.consent');
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/test-2fa', function () {
-        return view('test-2fa');
-    })->name('test-2fa');
-});
-// routes/web.php
-
-
-Route::prefix('admin')->group(function () {
-    Route::get('/cancelled', [CancelledBookingController::class, 'index'])
-        ->name('admin.cancelled');
-});
-use App\Http\Controllers\BlockedDateController;
-Route::middleware(['auth', 'admin'])->group(function () {
-    // Show blocked dates + form
-    Route::get('/admin/blocked-dates', [BlockedDateController::class, 'index'])
-        ->name('admin.blocked_dates.index');
-
-    // Store new blocked date
-    Route::post('/admin/blocked-dates', [BlockedDateController::class, 'store'])
-        ->name('admin.blocked_dates.store');
-
-    // Calendar events (booked + blocked)
-    Route::get('/admin/events/{staycationId}', [BlockedDateController::class, 'getEvents'])
-        ->name('admin.events');
-});
-use App\Http\Controllers\ReportController;
-
-
-// Reports
-Route::post('admin/reports/generate', [ReportController::class, 'generate'])
-    ->name('admin.reports.generate');
-
-Route::get('admin/reports/download/{type}/{year}/{month?}/{week?}', [ReportController::class, 'download'])->name('reports.download');
-
-Route::get('/admin/add-staff', [AdminController::class, 'addStaff'])->name('admin.addStaff');
-Route::post('/admin/create-staff', [AdminController::class, 'createStaff'])->name('admin.createStaff');
-Route::get('/admin/staff/list', [AdminController::class, 'index'])->name('admin.staffList');
-
-    // delete staff
-Route::delete('/admin/staff/delete/{id}', [AdminController::class, 'destroy'])->name('admin.deleteStaff');
+        Route::get('/settings', [StaffController::class, 'settings'])->name('settings');
+    });
