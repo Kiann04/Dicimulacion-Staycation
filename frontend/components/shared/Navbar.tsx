@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { authService } from "@/lib/services/authService";
-import { User } from "@/lib/types";
+import { useAuth } from "@/lib/auth/auth-context";
 import { Button } from "@/components/ui/button";
 import {
   Compass,
@@ -23,13 +22,12 @@ import {
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  // The session is resolved once, by the AuthProvider, from /api/auth/me.
+  const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    setUser(authService.getCurrentUser());
-
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
@@ -38,8 +36,7 @@ export function Navbar() {
   }, [pathname]);
 
   const handleLogout = async () => {
-    await authService.logout();
-    setUser(null);
+    await logout();
     router.push("/");
   };
 

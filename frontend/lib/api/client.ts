@@ -1,6 +1,14 @@
-// Centralized API client for Dicimulacion Staycation (Laravel v1 REST API)
+// Versioned API surface for Dicimulacion Staycation.
+//
+// Authentication is Sanctum's SPA cookie mode and is owned by lib/api/laravel.ts;
+// this module reuses that origin resolution and cookie handling rather than
+// keeping a second convention. There is no bearer token and nothing is read from
+// or written to localStorage here - the browser holds the HttpOnly session
+// cookie and Laravel decides what the caller may see.
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api/v1";
+import { API_V1_URL, ensureCsrfCookie } from "./laravel";
+
+const BASE_URL = API_V1_URL;
 
 export interface DateConflict {
   type: string;
@@ -83,12 +91,22 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
     }
   }
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const isFormData = typeof FormData !== "undefined" && data instanceof FormData;
+  const method = (customConfig.method || "GET").toUpperCase();
+  const isWrite = !["GET", "HEAD", "OPTIONS"].includes(method);
+
+  // Laravel requires the CSRF header on every stateful write.
+  if (isWrite) await ensureCsrfCookie();
+
+  const xsrfToken =
+    typeof document !== "undefined"
+      ? document.cookie.match(/(^|;\s*)XSRF-TOKEN=([^;]*)/)?.[2]
+      : undefined;
 
   const defaultHeaders: Record<string, string> = {
     Accept: "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    "X-Requested-With": "XMLHttpRequest",
+    ...(isWrite && xsrfToken ? { "X-XSRF-TOKEN": decodeURIComponent(xsrfToken) } : {}),
   };
 
   // Only set Content-Type to application/json when not using FormData (browser sets boundary automatically)
@@ -98,6 +116,8 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
 
   const config: RequestInit = {
     ...customConfig,
+    // Sends and accepts the Laravel session cookie.
+    credentials: "include",
     headers: {
       ...defaultHeaders,
       ...(headers as Record<string, string>),
@@ -119,11 +139,11 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
     );
   }
 
-  // Handle 401 Unauthorized (token invalid / revoked / expired)
-  if (response.status === 401) {
+  // 401 (no session) and 419 (expired session / stale CSRF token) both mean the
+  // caller has to sign in again. There is no cached identity to clear - the
+  // AuthProvider owns auth state and listens for this.
+  if (response.status === 401 || response.status === 419) {
     if (typeof window !== "undefined") {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
       window.dispatchEvent(new CustomEvent("auth:unauthorized"));
     }
   }
@@ -138,7 +158,10 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
     if (!message) {
       switch (status) {
         case 401:
-          message = "Your session has expired. Please sign in again.";
+          message = "Your session has ended. Please sign in again.";
+          break;
+        case 419:
+          message = "Your session expired. Please sign in again.";
           break;
         case 403:
           message = "You do not have permission to perform this action.";

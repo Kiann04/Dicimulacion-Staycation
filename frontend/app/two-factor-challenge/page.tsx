@@ -26,14 +26,11 @@ function TwoFactorForm() {
     setError("");
 
     try {
-      const res = await authService.verifyTwoFactor({
-        code,
-        temp_token: tempToken,
-      });
+      const verifiedUser = await authService.verifyTwoFactor({ code });
 
-      if (res.user.usertype === "admin") {
+      if (verifiedUser.role === "admin") {
         router.push("/admin/dashboard");
-      } else if (res.user.usertype === "staff") {
+      } else if (verifiedUser.role === "staff") {
         router.push("/staff/dashboard");
       } else {
         router.push("/");

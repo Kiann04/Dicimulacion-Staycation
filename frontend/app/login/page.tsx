@@ -24,7 +24,7 @@ export default function LoginPage() {
       await authService.login({
         email,
         password,
-        portal: "user",
+        portal: "guest",
       });
 
       router.push("/");

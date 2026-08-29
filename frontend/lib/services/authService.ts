@@ -1,25 +1,26 @@
 import { apiClient } from "../api/client";
+import { ensureCsrfCookie, laravelFetch } from "../api/laravel";
 import { User, ApiResponse } from "../types";
 
-export interface LoginPayload {
-  email: string;
-  password: string;
-  device_name?: string;
-  portal?: string;
-}
+/**
+ * Session-backed auth operations.
+ *
+ * Sanctum's SPA cookie mode means there is no token to hand around and nothing
+ * to cache: the browser holds an HttpOnly session cookie it will not let script
+ * read, and GET /api/auth/me is the only way to learn who the caller is.
+ *
+ * The previous implementation stored the user and a bearer token in
+ * localStorage and read `role` back out of it to decide what to show. That made
+ * "am I an admin?" a client-side value anyone could edit from the console, so
+ * it has been removed rather than adjusted. React state (see lib/auth/auth-context)
+ * is the only place a resolved user now lives.
+ */
 
 export interface RegisterPayload {
   name: string;
   email: string;
   password: string;
   password_confirmation: string;
-  device_name?: string;
-}
-
-export interface AuthSuccessData {
-  user: User;
-  token: string;
-  token_type: string;
 }
 
 export interface UpdatePasswordPayload {
@@ -28,185 +29,91 @@ export interface UpdatePasswordPayload {
   password_confirmation: string;
 }
 
-function normalizeUser(rawUser: any): User {
-  if (!rawUser) return rawUser;
-  return {
-    id: rawUser.id,
-    name: rawUser.name,
-    email: rawUser.email,
-    role: rawUser.role || rawUser.usertype || "user",
-    usertype: rawUser.role || rawUser.usertype || "user",
-    email_verified: rawUser.email_verified ?? false,
-    profile_photo_url: rawUser.profile_photo_url || null,
-    created_at: rawUser.created_at,
-  };
+interface MeResponse {
+  success: boolean;
+  data: User;
 }
 
 export const authService = {
   /**
-   * Authenticate user with personal access token.
+   * Opens a Laravel session. `portal: "admin"` posts to /admin/login, which
+   * refuses anyone who is not admin or staff; the guest portal uses /login.
    */
-  async login(payload: LoginPayload): Promise<{ user: User; token: string }> {
-    const res = await apiClient<ApiResponse<AuthSuccessData>>("auth/login", {
+  async login(payload: { email: string; password: string; portal?: "guest" | "admin" }): Promise<User> {
+    await ensureCsrfCookie();
+
+    await laravelFetch({
+      path: payload.portal === "admin" ? "/admin/login" : "/login",
       method: "POST",
-      data: {
-        email: payload.email,
-        password: payload.password,
-        device_name: payload.device_name || "web",
-      },
+      data: { email: payload.email, password: payload.password },
     });
 
-    const user = normalizeUser(res.data.user);
-    const token = res.data.token;
-
-    if (typeof window !== "undefined") {
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      window.dispatchEvent(new CustomEvent("auth:login", { detail: { user } }));
-    }
-
-    return { user, token };
+    return await this.getMe();
   },
 
-  /**
-   * Register a new customer account.
-   */
-  async register(payload: RegisterPayload): Promise<{ user: User; token: string }> {
-    const res = await apiClient<ApiResponse<AuthSuccessData>>("auth/register", {
-      method: "POST",
-      data: {
-        name: payload.name,
-        email: payload.email,
-        password: payload.password,
-        password_confirmation: payload.password_confirmation,
-        device_name: payload.device_name || "web",
-      },
-    });
+  /** Registers a customer, then reads the resulting session back from the server. */
+  async register(payload: RegisterPayload): Promise<User> {
+    await ensureCsrfCookie();
 
-    const user = normalizeUser(res.data.user);
-    const token = res.data.token;
-
-    if (typeof window !== "undefined") {
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      window.dispatchEvent(new CustomEvent("auth:login", { detail: { user } }));
-    }
-
-    return { user, token };
-  },
-
-  /**
-   * Verify 2FA challenge code if required.
-   */
-  async verifyTwoFactor(payload: { code: string; temp_token?: string }): Promise<{ user: User; token: string }> {
-    const res = await apiClient<ApiResponse<AuthSuccessData>>("two-factor-challenge", {
+    await laravelFetch({
+      path: "/register",
       method: "POST",
       data: payload,
     });
 
-    const user = normalizeUser(res.data?.user || res.data);
-    const token = res.data?.token || "";
-
-    if (typeof window !== "undefined" && token) {
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      window.dispatchEvent(new CustomEvent("auth:login", { detail: { user } }));
-    }
-
-    return { user, token };
+    return await this.getMe();
   },
 
   /**
-   * Fetch current authenticated user profile from Laravel /me endpoint.
+   * Completes Fortify's two-factor challenge against the pending session, then
+   * reads the resulting user back from the server.
    */
-  async getMe(): Promise<User | null> {
-    try {
-      const res = await apiClient<ApiResponse<any>>("me");
-      const user = normalizeUser(res.data);
-      if (typeof window !== "undefined") {
-        localStorage.setItem("user", JSON.stringify(user));
-      }
-      return user;
-    } catch {
-      return null;
-    }
-  },
+  async verifyTwoFactor(payload: { code?: string; recovery_code?: string }): Promise<User> {
+    await ensureCsrfCookie();
 
-  /**
-   * Terminate active session and revoke current bearer token.
-   */
-  async logout(): Promise<void> {
-    try {
-      await apiClient("auth/logout", { method: "POST" });
-    } catch {
-      // Proceed with local cleanup even if request fails
-    } finally {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.dispatchEvent(new CustomEvent("auth:logout"));
-      }
-    }
-  },
-
-  /**
-   * Revoke all personal access tokens across all devices.
-   */
-  async logoutAll(): Promise<void> {
-    try {
-      await apiClient("auth/logout-all", { method: "POST" });
-    } finally {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.dispatchEvent(new CustomEvent("auth:logout"));
-      }
-    }
-  },
-
-  /**
-   * Read synchronously cached user from localStorage.
-   */
-  getCurrentUser(): User | null {
-    if (typeof window === "undefined") return null;
-    const stored = localStorage.getItem("user");
-    if (!stored) return null;
-    try {
-      return normalizeUser(JSON.parse(stored));
-    } catch {
-      return null;
-    }
-  },
-
-  /**
-   * Update name and email on user profile.
-   */
-  async updateProfile(payload: { name: string; email: string } | FormData): Promise<User> {
-    let dataToSend: any;
-    if (typeof FormData !== "undefined" && payload instanceof FormData) {
-      dataToSend = {
-        name: payload.get("name") as string,
-        email: payload.get("email") as string,
-      };
-    } else {
-      dataToSend = payload;
-    }
-
-    const res = await apiClient<ApiResponse<any>>("profile", {
-      method: "PUT",
-      data: dataToSend,
+    await laravelFetch({
+      path: "/two-factor-challenge",
+      method: "POST",
+      data: payload.recovery_code
+        ? { recovery_code: payload.recovery_code }
+        : { code: payload.code },
     });
 
-    const user = normalizeUser(res.data);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("user", JSON.stringify(user));
-    }
-    return user;
+    return await this.getMe();
   },
 
   /**
-   * Update password and revoke all other sessions.
+   * The single source of identity. Throws on 401/419 so callers cannot mistake
+   * "no session" for "some cached user".
    */
+  async getMe(): Promise<User> {
+    const response = await laravelFetch<MeResponse>({ path: "/api/auth/me" });
+    return response.data;
+  },
+
+  /** Ends the session server-side. Local state is cleared by the AuthProvider. */
+  async logout(): Promise<void> {
+    try {
+      await laravelFetch({ path: "/logout", method: "POST" });
+    } catch {
+      // Already signed out, or the session expired. Either way the caller
+      // proceeds to clear its own state.
+    }
+  },
+
+  async updateProfile(payload: { name: string; email: string } | FormData): Promise<User> {
+    const body =
+      typeof FormData !== "undefined" && payload instanceof FormData
+        ? { name: String(payload.get("name") ?? ""), email: String(payload.get("email") ?? "") }
+        : payload;
+
+    const res = await apiClient<ApiResponse<User>>("profile", {
+      method: "PUT",
+      data: body,
+    });
+    return res.data;
+  },
+
   async updatePassword(payload: UpdatePasswordPayload): Promise<{ success: boolean; message?: string }> {
     return await apiClient("profile/password", {
       method: "PUT",

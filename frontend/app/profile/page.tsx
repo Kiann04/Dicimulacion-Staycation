@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import { authService } from "@/lib/services/authService";
+import { useAuth } from "@/lib/auth/auth-context";
 import { User } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { User as UserIcon, Lock, CheckCircle2, UploadCloud, Shield } from "lucide-react";
 
 export default function ProfilePage() {
+  const { user: sessionUser } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -23,13 +25,11 @@ export default function ProfilePage() {
   const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
-    const current = authService.getCurrentUser();
-    if (current) {
-      setUser(current);
-      setName(current.name);
-      setEmail(current.email);
-    }
-  }, []);
+    if (!sessionUser) return;
+    setUser(sessionUser);
+    setName(sessionUser.name);
+    setEmail(sessionUser.email);
+  }, [sessionUser]);
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,19 +1,27 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { authService } from "@/lib/services/authService";
+import { useAuth } from "@/lib/auth/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Shield, Lock, Mail, Compass, KeyRound } from "lucide-react";
 
 export default function AdminStaffLoginPage() {
   const router = useRouter();
+  const { login, status, user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Someone who already holds a session should not sit on the login form.
+  useEffect(() => {
+    if (status !== "authenticated" || !user) return;
+    if (user.role === "admin") router.replace("/admin/dashboard");
+    else if (user.role === "staff") router.replace("/staff/dashboard");
+  }, [status, user, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,16 +29,18 @@ export default function AdminStaffLoginPage() {
     setError("");
 
     try {
-      const res = await authService.login({
-        email,
-        password,
-        portal: "admin_staff",
-      });
+      /*
+       * The role used for routing comes from the session Laravel just issued
+       * (via /api/auth/me inside login), never from anything this form holds.
+       * Sending someone to /admin/dashboard grants nothing on its own - the
+       * guard re-checks, and every request behind it is authorised server-side.
+       */
+      const authenticated = await login(email, password, "admin");
 
-      if (res.user.role === "admin" || res.user.usertype === "admin") {
-        router.push("/admin/dashboard");
-      } else if (res.user.role === "staff" || res.user.usertype === "staff") {
-        router.push("/staff/dashboard");
+      if (authenticated.role === "admin") {
+        router.replace("/admin/dashboard");
+      } else if (authenticated.role === "staff") {
+        router.replace("/staff/dashboard");
       } else {
         setError("Only Admin and Staff accounts are authorized to enter here.");
       }

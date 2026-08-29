@@ -1,19 +1,15 @@
 import React from "react";
-import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { AdminGuard } from "@/components/auth/AdminGuard";
 
 export const metadata = {
   title: "Admin Dashboard | Dicimulacion Staycation",
 };
 
+/**
+ * Every /admin route renders inside AdminGuard, so no dashboard markup - the
+ * sidebar included - reaches the DOM before Laravel has confirmed the session
+ * and the admin role. Laravel's middleware remains the real authority.
+ */
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex min-h-screen bg-background text-foreground">
-      <div className="hidden md:block">
-        <AdminSidebar />
-      </div>
-      <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
-        <main className="flex-1 p-6 sm:p-8 lg:p-10">{children}</main>
-      </div>
-    </div>
-  );
+  return <AdminGuard>{children}</AdminGuard>;
 }

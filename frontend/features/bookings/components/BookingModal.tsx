@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Staycation } from "@/types";
 import { bookingService } from "@/lib/services/bookingService";
-import { authService } from "@/lib/services/authService";
+import { useAuth } from "@/lib/auth/auth-context";
 import { ApiError } from "@/lib/api/client";
 import { formatPHP } from "@/lib/utils";
 import { Dialog } from "@/components/ui/dialog";
@@ -57,6 +57,7 @@ export function BookingModal({
   const [calcNights, setCalcNights] = useState(1);
   const [calcBasePrice, setCalcBasePrice] = useState(pricePerNight);
   const [calcExtraGuests, setCalcExtraGuests] = useState(0);
+  const { user } = useAuth();
   const [calcExtraFee, setCalcExtraFee] = useState(0);
   const [calcTotalPrice, setCalcTotalPrice] = useState(pricePerNight);
 
@@ -65,14 +66,12 @@ export function BookingModal({
   const [guestErrors, setGuestErrors] = useState<Record<string, string>>({});
   const [paymentError, setPaymentError] = useState("");
 
-  // Pre-fill user info if logged in
+  // Pre-fill from the signed-in user once the session has resolved.
   useEffect(() => {
-    const user = authService.getCurrentUser();
-    if (user) {
-      if (user.name && !name) setName(user.name);
-      if (user.email && !email) setEmail(user.email);
-    }
-  }, [isOpen]);
+    if (!user) return;
+    if (user.name && !name) setName(user.name);
+    if (user.email && !email) setEmail(user.email);
+  }, [isOpen, user]);
 
   // Sync initial dates
   useEffect(() => {
