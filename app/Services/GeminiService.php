@@ -10,25 +10,25 @@ class GeminiService
 
     public function __construct()
     {
-        $this->apiKey = env('GEMINI_API_KEY');
+        $this->apiKey = config('services.gemini.key');
     }
 
     public function askGemini($message)
     {
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-        ])->post($url . '?key=' . $this->apiKey, [
+        ])->post($url.'?key='.$this->apiKey, [
             'contents' => [
-                ['parts' => [['text' => $message]]]
-            ]
+                ['parts' => [['text' => $message]]],
+            ],
         ]);
 
         if ($response->successful()) {
             return $response->json()['candidates'][0]['content']['parts'][0]['text'] ?? 'No response';
         }
 
-        return 'Error: ' . $response->body();
+        return 'Error: '.$response->body();
     }
 }

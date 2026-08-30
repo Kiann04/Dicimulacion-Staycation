@@ -27,6 +27,19 @@
         </div>
     @endif
 
+    <!-- ❌ Validation Errors -->
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+            <ul class="mb-0 ps-3">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     <div class="card shadow-sm p-4 border-0 rounded-4">
         <form action="{{ route('admin.createStaff') }}" method="POST">
             @csrf

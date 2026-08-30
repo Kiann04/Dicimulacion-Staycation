@@ -2,18 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PaymentStatus;
+use App\Exceptions\BookingRuleViolation;
+use App\Http\Requests\StoreStaffRequest;
+use App\Http\Requests\UpdateBookingRequest;
 use App\Mail\BookingCancelled;
 use App\Mail\InquiryReply;
 use App\Models\AuditLog;
-use App\Models\BlockedDate;
 use App\Models\Booking;
 use App\Models\BookingHistory;
 use App\Models\Inquiry;
 use App\Models\Report;
 use App\Models\Staycation;
 use App\Models\User;
+use App\Services\BookingArchiveService;
+use App\Services\BookingAvailabilityService;
+use App\Services\BookingInventoryService;
+use App\Services\RevenueReportingService;
+use App\Support\Money;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,25 +32,23 @@ use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
-    public function dashboard()
+    public function dashboard(RevenueReportingService $revenue)
     {
-        // ✅ 1. Automatically mark completed bookings
-        Booking::whereDate('end_date', '<', Carbon::today())
-            ->where('status', '!=', 'completed')
-            ->update(['status' => 'completed']);
+        // Finished stays are marked completed by the scheduled
+        // `bookings:complete-past` command. Rendering this dashboard must not
+        // change booking state.
 
         // ✅ 2. Overall Stats
         $totalUsers = User::count();
         $totalBookings = Booking::count();
-        $totalRevenue = Booking::sum(DB::raw("
-            CASE 
-                WHEN payment_status = 'paid' THEN total_price
-                WHEN payment_status = 'half_paid' THEN total_price / 2
-                ELSE 0
-            END
-        "));
+        $totalRevenue = $revenue->totalVerifiedAmount(Booking::query())->toDecimalString();
 
-        $bookings = Booking::where('payment_status', 'unpaid')
+        $bookings = Booking::query()
+            ->with(['user', 'staycation'])
+            ->whereIn('payment_status', [
+                PaymentStatus::Unpaid->value,
+                PaymentStatus::Pending->value,
+            ])
             ->latest()
             ->take(10)
             ->get();
@@ -53,15 +61,11 @@ class AdminController extends Controller
             ->whereYear('created_at', $currentYear)
             ->count();
 
-        $monthlyRevenue = Booking::whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
-            ->sum(DB::raw("
-                CASE 
-                    WHEN payment_status = 'paid' THEN total_price
-                    WHEN payment_status = 'half_paid' THEN total_price / 2
-                    ELSE 0
-                END
-            "));
+        $monthlyRevenue = $revenue->totalVerifiedAmount(
+            Booking::query()
+                ->whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
+        )->toDecimalString();
 
         $newUsers = User::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
@@ -98,18 +102,15 @@ class AdminController extends Controller
             ->values();
 
         $revenues = collect(range(0, 5))
-            ->map(function ($i) {
+            ->map(function ($i) use ($revenue) {
                 $month = Carbon::now()->subMonths($i);
 
-                return Booking::whereMonth('created_at', $month->month)
-                    ->whereYear('created_at', $month->year)
-                    ->sum(DB::raw("
-                        CASE 
-                            WHEN payment_status = 'paid' THEN total_price
-                            WHEN payment_status = 'half_paid' THEN total_price / 2
-                            ELSE 0
-                        END
-                    "));
+                // Float only at the presentation boundary, for the chart.
+                return $revenue->totalVerifiedAmount(
+                    Booking::query()
+                        ->whereMonth('created_at', $month->month)
+                        ->whereYear('created_at', $month->year)
+                )->toFloat();
             })
             ->reverse()
             ->values();
@@ -148,7 +149,7 @@ class AdminController extends Controller
         return view('admin.customers', compact('customers', 'search'));
     }
 
-    public function analytics()
+    public function analytics(RevenueReportingService $revenue)
     {
         $currentMonth = Carbon::now()->month;
         $currentYear = Carbon::now()->year;
@@ -158,15 +159,11 @@ class AdminController extends Controller
             ->whereYear('created_at', $currentYear)
             ->count();
 
-        $monthlyRevenue = Booking::whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
-            ->sum(DB::raw("
-            CASE 
-                WHEN payment_status = 'paid' THEN total_price
-                WHEN payment_status = 'half_paid' THEN total_price / 2
-                ELSE 0
-            END
-        "));
+        $monthlyRevenue = $revenue->totalVerifiedAmount(
+            Booking::query()
+                ->whereMonth('created_at', $currentMonth)
+                ->whereYear('created_at', $currentYear)
+        )->toDecimalString();
 
         $newUsers = User::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
@@ -201,18 +198,15 @@ class AdminController extends Controller
             ->values();
 
         $revenues = collect(range(0, 5))
-            ->map(function ($i) {
+            ->map(function ($i) use ($revenue) {
                 $month = Carbon::now()->subMonths($i);
 
-                return Booking::whereMonth('created_at', $month->month)
-                    ->whereYear('created_at', $month->year)
-                    ->sum(DB::raw("
-                    CASE 
-                        WHEN payment_status = 'paid' THEN total_price
-                        WHEN payment_status = 'half_paid' THEN total_price / 2
-                        ELSE 0
-                    END
-                "));
+                // Float only at the presentation boundary, for the chart.
+                return $revenue->totalVerifiedAmount(
+                    Booking::query()
+                        ->whereMonth('created_at', $month->month)
+                        ->whereYear('created_at', $month->year)
+                )->toFloat();
             })
             ->reverse()
             ->values();
@@ -282,7 +276,7 @@ class AdminController extends Controller
         return view('admin.reports', compact('reports', 'monthlyBookings'));
     }
 
-    public function generateReport(Request $request)
+    public function generateReport(Request $request, RevenueReportingService $revenue)
     {
         $request->validate([
             'report_type' => 'required',
@@ -298,25 +292,35 @@ class AdminController extends Controller
             ->whereIn('payment_status', ['paid', 'half_paid'])
             ->get();
 
-        // Initialize months
+        // Accumulated in centavos. Adding floats month by month and then summing
+        // the months would drift, and a report is exactly where that shows up.
         $months = collect(range(1, 12))->mapWithKeys(function ($m) {
-            return [Carbon::create()->month($m)->format('F') => ['bookings' => 0, 'revenue' => 0]];
+            return [Carbon::create()->month($m)->format('F') => ['bookings' => 0, 'revenue' => Money::zero()]];
         })->toArray();
+
+        $totalRevenue = Money::zero();
 
         foreach ($bookings as $b) {
             $monthName = Carbon::parse($b->created_at)->format('F');
-            $months[$monthName]['bookings'] += 1;
+            $verified = $revenue->verifiedAmountFor($b);
 
-            // Add full price for 'paid', half price for 'half_paid'
-            if ($b->payment_status === 'paid') {
-                $months[$monthName]['revenue'] += $b->total_price;
-            } elseif ($b->payment_status === 'half_paid') {
-                $months[$monthName]['revenue'] += $b->total_price / 2;
-            }
+            $months[$monthName]['bookings'] += 1;
+            $months[$monthName]['revenue'] = $months[$monthName]['revenue']->plus($verified);
+            $totalRevenue = $totalRevenue->plus($verified);
         }
 
-        $totalRevenue = array_sum(array_column($months, 'revenue'));
         $totalBookings = array_sum(array_column($months, 'bookings'));
+
+        // Formatted only now that every addition is done.
+        $months = array_map(
+            fn (array $month): array => [
+                'bookings' => $month['bookings'],
+                'revenue' => $month['revenue']->toDecimalString(),
+            ],
+            $months
+        );
+
+        $totalRevenue = $totalRevenue->toDecimalString();
 
         $pdf = Pdf::loadView('admin.reports_pdf', [
             'bookings' => $bookings,
@@ -366,42 +370,14 @@ class AdminController extends Controller
         return view('admin.view_bookings', compact('bookings'));
     }
 
-    // bookings by staycation
-    public function getEvents($staycationId)
+    /**
+     * Calendar events for booked and blocked nights.
+     */
+    public function getEvents(int $staycationId): \Illuminate\Http\JsonResponse
     {
-        // Bookings
-        $bookings = Booking::where('staycation_id', $staycationId)
-            ->whereNull('deleted_at')
-            ->get();
-
-        $bookingEvents = $bookings->map(function ($booking) {
-            return [
-                'title' => 'Booked',
-                'start' => $booking->start_date,
-                'end' => Carbon::parse($booking->end_date)->addDay()->toDateString(),
-                'color' => '#f56565', // red
-                'display' => 'background', // full background
-                'allDay' => true,          // important for all-day
-            ];
-        });
-
-        // Blocked Dates
-        $blockedDates = BlockedDate::where('staycation_id', $staycationId)->get();
-
-        $blockedEvents = $blockedDates->map(function ($blocked) {
-            return [
-                'title' => $blocked->reason ?? 'Blocked',
-                'start' => $blocked->start_date,
-                'end' => Carbon::parse($blocked->end_date)->addDay()->toDateString(),
-                'color' => '#fcd34d', // yellow
-                'display' => 'background',
-                'allDay' => true,     // important for all-day
-            ];
-        });
-
-        $events = $bookingEvents->merge($blockedEvents)->values();
-
-        return response()->json($events);
+        return response()->json(
+            app(BookingAvailabilityService::class)->calendarEvents($staycationId)
+        );
     }
 
     public function view_staycation_bookings($staycation_id)
@@ -425,29 +401,35 @@ class AdminController extends Controller
         return view('admin.update_bookings', compact('booking', 'staycations'));
     }
 
-    public function updateBooking(Request $request, $id)
+    /**
+     * Move an existing booking, holding it to the same domain rules a customer
+     * booking must satisfy: a real staycation that is open, at least one night,
+     * a legal guest count, no overlap, and a server-recalculated price.
+     *
+     * The lock, the checks and the write all happen in one transaction inside
+     * BookingInventoryService, using the same staycation-row mutex that booking
+     * creation takes.
+     */
+    public function updateBooking(UpdateBookingRequest $request, $id): RedirectResponse
     {
-        $request->validate([
-            'staycation_id' => 'required|exists:staycations,id',
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'guest_number' => 'required|integer|min:1',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-        ]);
-
         $booking = Booking::findOrFail($id);
-        $booking->update($request->only([
-            'staycation_id',
-            'name',
-            'phone',
-            'guest_number',
-            'start_date',
-            'end_date',
-        ]));
+
+        try {
+            app(BookingInventoryService::class)->rescheduleBooking(
+                $booking,
+                (int) $request->validated('staycation_id'),
+                (int) $request->validated('guest_number'),
+                CarbonImmutable::parse($request->validated('start_date'))->startOfDay(),
+                CarbonImmutable::parse($request->validated('end_date'))->startOfDay(),
+                $request->safe()->only(['name', 'phone']),
+            );
+        } catch (BookingRuleViolation $exception) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $exception->getMessage());
+        }
 
         return redirect()->back()->with('success', 'Booking updated successfully!');
-
     }
 
     public function replyMessageForm($id)
@@ -484,58 +466,59 @@ class AdminController extends Controller
     public function viewBookings($id)
     {
         $customer = User::findOrFail($id);
-        $bookings = Booking::where('user_id', $id)->get();
+        $bookings = Booking::query()
+            ->with('staycation')
+            ->where('user_id', $id)
+            ->get();
 
         return view('admin.customer_bookings', compact('customer', 'bookings'));
     }
 
-    public function toggleAvailability($id)
+    /**
+     * Open or close a staycation for booking.
+     *
+     * Takes the same staycation lock booking creation does: closing a property
+     * while a booking is being created for it would otherwise let the booking's
+     * "is it open?" check pass against a value that is being changed underneath
+     * it. Reading and writing under the lock makes the toggle atomic too, so two
+     * simultaneous clicks cannot both flip from the same starting value.
+     */
+    public function toggleAvailability($id): RedirectResponse
     {
-        $staycation = Staycation::findOrFail($id);
-
-        // Toggle availability
-        $staycation->house_availability = $staycation->house_availability === 'available' ? 'unavailable' : 'available';
-        $staycation->save();
+        app(BookingInventoryService::class)->withStaycationLock((int) $id, function (Staycation $staycation): void {
+            $staycation->update([
+                'house_availability' => $staycation->house_availability === 'available'
+                    ? 'unavailable'
+                    : 'available',
+            ]);
+        });
 
         return redirect()->back()->with('success', 'Staycation availability updated!');
     }
 
-    public function deleteBooking($id)
+    /**
+     * Archive a booking and remove it from the live table.
+     *
+     * The archive write and the delete are one transaction inside
+     * BookingArchiveService, so the booking can never end up recorded twice or
+     * erased without a record.
+     */
+    public function deleteBooking($id, BookingArchiveService $archive): RedirectResponse
     {
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::with('user')->findOrFail($id);
 
-        // Only delete unpaid bookings
-        if ($booking->payment_status !== 'unpaid') {
-            return redirect()->back()->with('error', 'Only unpaid bookings can be deleted.');
+        try {
+            // The authoritative eligibility check lives inside the service,
+            // against the locked row. Checking it here as well would only be a
+            // convenience, and a stale one.
+            $archive->archiveAndDelete($booking);
+        } catch (BookingRuleViolation $exception) {
+            return redirect()->back()->with('error', $exception->getMessage());
         }
 
-        // ✅ Copy booking data to booking_history before deleting
-        DB::table('booking_history')->insert([
-            'booking_id' => $booking->id,
-            'user_id' => $booking->user_id,
-            'name' => $booking->name,
-            'staycation_id' => $booking->staycation_id,
-            'start_date' => $booking->start_date,
-            'end_date' => $booking->end_date,
-            'total_price' => $booking->total_price,
-            'payment_status' => $booking->payment_status,
-            'payment_proof' => $booking->payment_proof,
-            'action_by' => Auth::check() ? Auth::user()->name : 'Admin',
-            'deleted_at' => now(), // mark when it was archived
-        ]);
-
-        // ✅ Permanently remove the booking (hard delete)
-        $booking->forceDelete();
-
-        // ✅ Log action
-        AuditLog::create([
-            'user_id' => Auth::id(),
-            'action' => 'Booking Deleted',
-            'description' => "Booking ID: {$booking->id} permanently deleted and copied to history.",
-            'ip_address' => request()->ip(),
-        ]);
         $recipient = $booking->user->email ?? $booking->email;
-        if (! empty($recipient)) {
+
+        if (filled($recipient)) {
             Mail::to($recipient)->send(new BookingCancelled($booking));
         }
 
@@ -613,24 +596,20 @@ class AdminController extends Controller
         return view('admin.add_staff');
     }
 
-    public function createStaff(Request $request)
+    public function createStaff(StoreStaffRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email',
-            'password' => 'required|min:6',
+        $staff = User::create([
+            'name' => $request->validated('name'),
+            'email' => $request->validated('email'),
+            'password' => Hash::make($request->validated('password')),
+            'usertype' => 'staff',
         ]);
 
-        // Check if email already exists
-        if (User::where('email', $request->email)->exists()) {
-            return redirect()->back()->with('error', 'A staff account with this email already exists.');
-        }
-
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'usertype' => 'staff',
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'Staff Account Created',
+            'description' => "Staff account {$staff->email} was created.",
+            'ip_address' => request()->ip(),
         ]);
 
         return redirect()->back()->with('success', 'Staff account created successfully!');
@@ -643,16 +622,27 @@ class AdminController extends Controller
         return view('admin.staff.list', compact('staff'));
     }
 
-    // Delete a staff account
-    public function destroy($id)
+    /**
+     * Delete a staff account.
+     *
+     * The target is resolved as a staff account rather than as any user, so this
+     * endpoint cannot be pointed at a customer or another administrator. A
+     * non-staff id is simply not found here.
+     */
+    public function destroy($id): RedirectResponse
     {
-        $staff = User::findOrFail($id);
-
-        if ($staff->usertype === 'admin') {
-            return redirect()->back()->with('error', 'You cannot delete an admin account.');
-        }
+        $staff = User::query()
+            ->where('usertype', 'staff')
+            ->findOrFail($id);
 
         $staff->delete();
+
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'Staff Account Deleted',
+            'description' => "Staff account {$staff->email} was deleted.",
+            'ip_address' => request()->ip(),
+        ]);
 
         return redirect()->back()->with('success', 'Staff account deleted successfully.');
     }

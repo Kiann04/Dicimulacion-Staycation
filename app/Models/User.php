@@ -67,6 +67,21 @@ class User extends Authenticatable
         ];
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->usertype === 'admin';
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->usertype === 'staff';
+    }
+
+    public function bookings(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Booking::class);
+    }
+
     public function updateProfilePhoto($photo)
     {
         // Ensure folder exists

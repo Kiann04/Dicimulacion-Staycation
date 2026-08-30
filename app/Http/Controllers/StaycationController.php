@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Staycation;
 use App\Models\Review;
-use Carbon\Carbon;
+use App\Models\Staycation;
+use Illuminate\Http\Request;
 
 class StaycationController extends Controller
 {
     // ✅ Show list of staycations for admin
     public function index()
     {
-        $staycations = Staycation::all(); 
-        return view('admin.bookings', compact('staycations')); 
+        $staycations = Staycation::all();
+
+        return view('admin.bookings', compact('staycations'));
     }
 
     // ✅ Add new staycation
@@ -30,9 +30,9 @@ class StaycationController extends Controller
         ]);
 
         // ✅ Save main image
-        $imageName = time() . '.' . $request->house_image->extension();
+        $imageName = time().'.'.$request->house_image->extension();
         $request->house_image->move(public_path('storage/staycations'), $imageName);
-        $imagePath = 'staycations/' . $imageName;
+        $imagePath = 'staycations/'.$imageName;
 
         // ✅ Create staycation record
         $staycation = Staycation::create([
@@ -47,11 +47,11 @@ class StaycationController extends Controller
         // ✅ Save multiple gallery images
         if ($request->hasFile('house_images')) {
             foreach ($request->file('house_images') as $image) {
-                $galleryName = time() . '-' . uniqid() . '.' . $image->extension();
+                $galleryName = time().'-'.uniqid().'.'.$image->extension();
                 $image->move(public_path('storage/staycations/gallery'), $galleryName);
 
                 $staycation->images()->create([
-                    'image_path' => 'staycations/gallery/' . $galleryName,
+                    'image_path' => 'staycations/gallery/'.$galleryName,
                 ]);
             }
         }
@@ -59,10 +59,9 @@ class StaycationController extends Controller
         return redirect()->back()->with('success', 'Staycation house added successfully!');
     }
 
-
     // ✅ Show single staycation details + all reviews for that staycation
     public function showStaycation($id)
-    {   
+    {
         $staycation = Staycation::findOrFail($id);
 
         // Fetch reviews linked through bookings
@@ -80,45 +79,47 @@ class StaycationController extends Controller
     public function allReviews()
     {
         $allReviews = Review::with(['user', 'booking.staycation'])
-                            ->latest()
-                            ->paginate(12);
+            ->latest()
+            ->paginate(12);
 
         return view('home.AllReviews', compact('allReviews'));
     }
+
     public function edit($id)
     {
         $staycation = Staycation::findOrFail($id);
+
         return view('admin.staycations.edit', compact('staycation'));
     }
+
     public function update(Request $request, $id)
-{
-    $staycation = Staycation::findOrFail($id);
+    {
+        $staycation = Staycation::findOrFail($id);
 
-    $request->validate([
-        'house_name' => 'required|string|max:255',
-        'house_description' => 'required|string',
-        'house_price' => 'required|numeric',
-        'house_location' => 'required|string',
-        'house_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'house_availability' => 'required|string',
-    ]);
+        $request->validate([
+            'house_name' => 'required|string|max:255',
+            'house_description' => 'required|string',
+            // Mirrors the create rule: a negative rate would reach Money and be rejected there.
+            'house_price' => 'required|numeric|min:0',
+            'house_location' => 'required|string',
+            'house_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'house_availability' => 'required|string',
+        ]);
 
-    $staycation->house_name = $request->house_name;
-    $staycation->house_description = $request->house_description;
-    $staycation->house_price = $request->house_price;
-    $staycation->house_location = $request->house_location;
-    $staycation->house_availability = $request->house_availability;
+        $staycation->house_name = $request->house_name;
+        $staycation->house_description = $request->house_description;
+        $staycation->house_price = $request->house_price;
+        $staycation->house_location = $request->house_location;
+        $staycation->house_availability = $request->house_availability;
 
-    // If new image uploaded
-    if ($request->hasFile('house_image')) {
-        $path = $request->file('house_image')->store('staycations', 'public');
-        $staycation->house_image = $path;
+        // If new image uploaded
+        if ($request->hasFile('house_image')) {
+            $path = $request->file('house_image')->store('staycations', 'public');
+            $staycation->house_image = $path;
+        }
+
+        $staycation->save();
+
+        return redirect()->route('admin.dashboard')->with('success', 'Staycation updated successfully!');
     }
-
-    $staycation->save();
-
-    return redirect()->route('admin.dashboard')->with('success', 'Staycation updated successfully!');
-}
-
-
 }

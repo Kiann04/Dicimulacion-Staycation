@@ -1,0 +1,29 @@
+# Payment proofs are sensitive customer financial documents.
+#
+# Proofs uploaded before payment proofs moved to private storage still live in
+# this directory. They are served only through the authorized application routes
+# (bookings.payment_proof / admin.booking_history.payment_proof), which read them
+# from the filesystem, so direct HTTP access is denied here.
+#
+# This is an Apache-only control and is a backstop, not the primary defence:
+# every proof uploaded from now on is written to storage/app/private and is never
+# reachable by URL at all. It is deliberately NOT verified by the test suite,
+# because whether a web server honours this file cannot be proven from PHPUnit.
+#
+# DEPLOYMENT CHECK (must be performed on the live host, not locally):
+#   curl -i https://<host>/payment_proofs/<a-known-legacy-filename>
+#   Expect 403 or 404. If it returns 200, AllowOverride is off for this vhost and
+#   the directory must instead be protected in the server config, or the legacy
+#   files migrated into storage/app/private/payment_proofs.
+#
+# On nginx this file is ignored entirely; use an equivalent `location` block:
+#   location ^~ /payment_proofs/ { deny all; }
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
