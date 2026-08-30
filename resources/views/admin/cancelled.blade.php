@@ -40,7 +40,7 @@
                         <td>{{ \Carbon\Carbon::parse($booking->deleted_at)->format('M d, Y h:i A') }}</td>
                         <td>
                             @if($booking->payment_proof)
-                            <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" 
+                            <a href="{{ route('booking_history.payment_proof', $booking) }}"
                                 target="_blank">View Proof</a>
                             @else
                             <span class="text-muted">No proof</span>

@@ -71,7 +71,12 @@
                             <td>
                                 <a href="{{ route('admin.view_messages', $inquiry->id) }}" class="btn btn-sm btn-info">View</a>
                                 <a href="{{ route('admin.reply_message', $inquiry->id) }}" class="btn btn-sm btn-primary">Reply</a>
-                                <a href="{{ route('admin.delete_message', $inquiry->id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                                <form action="{{ route('admin.delete_message', $inquiry->id) }}" method="POST" class="d-inline"
+                                      onsubmit="return confirm('Are you sure?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
                             </td>
                         </tr>
                         @empty
@@ -118,7 +123,7 @@
                             <td>{{ $booking->message_to_admin ?? '—' }}</td>
                             <td>
                                 @if($booking->payment_proof)
-                                    <a href="{{ asset('payment_proofs/' . basename($booking->payment_proof)) }}" target="_blank" class="btn btn-sm btn-outline-primary">View Proof</a>
+                                    <a href="{{ route('bookings.payment_proof', $booking) }}" target="_blank" class="btn btn-sm btn-outline-primary">View Proof</a>
                                 @else
                                     <span class="text-muted">No proof</span>
                                 @endif

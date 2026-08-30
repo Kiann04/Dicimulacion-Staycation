@@ -49,27 +49,16 @@
         @php
             use Carbon\Carbon;
 
-            $start = Carbon::parse($startDate);
-            $end = Carbon::parse($endDate);
+            // Pricing comes from BookingPricingService via the controller, which
+            // is the same rule the booking submission charges against. The Money
+            // objects are unwrapped to floats here for display only.
+            $nights = $quote['nights'];
+            $totalPrice = $quote['total_price']->toFloat();
+            $extraGuests = $quote['extra_guests'];
+            $extraFee = $quote['extra_guest_fee']->toFloat();
 
-            // ✅ Prevent negative or zero nights
-            if ($end->lessThanOrEqualTo($start)) {
-                $nights = 1;
-            } else {
-                $nights = $start->diffInDays($end);
-            }
-
-            // Base price
-            $totalPrice = $staycation->house_price * $nights;
-
-            // ✅ ₱500 per extra guest beyond 6
-            $extraGuests = max(0, $guest_number - 6);
-            $extraFee = $extraGuests * 500;
-            $totalPrice += $extraFee;
-
-            // Format dates
-            $formattedStart = $start->format('M d, Y');
-            $formattedEnd = $end->format('M d, Y');
+            $formattedStart = Carbon::parse($startDate)->format('M d, Y');
+            $formattedEnd = Carbon::parse($endDate)->format('M d, Y');
         @endphp
 
 

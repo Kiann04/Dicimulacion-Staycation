@@ -2,166 +2,182 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Booking;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\PaymentInstructionsMail;
-use App\Models\AuditLog;
-use App\Mail\PaymentReceiptMail;
-use Illuminate\Support\Facades\Auth;
+use App\Enums\PaymentStatus;
+use App\Exceptions\InvalidBookingTransition;
+use App\Http\Requests\UpdateBookingPaymentRequest;
 use App\Mail\BookingApproved;
 use App\Mail\BookingDeclined;
-use Illuminate\Support\Facades\DB;
+use App\Mail\PaymentReceiptMail;
+use App\Models\Booking;
+use App\Models\BookingHistory;
+use App\Services\BookingPaymentService;
+use App\Services\PaymentProofService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminBookingController extends Controller
 {
-    // ✅ Approve booking (waiting for payment)
-    public function approveBooking($id)
+    public function __construct(
+        private readonly PaymentProofService $paymentProofs,
+        private readonly BookingPaymentService $payments,
+    ) {}
+
+    /**
+     * Approve a booking so the customer can settle payment.
+     */
+    public function approveBooking(int $id): RedirectResponse
     {
-        $booking = Booking::with('user', 'staycation')->findOrFail($id);
+        $booking = Booking::with(['user', 'staycation'])->findOrFail($id);
 
-        $booking->status = 'approved';
-        $booking->payment_status = 'pending'; 
-        $booking->save();
-
-        // Log action
-        AuditLog::create([
-            'user_id'    => Auth::id(),
-            'action'     => 'Booking Approved',
-            'description'=> 'Booking ID: ' . $booking->id . ' approved and awaiting payment.',
-            'ip_address' => request()->ip(),
-        ]);
-
-        // Send email
-        $recipient = $booking->user->email ?? $booking->email;
-        if (!empty($recipient)) {
-            Mail::to($recipient)->send(new BookingApproved($booking));
+        try {
+            $this->payments->approve($booking);
+        } catch (InvalidBookingTransition $exception) {
+            return back()->with('error', $exception->getMessage());
         }
+
+        $this->notify($booking, BookingApproved::class);
 
         return back()->with('success', 'Booking approved, audit log created, and email sent.');
     }
 
-    // ✅ Decline booking → set status to Declined
-    public function declineBooking($id)
+    /**
+     * Decline a booking, releasing its dates back to the calendar.
+     */
+    public function declineBooking(int $id): RedirectResponse
     {
-        $booking = Booking::with('user', 'staycation')->findOrFail($id);
+        $booking = Booking::with(['user', 'staycation'])->findOrFail($id);
 
-        $booking->status = 'declined'; 
-        $booking->payment_status = 'failed';
-        $booking->save();
-
-        AuditLog::create([
-            'user_id'    => Auth::id(),
-            'action'     => 'Booking Declined',
-            'description'=> 'Booking ID: ' . $booking->id . ' has been declined.',
-            'ip_address' => request()->ip(),
-        ]);
-
-        if ($booking->user && $booking->user->email) {
-            Mail::to($booking->user->email)->send(new BookingDeclined($booking));
+        try {
+            $this->payments->decline($booking);
+        } catch (InvalidBookingTransition $exception) {
+            return back()->with('error', $exception->getMessage());
         }
+
+        $this->notify($booking, BookingDeclined::class);
 
         return back()->with('success', 'Booking declined and email sent.');
     }
 
+    /**
+     * Record a payment verification decision.
+     */
+    public function updatePayment(UpdateBookingPaymentRequest $request, int $id): JsonResponse|RedirectResponse
+    {
+        $booking = Booking::with(['user', 'staycation'])->findOrFail($id);
+        $target = $request->paymentStatus();
 
-    // ✅ Update payment status
-    public function updatePayment(Request $request, $id)
-{
-    $booking = Booking::with('user', 'staycation')->findOrFail($id);
-    $paymentStatus = strtolower($request->input('payment_status'));
-    $booking->payment_status = $paymentStatus;
+        try {
+            $this->payments->verifyPayment($booking, $target);
+        } catch (InvalidBookingTransition $exception) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $exception->getMessage(),
+                ], 422);
+            }
 
-    $recipient = $booking->user->email ?? $booking->email;
-
-    if (in_array($paymentStatus, ['paid', 'half_paid'])) {
-        $booking->status = 'confirmed';
-
-        if (!empty($recipient)) {
-            Mail::to($recipient)->send(new PaymentReceiptMail($booking));
+            return back()->with('error', $exception->getMessage());
         }
 
-        AuditLog::create([
-            'user_id'    => Auth::id(),
-            'action'     => $paymentStatus === 'paid' ? 'Payment Received' : 'Partial Payment',
-            'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as " . ucfirst(str_replace('_', ' ', $paymentStatus)) . ".",
-            'ip_address' => request()->ip(),
-        ]);
-    } elseif ($paymentStatus === 'unpaid') {
-        $booking->status = 'cancelled';
+        if ($target->isVerified()) {
+            $this->notify($booking, PaymentReceiptMail::class);
+        }
 
-        AuditLog::create([
-            'user_id'    => Auth::id(),
-            'action'     => 'Payment Unpaid',
-            'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as Unpaid.",
-            'ip_address' => request()->ip(),
-        ]);
-    } else {
-        $booking->status = 'approved';
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment status updated successfully!',
+                'booking_status' => $booking->status,
+            ]);
+        }
+
+        return back()->with('success', 'Payment status updated successfully!');
     }
 
-    $booking->save();
-
-    // ✅ Detect AJAX and respond accordingly
-    if ($request->ajax()) {
-        return response()->json([
-            'success' => true,
-            'message' => 'Payment status updated successfully!',
-            'booking_status' => $booking->status,
-        ]);
-    }
-
-    return redirect()->back()->with('success', 'Payment status updated successfully!');
-}
-
-
-    public function getUnpaidCount()
+    public function getUnpaidCount(): JsonResponse
     {
-        $count = \App\Models\Booking::where('payment_status', 'unpaid')->count();
-        return response()->json(['count' => $count]);
+        return response()->json([
+            'count' => Booking::query()
+                ->whereIn('payment_status', [PaymentStatus::Unpaid->value, PaymentStatus::Pending->value])
+                ->count(),
+        ]);
     }
-    public function getProof($id)
+
+    /**
+     * Booking payment metadata for the admin dashboard modal.
+     */
+    public function getProof(int $id): JsonResponse
     {
         $booking = Booking::findOrFail($id);
+
         return response()->json([
-            'id' => $booking->id,
+            'id' => $booking->getKey(),
             'start_date' => $booking->formatted_start_date,
             'end_date' => $booking->formatted_end_date,
             'total_price' => $booking->total_price,
             'amount_paid' => $booking->amount_paid,
-            'proof' => $booking->payment_proof ? asset($booking->payment_proof) : null,
+            'declared_amount' => $booking->declared_amount,
+            'payment_status' => $booking->payment_status,
+            'remaining_balance' => $booking->remainingBalance()->toDecimalString(),
+            'proof' => $this->paymentProofs->exists($booking->payment_proof)
+                ? route('bookings.payment_proof', $booking)
+                : null,
         ]);
     }
 
+    /**
+     * Stream a payment proof to an authorized viewer.
+     */
+    public function showProof(Booking $booking): Response
+    {
+        $this->authorize('viewPaymentProof', $booking);
 
-
-    public function markAsFullyPaid(Request $request, $id)
-{
-    $booking = Booking::with('user', 'staycation')->findOrFail($id);
-
-    // Only allow update if currently half paid
-    if (strtolower($booking->payment_status) !== 'half_paid') {
-        return redirect()->back()->with('error', 'Only half-paid bookings can be marked as fully paid.');
+        return $this->paymentProofs->response($booking->payment_proof);
     }
 
-    $booking->payment_status = 'paid';
-    $booking->status = 'confirmed';
-    $booking->save();
+    /**
+     * Stream an archived booking's payment proof to an authorized viewer.
+     *
+     * Same rule as a live booking: the administrator, or the customer whose
+     * booking it was. Archiving must not change who may read the document.
+     */
+    public function showArchivedProof(BookingHistory $bookingHistory): Response
+    {
+        $this->authorize('viewPaymentProof', $bookingHistory);
 
-    $recipient = $booking->user->email ?? $booking->email;
-
-    if (!empty($recipient)) {
-        Mail::to($recipient)->send(new PaymentReceiptMail($booking));
+        return $this->paymentProofs->response($bookingHistory->payment_proof);
     }
 
-    AuditLog::create([
-        'user_id'    => Auth::id(),
-        'action'     => 'Remaining Payment Received',
-        'description'=> "Booking ID: {$booking->id} ({$booking->staycation->house_name}) marked as Paid (was Half Paid).",
-        'ip_address' => $request->ip(),
-    ]);
+    /**
+     * Settle the outstanding half of a partially paid booking.
+     */
+    public function markAsFullyPaid(Request $request, int $id): RedirectResponse
+    {
+        $booking = Booking::with(['user', 'staycation'])->findOrFail($id);
 
-    return redirect()->back()->with('success', 'Booking marked as fully paid.');
-}
+        try {
+            $this->payments->settleRemainingBalance($booking);
+        } catch (InvalidBookingTransition $exception) {
+            return back()->with('error', $exception->getMessage());
+        }
 
+        $this->notify($booking, PaymentReceiptMail::class);
+
+        return back()->with('success', 'Booking marked as fully paid.');
+    }
+
+    /**
+     * @param  class-string<\Illuminate\Mail\Mailable>  $mailable
+     */
+    private function notify(Booking $booking, string $mailable): void
+    {
+        $recipient = $booking->user->email ?? $booking->email;
+
+        if (filled($recipient)) {
+            Mail::to($recipient)->send(new $mailable($booking));
+        }
+    }
 }

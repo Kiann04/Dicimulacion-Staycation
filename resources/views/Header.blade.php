@@ -43,7 +43,7 @@
                                 {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="{{ route('profile.show') }}">Profile</a></li>
+                                <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
 
                                 @if(Auth::user()->usertype === 'admin')
                                     <li><a class="dropdown-item" href="{{ url('/admin/dashboard') }}">Dashboard</a></li>

@@ -20,6 +20,8 @@
 !/public/uploads/.gitkeep
 /public/payment_proofs/*
 !/public/payment_proofs/.gitkeep
+!/public/payment_proofs/.htaccess
+/storage/app/private/payment_proofs/*
 /storage/app/public/staycations/gallery/*
 !/storage/app/public/staycations/gallery/.gitkeep
 /storage/*.key
