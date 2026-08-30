@@ -15,8 +15,12 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
   retryLabel = 'Try Again',
 }) => {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border border-rose-200 bg-rose-50/50 p-10 text-center my-8">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-rose-100 text-rose-600 mb-3">
+    <div
+      role="alert"
+      aria-live="assertive"
+      className="flex flex-col items-center justify-center rounded-2xl border border-rose-200 bg-rose-50/50 p-10 text-center my-8"
+    >
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-rose-100 text-rose-600 mb-3" aria-hidden="true">
         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"

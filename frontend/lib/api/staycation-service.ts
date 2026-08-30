@@ -1,15 +1,18 @@
-import { MOCK_STAYCATIONS, getStaycationSummary } from '../mocks/staycations';
-import {
+import type {
   AvailabilityResult,
+  StaycationCollectionResult,
   StaycationDetails,
   StaycationFilter,
   StaycationSummary,
-} from '../types/staycation';
-import { calculateNights } from '../utils/formatters';
+} from '../types/staycation.ts';
+import { LaravelStaycationService } from './laravel-staycation-service.ts';
+import { MOCK_STAYCATIONS, getStaycationSummary } from '../mocks/staycations.ts';
+import { calculateNights } from '../utils/formatters.ts';
 
 export interface StaycationService {
   getFeaturedStaycations(): Promise<StaycationSummary[]>;
   getStaycations(filter?: StaycationFilter): Promise<StaycationSummary[]>;
+  getStaycationCollection(filter?: StaycationFilter): Promise<StaycationCollectionResult>;
   getStaycationById(id: string | number): Promise<StaycationDetails | null>;
   checkAvailability(
     staycationId: string | number,
@@ -20,13 +23,10 @@ export interface StaycationService {
 }
 
 /**
- * Mock implementation of StaycationService for frontend foundation development.
- * 
- * SWAP STRATEGY:
- * When Laravel REST API endpoints are finalized, create `LaravelStaycationService`
- * adhering to the `StaycationService` interface and change the exported instance below.
+ * Mock implementation of StaycationService preserved for tests, Storybook/demos,
+ * or explicit mock development mode (NEXT_PUBLIC_USE_MOCK_API=true).
  */
-class MockStaycationService implements StaycationService {
+export class MockStaycationService implements StaycationService {
   private simulateDelay(ms = 80): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
@@ -34,6 +34,21 @@ class MockStaycationService implements StaycationService {
   async getFeaturedStaycations(): Promise<StaycationSummary[]> {
     await this.simulateDelay();
     return MOCK_STAYCATIONS.filter((item) => item.featured).map(getStaycationSummary);
+  }
+
+  async getStaycationCollection(filter?: StaycationFilter): Promise<StaycationCollectionResult> {
+    const items = await this.getStaycations(filter);
+    return {
+      items,
+      meta: {
+        currentPage: 1,
+        from: 1,
+        lastPage: 1,
+        perPage: 50,
+        to: items.length,
+        total: MOCK_STAYCATIONS.length,
+      },
+    };
   }
 
   async getStaycations(filter?: StaycationFilter): Promise<StaycationSummary[]> {
@@ -54,13 +69,7 @@ class MockStaycationService implements StaycationService {
 
       if (filter.city) {
         results = results.filter(
-          (item) => item.location?.city.toLowerCase() === filter.city?.toLowerCase()
-        );
-      }
-
-      if (filter.propertyType && filter.propertyType !== 'all') {
-        results = results.filter(
-          (item) => item.propertyType?.toLowerCase() === filter.propertyType?.toLowerCase()
+          (item) => item.location?.city?.toLowerCase() === filter.city?.toLowerCase()
         );
       }
 
@@ -94,7 +103,9 @@ class MockStaycationService implements StaycationService {
     await this.simulateDelay();
     const strId = String(id).toLowerCase();
     const item = MOCK_STAYCATIONS.find(
-      (stay) => String(stay.id).toLowerCase() === strId || (stay.slug && stay.slug.toLowerCase() === strId)
+      (stay) =>
+        String(stay.id).toLowerCase() === strId ||
+        (stay.slug && stay.slug.toLowerCase() === strId)
     );
     return item ? { ...item } : null;
   }
@@ -151,12 +162,7 @@ class MockStaycationService implements StaycationService {
     }
 
     const nights = calculateNights(checkIn, checkOut);
-    const pricePerNight = Number(item.pricePerNight) || 0;
-    const baseTotal = pricePerNight * nights;
-    const cleaningFee = 1500;
-    const serviceFee = Math.round(baseTotal * 0.08);
-    const taxes = Math.round((baseTotal + cleaningFee + serviceFee) * 0.12);
-    const total = baseTotal + cleaningFee + serviceFee + taxes;
+    const pricePerNight = item.pricePerNight;
 
     return {
       staycationId,
@@ -167,18 +173,24 @@ class MockStaycationService implements StaycationService {
       status: 'available',
       message: 'Dates are available for booking!',
       isInformationalOnly: true,
-      priceBreakdown: {
-        nights,
-        pricePerNight,
-        baseTotal,
-        cleaningFee,
-        serviceFee,
-        taxes,
-        total,
-        currency: item.currency || 'PHP',
-      },
+      nights,
+      pricePerNight,
+      currency: item.currency || 'PHP',
+      notice: 'Final pricing and fees will be confirmed during reservation.',
     };
   }
 }
 
-export const staycationService: StaycationService = new MockStaycationService();
+/**
+ * Service factory:
+ * Uses LaravelStaycationService by default.
+ * Falls back to MockStaycationService ONLY if explicitly requested via NEXT_PUBLIC_USE_MOCK_API=true.
+ */
+function createStaycationService(): StaycationService {
+  if (process.env.NEXT_PUBLIC_USE_MOCK_API === 'true') {
+    return new MockStaycationService();
+  }
+  return new LaravelStaycationService();
+}
+
+export const staycationService: StaycationService = createStaycationService();

@@ -7,38 +7,42 @@ export function formatCurrency(
   amount: number | string | null | undefined,
   currency = 'PHP'
 ): string {
-  if (amount === null || amount === undefined || amount === '') return '₱0';
+  if (amount === null || amount === undefined || amount === '') return '₱0.00';
   const numericAmount = typeof amount === 'number' ? amount : Number(amount);
-  if (isNaN(numericAmount)) return '₱0';
+  if (isNaN(numericAmount)) return '₱0.00';
+
+  const isDecimal = typeof amount === 'string' && amount.includes('.');
+  const hasFraction = numericAmount % 1 !== 0 || isDecimal;
 
   if (currency === 'PHP') {
     return `₱${numericAmount.toLocaleString('en-PH', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
+      minimumFractionDigits: hasFraction ? 2 : 0,
+      maximumFractionDigits: 2,
     })}`;
   }
 
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: hasFraction ? 2 : 0,
+    maximumFractionDigits: 2,
   }).format(numericAmount);
 }
 
 export function formatGuestCount(guests?: number | null): string {
-  const count = typeof guests === 'number' ? guests : 1;
-  return `${count} ${count === 1 ? 'guest' : 'guests'}`;
+  if (!guests || guests <= 0) return '';
+  return `${guests} ${guests === 1 ? 'guest' : 'guests'}`;
 }
 
 export function formatBedroomCount(bedrooms?: number | null): string {
+  if (bedrooms === undefined || bedrooms === null) return '';
   if (bedrooms === 0) return 'Studio';
-  const count = typeof bedrooms === 'number' ? bedrooms : 1;
-  return `${count} ${count === 1 ? 'bedroom' : 'bedrooms'}`;
+  return `${bedrooms} ${bedrooms === 1 ? 'bedroom' : 'bedrooms'}`;
 }
 
 export function formatBathroomCount(bathrooms?: number | null): string {
-  const count = typeof bathrooms === 'number' ? bathrooms : 1;
-  return `${count} ${count === 1 ? 'bath' : 'baths'}`;
+  if (bathrooms === undefined || bathrooms === null) return '';
+  return `${bathrooms} ${bathrooms === 1 ? 'bath' : 'baths'}`;
 }
 
 export function calculateNights(checkIn?: string, checkOut?: string): number {

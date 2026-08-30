@@ -1,10 +1,7 @@
 /**
  * Typed domain models for Staycation frontend UI.
  * 
- * NOTE: These models reflect UI data needs during the foundation phase
- * and are decoupled from the eventual Laravel REST API schema.
- * All fields are structured with safe optionality so components
- * remain resilient as the backend contract is finalized.
+ * Preserves authoritative backend data without inventing uncontracted facts or fee math.
  */
 
 export interface StaycationImage {
@@ -13,12 +10,13 @@ export interface StaycationImage {
   alt?: string;
   isPrimary?: boolean;
   caption?: string;
+  isPlaceholder?: boolean;
 }
 
 export interface StaycationAmenity {
   id: string | number;
   name: string;
-  category?: 'essentials' | 'kitchen' | 'entertainment' | 'outdoor' | 'safety' | 'services' | string;
+  category?: string;
   icon?: string;
 }
 
@@ -31,8 +29,8 @@ export interface StaycationHost {
 }
 
 export interface StaycationReviewSummary {
-  rating?: number | null; // e.g. 4.92
-  reviewCount?: number;
+  rating?: number | null; // e.g. 4.5 or null
+  reviewCount?: number; // e.g. 12 or 0
   cleanlinessRating?: number;
   accuracyRating?: number;
   locationRating?: number;
@@ -45,27 +43,36 @@ export interface StaycationLocation {
   neighborhood?: string;
   country?: string;
   address?: string;
-  latitude?: number;
-  longitude?: number;
+}
+
+export interface StaycationCapacity {
+  includedGuests: number;
+  maximumGuests: number;
+  extraGuestFee: string; // exact decimal string e.g. "500.00"
+  extraGuestFeeCentavos: number; // integer centavos e.g. 50000
 }
 
 export interface StaycationSummary {
-  id: string | number;
+  id: number | string;
   slug?: string;
   title: string;
+  description?: string;
   tagline?: string;
   location?: StaycationLocation;
   coverImage?: StaycationImage;
   images?: StaycationImage[];
-  pricePerNight: number | string;
-  originalPricePerNight?: number | string;
-  currency?: string;
+  pricePerNight: string | number; // exact decimal string from Laravel
+  pricePerNightCentavos?: number; // exact integer centavos from Laravel
+  originalPricePerNight?: string | number;
+  currency?: string; // "PHP"
+  capacity?: StaycationCapacity;
   maxGuests?: number;
   bedrooms?: number;
   beds?: number;
   bathrooms?: number;
   propertyType?: string;
-  isAvailable?: boolean;
+  isAvailable?: boolean; // is_bookable from contract
+  availabilityStatus?: 'available' | 'unavailable' | string;
   featured?: boolean;
   badge?: string;
   reviews?: StaycationReviewSummary;
@@ -73,7 +80,6 @@ export interface StaycationSummary {
 }
 
 export interface StaycationDetails extends StaycationSummary {
-  description?: string;
   spaceDescription?: string;
   guestAccessDescription?: string;
   houseRules?: string[];
@@ -83,6 +89,20 @@ export interface StaycationDetails extends StaycationSummary {
   amenities?: StaycationAmenity[];
   cancellationPolicy?: string;
   safetyInfo?: string[];
+}
+
+export interface StaycationPaginationMeta {
+  currentPage: number;
+  from: number | null;
+  lastPage: number;
+  perPage: number;
+  to: number | null;
+  total: number;
+}
+
+export interface StaycationCollectionResult {
+  items: StaycationSummary[];
+  meta?: StaycationPaginationMeta;
 }
 
 export interface StaycationFilter {
@@ -96,19 +116,8 @@ export interface StaycationFilter {
   sortBy?: 'recommended' | 'price_asc' | 'price_desc' | 'rating';
 }
 
-export interface PriceBreakdown {
-  nights: number;
-  pricePerNight: number | string;
-  baseTotal: number | string;
-  cleaningFee?: number | string;
-  serviceFee?: number | string;
-  taxes?: number | string;
-  total: number | string;
-  currency?: string;
-}
-
 export interface AvailabilityResult {
-  staycationId: string | number;
+  staycationId: number | string;
   checkInDate: string;
   checkOutDate: string;
   guests: number;
@@ -116,5 +125,9 @@ export interface AvailabilityResult {
   status?: 'available' | 'unavailable' | 'conflict' | 'blocked' | 'error';
   message: string;
   isInformationalOnly: boolean;
-  priceBreakdown?: PriceBreakdown;
+  nights?: number;
+  pricePerNight?: string | number;
+  pricePerNightCentavos?: number;
+  currency?: string;
+  notice?: string;
 }

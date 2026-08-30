@@ -1,17 +1,29 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import { StaycationDetails, AvailabilityResult } from '@/lib/types/staycation';
 import { staycationService } from '@/lib/api/staycation-service';
 import { PriceDisplay } from '@/components/shared/PriceDisplay';
 import { Button } from '@/components/ui/Button';
-import { formatCurrency } from '@/lib/utils/formatters';
+import { getBookingFormIds } from '@/lib/utils/form-ids';
+
+export { getBookingFormIds };
 
 export interface StaycationBookingCardProps {
   staycation: StaycationDetails;
+  idPrefix?: string;
 }
 
-export const StaycationBookingCard: React.FC<StaycationBookingCardProps> = ({ staycation }) => {
+export const StaycationBookingCard: React.FC<StaycationBookingCardProps> = ({
+  staycation,
+  idPrefix,
+}) => {
+  const generatedId = useId().replace(/:/g, '');
+  const prefix = idPrefix !== undefined ? idPrefix : `booking-${generatedId}-`;
+  const formIds = getBookingFormIds(prefix);
+
+  const isBookable = staycation.isAvailable !== false && staycation.availabilityStatus !== 'unavailable';
+
   // Default dates: tomorrow to 3 days later
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -22,13 +34,15 @@ export const StaycationBookingCard: React.FC<StaycationBookingCardProps> = ({ st
 
   const [checkIn, setCheckIn] = useState(formatDateForInput(tomorrow));
   const [checkOut, setCheckOut] = useState(formatDateForInput(checkoutDefault));
-  const [guests, setGuests] = useState(2);
+  const [guests, setGuests] = useState(1);
   const [isChecking, setIsChecking] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [availabilityResult, setAvailabilityResult] = useState<AvailabilityResult | null>(null);
 
   const handleCheckAvailability = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isBookable) return;
+
     setValidationError(null);
 
     const start = new Date(checkIn);
@@ -49,17 +63,17 @@ export const StaycationBookingCard: React.FC<StaycationBookingCardProps> = ({ st
       );
       setAvailabilityResult(res);
     } catch {
-      setValidationError('Unable to check availability at this time. Please try again.');
+      setValidationError('Unable to connect to the staycation service. Please verify the API is reachable.');
     } finally {
       setIsChecking(false);
     }
   };
 
-  const maxGuests = staycation.maxGuests || 6;
+  const maxGuests = staycation.capacity?.maximumGuests ?? staycation.maxGuests ?? 1;
 
   return (
-    <div id="booking-widget" className="sticky top-28 rounded-3xl border border-slate-200/90 bg-white p-6 shadow-lg space-y-6">
-      {/* Header Price */}
+    <div id={formIds.widgetId} className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-lg space-y-6">
+      {/* Header Price & Status */}
       <div className="flex items-baseline justify-between border-b border-slate-100 pb-5">
         <div>
           <PriceDisplay
@@ -69,10 +83,25 @@ export const StaycationBookingCard: React.FC<StaycationBookingCardProps> = ({ st
             size="lg"
           />
         </div>
-        <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-          Available
-        </span>
+        {isBookable ? (
+          <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+            Available
+          </span>
+        ) : (
+          <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-300">
+            Offline
+          </span>
+        )}
       </div>
+
+      {!isBookable && (
+        <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs leading-relaxed" role="alert">
+          <p className="font-semibold">Property Currently Offline</p>
+          <p className="text-amber-800 text-[11px] mt-0.5">
+            This property is not currently accepting new reservations.
+          </p>
+        </div>
+      )}
 
       {/* Booking Form */}
       <form onSubmit={handleCheckAvailability} className="space-y-4">
@@ -80,11 +109,11 @@ export const StaycationBookingCard: React.FC<StaycationBookingCardProps> = ({ st
         <div className="rounded-2xl border border-slate-200 overflow-hidden bg-slate-50/50">
           <div className="grid grid-cols-2 divide-x divide-slate-200 border-b border-slate-200">
             <div className="p-3">
-              <label htmlFor="check-in-date" className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              <label htmlFor={formIds.checkInId} className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
                 CHECK-IN
               </label>
               <input
-                id="check-in-date"
+                id={formIds.checkInId}
                 type="date"
                 value={checkIn}
                 onChange={(e) => {
@@ -93,16 +122,17 @@ export const StaycationBookingCard: React.FC<StaycationBookingCardProps> = ({ st
                   setAvailabilityResult(null);
                 }}
                 min={formatDateForInput(new Date())}
+                disabled={!isBookable}
                 required
-                className="w-full bg-transparent text-xs font-semibold text-slate-900 focus:outline-none cursor-pointer mt-1"
+                className="w-full bg-transparent text-xs font-semibold text-slate-900 focus:outline-none cursor-pointer mt-1 disabled:opacity-50"
               />
             </div>
             <div className="p-3">
-              <label htmlFor="check-out-date" className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              <label htmlFor={formIds.checkOutId} className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
                 CHECKOUT
               </label>
               <input
-                id="check-out-date"
+                id={formIds.checkOutId}
                 type="date"
                 value={checkOut}
                 onChange={(e) => {
@@ -111,25 +141,27 @@ export const StaycationBookingCard: React.FC<StaycationBookingCardProps> = ({ st
                   setAvailabilityResult(null);
                 }}
                 min={checkIn}
+                disabled={!isBookable}
                 required
-                className="w-full bg-transparent text-xs font-semibold text-slate-900 focus:outline-none cursor-pointer mt-1"
+                className="w-full bg-transparent text-xs font-semibold text-slate-900 focus:outline-none cursor-pointer mt-1 disabled:opacity-50"
               />
             </div>
           </div>
 
           {/* Guest Count */}
           <div className="p-3">
-            <label htmlFor="guests-count" className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
+            <label htmlFor={formIds.guestsId} className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
               GUESTS
             </label>
             <select
-              id="guests-count"
+              id={formIds.guestsId}
               value={guests}
               onChange={(e) => {
                 setGuests(Number(e.target.value));
                 setAvailabilityResult(null);
               }}
-              className="w-full bg-transparent text-xs font-semibold text-slate-900 focus:outline-none cursor-pointer mt-1"
+              disabled={!isBookable}
+              className="w-full bg-transparent text-xs font-semibold text-slate-900 focus:outline-none cursor-pointer mt-1 disabled:opacity-50"
             >
               {Array.from({ length: maxGuests }, (_, i) => i + 1).map((num) => (
                 <option key={num} value={num}>
@@ -152,9 +184,10 @@ export const StaycationBookingCard: React.FC<StaycationBookingCardProps> = ({ st
           variant="primary"
           size="lg"
           isLoading={isChecking}
-          className="w-full shadow-md font-semibold text-sm"
+          disabled={!isBookable}
+          className="w-full shadow-md font-semibold text-sm disabled:opacity-50"
         >
-          Check Availability
+          {isBookable ? 'Check Availability' : 'Property Unavailable'}
         </Button>
       </form>
 
@@ -173,36 +206,17 @@ export const StaycationBookingCard: React.FC<StaycationBookingCardProps> = ({ st
             <span>{availabilityResult.message}</span>
           </div>
 
-          {availabilityResult.priceBreakdown && (
-            <div className="space-y-2 border-t border-emerald-200/80 pt-3 text-slate-700">
-              <div className="flex justify-between">
-                <span>
-                  {formatCurrency(availabilityResult.priceBreakdown.pricePerNight)} × {availabilityResult.priceBreakdown.nights} nights
+          {availabilityResult.isAvailable && availabilityResult.nights && (
+            <div className="space-y-1.5 border-t border-emerald-200/80 pt-3 text-slate-700">
+              <div className="flex justify-between text-xs">
+                <span>Requested duration:</span>
+                <span className="font-semibold text-slate-900">
+                  {availabilityResult.nights} {availabilityResult.nights === 1 ? 'night' : 'nights'}
                 </span>
-                <span>{formatCurrency(availabilityResult.priceBreakdown.baseTotal)}</span>
               </div>
-              {availabilityResult.priceBreakdown.cleaningFee && (
-                <div className="flex justify-between">
-                  <span>Cleaning fee</span>
-                  <span>{formatCurrency(availabilityResult.priceBreakdown.cleaningFee)}</span>
-                </div>
-              )}
-              {availabilityResult.priceBreakdown.serviceFee && (
-                <div className="flex justify-between">
-                  <span>Service fee (8%)</span>
-                  <span>{formatCurrency(availabilityResult.priceBreakdown.serviceFee)}</span>
-                </div>
-              )}
-              {availabilityResult.priceBreakdown.taxes && (
-                <div className="flex justify-between">
-                  <span>Taxes & occupancy</span>
-                  <span>{formatCurrency(availabilityResult.priceBreakdown.taxes)}</span>
-                </div>
-              )}
-              <div className="flex justify-between border-t border-emerald-300/80 pt-2 font-bold text-slate-950 text-sm">
-                <span>Total Estimated</span>
-                <span>{formatCurrency(availabilityResult.priceBreakdown.total)}</span>
-              </div>
+              <p className="text-[11px] text-slate-500 pt-1">
+                Final pricing and fees will be confirmed during reservation.
+              </p>
             </div>
           )}
 
@@ -214,13 +228,10 @@ export const StaycationBookingCard: React.FC<StaycationBookingCardProps> = ({ st
         </div>
       )}
 
-      {/* Disclaimers & Trust notes */}
-      <div className="text-center space-y-1.5 pt-2">
+      {/* Disclaimers */}
+      <div className="text-center pt-2">
         <p className="text-[11px] text-slate-400">
           You won&apos;t be charged yet.
-        </p>
-        <p className="text-[10px] text-slate-400">
-          Free cancellation available up to standard host policy.
         </p>
       </div>
     </div>

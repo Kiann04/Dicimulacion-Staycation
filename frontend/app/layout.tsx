@@ -17,10 +17,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     template: '%s | Dicimulacion Staycation',
-    default: 'Dicimulacion Staycation | Premium Vacation Rentals & Getaways',
+    default: 'Dicimulacion Staycation | Vacation Rentals & Getaways',
   },
   description:
-    'Discover and book handpicked staycation retreats, beachfront villas, and luxury lofts across the Philippines.',
+    'Discover and book vacation retreats, beachfront villas, and scenic lofts across the Philippines.',
 };
 
 export default function RootLayout({

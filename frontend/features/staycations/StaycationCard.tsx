@@ -14,13 +14,13 @@ export interface StaycationCardProps {
 export const StaycationCard: React.FC<StaycationCardProps> = ({ staycation }) => {
   const coverImageUrl =
     staycation.coverImage?.url ||
-    staycation.images?.[0]?.url ||
-    'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80';
-  const coverAlt = staycation.coverImage?.alt || staycation.title || 'Staycation property photo';
-  const locationLabel = staycation.location
-    ? [staycation.location.city, staycation.location.province].filter(Boolean).join(', ')
-    : 'Philippines';
+    staycation.images?.[0]?.url;
+  const coverAlt = staycation.coverImage?.alt || staycation.title || 'Staycation photo';
+  const locationLabel = staycation.location?.city || '';
   const stayId = String(staycation.id);
+
+  const maxGuests = staycation.capacity?.maximumGuests ?? staycation.maxGuests;
+  const isBookable = staycation.isAvailable !== false && staycation.availabilityStatus !== 'unavailable';
 
   return (
     <article className="group flex flex-col rounded-2xl bg-white border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-300 overflow-hidden">
@@ -31,13 +31,22 @@ export const StaycationCard: React.FC<StaycationCardProps> = ({ staycation }) =>
         tabIndex={-1}
         aria-hidden="true"
       >
-        <Image
-          src={coverImageUrl}
-          alt={coverAlt}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-        />
+        {coverImageUrl ? (
+          <Image
+            src={coverImageUrl}
+            alt={coverAlt}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="h-full w-full flex flex-col items-center justify-center bg-slate-100 text-slate-400 gap-1 text-xs">
+            <svg className="w-8 h-8 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span>No photo available</span>
+          </div>
+        )}
         
         {/* Top Badges */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
@@ -45,6 +54,10 @@ export const StaycationCard: React.FC<StaycationCardProps> = ({ staycation }) =>
             <Badge variant="primary" size="sm" className="shadow-xs backdrop-blur-xs font-semibold">
               {staycation.badge}
             </Badge>
+          ) : !isBookable ? (
+            <span className="bg-slate-900/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+              OFFLINE
+            </span>
           ) : <span />}
           
           {staycation.propertyType && (
@@ -59,9 +72,11 @@ export const StaycationCard: React.FC<StaycationCardProps> = ({ staycation }) =>
       <div className="flex flex-1 flex-col p-5">
         {/* Location & Rating */}
         <div className="flex items-center justify-between gap-2 mb-1.5">
-          <p className="text-xs font-medium text-slate-500 uppercase tracking-wider truncate">
-            {locationLabel}
-          </p>
+          {locationLabel ? (
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider truncate">
+              {locationLabel}
+            </p>
+          ) : <div />}
           <RatingBadge
             rating={staycation.reviews?.rating}
             reviewCount={staycation.reviews?.reviewCount}
@@ -76,20 +91,28 @@ export const StaycationCard: React.FC<StaycationCardProps> = ({ staycation }) =>
           </Link>
         </h3>
 
-        {/* Tagline */}
-        {staycation.tagline && (
+        {/* Description/Tagline */}
+        {(staycation.tagline || staycation.description) && (
           <p className="mt-1 text-xs text-slate-500 line-clamp-2 leading-relaxed">
-            {staycation.tagline}
+            {staycation.tagline || staycation.description}
           </p>
         )}
 
-        {/* Property Specs Pill Row */}
-        <div className="mt-3 flex items-center gap-2 text-xs text-slate-600 border-t border-slate-100 pt-3">
-          <span>{formatGuestCount(staycation.maxGuests)}</span>
-          <span className="text-slate-300">•</span>
-          <span>{formatBedroomCount(staycation.bedrooms)}</span>
-          <span className="text-slate-300">•</span>
-          <span>{formatBathroomCount(staycation.bathrooms)}</span>
+        {/* Real Specs (only if present) */}
+        <div className="mt-3 flex items-center gap-2 text-xs text-slate-600 border-t border-slate-100 pt-3 flex-wrap">
+          {maxGuests && <span>{formatGuestCount(maxGuests)}</span>}
+          {staycation.bedrooms !== undefined && (
+            <>
+              <span className="text-slate-300">•</span>
+              <span>{formatBedroomCount(staycation.bedrooms)}</span>
+            </>
+          )}
+          {staycation.bathrooms !== undefined && (
+            <>
+              <span className="text-slate-300">•</span>
+              <span>{formatBathroomCount(staycation.bathrooms)}</span>
+            </>
+          )}
         </div>
 
         {/* Footer / Price & CTA */}

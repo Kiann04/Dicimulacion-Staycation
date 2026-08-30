@@ -21,7 +21,7 @@ export const Footer: React.FC = () => {
               </div>
             </Link>
             <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
-              Handpicked, verified staycation sanctuaries across the Philippines. Crafted for memorable weekend retreats, workcations, and family gatherings.
+              Vacation sanctuaries across the Philippines. Crafted for memorable weekend retreats, workcations, and family gatherings.
             </p>
           </div>
 
@@ -38,17 +38,17 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <Link href="/staycations?city=Tagaytay" className="text-slate-400 hover:text-white transition-colors">
-                  Tagaytay Ridge Villas
+                  Tagaytay
                 </Link>
               </li>
               <li>
                 <Link href="/staycations?city=Makati" className="text-slate-400 hover:text-white transition-colors">
-                  Makati Skyline Lofts
+                  Makati
                 </Link>
               </li>
               <li>
                 <Link href="/staycations?city=Calatagan" className="text-slate-400 hover:text-white transition-colors">
-                  Batangas Beachfront
+                  Batangas
                 </Link>
               </li>
             </ul>
@@ -57,14 +57,14 @@ export const Footer: React.FC = () => {
           {/* Trust & Support */}
           <div className="space-y-3">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-white">
-              Trust & Quality
+              Trust & Support
             </h3>
             <ul className="space-y-2.5 text-sm text-slate-400">
               <li className="flex items-center gap-2">
                 <svg className="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>100% Verified Properties</span>
+                <span>Staycation Directory</span>
               </li>
               <li className="flex items-center gap-2">
                 <svg className="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

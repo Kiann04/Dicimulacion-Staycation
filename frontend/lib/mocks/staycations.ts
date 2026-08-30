@@ -1,4 +1,4 @@
-import { StaycationDetails, StaycationSummary } from '../types/staycation';
+import type { StaycationDetails, StaycationSummary } from '../types/staycation.ts';
 
 export const MOCK_STAYCATIONS: StaycationDetails[] = [
   {

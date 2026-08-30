@@ -2,21 +2,12 @@
 
 import React from 'react';
 import { StaycationFilter } from '@/lib/types/staycation';
-import { cn } from '@/lib/utils/cn';
 
 export interface StaycationFilterBarProps {
   filters: StaycationFilter;
   onFilterChange: (newFilters: StaycationFilter) => void;
   onReset: () => void;
 }
-
-const PROPERTY_TYPES = [
-  { label: 'All Stays', value: 'all' },
-  { label: 'Villas', value: 'villa' },
-  { label: 'Lofts', value: 'loft' },
-  { label: 'Cabins', value: 'cabin' },
-  { label: 'Cottages', value: 'cottage' },
-];
 
 const CITIES = [
   { label: 'All Destinations', value: '' },
@@ -33,6 +24,10 @@ export const StaycationFilterBar: React.FC<StaycationFilterBarProps> = ({
   onFilterChange,
   onReset,
 }) => {
+  const hasActiveFilters = Boolean(
+    filters.query || filters.city || filters.guests || (filters.sortBy && filters.sortBy !== 'recommended')
+  );
+
   return (
     <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs mb-8 space-y-4">
       {/* Top Search Controls */}
@@ -55,7 +50,8 @@ export const StaycationFilterBar: React.FC<StaycationFilterBarProps> = ({
               <button
                 type="button"
                 onClick={() => onFilterChange({ ...filters, query: '' })}
-                className="absolute right-2.5 top-2.5 text-xs text-slate-400 hover:text-slate-600"
+                className="absolute right-2.5 top-2.5 text-xs text-slate-400 hover:text-slate-600 cursor-pointer"
+                aria-label="Clear search query"
               >
                 ✕
               </button>
@@ -122,7 +118,7 @@ export const StaycationFilterBar: React.FC<StaycationFilterBarProps> = ({
             }
             className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900 cursor-pointer"
           >
-            <option value="recommended">Recommended</option>
+            <option value="recommended">Default</option>
             <option value="rating">Highest Rated</option>
             <option value="price_asc">Price: Low to High</option>
             <option value="price_desc">Price: High to Low</option>
@@ -130,38 +126,9 @@ export const StaycationFilterBar: React.FC<StaycationFilterBarProps> = ({
         </div>
       </div>
 
-      {/* Property Type Pills */}
-      <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full">
-          {PROPERTY_TYPES.map((type) => {
-            const isSelected =
-              (!filters.propertyType && type.value === 'all') ||
-              filters.propertyType === type.value;
-            return (
-              <button
-                key={type.value}
-                type="button"
-                onClick={() =>
-                  onFilterChange({
-                    ...filters,
-                    propertyType: type.value === 'all' ? undefined : type.value,
-                  })
-                }
-                className={cn(
-                  'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap cursor-pointer',
-                  isSelected
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
-                )}
-              >
-                {type.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Reset Action */}
-        {(filters.query || filters.city || filters.propertyType || filters.guests || filters.sortBy) && (
+      {/* Reset Action if active */}
+      {hasActiveFilters && (
+        <div className="pt-2 border-t border-slate-100 flex items-center justify-end">
           <button
             type="button"
             onClick={onReset}
@@ -169,8 +136,8 @@ export const StaycationFilterBar: React.FC<StaycationFilterBarProps> = ({
           >
             Clear all filters
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
